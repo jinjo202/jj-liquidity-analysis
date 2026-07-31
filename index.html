@@ -24,6 +24,23 @@
   .kicker { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--mut); }
   h1 { font-size:24px; margin:6px 0 4px; letter-spacing:-.4px; }
   .sub { color:var(--mut); font-size:13px; }
+  /* 핵심 요약 */
+  .summary { margin-top:20px; border-top:none; }
+  .verdict { border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:0 8px 8px 0;
+    padding:12px 15px; margin:12px 0 4px; background:var(--band); }
+  .verdict .vl { font-size:11px; letter-spacing:1.5px; color:var(--mut); text-transform:uppercase; }
+  .verdict .vt { font-size:14px; margin-top:3px; }
+  .sumcol { border:1px solid var(--line); border-radius:8px; padding:13px 15px 6px; }
+  .sumcol h4 { font-size:13px; color:var(--fg); margin-bottom:4px; }
+  .sumcol ul.find { padding-left:17px; }
+  .sumcol ul.find li { font-size:12.5px; margin:9px 0; color:var(--mut); }
+  .sumcol ul.find li b { color:var(--fg); }
+  .c-down { border-top:3px solid var(--cr); }
+  .c-up { border-top:3px solid var(--kq); }
+  .pill { display:inline-block; font-size:9.5px; letter-spacing:1.5px; padding:2px 6px; border-radius:4px;
+    color:#fff; vertical-align:2px; margin-right:5px; font-weight:600; }
+  .pill.pd { background:var(--cr); } .pill.pu { background:var(--kq); }
+
   /* 탭: 라디오 + 형제 선택자만 쓴다. JS 없이 file:// 에서도 그대로 동작한다. */
   .tabin { position:absolute; opacity:0; pointer-events:none; }
   .tabs { display:flex; gap:8px; margin:18px 0 0; border-bottom:1px solid var(--line); }
@@ -143,15 +160,44 @@
     유가증권/코스닥 분리 적용</div>
 </header>
 
-<div class="box ">
-  <b>공표 이후 지수가 반등했다</b> —
-  FREESIS 최종 공표일 2026.07.30 5,594p 대비
-  2026.07.31 현재 <b>6,361p (+13.73%)</b>.
-  네이버 금융 일별 시세. 장중이면 종가가 아니라 진행 중인 값이다. 본문의 모든 계산은 FREESIS 최종 공표일 기준이다. 마진콜 판정은 <b>그날까지의 최저 지수</b> 기준이므로
-  이미 터진 물량은 지수가 되돌아와도 되돌아오지 않는다 — 반등은 <b>추가</b> 청산만 막는다.
+
+
+<section class="summary">
+<h2>핵심 요약</h2>
+<p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
+
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
+    신용/시총도, 대차잔고/시총도 직전 사이클 저점보다 낮다.
+    남은 하락 위험과 남은 상승 여력 둘 다 "시간이 지나면 나올 물량"이 아니라 <b>지수가 어디로 가느냐</b>에 달려 있다.</div>
 </div>
 
+<div class="tables">
+  <div class="sumcol c-down">
+    <h4><span class="pill pd">PART 1</span> 얼마나 더 하락할 수 있나 — 신용잔고</h4>
+    <ul class="find"><li><b>지수는 -38.6% 빠졌는데 신용은 -15.4%만 청산됐다</b> — 겉보기로는 잔여가 크다. 2021 사이클 청산률(-38.4%)을 그대로 대입하면 8.86조가 더 남는다.</li><li><b>그런데 레버리지 강도가 그때와 다르다</b> — 신용/시총은 현재 <b>0.655%</b>로 <b>2023년 저점 0.720%보다 이미 낮다</b>.
+       "2022년처럼 풀려야 한다"는 전제 자체가 이 사이클에는 그대로 적용되지 않는다.</li><li><b>남은 위험은 시간이 아니라 지수 경로다</b> — 마진콜 모델 기준 현재 지수에서 새로 열리는 물량은 없다. 코스피가 5,000p 밑으로 마감해야 +3.86조가 새로 마진콜 구간에 들어온다.</li><li><b>사각지대 — 사다리가 안 세는 레버리지 25.52조</b> — 예탁증권담보융자는 청산 트리거가 공표되지 않아 마진콜 모델에서 빠져 있다.
+       신용융자만 -14.6% 풀렸고, 둘을 합친 총 레버리지는 <b>-10.0%</b>만 줄었다.</li><li><b>대신 실탄은 2021년보다 두껍다</b> — 예탁금 커버리지 3.32배(역대 78백분위). 2021년 신용 고점 당시 2.74배였다.</li></ul>
+  </div>
+  <div class="sumcol c-up">
+    <h4><span class="pill pu">PART 2</span> 얼마나 더 상승할 수 있나 — 공매도·숏커버링</h4>
+    <ul class="find"><li><b>이미 61.89조가 되갚아졌다</b> — 대차잔고 고점의 31.7%. 오늘 하루 거래대금의 1.5배에 해당하는 매수가 이미 지나갔다.</li><li><b>비율로 보면 되돌림은 이미 끝났다</b> — 대차잔고/시총 <b>2.68%</b>는 직전 사이클 저점 <b>2.91%</b>보다 낮다.
+       비율 기준 벤치마크 두 개가 모두 '소진'으로 나온다.</li><li><b>현실적 상단은 31.62조</b> — 시총 성장을 감안한 복귀 목표 기준. 하루 거래대금의 0.75배 규모다.
+       절대 잔고 복귀(86.24조)는 시총이 그 사이 배로 커진 것을 무시하는 계산이라 과대추정이다.</li><li><b>아직 숏커버 랠리는 아니다</b> — 잔고 고점 이후 숏커버형(지수↑ 잔고↓) 날은 4일뿐이고 전부 급락 시작 전이다. 나머지는 지수·잔고 동반 청산이었다.</li><li><b>지수 상승폭으로 환산하지 않는다</b> — 매수 물량 몇 조가 지수 몇 %가 되는지는 이 데이터로 알 수 없다. 대차잔고 감소 전부가 숏커버도 아니다(ETF 환매·차익거래 포함).</li></ul>
+  </div>
+</div>
 
+<div class="box warn">
+  <b>반등은 이미 터진 물량을 되돌리지 않는다</b> — FREESIS 최종 공표일 2026.07.30 5,594p 대비
+  2026.07.31 6,361p(+13.73%).
+  마진콜 판정은 그날까지의 <b>최저 지수</b> 기준이라, 지수가 되돌아와도 이미 청산된 신용은 돌아오지 않는다.
+  반등이 막는 것은 <b>추가</b> 청산뿐이다.
+</div>
+
+<p class="lead" style="margin-top:14px">아래 탭에서 각 결론의 계산 근거를 볼 수 있다.
+전제·한계는 <code>docs/methodology.md</code> §1~20에 전부 적어 두었다.</p>
+</section>
 
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">

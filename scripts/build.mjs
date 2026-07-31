@@ -900,16 +900,6 @@ if (A.unpaid) {
 </section>`;
 }
 
-/* ---------- 교차검증 소스의 최신 지수 ---------- */
-
-const spotBanner = A.spot ? `<div class="box ${A.spot.changePct >= 0 ? '' : 'warn'}">
-  <b>공표 이후 지수가 ${A.spot.changePct >= 0 ? '반등' : '추가 하락'}했다</b> —
-  FREESIS 최종 공표일 ${dtFull(A.spot.baseDate)} ${k0(A.spot.baseIdx)}p 대비
-  ${dtFull(A.spot.date)} 현재 <b>${k0(A.spot.idx)}p (${A.spot.changePct >= 0 ? '+' : ''}${f(A.spot.changePct, 2)}%)</b>.
-  ${esc(A.spot.note)} 마진콜 판정은 <b>그날까지의 최저 지수</b> 기준이므로
-  이미 터진 물량은 지수가 되돌아와도 되돌아오지 않는다 — 반등은 <b>추가</b> 청산만 막는다.
-</div>` : '';
-
 /* ---------- 전망 섹션 ---------- */
 
 const PJ = A.projection;
@@ -982,6 +972,87 @@ if (PJ) {
 </section>`;
 }
 
+/* ---------- 핵심 요약 (implications) ---------- */
+// 리포트 맨 위. 차트를 하나도 안 보고도 결론을 가져갈 수 있어야 한다.
+// 숫자는 전부 analysis.json 에서 끌어온다 — 본문과 어긋날 여지를 두지 않는다.
+
+let summarySection = '';
+if (co && PJ) {
+  const b = co.headline;
+  const CH = A.channels, CV = A.lending?.cover;
+  const peak26 = CH?.marks.find(m => m.label === '2026 신용 고점');
+  const p21 = CH?.marks.find(m => m.label === '2021 신용 고점');
+  const levDeclinePct = peak26 ? (CH.last.totalLevJo / peak26.totalLevJo - 1) * 100 : null;
+  const creditDeclinePct = peak26 ? (CH.last.creditJo / peak26.creditJo - 1) * 100 : null;
+  const at5000 = PJ.scenarioRemain.find(s => s.idx <= 5000)?.extraJo ?? 0;
+  const baseRatioBench = CV?.benches.find(x => x.key === 'baseRatio');
+
+  const li = (head, body) => `<li><b>${head}</b> — ${body}</li>`;
+
+  const downList = [
+    li(`지수는 ${f(b.idxDrawdownPct, 1)}% 빠졌는데 신용은 ${f(b.unwindPct, 1)}%만 청산됐다`,
+      `겉보기로는 잔여가 크다. 2021 사이클 청산률(${f(ca.headline.unwindPct, 1)}%)을 그대로 대입하면 ${f(PJ.benches.find(x => x.key === 'unwindRate')?.remainJo)}조가 더 남는다.`),
+    li('그런데 레버리지 강도가 그때와 다르다',
+      `신용/시총은 현재 <b>${f(PJ.currentRatio?.ratio, 3)}%</b>로 <b>2023년 저점 ${f(PJ.prevTroughRatio?.ratio, 3)}%보다 이미 낮다</b>.
+       "2022년처럼 풀려야 한다"는 전제 자체가 이 사이클에는 그대로 적용되지 않는다.`),
+    li('남은 위험은 시간이 아니라 지수 경로다',
+      `마진콜 모델 기준 현재 지수에서 새로 열리는 물량은 없다. 코스피가 5,000p 밑으로 마감해야 +${f(at5000)}조가 새로 마진콜 구간에 들어온다.`),
+    CH ? li(`사각지대 — 사다리가 안 세는 레버리지 ${f(CH.last.pledgeJo)}조`,
+      `예탁증권담보융자는 청산 트리거가 공표되지 않아 마진콜 모델에서 빠져 있다.
+       신용융자만 ${f(creditDeclinePct, 1)}% 풀렸고, 둘을 합친 총 레버리지는 <b>${f(levDeclinePct, 1)}%</b>만 줄었다.`) : '',
+    CH ? li('대신 실탄은 2021년보다 두껍다',
+      `예탁금 커버리지 ${f(CH.last.coverage)}배(역대 ${f(CH.pct, 0)}백분위). 2021년 신용 고점 당시 ${f(p21?.coverage)}배였다.`) : '',
+  ].filter(Boolean).join('');
+
+  const upList = CV ? [
+    li(`이미 ${f(CV.coveredJo)}조가 되갚아졌다`,
+      `대차잔고 고점의 ${f(CV.coveredPctOfPeak, 1)}%. 오늘 하루 거래대금의 ${f(CV.coveredEquivDays, 1)}배에 해당하는 매수가 이미 지나갔다.`),
+    li('비율로 보면 되돌림은 이미 끝났다',
+      `대차잔고/시총 <b>${f(CV.nowRatio)}%</b>는 직전 사이클 저점 <b>${f(CV.prevTroughRatio)}%</b>보다 낮다.
+       비율 기준 벤치마크 두 개가 모두 '소진'으로 나온다.`),
+    baseRatioBench ? li(`현실적 상단은 ${f(baseRatioBench.remainJo)}조`,
+      `시총 성장을 감안한 복귀 목표 기준. 하루 거래대금의 ${f(baseRatioBench.equivDays, 2)}배 규모다.
+       절대 잔고 복귀(${f(CV.benches.find(x => x.key === 'cycleBase')?.remainJo)}조)는 시총이 그 사이 배로 커진 것을 무시하는 계산이라 과대추정이다.`) : '',
+    li('아직 숏커버 랠리는 아니다',
+      `잔고 고점 이후 숏커버형(지수↑ 잔고↓) 날은 ${A.lending.dayClass.coverType}일뿐이고 전부 급락 시작 전이다. 나머지는 지수·잔고 동반 청산이었다.`),
+    li('지수 상승폭으로 환산하지 않는다',
+      '매수 물량 몇 조가 지수 몇 %가 되는지는 이 데이터로 알 수 없다. 대차잔고 감소 전부가 숏커버도 아니다(ETF 환매·차익거래 포함).'),
+  ].filter(Boolean).join('') : '';
+
+  summarySection = `<section class="summary">
+<h2>핵심 요약</h2>
+<p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
+
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
+    신용/시총도, 대차잔고/시총도 직전 사이클 저점보다 낮다.
+    남은 하락 위험과 남은 상승 여력 둘 다 "시간이 지나면 나올 물량"이 아니라 <b>지수가 어디로 가느냐</b>에 달려 있다.</div>
+</div>
+
+<div class="tables">
+  <div class="sumcol c-down">
+    <h4><span class="pill pd">PART 1</span> 얼마나 더 하락할 수 있나 — 신용잔고</h4>
+    <ul class="find">${downList}</ul>
+  </div>
+  ${upList ? `<div class="sumcol c-up">
+    <h4><span class="pill pu">PART 2</span> 얼마나 더 상승할 수 있나 — 공매도·숏커버링</h4>
+    <ul class="find">${upList}</ul>
+  </div>` : ''}
+</div>
+
+${A.spot ? `<div class="box warn">
+  <b>반등은 이미 터진 물량을 되돌리지 않는다</b> — FREESIS 최종 공표일 ${dtFull(A.spot.baseDate)} ${k0(A.spot.baseIdx)}p 대비
+  ${dtFull(A.spot.date)} ${k0(A.spot.idx)}p(${A.spot.changePct >= 0 ? '+' : ''}${f(A.spot.changePct, 2)}%).
+  마진콜 판정은 그날까지의 <b>최저 지수</b> 기준이라, 지수가 되돌아와도 이미 청산된 신용은 돌아오지 않는다.
+  반등이 막는 것은 <b>추가</b> 청산뿐이다.
+</div>` : ''}
+
+<p class="lead" style="margin-top:14px">아래 탭에서 각 결론의 계산 근거를 볼 수 있다.
+전제·한계는 <code>docs/methodology.md</code> §1~20에 전부 적어 두었다.</p>
+</section>`;
+}
+
 /* ---------- 문서 조립 ---------- */
 
 const stressRows = A.stress.slice(-14).map(s => `<tr><td>${dtFull(s.date)}</td>
@@ -1027,6 +1098,23 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .kicker { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--mut); }
   h1 { font-size:24px; margin:6px 0 4px; letter-spacing:-.4px; }
   .sub { color:var(--mut); font-size:13px; }
+  /* 핵심 요약 */
+  .summary { margin-top:20px; border-top:none; }
+  .verdict { border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:0 8px 8px 0;
+    padding:12px 15px; margin:12px 0 4px; background:var(--band); }
+  .verdict .vl { font-size:11px; letter-spacing:1.5px; color:var(--mut); text-transform:uppercase; }
+  .verdict .vt { font-size:14px; margin-top:3px; }
+  .sumcol { border:1px solid var(--line); border-radius:8px; padding:13px 15px 6px; }
+  .sumcol h4 { font-size:13px; color:var(--fg); margin-bottom:4px; }
+  .sumcol ul.find { padding-left:17px; }
+  .sumcol ul.find li { font-size:12.5px; margin:9px 0; color:var(--mut); }
+  .sumcol ul.find li b { color:var(--fg); }
+  .c-down { border-top:3px solid var(--cr); }
+  .c-up { border-top:3px solid var(--kq); }
+  .pill { display:inline-block; font-size:9.5px; letter-spacing:1.5px; padding:2px 6px; border-radius:4px;
+    color:#fff; vertical-align:2px; margin-right:5px; font-weight:600; }
+  .pill.pd { background:var(--cr); } .pill.pu { background:var(--kq); }
+
   /* 탭: 라디오 + 형제 선택자만 쓴다. JS 없이 file:// 에서도 그대로 동작한다. */
   .tabin { position:absolute; opacity:0; pointer-events:none; }
   .tabs { display:flex; gap:8px; margin:18px 0 0; border-bottom:1px solid var(--line); }
@@ -1146,9 +1234,9 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
     ${A.meta.hasSplit ? '유가증권/코스닥 분리 적용' : '시장 합계 기준'}</div>
 </header>
 
-${spotBanner}
-
 ${splitBox}
+
+${summarySection}
 
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">

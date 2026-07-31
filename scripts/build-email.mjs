@@ -571,6 +571,73 @@ const reproRows = A.repro.map(r => [
   `<span style="color:${Math.abs(r.diff) > 0.1 ? C.part : C.mut};">${r.diff >= 0 ? '+' : ''}${f(r.diff)}</span>`,
 ]);
 
+/* ---------- 핵심 요약 (implications) ---------- */
+// 메일은 스크롤이 길어 아래까지 안 읽는다. 결론은 맨 위에 둔다.
+// 숫자는 index.html 의 같은 섹션과 동일한 계산에서 나온다.
+
+let summaryHtml = '';
+if (co && PJ) {
+  const b = co.headline;
+  const CH = A.channels, CV = A.lending?.cover;
+  const peak26 = CH?.marks.find(m => m.label === '2026 신용 고점');
+  const p21 = CH?.marks.find(m => m.label === '2021 신용 고점');
+  const levDeclinePct = peak26 ? (CH.last.totalLevJo / peak26.totalLevJo - 1) * 100 : null;
+  const creditDeclinePct = peak26 ? (CH.last.creditJo / peak26.creditJo - 1) * 100 : null;
+  const at5000 = PJ.scenarioRemain.find(s => s.idx <= 5000)?.extraJo ?? 0;
+  const baseRatioBench = CV?.benches.find(x => x.key === 'baseRatio');
+
+  // 불릿은 표 셀로 그린다. <ul> 은 메일 클라이언트마다 들여쓰기가 제각각이다.
+  const bullets = items => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="table-layout:fixed;">
+    ${items.filter(Boolean).map(([h, t]) => `<tr>
+      <td width="10" valign="top" style="${FONT}font-size:12.5px;color:${C.mut};padding:4px 0 0;">&bull;</td>
+      <td style="${FONT}font-size:12.5px;color:${C.mut};padding:4px 0 4px 6px;line-height:1.6;">
+        <b style="color:${C.fg};">${h}</b> — ${t}</td>
+    </tr>`).join('')}
+  </table>`;
+
+  const downBullets = bullets([
+    [`지수는 ${f(b.idxDrawdownPct, 1)}% 빠졌는데 신용은 ${f(b.unwindPct, 1)}%만 청산됐다`,
+      `2021 사이클 청산률(${f(ca.headline.unwindPct, 1)}%)을 대입하면 ${f(PJ.benches.find(x => x.key === 'unwindRate')?.remainJo)}조가 더 남는다.`],
+    ['그런데 레버리지 강도가 그때와 다르다',
+      `신용/시총은 현재 <b>${f(PJ.currentRatio?.ratio, 3)}%</b>로 2023년 저점 ${f(PJ.prevTroughRatio?.ratio, 3)}%보다 이미 낮다.`],
+    ['남은 위험은 시간이 아니라 지수 경로다',
+      `현재 지수에서 새로 열리는 물량은 없다. 5,000p 밑으로 마감해야 +${f(at5000)}조가 마진콜 구간에 들어온다.`],
+    CH && [`사각지대 — 사다리가 안 세는 레버리지 ${f(CH.last.pledgeJo)}조`,
+      `예탁증권담보융자는 청산 트리거 미공표. 신용융자만 ${f(creditDeclinePct, 1)}% 풀렸고 총 레버리지는 <b>${f(levDeclinePct, 1)}%</b>만 줄었다.`],
+    CH && ['대신 실탄은 2021년보다 두껍다',
+      `예탁금 커버리지 ${f(CH.last.coverage)}배(역대 ${f(CH.pct, 0)}백분위). 2021년 신용 고점 당시 ${f(p21?.coverage)}배.`],
+  ]);
+
+  const upBullets = CV ? bullets([
+    [`이미 ${f(CV.coveredJo)}조가 되갚아졌다`,
+      `대차잔고 고점의 ${f(CV.coveredPctOfPeak, 1)}%, 하루 거래대금의 ${f(CV.coveredEquivDays, 1)}배.`],
+    ['비율로 보면 되돌림은 이미 끝났다',
+      `대차잔고/시총 <b>${f(CV.nowRatio)}%</b>는 직전 사이클 저점 ${f(CV.prevTroughRatio)}%보다 낮다.`],
+    baseRatioBench && [`현실적 상단은 ${f(baseRatioBench.remainJo)}조`,
+      `하루 거래대금의 ${f(baseRatioBench.equivDays, 2)}배. 절대 잔고 복귀(${f(CV.benches.find(x => x.key === 'cycleBase')?.remainJo)}조)는 시총 성장을 무시한 과대추정.`],
+    ['아직 숏커버 랠리는 아니다',
+      `잔고 고점 이후 숏커버형(지수↑ 잔고↓) 날은 ${A.lending.dayClass.coverType}일뿐이고 전부 급락 시작 전이다.`],
+    ['지수 상승폭으로 환산하지 않는다',
+      '매수 물량과 지수 변화의 매핑 근거가 이 데이터에 없다. 대차잔고 감소 전부가 숏커버도 아니다.'],
+  ]) : '';
+
+  summaryHtml = `
+${sectionTitle('핵심 요약')}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-left:4px solid ${C.acc};border-radius:0 8px 8px 0;margin:8px 0 14px;">
+  <tr><td bgcolor="${C.band}" style="padding:12px 15px;">
+    <div style="${FONT}font-size:10.5px;letter-spacing:1.5px;color:${C.mut};">한 줄 판정</div>
+    <div style="${FONT}font-size:13.5px;color:${C.fg};line-height:1.6;margin-top:3px;">
+      양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
+      신용/시총도, 대차잔고/시총도 직전 사이클 저점보다 낮다.
+      남은 하락 위험과 남은 상승 여력 둘 다 "시간이 지나면 나올 물량"이 아니라 <b>지수가 어디로 가느냐</b>에 달려 있다.</div>
+  </td></tr>
+</table>
+${subTitle('PART 1 — 얼마나 더 하락할 수 있나 (신용잔고)')}
+${downBullets}
+${upBullets ? `${subTitle('PART 2 — 얼마나 더 상승할 수 있나 (공매도·숏커버링)')}\n${upBullets}` : ''}
+`;
+}
+
 /* ---------- 문서 조립 ---------- */
 
 const hasSplit = A.meta.hasSplit;
@@ -602,6 +669,7 @@ const body = `
 
   ${spotNote}
   ${splitNote}
+  ${summaryHtml}
 
   ${partTitle(1, '신용잔고', '얼마나 더 하락할 수 있나 — 반대매매 잔여', C.cr)}
   ${compareHtml}
