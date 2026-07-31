@@ -329,6 +329,23 @@ node scripts/build-email.mjs    # 메일 클라이언트용 리포트           
 인쇄할 때는 두 탭이 모두 펼쳐진다. 메일에는 탭이 없으므로 `email.html` 은 PART 1 / PART 2 머리말로 나눈다.
 배분·판정 로직은 `scripts/lib/buckets.mjs` 에 모여 있어 사이클과 시장에 상관없이 같은 코드를 쓴다.
 
+### 9.0 자동 갱신
+
+`.github/workflows/update.yml` 이 평일 19:30 KST(장 마감 후)와 다음날 08:30 KST 에
+위 파이프라인을 그대로 돌린다. `workflow_dispatch` 로 수동 실행도 된다.
+
+두 가지가 이 워크플로의 핵심이다.
+
+- **selfcheck 가 게이트다.** `analyze.mjs` 다음에 `selfcheck.mjs` 가 실패하면 커밋도 push 도 하지 않는다.
+  계산이 조용히 깨진 채 배포되는 경로를 막는다.
+- **바뀐 게 있을 때만 커밋한다.** `git status --porcelain` 이 비면 그냥 끝낸다.
+  이걸 성립시키려고 `fetch-kofia.mjs` 의 `fetchedRange` 를 '요청 종료일'이 아니라
+  '실제 데이터 범위'로 바꿨다 — 요청 종료일을 적으면 새 데이터가 없는 날에도 파일이 매일 달라져
+  빈 커밋이 쌓인다.
+
+대차거래추이(§16.2)만 자동화 밖이다. xlsx 를 받아 `data/` 에 커밋하면
+다음 실행부터 `ingest-lending.mjs` 단계가 자동으로 반영한다.
+
 ### 9.1 조회 종료일은 '오늘'이다
 
 두 `fetch-*` 의 종료일 기본값은 처음엔 날짜 상수(`'20260729'`)로 박혀 있었다. 그 상태로 다음 날 그냥 다시 돌렸더니

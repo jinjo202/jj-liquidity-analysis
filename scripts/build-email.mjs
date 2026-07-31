@@ -621,8 +621,29 @@ if (co && PJ) {
       '매수 물량과 지수 변화의 매핑 근거가 이 데이터에 없다. 대차잔고 감소 전부가 숏커버도 아니다.'],
   ]) : '';
 
+  // 전일 대비 변화 — 매일 오는 메일이라면 여기가 첫 화면이다.
+  const D = A.daily;
+  const deltaTable = D ? table(
+    [{ label: '지표' }, { label: '값', n: true }, { label: '전일 대비', n: true }, { label: '기준일' }],
+    D.items.map(it => {
+      const up = it.delta >= 0;
+      const col = up ? C.cr : C.acc;
+      return [
+        esc(it.label),
+        `${f(it.value)}${esc(it.unit)}`,
+        `<span style="color:${col};">${up ? '▲' : '▼'} ${f(Math.abs(it.delta))} (${up ? '+' : '-'}${f(Math.abs(it.pct), 2)}%)</span>`,
+        dtFull(it.date),
+      ];
+    })
+  ) : '';
+  const freshLine = D ? `<div style="${FONT}font-size:11px;color:${C.mut};margin:-6px 0 12px;line-height:1.6;">
+    데이터 최신일 — ${D.freshness.map(x => `${esc(x.label)} ${dtFull(x.date)}${x.live ? '(장중 갱신)' : ''}`).join(' · ')}<br>
+    계열마다 공표 시차가 다르다: 지수 T+1, 신용융자는 결제일 기준이라 하루 더 늦다.</div>` : '';
+
   summaryHtml = `
 ${sectionTitle('핵심 요약')}
+${deltaTable}
+${freshLine}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-left:4px solid ${C.acc};border-radius:0 8px 8px 0;margin:8px 0 14px;">
   <tr><td bgcolor="${C.band}" style="padding:12px 15px;">
     <div style="${FONT}font-size:10.5px;letter-spacing:1.5px;color:${C.mut};">한 줄 판정</div>

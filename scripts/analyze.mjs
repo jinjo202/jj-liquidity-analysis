@@ -499,11 +499,13 @@ const unpaid = unpaidLead();
 // 장중에 돌리면 마지막 행은 '종가'가 아니라 진행 중인 값이므로 그렇게 표시한다.
 let spot = null;
 let crossCheckRows = null;
+let spotSource = null;                 // 네이버 계열의 마지막 행(FREESIS 보다 빠르든 아니든)
 const kospiPath = path.join(DIR, 'kospi-daily.json');
 if (fs.existsSync(kospiPath)) {
   const kd = JSON.parse(fs.readFileSync(kospiPath, 'utf8'));
   crossCheckRows = kd.length;
   const l = kd.at(-1);
+  spotSource = l ? { date: l.date, idx: l.close } : null;
   if (l && l.date > lastDate) {
     const base = raw.series.filter(r => Number.isFinite(r.OS0001)).at(-1);
     spot = {
@@ -515,13 +517,64 @@ if (fs.existsSync(kospiPath)) {
   }
 }
 
+/* ---------- 전일 대비 변화 + 데이터 신선도 ---------- */
+// 자동 갱신을 걸어두면 리포트를 매일 열게 된다. 그때 제일 먼저 알고 싶은 것은
+// "어제와 뭐가 달라졌나"와 "이 숫자가 며칠 전 것인가"다.
+// 계열마다 공표 시차가 달라서(지수 T+1, 신용융자 결제일 기준 T+2, 대차 T+1) 각각 표시한다.
+function dailyDelta() {
+  const pick = (field, scale = 1) => {
+    const rows = raw.series.filter(r => Number.isFinite(r[field]));
+    if (rows.length < 2) return null;
+    const [prev, last] = [rows.at(-2), rows.at(-1)];
+    const v = r => r[field] / scale;
+    return {
+      date: last.date, prevDate: prev.date,
+      value: v(last), prev: v(prev),
+      delta: v(last) - v(prev),
+      pct: prev[field] ? (v(last) / v(prev) - 1) * 100 : null,
+    };
+  };
+
+  const items = [
+    { key: 'idx', label: '코스피', unit: 'p', ...pick('OS0001') },
+    { key: 'kosdaq', label: '코스닥', unit: 'p', ...pick('OS0002') },
+    { key: 'credit', label: '신용융자', unit: '조', ...pick('OS0026', 1e6) },
+    { key: 'deposit', label: '투자자예탁금', unit: '조', ...pick('OS0021', 1e6) },
+    { key: 'unpaid', label: '위탁매매미수금', unit: '조', ...pick('OS0024', 1e6) },
+  ].filter(x => x.date);
+
+  if (lending) {
+    const s = lending.series;
+    if (s.length >= 2) {
+      const [p, l] = [s.at(-2), s.at(-1)];
+      items.push({
+        key: 'lending', label: '대차잔고', unit: '조',
+        date: l.d, prevDate: p.d, value: l.bal, prev: p.bal,
+        delta: l.bal - p.bal, pct: (l.bal / p.bal - 1) * 100,
+      });
+    }
+  }
+
+  // 계열별 최신 관측일. 가장 늦은 계열이 리포트 전체의 '기준일'이 된다.
+  const freshness = [
+    { label: '지수·거래대금', date: raw.series.filter(r => Number.isFinite(r.OS0001)).at(-1)?.date },
+    { label: '신용융자·예탁금', date: raw.series.filter(r => Number.isFinite(r.OS0026)).at(-1)?.date },
+    lending && { label: '대차잔고', date: lending.last.date },
+    spotSource && { label: '교차검증 지수(네이버)', date: spotSource.date, live: true },
+  ].filter(x => x && x.date);
+
+  return { items, freshness };
+}
+
+const daily = dailyDelta();
+
 const out = {
   meta: {
     maintenance: MAINTENANCE, loanRatio: LOAN_RATIO, marginFactor: factorOf(),
     hasSplit: !!split, markets: Object.keys(inputs), crossCheckRows,
     source: raw.meta, splitSource: split?.meta ?? null,
   },
-  periods, repro, reproMAE, stress, projection, monthly, lending, channels, unpaid, spot,
+  periods, repro, reproMAE, stress, projection, monthly, lending, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   series: raw.series
     .filter(r => Number.isFinite(r.OS0001))
@@ -686,6 +739,16 @@ if (spot) {
   console.log(`\n${'#'.repeat(66)}\n# 교차검증 소스 최신 지수`);
   console.log(`  FREESIS 최종 ${k0(spot.baseIdx)}p (${spot.baseDate})  ->  네이버 ${k0(spot.idx)}p (${spot.date})  ${f(spot.changePct, 2)}%`);
   console.log(`  ${spot.note}`);
+}
+
+if (daily) {
+  console.log(`\n${'#'.repeat(66)}\n# 전일 대비 변화`);
+  for (const it of daily.items) {
+    const sign = it.delta >= 0 ? '+' : '';
+    console.log(`  ${it.label.padEnd(14)} ${f(it.value).padStart(10)}${it.unit}`
+      + `  ${sign}${f(it.delta)}${it.unit} (${sign}${f(it.pct, 2)}%)  ${it.prevDate}->${it.date}`);
+  }
+  console.log('\n  데이터 최신일: ' + daily.freshness.map(x => `${x.label} ${x.date}${x.live ? '(장중 가능)' : ''}`).join(' / '));
 }
 
 console.log(`\n원 자료 재현 (전체, 2026 연초 대비, 7.27 기준) 평균 절대오차 ${f(reproMAE, 3)}조`);

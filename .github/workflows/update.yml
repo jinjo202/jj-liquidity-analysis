@@ -1,0 +1,70 @@
+name: Update reports
+
+# 데이터를 받아 리포트를 다시 굽고, 실제로 바뀐 게 있을 때만 커밋한다.
+# push 되면 Vercel 이 자동으로 재배포한다.
+on:
+  schedule:
+    # UTC 기준. 한국시간 = UTC+9.
+    - cron: '30 10 * * 1-5'   # 19:30 KST — 장 마감(15:30) 후 EOD 공표분
+    - cron: '30 23 * * 0-4'   # 08:30 KST 다음날 — 늦게 확정되는 계열 재확인
+  workflow_dispatch:           # Actions 탭에서 수동 실행
+
+concurrency:
+  group: update-reports
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # 외부 패키지가 없으므로 install 단계가 없다.
+      - name: Fetch
+        run: |
+          node scripts/fetch-kospi.mjs
+          node scripts/fetch-kofia.mjs
+
+      # 대차거래추이·신용공여 분리는 API 경로가 없어 커밋된 xlsx 를 그대로 쓴다
+      # (docs/methodology.md §8, §16.2). 파일이 갱신되면 이 단계가 자동으로 반영한다.
+      - name: Re-ingest xlsx (if present)
+        run: |
+          node scripts/ingest-split.mjs   || echo "분리 계열 xlsx 없음 — 건너뜀"
+          node scripts/ingest-lending.mjs || echo "대차거래 xlsx 없음 — 건너뜀"
+
+      - name: Analyze
+        run: node scripts/analyze.mjs
+
+      # 계산이 조용히 깨진 채로 배포되지 않게 한다. 실패하면 커밋도 push 도 하지 않는다.
+      - name: Selfcheck
+        run: node scripts/selfcheck.mjs
+
+      - name: Build
+        run: |
+          node scripts/build.mjs
+          node scripts/build-email.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "변경 없음 — 새 데이터가 아직 공표되지 않았다. 커밋 생략."
+            exit 0
+          fi
+          LAST=$(node -e "console.log(require('./data/analysis.json').series.at(-1).d)")
+          git add -A
+          git commit -m "Update reports through ${LAST}"
+          git push
+
+      - name: Summary
+        if: always()
+        run: node -e "const a=require('./data/analysis.json');console.log('## 데이터 최신일');for(const x of (a.daily&&a.daily.freshness)||[])console.log('- '+x.label+': '+x.date);" >> "$GITHUB_STEP_SUMMARY"

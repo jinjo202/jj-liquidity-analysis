@@ -26,6 +26,18 @@
   .sub { color:var(--mut); font-size:13px; }
   /* 핵심 요약 */
   .summary { margin-top:20px; border-top:none; }
+  .deltas { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; margin:12px 0 8px; }
+  .dcell { border:1px solid var(--line); border-radius:7px; padding:8px 11px; }
+  .dcell .dl { font-size:11px; color:var(--mut); }
+  .dcell .dv { font-size:17px; font-variant-numeric:tabular-nums; letter-spacing:-.4px; }
+  .dcell .dv .u { font-size:11px; color:var(--mut); margin-left:1px; }
+  .dcell .dd { font-size:11.5px; font-variant-numeric:tabular-nums; }
+  .dcell .dd.up { color:var(--cr); } .dcell .dd.dn { color:var(--acc); }
+  .dcell .dt { font-size:10px; color:var(--mut); }
+  .fresh { font-size:11px; color:var(--mut); margin-bottom:6px; }
+  .fresh span { margin-right:12px; white-space:nowrap; }
+  .fresh span.fn { display:block; margin-top:3px; white-space:normal; }
+  .fresh i { font-style:normal; color:var(--part); }
   .verdict { border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:0 8px 8px 0;
     padding:12px 15px; margin:12px 0 4px; background:var(--band); }
   .verdict .vl { font-size:11px; letter-spacing:1.5px; color:var(--mut); text-transform:uppercase; }
@@ -166,6 +178,44 @@
 <h2>핵심 요약</h2>
 <p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
 
+<div class="deltas">
+  <div class="dcell">
+      <div class="dl">코스피</div>
+      <div class="dv">5593.56<span class="u">p</span></div>
+      <div class="dd dn">▼ 69.68 (-1.23%)</div>
+      <div class="dt">2026.07.30</div>
+    </div><div class="dcell">
+      <div class="dl">코스닥</div>
+      <div class="dv">644.78<span class="u">p</span></div>
+      <div class="dd dn">▼ 17.90 (-2.70%)</div>
+      <div class="dt">2026.07.30</div>
+    </div><div class="dcell">
+      <div class="dl">신용융자</div>
+      <div class="dv">33.00<span class="u">조</span></div>
+      <div class="dd dn">▼ 0.20 (-0.60%)</div>
+      <div class="dt">2026.07.29</div>
+    </div><div class="dcell">
+      <div class="dl">투자자예탁금</div>
+      <div class="dv">109.59<span class="u">조</span></div>
+      <div class="dd up">▲ 2.39 (+2.23%)</div>
+      <div class="dt">2026.07.29</div>
+    </div><div class="dcell">
+      <div class="dl">위탁매매미수금</div>
+      <div class="dv">1.20<span class="u">조</span></div>
+      <div class="dd dn">▼ 0.02 (-1.94%)</div>
+      <div class="dt">2026.07.29</div>
+    </div><div class="dcell">
+      <div class="dl">대차잔고</div>
+      <div class="dv">133.41<span class="u">조</span></div>
+      <div class="dd dn">▼ 1.22 (-0.91%)</div>
+      <div class="dt">2026.07.30</div>
+    </div>
+</div>
+<div class="fresh">데이터 최신일 —
+  <span><b>지수·거래대금</b> 2026.07.30</span><span><b>신용융자·예탁금</b> 2026.07.29</span><span><b>대차잔고</b> 2026.07.30</span><span><b>교차검증 지수(네이버)</b> 2026.07.31 <i>(장중 갱신)</i></span>
+  <span class="fn">계열마다 공표 시차가 다르다: 지수 T+1, 신용융자는 결제일 기준이라 하루 더 늦다.</span>
+</div>
+
 <div class="verdict">
   <div class="vl">한 줄 판정</div>
   <div class="vt">양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
@@ -190,7 +240,7 @@
 
 <div class="box warn">
   <b>반등은 이미 터진 물량을 되돌리지 않는다</b> — FREESIS 최종 공표일 2026.07.30 5,594p 대비
-  2026.07.31 6,361p(+13.73%).
+  2026.07.31 6,504p(+16.28%).
   마진콜 판정은 그날까지의 <b>최저 지수</b> 기준이라, 지수가 되돌아와도 이미 청산된 신용은 돌아오지 않는다.
   반등이 막는 것은 <b>추가</b> 청산뿐이다.
 </div>

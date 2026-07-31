@@ -106,7 +106,9 @@ fs.writeFileSync(OUT, JSON.stringify({
     indicators: Object.fromEntries(
       Object.entries(INDICATORS).map(([c, [nm, , unit]]) => [c, { name: nm, unit }])),
     note: '신용융자는 유가증권+코스닥 합계이며 결제일 기준. 2007.7.2 이후 ETF 신용공여 포함.',
-    fetchedRange: `${START_YEAR}0101~${END}`,
+    // 요청 종료일(END)이 아니라 실제로 받아진 데이터의 범위를 적는다.
+    // END 를 적으면 새 데이터가 없는 날에도 파일이 매일 바뀌어, 자동 갱신이 빈 커밋을 만든다.
+    fetchedRange: `${series[0].date}~${series.at(-1).date}`,
   },
   series,
 }, null, 0));

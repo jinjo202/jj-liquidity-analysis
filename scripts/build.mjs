@@ -1019,9 +1019,30 @@ if (co && PJ) {
       '매수 물량 몇 조가 지수 몇 %가 되는지는 이 데이터로 알 수 없다. 대차잔고 감소 전부가 숏커버도 아니다(ETF 환매·차익거래 포함).'),
   ].filter(Boolean).join('') : '';
 
+  // 전일 대비 변화 스트립 + 계열별 최신 관측일. 매일 열어보는 리포트라면 여기가 첫 화면이다.
+  const D = A.daily;
+  const deltaStrip = D ? `<div class="deltas">
+  ${D.items.map(it => {
+    const up = it.delta >= 0;
+    const dg = it.unit === 'p' ? 2 : 2;
+    return `<div class="dcell">
+      <div class="dl">${esc(it.label)}</div>
+      <div class="dv">${f(it.value, dg)}<span class="u">${esc(it.unit)}</span></div>
+      <div class="dd ${up ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${f(Math.abs(it.delta), dg)} (${up ? '+' : '-'}${f(Math.abs(it.pct), 2)}%)</div>
+      <div class="dt">${dtFull(it.date)}</div>
+    </div>`;
+  }).join('')}
+</div>
+<div class="fresh">데이터 최신일 —
+  ${D.freshness.map(x => `<span><b>${esc(x.label)}</b> ${dtFull(x.date)}${x.live ? ' <i>(장중 갱신)</i>' : ''}</span>`).join('')}
+  <span class="fn">계열마다 공표 시차가 다르다: 지수 T+1, 신용융자는 결제일 기준이라 하루 더 늦다.</span>
+</div>` : '';
+
   summarySection = `<section class="summary">
 <h2>핵심 요약</h2>
 <p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
+
+${deltaStrip}
 
 <div class="verdict">
   <div class="vl">한 줄 판정</div>
@@ -1100,6 +1121,18 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .sub { color:var(--mut); font-size:13px; }
   /* 핵심 요약 */
   .summary { margin-top:20px; border-top:none; }
+  .deltas { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; margin:12px 0 8px; }
+  .dcell { border:1px solid var(--line); border-radius:7px; padding:8px 11px; }
+  .dcell .dl { font-size:11px; color:var(--mut); }
+  .dcell .dv { font-size:17px; font-variant-numeric:tabular-nums; letter-spacing:-.4px; }
+  .dcell .dv .u { font-size:11px; color:var(--mut); margin-left:1px; }
+  .dcell .dd { font-size:11.5px; font-variant-numeric:tabular-nums; }
+  .dcell .dd.up { color:var(--cr); } .dcell .dd.dn { color:var(--acc); }
+  .dcell .dt { font-size:10px; color:var(--mut); }
+  .fresh { font-size:11px; color:var(--mut); margin-bottom:6px; }
+  .fresh span { margin-right:12px; white-space:nowrap; }
+  .fresh span.fn { display:block; margin-top:3px; white-space:normal; }
+  .fresh i { font-style:normal; color:var(--part); }
   .verdict { border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:0 8px 8px 0;
     padding:12px 15px; margin:12px 0 4px; background:var(--band); }
   .verdict .vl { font-size:11px; letter-spacing:1.5px; color:var(--mut); text-transform:uppercase; }
