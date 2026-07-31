@@ -41,7 +41,7 @@ jobs:
       - name: Fetch
         run: |
           ERR=""
-          node scripts/fetch-kospi.mjs   || ERR="$ERR kospi"
+          node scripts/fetch-index.mjs   || ERR="$ERR index"
           node scripts/fetch-kofia.mjs   || ERR="$ERR kofia"
           if ! node scripts/fetch-lending.mjs 2>"$RUNNER_TEMP/lending.err"; then
             ERR="$ERR lending"

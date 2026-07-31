@@ -301,7 +301,7 @@ Windows 내장 `tar.exe`(`%SystemRoot%\System32\tar.exe`, bsdtar 기반)는 zip�
 ## 9. 실행
 
 ```bash
-node scripts/fetch-kospi.mjs    # 네이버 금융 코스피 일별(교차검증용) -> data/kospi-daily.json
+node scripts/fetch-index.mjs    # 네이버 코스피·코스닥 일별(장중 최신)  -> data/{kospi,kosdaq}-daily.json
 node scripts/fetch-kofia.mjs    # 금투협 FREESIS 일별 11개 지표      -> data/kofia-daily.json
 node scripts/ingest-split.mjs   # (선택) 신용공여 분리 계열 xlsx     -> data/credit-split.json
 node scripts/fetch-lending.mjs  # 대차거래추이(공매도 프록시)         -> data/lending-balance.json
@@ -913,16 +913,16 @@ FREESIS 는 EOD 공표라 최신일이 하루 이상 늦다. 신용융자는 결
 | 지표 | 출처 | 공표 시차 |
 |---|---|---|
 | 코스피 | 네이버 금융(최신) / FREESIS(확정) | 장중 갱신 |
-| 코스닥 | FREESIS OS0002 | T+1 |
+| 코스닥 | 네이버 금융(최신) / FREESIS(확정) | 장중 갱신 |
 | 신용융자 | FREESIS OS0026 | 결제일 기준, T+2 |
 | 투자자예탁금 | FREESIS OS0021 | T+2 |
 | 위탁매매미수금 | FREESIS OS0024 | T+2 |
 | 대차잔고 | FREESIS 대차거래추이 | T+1 |
 
-### 21.1 코스피만 출처가 둘인 이유
+### 21.1 지수 둘만 출처가 둘인 이유
 
 FREESIS 는 EOD 공표라 하루 늦고, 신용융자는 결제일 기준이라 또 하루 늦는다(§7.2).
-지수만은 네이버 계열이 더 빠르므로, 네이버 값이 FREESIS 보다 최신이면 그 값을 쓰고
+지수(코스피·코스닥)만은 네이버 계열이 더 빠르므로, 네이버 값이 FREESIS 보다 최신이면 그 값을 쓰고
 `장중` 배지와 출처를 함께 표시한다. **본문의 모든 계산은 여전히 FREESIS 확정일 기준이다**(§19) —
 스트립은 현황 표시이지 계산 입력이 아니다.
 

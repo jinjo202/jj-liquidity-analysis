@@ -20,7 +20,7 @@ Node.js 18+ (외부 패키지 없음, `npm install` 불필요). `fetch`·`zlib` 
 ## 실행
 
 ```bash
-node scripts/fetch-kospi.mjs    # 네이버 금융 코스피 일별(교차검증용) -> data/kospi-daily.json
+node scripts/fetch-index.mjs    # 네이버 코스피·코스닥 일별(장중 최신)  -> data/{kospi,kosdaq}-daily.json
 node scripts/fetch-kofia.mjs    # 금투협 FREESIS 일별 11개 지표      -> data/kofia-daily.json
 node scripts/fetch-lending.mjs  # 금투협 대차거래추이(공매도 프록시)  -> data/lending-balance.json
 node scripts/analyze.mjs        # 사이클 x 시장 배분 + 마진콜 판정    -> data/analysis.json
@@ -57,7 +57,7 @@ node scripts/ingest-split.mjs    # 신용공여 잔고 추이.xlsx -> data/credi
 
 ```
 scripts/
-  fetch-kospi.mjs      네이버 금융 일별 시세(교차검증 + 장중 최신 지수)
+  fetch-index.mjs      네이버 코스피·코스닥 일별 시세(교차검증 + 장중 최신 지수)
   fetch-kofia.mjs      FREESIS 크로스통계 11개 지표
   ingest-split.mjs     신용공여 분리 계열 xlsx 파싱
   ingest-lending.mjs   대차거래추이 xlsx 파싱
@@ -142,7 +142,7 @@ node scripts/analyze.mjs && node scripts/selfcheck.mjs && node scripts/build.mjs
 - 신용융자·반대매매금액·위탁매매미수금·투자자예탁금·예탁증권담보융자, 코스피/코스닥 지수·시가총액·거래대금:
   금융투자협회 FREESIS 크로스통계 (일별, 2010-01-01~)
 - 유가증권/코스닥 분리 신용거래융자, 대차거래추이: FREESIS 통계 화면 xlsx
-- 코스피 종가 교차검증 및 장중 최신 지수: 네이버 금융
+- 코스피·코스닥 종가 교차검증 및 장중 최신 지수: 네이버 금융
 
 ## 주의
 

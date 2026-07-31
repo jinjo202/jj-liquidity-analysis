@@ -499,13 +499,22 @@ const unpaid = unpaidLead();
 // 장중에 돌리면 마지막 행은 '종가'가 아니라 진행 중인 값이므로 그렇게 표시한다.
 let spot = null;
 let crossCheckRows = null;
-let spotSource = null;                 // 네이버 계열의 마지막 행(FREESIS 보다 빠르든 아니든)
+// 네이버 계열의 마지막 행. FREESIS 보다 빠르든 아니든 담아 두고, 더 최신일 때만 쓴다.
+const spotSources = {};
+for (const [key, file] of [['kospi', 'kospi-daily.json'], ['kosdaq', 'kosdaq-daily.json']]) {
+  const p = path.join(DIR, file);
+  if (!fs.existsSync(p)) continue;
+  const rows = JSON.parse(fs.readFileSync(p, 'utf8'));
+  const l = rows.at(-1);
+  if (l) spotSources[key] = { date: l.date, idx: l.close, rows: rows.length };
+}
+const spotSource = spotSources.kospi ?? null;   // §19 배너는 코스피 기준이다
+
 const kospiPath = path.join(DIR, 'kospi-daily.json');
 if (fs.existsSync(kospiPath)) {
   const kd = JSON.parse(fs.readFileSync(kospiPath, 'utf8'));
   crossCheckRows = kd.length;
   const l = kd.at(-1);
-  spotSource = l ? { date: l.date, idx: l.close } : null;
   if (l && l.date > lastDate) {
     const base = raw.series.filter(r => Number.isFinite(r.OS0001)).at(-1);
     spot = {
@@ -551,20 +560,21 @@ function dailyDelta() {
     { key: 'unpaid', label: '위탁매매미수금', unit: '조', ...pick('OS0024', 1e6) },
   ].filter(x => x.date);
 
-  // 코스피는 FREESIS(EOD, T+1)보다 네이버가 하루 빠르다. 최신 값을 보여주되
+  // 지수 둘은 FREESIS(EOD, T+1)보다 네이버가 하루 빠르다. 최신 값을 보여주되
   // 어디서 온 값인지, 장중일 수 있는지를 같이 표시한다(§19).
-  const idxItem = items.find(x => x.key === 'idx');
-  if (idxItem && spotSource && spotSource.date > idxItem.date) {
-    const base = idxItem.value;
-    idxItem.prevDate = idxItem.date;
-    idxItem.prev = base;
-    idxItem.date = spotSource.date;
-    idxItem.value = spotSource.idx;
-    idxItem.delta = spotSource.idx - base;
-    idxItem.pct = (spotSource.idx / base - 1) * 100;
-    idxItem.live = true;
-    idxItem.source = '네이버 금융';
-    idxItem.series = [...idxItem.series, { d: spotSource.date, v: spotSource.idx }];
+  for (const [key, src] of [['idx', spotSources.kospi], ['kosdaq', spotSources.kosdaq]]) {
+    const item = items.find(x => x.key === key);
+    if (!item || !src || !(src.date > item.date)) continue;
+    const base = item.value;
+    item.prevDate = item.date;
+    item.prev = base;
+    item.date = src.date;
+    item.value = src.idx;
+    item.delta = src.idx - base;
+    item.pct = (src.idx / base - 1) * 100;
+    item.live = true;
+    item.source = '네이버 금융';
+    item.series = [...item.series, { d: src.date, v: src.idx }];
   }
 
   if (lending) {
@@ -585,7 +595,11 @@ function dailyDelta() {
     { label: '지수·거래대금', date: raw.series.filter(r => Number.isFinite(r.OS0001)).at(-1)?.date },
     { label: '신용융자·예탁금', date: raw.series.filter(r => Number.isFinite(r.OS0026)).at(-1)?.date },
     lending && { label: '대차잔고', date: lending.last.date },
-    spotSource && { label: '교차검증 지수(네이버)', date: spotSource.date, live: true },
+    Object.keys(spotSources).length && {
+      label: '지수 장중(네이버)',
+      date: Object.values(spotSources).map(s => s.date).sort().at(-1),
+      live: true,
+    },
   ].filter(x => x && x.date);
 
   return { items, freshness };
