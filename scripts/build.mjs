@@ -1120,6 +1120,48 @@ ${A.spot ? `<div class="box warn">
 </section>`;
 }
 
+/* ---------- 사이클별 상세 — 탭 ---------- */
+// 두 사이클을 세로로 이어 붙이면 어느 쪽 숫자를 보고 있는지 헷갈린다.
+// 바깥 탭(§9)과 같은 방식으로 라디오 + 형제 선택자만 쓴다. 스크립트 없음.
+// 진행 중인 사이클을 먼저, 기본 선택으로 둔다 — 그쪽을 보러 오기 때문이다.
+const orderedPeriods = [...A.periods].sort((a, b) => (a.closed ? 1 : 0) - (b.closed ? 1 : 0));
+
+const cycleTabs = orderedPeriods.length < 2
+  ? orderedPeriods.map(p => `<section>
+<h2>${esc(p.name)}</h2>
+<p class="lead">${esc(p.note)}</p>
+${Object.entries(p.markets).map(([nm, m]) => marketBlock(nm, m, p.closed)).join('\n')}
+</section>`).join('\n')
+  : `${orderedPeriods.map((p, i) => `<input type="radio" name="cyc" id="cyc-${p.key}" class="cycin"${i ? '' : ' checked'}>`).join('\n')}
+<nav class="tabs sub">
+  ${orderedPeriods.map(p => `<label for="cyc-${p.key}">
+    <i>${p.closed ? '완결 · 대조군' : '진행 중'}</i><b>${esc(p.name)}</b>
+    <span>지수 ${k0(p.markets['전체'].headline.idxPeak)} → ${k0(p.markets['전체'].headline.idxTrough)}p ·
+      신용 ${f(p.markets['전체'].headline.creditPeakJo)} → ${f(p.markets['전체'].headline.creditTroughJo)}조</span>
+  </label>`).join('\n')}
+</nav>
+${orderedPeriods.map(p => `<div class="cycpane cp-${p.key}">
+<section>
+<h2>${esc(p.name)}</h2>
+<p class="lead">${esc(p.note)} 적립 ${dtFull(p.accBase)}~${dtFull(p.accEnd)} · 청산 판정 ~${dtFull(p.evalEnd)}</p>
+${Object.entries(p.markets).map(([nm, m]) => marketBlock(nm, m, p.closed)).join('\n')}
+</section>
+</div>`).join('\n')}`;
+
+// 키가 데이터에서 오므로 선택자도 같이 만든다.
+const cycleCss = orderedPeriods.length < 2 ? '' : `
+  .cycin { position:absolute; opacity:0; pointer-events:none; }
+  .tabs.sub { margin-top:26px; }
+  .tabs.sub label b { font-size:13.5px; }
+  .cycpane { display:none; }
+  ${orderedPeriods.map(p => `#cyc-${p.key}:checked ~ .cp-${p.key} { display:block; }`).join('\n  ')}
+  ${orderedPeriods.map(p => `#cyc-${p.key}:checked ~ .tabs.sub label[for="cyc-${p.key}"] {
+    color:var(--fg); border-color:var(--line); background:var(--bg); border-bottom:1px solid var(--bg); }`).join('\n  ')}
+  ${orderedPeriods.map(p => `#cyc-${p.key}:checked ~ .tabs.sub label[for="cyc-${p.key}"] b { color:var(--${p.closed ? 'mut' : 'acc'}); }`).join('\n  ')}
+  ${orderedPeriods.map(p => `#cyc-${p.key}:focus-visible ~ .tabs.sub label[for="cyc-${p.key}"] { outline:2px solid var(--acc); outline-offset:2px; }`).join('\n  ')}
+  .cycpane > section:first-child { border-top:none; margin-top:0; }
+  @media print { .tabs.sub { display:none; } .cycpane { display:block !important; } }`;
+
 /* ---------- 문서 조립 ---------- */
 
 const stressRows = A.stress.slice(-14).map(s => `<tr><td>${dtFull(s.date)}</td>
@@ -1239,6 +1281,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
   @media print { .tabs { display:none; } .pane { display:block !important; } }
+${cycleCss}
 
   section { margin-top:32px; padding-top:8px; border-top:1px solid var(--line); }
   h2 { font-size:18px; margin:14px 0 6px; padding-left:9px; border-left:3px solid var(--acc); }
@@ -1362,11 +1405,7 @@ ${channelsSection}
 
 ${projSection}
 
-${A.periods.map((p, n) => `<section>
-<h2>${esc(p.name)}</h2>
-<p class="lead">${esc(p.note)} 적립 ${dtFull(p.accBase)}~${dtFull(p.accEnd)} · 청산 판정 ~${dtFull(p.evalEnd)}</p>
-${Object.entries(p.markets).map(([nm, m]) => marketBlock(nm, m, p.closed)).join('\n')}
-</section>`).join('\n')}
+${cycleTabs}
 
 <section>
 <h2>실측 스트레스 지표</h2>

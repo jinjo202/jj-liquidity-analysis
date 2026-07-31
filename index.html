@@ -99,6 +99,23 @@
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
   @media print { .tabs { display:none; } .pane { display:block !important; } }
 
+  .cycin { position:absolute; opacity:0; pointer-events:none; }
+  .tabs.sub { margin-top:26px; }
+  .tabs.sub label b { font-size:13.5px; }
+  .cycpane { display:none; }
+  #cyc-c2026:checked ~ .cp-c2026 { display:block; }
+  #cyc-c2021:checked ~ .cp-c2021 { display:block; }
+  #cyc-c2026:checked ~ .tabs.sub label[for="cyc-c2026"] {
+    color:var(--fg); border-color:var(--line); background:var(--bg); border-bottom:1px solid var(--bg); }
+  #cyc-c2021:checked ~ .tabs.sub label[for="cyc-c2021"] {
+    color:var(--fg); border-color:var(--line); background:var(--bg); border-bottom:1px solid var(--bg); }
+  #cyc-c2026:checked ~ .tabs.sub label[for="cyc-c2026"] b { color:var(--acc); }
+  #cyc-c2021:checked ~ .tabs.sub label[for="cyc-c2021"] b { color:var(--mut); }
+  #cyc-c2026:focus-visible ~ .tabs.sub label[for="cyc-c2026"] { outline:2px solid var(--acc); outline-offset:2px; }
+  #cyc-c2021:focus-visible ~ .tabs.sub label[for="cyc-c2021"] { outline:2px solid var(--acc); outline-offset:2px; }
+  .cycpane > section:first-child { border-top:none; margin-top:0; }
+  @media print { .tabs.sub { display:none; } .cycpane { display:block !important; } }
+
   section { margin-top:32px; padding-top:8px; border-top:1px solid var(--line); }
   h2 { font-size:18px; margin:14px 0 6px; padding-left:9px; border-left:3px solid var(--acc); }
   h3.mh { font-size:15px; margin:22px 0 4px; }
@@ -862,6 +879,743 @@
 </div>
 </section>
 
+<input type="radio" name="cyc" id="cyc-c2026" class="cycin" checked>
+<input type="radio" name="cyc" id="cyc-c2021" class="cycin">
+<nav class="tabs sub">
+  <label for="cyc-c2026">
+    <i>진행 중</i><b>2025–26 사이클</b>
+    <span>지수 9,115 → 5,594p ·
+      신용 38.63 → 32.15조</span>
+  </label>
+<label for="cyc-c2021">
+    <i>완결 · 대조군</i><b>2020–21 사이클</b>
+    <span>지수 3,305 → 2,155p ·
+      신용 25.65 → 15.81조</span>
+  </label>
+</nav>
+<div class="cycpane cp-c2026">
+<section>
+<h2>2025–26 사이클</h2>
+<p class="lead">2025년 초부터 적립 → 2026.6 신용 고점 → 청산 진행 중. 적립 2024.12.31~2026.07.30 · 청산 판정 ~2026.07.30</p>
+<div class="mkt">
+<h3 class="mh">전체 <span class="tag">버킷 500p</span></h3>
+<p class="lead">신용융자 합계(유가증권+코스닥)를 코스피 지수로 배분. 원 자료와 같은 구성이라 재현 검증의 기준이 된다.</p>
+
+<div class="cards">
+  <div class="card"><div class="lb">지수 고점 → 저점</div><div class="vl">-38.6<span class="u">%</span></div><div class="nt">9,115 → 5,594</div></div>
+  <div class="card"><div class="lb">신용융자 고점</div><div class="vl">38.63<span class="u">조</span></div><div class="nt">2026.06.24</div></div>
+  <div class="card"><div class="lb">실측 청산</div><div class="vl neg">-6.48<span class="u">조</span></div><div class="nt">청산률 -16.8%</div></div>
+  <div class="card"><div class="lb">사이클 순증</div><div class="vl">22.82<span class="u">조</span></div><div class="nt">gross 39.16조 × 0.58</div></div>
+  <div class="card"><div class="lb">마진콜 진입(보정)</div><div class="vl neg">4.72<span class="u">조</span></div><div class="nt">순증의 21%</div></div>
+  <div class="card"><div class="lb">아직 미진입(보정)</div><div class="vl">18.10<span class="u">조</span></div><div class="nt">5,460p 이탈 시 개시</div></div>
+</div>
+
+<figure>
+  <svg viewBox="0 0 660 330" role="img" aria-label="지수대별 신용융자 누적 매수액과 마진콜 레벨">
+  <rect class="band" x="377.2" y="26" width="220.8" height="252"/>
+      <text class="note" x="487.6" y="38" text-anchor="middle">지수 5,594 기준 마진콜 진입</text>
+  <line class="grid" x1="46" y1="278.0" x2="598" y2="278.0"/>
+    <text class="ax" x="38" y="281.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="213.7" x2="598" y2="213.7"/>
+    <text class="ax" x="38" y="217.2" text-anchor="end">1.0</text><line class="grid" x1="46" y1="149.5" x2="598" y2="149.5"/>
+    <text class="ax" x="38" y="153.0" text-anchor="end">2.0</text><line class="grid" x1="46" y1="85.2" x2="598" y2="85.2"/>
+    <text class="ax" x="38" y="88.7" text-anchor="end">3.0</text>
+  <text class="ax" x="606" y="281.5">0</text><text class="ax" x="606" y="225.1">2,000</text><text class="ax" x="606" y="168.7">4,000</text><text class="ax" x="606" y="112.3">6,000</text><text class="ax" x="606" y="55.9">8,000</text>
+  <rect class="bar" x="51.9" y="219.9" width="25.0" height="58.1"/>
+      <text class="val" x="64.4" y="214.9" text-anchor="middle">0.90</text><rect class="bar" x="88.7" y="68.0" width="25.0" height="210.0"/>
+      <text class="val" x="101.2" y="63.0" text-anchor="middle">3.27</text><rect class="bar" x="125.5" y="80.3" width="25.0" height="197.7"/>
+      <text class="val" x="138.0" y="75.3" text-anchor="middle">3.08</text><rect class="bar" x="162.3" y="183.8" width="25.0" height="94.2"/>
+      <text class="val" x="174.8" y="178.8" text-anchor="middle">1.47</text><rect class="bar" x="199.1" y="158.6" width="25.0" height="119.4"/>
+      <text class="val" x="211.6" y="153.6" text-anchor="middle">1.86</text><rect class="bar" x="235.9" y="198.1" width="25.0" height="79.9"/>
+      <text class="val" x="248.4" y="193.1" text-anchor="middle">1.24</text><rect class="bar" x="272.7" y="122.3" width="25.0" height="155.7"/>
+      <text class="val" x="285.2" y="117.3" text-anchor="middle">2.42</text><rect class="bar" x="309.5" y="155.1" width="25.0" height="122.9"/>
+      <text class="val" x="322.0" y="150.1" text-anchor="middle">1.91</text><rect class="bar" x="346.3" y="152.8" width="25.0" height="125.2"/>
+      <text class="val" x="358.8" y="147.8" text-anchor="middle">1.95</text><rect class="bar part" x="383.1" y="239.6" width="25.0" height="38.4"/>
+      <text class="val" x="395.6" y="234.6" text-anchor="middle">0.60</text><rect class="bar hit" x="419.9" y="235.6" width="25.0" height="42.4"/>
+      <text class="val" x="432.4" y="230.6" text-anchor="middle">0.66</text><rect class="bar hit" x="456.7" y="228.3" width="25.0" height="49.7"/>
+      <text class="val" x="469.2" y="223.3" text-anchor="middle">0.77</text><rect class="bar hit" x="493.5" y="169.4" width="25.0" height="108.6"/>
+      <text class="val" x="506.0" y="164.4" text-anchor="middle">1.69</text><rect class="bar hit" x="530.3" y="241.4" width="25.0" height="36.6"/>
+      <text class="val" x="542.8" y="236.4" text-anchor="middle">0.57</text><rect class="bar hit" x="567.1" y="250.6" width="25.0" height="27.4"/>
+      <text class="val" x="579.6" y="245.6" text-anchor="middle">0.43</text>
+  <path class="ln-margin" d="M64.4,218.8L101.2,206.9L138.0,195.1L174.8,183.3L211.6,171.4L248.4,159.6L285.2,147.7L322.0,135.9L358.8,124.1L395.6,112.2L432.4,100.4L469.2,88.5L506.0,76.7L542.8,64.8L579.6,53.0"/>
+  <circle class="dot" cx="64.4" cy="218.8" r="2.4"/><circle class="dot" cx="101.2" cy="206.9" r="2.4"/><circle class="dot" cx="138.0" cy="195.1" r="2.4"/><circle class="dot" cx="174.8" cy="183.3" r="2.4"/><circle class="dot" cx="211.6" cy="171.4" r="2.4"/><circle class="dot" cx="248.4" cy="159.6" r="2.4"/><circle class="dot" cx="285.2" cy="147.7" r="2.4"/><circle class="dot" cx="322.0" cy="135.9" r="2.4"/><circle class="dot" cx="358.8" cy="124.1" r="2.4"/><circle class="dot" cx="395.6" cy="112.2" r="2.4"/><circle class="dot" cx="432.4" cy="100.4" r="2.4"/><circle class="dot" cx="469.2" cy="88.5" r="2.4"/><circle class="dot" cx="506.0" cy="76.7" r="2.4"/><circle class="dot" cx="542.8" cy="64.8" r="2.4"/><circle class="dot" cx="579.6" cy="53.0" r="2.4"/>
+  <text class="ax sm" transform="translate(64.4,292) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(101.2,292) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(138.0,292) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(174.8,292) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(211.6,292) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(248.4,292) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(285.2,292) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(322.0,292) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(358.8,292) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(395.6,292) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(432.4,292) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(469.2,292) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(506.0,292) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(542.8,292) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(579.6,292) rotate(-52)" text-anchor="end">9,000</text>
+  <text class="unit" x="46" y="14">조원(보정)</text>
+  <text class="unit" x="598" y="14" text-anchor="end">마진콜 지수(p)</text>
+</svg>
+  <div class="lg"><span><i class="sw hit"></i>마진콜 전량 진입</span><span><i class="sw part"></i>일부 진입</span><span><i class="sw bar"></i>미진입</span><span><i class="sw acc"></i>마진콜 레벨(우축, 상단기준)</span></div>
+  <figcaption>2024.12.31 잔고를 기준선으로 2026.07.30까지의 일별 증가분을 그날 종가의 500p 구간에 배분한 뒤,
+  합계를 사이클 순증 22.82조에 맞춰 0.58배로 보정했다.</figcaption>
+</figure>
+
+<figure>
+  <h4>어디서 쌓이고 어디서 털렸는가</h4>
+  <svg viewBox="0 0 660 300" role="img" aria-label="지수대별 적립과 청산 비교">
+  <line class="grid" x1="46" y1="250.0" x2="644" y2="250.0"/>
+    <text class="ax" x="38" y="253.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="192.9" x2="644" y2="192.9"/>
+    <text class="ax" x="38" y="196.4" text-anchor="end">1.0</text><line class="grid" x1="46" y1="135.8" x2="644" y2="135.8"/>
+    <text class="ax" x="38" y="139.3" text-anchor="end">2.0</text><line class="grid" x1="46" y1="78.6" x2="644" y2="78.6"/>
+    <text class="ax" x="38" y="82.1" text-anchor="end">3.0</text>
+  <rect class="bar fin" x="52.2" y="198.4" width="12.8" height="51.6"/><rect class="bar fin" x="92.0" y="63.3" width="12.8" height="186.7"/><rect class="bar fin" x="131.9" y="74.2" width="12.8" height="175.8"/><rect class="bar fin" x="171.8" y="166.2" width="12.8" height="83.8"/><rect class="bar fin" x="211.6" y="143.9" width="12.8" height="106.1"/><rect class="bar fin" x="251.5" y="179.0" width="12.8" height="71.0"/><rect class="bar fin" x="291.4" y="111.6" width="12.8" height="138.4"/><rect class="bar fin" x="331.2" y="140.7" width="12.8" height="109.3"/><rect class="bar fout" x="346.0" y="190.5" width="12.8" height="59.5"/><rect class="bar fin" x="371.1" y="138.8" width="12.8" height="111.2"/><rect class="bar fin" x="411.0" y="215.8" width="12.8" height="34.2"/><rect class="bar fout" x="425.7" y="107.3" width="12.8" height="142.7"/><rect class="bar fin" x="450.8" y="212.3" width="12.8" height="37.7"/><rect class="bar fout" x="465.6" y="121.1" width="12.8" height="128.9"/><rect class="bar fin" x="490.7" y="205.8" width="12.8" height="44.2"/><rect class="bar fout" x="505.5" y="216.0" width="12.8" height="34.0"/><rect class="bar fin" x="530.6" y="153.5" width="12.8" height="96.5"/><rect class="bar fout" x="545.3" y="198.7" width="12.8" height="51.3"/><rect class="bar fin" x="570.4" y="217.5" width="12.8" height="32.5"/><rect class="bar fout" x="585.2" y="216.6" width="12.8" height="33.4"/><rect class="bar fin" x="610.3" y="225.7" width="12.8" height="24.3"/><line class="wmark mb" x1="304.5" y1="26" x2="304.5" y2="250.0"/>
+      <text class="wlab mb" x="304.5" y="22.0" text-anchor="middle">평균매수 4,992</text><line class="wmark mu" x1="477.1" y1="26" x2="477.1" y2="250.0"/>
+      <text class="wlab mu" x="477.1" y="22.0" text-anchor="middle">평균청산 7,156</text><text class="ax sm" transform="translate(65.9,264) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(105.8,264) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(145.7,264) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(185.5,264) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(225.4,264) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(265.3,264) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(305.1,264) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(345.0,264) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(384.9,264) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(424.7,264) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(464.6,264) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(504.5,264) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(544.3,264) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(584.2,264) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(624.1,264) rotate(-52)" text-anchor="end">9,000</text>
+  <text class="unit" x="46" y="14">조원</text>
+</svg>
+  <div class="lg"><span><i class="sw fin"></i>적립(보정)</span><span><i class="sw fout"></i>실제 청산</span><span><i class="sw mb"></i>금액가중 평균 매수 지수</span><span><i class="sw mu"></i>금액가중 평균 청산 지수</span></div>
+  <figcaption>가중평균 매수 4,992p, 청산 7,156p.
+  
+  진행 중인 사이클은 청산 국면이 짧아 최근 고지수 물량만 반영된다. 손실률로 읽을 수 있는 값이 아니다.</figcaption>
+</figure>
+
+<div class="box warn">
+  <b>모델 vs 실측</b> — 보정 모델 <b>4.72조</b> vs 실측 청산 -6.48조,
+  오차 <b>1.76조</b>. (보정 전 gross 기준은 8.10조로 오차 1.62조.)
+  진행 중인 사이클이다. 신용융자는 결제일 기준이라 급락 당일 청산이 즉시 반영되지 않고, 추가 담보 납입분도 섞여 있다.
+</div>
+<div class="box">
+    <b>거래대금 대비 규모</b> — 청산 국면(2026.06.24~2026.07.30) 총유출
+    <b>7.87조</b>는 그 기간 거래대금(1210.05조)의 0.65%,
+    그 시대 정상 하루 거래대금(64.69조)의 0.12배에 해당한다.
+    같은 국면 거래대금은 정상 대비 69% 수준이었다
+    (100% 미만이면 청산이 유동성이 마른 상태에서 진행됐다는 뜻).
+    남은 사다리 18.10조는 <b>오늘 기준</b> 하루 평균 거래대금(40.78조)의
+    0.44배다.
+  </div>
+
+<div class="tables">
+  <div><h4>마진콜 사다리 — 지수가 이 아래로 마감하면 열리는 물량</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">지수(p) 밑</th><th>매수구간(p)</th><th class="n">증가(조)</th><th class="n">누적(조)</th><th class="n">누적/하루거래대금</th></tr></thead>
+      <tbody><tr>
+    <td class="n">5,460</td><td>6,000–6,500</td>
+    <td class="n">+1.95</td><td class="n">1.95</td>
+    <td class="n">4.8%</td></tr><tr>
+    <td class="n">5,040</td><td>5,500–6,000</td>
+    <td class="n">+1.91</td><td class="n">3.86</td>
+    <td class="n">9.5%</td></tr><tr>
+    <td class="n">4,620</td><td>5,000–5,500</td>
+    <td class="n">+2.42</td><td class="n">6.28</td>
+    <td class="n">15.4%</td></tr><tr>
+    <td class="n">4,200</td><td>4,500–5,000</td>
+    <td class="n">+1.24</td><td class="n">7.53</td>
+    <td class="n">18.5%</td></tr><tr>
+    <td class="n">3,780</td><td>4,000–4,500</td>
+    <td class="n">+1.86</td><td class="n">9.38</td>
+    <td class="n">23.0%</td></tr><tr>
+    <td class="n">3,360</td><td>3,500–4,000</td>
+    <td class="n">+1.47</td><td class="n">10.85</td>
+    <td class="n">26.6%</td></tr><tr>
+    <td class="n">2,940</td><td>3,000–3,500</td>
+    <td class="n">+3.08</td><td class="n">13.93</td>
+    <td class="n">34.1%</td></tr><tr>
+    <td class="n">2,520</td><td>2,500–3,000</td>
+    <td class="n">+3.27</td><td class="n">17.19</td>
+    <td class="n">42.2%</td></tr><tr>
+    <td class="n">2,100</td><td>2,000–2,500</td>
+    <td class="n">+0.90</td><td class="n">18.10</td>
+    <td class="n">44.4%</td></tr></tbody>
+      <tfoot><tr><th colspan="3">총 잔여</th><th class="n">18.10</th><th></th></tr></tfoot>
+    </table></div>
+    <figcaption>현재 지수 5,594p 기준. 안 터진 버킷을 마진콜 지수 내림차순으로 나열했다 —
+    지수가 더 떨어질수록 이 순서대로 열린다. 오른쪽 열은 오늘 기준 하루 평균 거래대금 대비 누적 비중이다.</figcaption></div>
+  <div><h4>구간별 누적 신용매수와 마진콜 레벨</h4>
+    <div class="tw"><table>
+      <thead><tr><th>지수 구간(p)</th><th class="n">보정(조)</th><th class="n">gross(조)</th><th class="n">마진콜 레벨(p)</th><th>상태</th></tr></thead>
+      <tbody><tr class="">
+      <td>2,000–2,500</td><td class="n">0.90</td><td class="n dim">1.55</td>
+      <td class="n">2,100</td>
+      <td>–</td></tr><tr class="">
+      <td>2,500–3,000</td><td class="n">3.27</td><td class="n dim">5.61</td>
+      <td class="n">2,520</td>
+      <td>–</td></tr><tr class="">
+      <td>3,000–3,500</td><td class="n">3.08</td><td class="n dim">5.28</td>
+      <td class="n">2,940</td>
+      <td>–</td></tr><tr class="">
+      <td>3,500–4,000</td><td class="n">1.47</td><td class="n dim">2.52</td>
+      <td class="n">3,360</td>
+      <td>–</td></tr><tr class="">
+      <td>4,000–4,500</td><td class="n">1.86</td><td class="n dim">3.19</td>
+      <td class="n">3,780</td>
+      <td>–</td></tr><tr class="">
+      <td>4,500–5,000</td><td class="n">1.24</td><td class="n dim">2.13</td>
+      <td class="n">4,200</td>
+      <td>–</td></tr><tr class="">
+      <td>5,000–5,500</td><td class="n">2.42</td><td class="n dim">4.16</td>
+      <td class="n">4,620</td>
+      <td>–</td></tr><tr class="">
+      <td>5,500–6,000</td><td class="n">1.91</td><td class="n dim">3.28</td>
+      <td class="n">5,040</td>
+      <td>–</td></tr><tr class="">
+      <td>6,000–6,500</td><td class="n">1.95</td><td class="n dim">3.34</td>
+      <td class="n">5,460</td>
+      <td>–</td></tr><tr class="r-part">
+      <td>6,500–7,000</td><td class="n">0.60</td><td class="n dim">1.03</td>
+      <td class="n">5,880</td>
+      <td>청산 진행</td></tr><tr class="r-hit">
+      <td>7,000–7,500</td><td class="n">0.66</td><td class="n dim">1.13</td>
+      <td class="n">6,300</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>7,500–8,000</td><td class="n">0.77</td><td class="n dim">1.33</td>
+      <td class="n">6,720</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>8,000–8,500</td><td class="n">1.69</td><td class="n dim">2.90</td>
+      <td class="n">7,140</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>8,500–9,000</td><td class="n">0.57</td><td class="n dim">0.98</td>
+      <td class="n">7,560</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>9,000–9,500</td><td class="n">0.43</td><td class="n dim">0.73</td>
+      <td class="n">7,980</td>
+      <td>청산 완료</td></tr></tbody>
+      <tfoot><tr><th>합계</th><th class="n">22.82</th><th class="n dim">39.16</th><th></th><th></th></tr></tfoot>
+    </table></div></div>
+  <div><h4>지수대별 실제 청산액 (2026.06.24~2026.07.30)</h4>
+    <div class="tw"><table>
+      <thead><tr><th>지수 구간(p)</th><th class="n">청산액(조)</th><th class="n">비중</th></tr></thead>
+      <tbody><tr>
+        <td>5,500–6,000</td><td class="n">1.04</td>
+        <td class="n">13%</td></tr><tr>
+        <td>6,500–7,000</td><td class="n">2.50</td>
+        <td class="n">32%</td></tr><tr>
+        <td>7,000–7,500</td><td class="n">2.26</td>
+        <td class="n">29%</td></tr><tr>
+        <td>7,500–8,000</td><td class="n">0.59</td>
+        <td class="n">8%</td></tr><tr>
+        <td>8,000–8,500</td><td class="n">0.90</td>
+        <td class="n">11%</td></tr><tr>
+        <td>8,500–9,000</td><td class="n">0.58</td>
+        <td class="n">7%</td></tr></tbody>
+      <tfoot><tr><th>총유출</th><th class="n">7.87</th><th class="n">순감소 6.48</th></tr></tfoot>
+    </table></div>
+    <figcaption>일별 <b>감소분</b>을 그날 종가 구간에 배분. 청산 국면에도 신규 매수가 섞이므로 총유출이 순감소보다 크다.</figcaption></div>
+  <div><h4>하락 구간 누적 마진콜 노출(보정)</h4>
+    <div class="tw"><table>
+      <thead><tr><th>일자</th><th class="n">종가</th><th class="n">기간 최저</th><th class="n">누적 노출(조)</th></tr></thead>
+      <tbody><tr><td>2026.06.22</td>
+    <td class="n">9114.55</td><td class="n">9114.55</td>
+    <td class="n">0.00</td></tr><tr><td>2026.07.02</td>
+    <td class="n">7648.09</td><td class="n">7648.09</td>
+    <td class="n">0.43</td></tr><tr><td>2026.07.08</td>
+    <td class="n">7246.79</td><td class="n">7246.79</td>
+    <td class="n">1.00</td></tr><tr><td>2026.07.13</td>
+    <td class="n">6806.93</td><td class="n">6806.93</td>
+    <td class="n">2.68</td></tr><tr><td>2026.07.20</td>
+    <td class="n">6516.27</td><td class="n">6516.27</td>
+    <td class="n">3.46</td></tr><tr><td>2026.07.28</td>
+    <td class="n">6023.66</td><td class="n">6023.66</td>
+    <td class="n">4.12</td></tr><tr><td>2026.07.29</td>
+    <td class="n">5663.24</td><td class="n">5663.24</td>
+    <td class="n">4.72</td></tr></tbody>
+    </table></div>
+    <figcaption>반대매매는 되돌릴 수 없으므로 그날까지의 <b>최저 종가</b>로 판정한다.</figcaption></div>
+  <div><h4>추가 하락 시나리오</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">지수(p)</th><th class="n">저점 대비</th><th class="n">누적 노출(조)</th><th class="n">증가(조)</th></tr></thead>
+      <tbody><tr><td class="n">5,500</td>
+    <td class="n">-1.7%</td>
+    <td class="n">4.72</td>
+    <td class="n">0.00</td></tr><tr><td class="n">5,000</td>
+    <td class="n">-10.6%</td>
+    <td class="n">8.58</td>
+    <td class="n">3.86</td></tr><tr><td class="n">4,500</td>
+    <td class="n">-19.6%</td>
+    <td class="n">11.00</td>
+    <td class="n">6.28</td></tr><tr><td class="n">4,000</td>
+    <td class="n">-28.5%</td>
+    <td class="n">12.24</td>
+    <td class="n">7.53</td></tr><tr><td class="n">3,500</td>
+    <td class="n">-37.4%</td>
+    <td class="n">14.10</td>
+    <td class="n">9.38</td></tr></tbody>
+    </table></div></div>
+  <div><h4>담보유지비율 민감도 (지수 5,594)</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">담보유지비율</th><th class="n">계수</th><th class="n">노출(조)</th></tr></thead>
+      <tbody><tr class="">
+    <td class="n">130%</td><td class="n">0.78</td>
+    <td class="n">4.12</td></tr><tr class="r-base">
+    <td class="n">140%</td><td class="n">0.84</td>
+    <td class="n">4.72</td></tr><tr class="">
+    <td class="n">150%</td><td class="n">0.90</td>
+    <td class="n">6.66</td></tr><tr class="">
+    <td class="n">170%</td><td class="n">1.02</td>
+    <td class="n">11.00</td></tr></tbody>
+    </table></div>
+    <figcaption>계수 = 담보유지비율 × 융자비율(60%). 매수 지수 × 계수 = 마진콜 발생 지수.</figcaption></div>
+</div>
+</div>
+<div class="mkt">
+<h3 class="mh">유가증권 <span class="tag">버킷 500p</span></h3>
+<p class="lead">유가증권시장 신용거래융자만 코스피 지수로 배분. 코스닥분이 섞이지 않은 순수한 지수대별 물량이다.</p>
+
+<div class="cards">
+  <div class="card"><div class="lb">지수 고점 → 저점</div><div class="vl">-38.6<span class="u">%</span></div><div class="nt">9,115 → 5,594</div></div>
+  <div class="card"><div class="lb">신용융자 고점</div><div class="vl">29.75<span class="u">조</span></div><div class="nt">2026.06.24</div></div>
+  <div class="card"><div class="lb">실측 청산</div><div class="vl neg">-4.01<span class="u">조</span></div><div class="nt">청산률 -13.5%</div></div>
+  <div class="card"><div class="lb">사이클 순증</div><div class="vl">20.52<span class="u">조</span></div><div class="nt">gross 32.55조 × 0.63</div></div>
+  <div class="card"><div class="lb">마진콜 진입(보정)</div><div class="vl neg">5.48<span class="u">조</span></div><div class="nt">순증의 27%</div></div>
+  <div class="card"><div class="lb">아직 미진입(보정)</div><div class="vl">15.04<span class="u">조</span></div><div class="nt">5,460p 이탈 시 개시</div></div>
+</div>
+
+<figure>
+  <svg viewBox="0 0 660 330" role="img" aria-label="지수대별 신용융자 누적 매수액과 마진콜 레벨">
+  <rect class="band" x="377.2" y="26" width="220.8" height="252"/>
+      <text class="note" x="487.6" y="38" text-anchor="middle">지수 5,594 기준 마진콜 진입</text>
+  <line class="grid" x1="46" y1="278.0" x2="598" y2="278.0"/>
+    <text class="ax" x="38" y="281.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="193.4" x2="598" y2="193.4"/>
+    <text class="ax" x="38" y="196.9" text-anchor="end">1.0</text><line class="grid" x1="46" y1="108.8" x2="598" y2="108.8"/>
+    <text class="ax" x="38" y="112.3" text-anchor="end">2.0</text>
+  <text class="ax" x="606" y="281.5">0</text><text class="ax" x="606" y="225.1">2,000</text><text class="ax" x="606" y="168.7">4,000</text><text class="ax" x="606" y="112.3">6,000</text><text class="ax" x="606" y="55.9">8,000</text>
+  <rect class="bar" x="51.9" y="225.5" width="25.0" height="52.5"/>
+      <text class="val" x="64.4" y="220.5" text-anchor="middle">0.62</text><rect class="bar" x="88.7" y="86.8" width="25.0" height="191.2"/>
+      <text class="val" x="101.2" y="81.8" text-anchor="middle">2.26</text><rect class="bar" x="125.5" y="73.2" width="25.0" height="204.8"/>
+      <text class="val" x="138.0" y="68.2" text-anchor="middle">2.42</text><rect class="bar" x="162.3" y="164.9" width="25.0" height="113.1"/>
+      <text class="val" x="174.8" y="159.9" text-anchor="middle">1.34</text><rect class="bar" x="199.1" y="146.6" width="25.0" height="131.4"/>
+      <text class="val" x="211.6" y="141.6" text-anchor="middle">1.55</text><rect class="bar" x="235.9" y="179.2" width="25.0" height="98.8"/>
+      <text class="val" x="248.4" y="174.2" text-anchor="middle">1.17</text><rect class="bar" x="272.7" y="68.0" width="25.0" height="210.0"/>
+      <text class="val" x="285.2" y="63.0" text-anchor="middle">2.48</text><rect class="bar" x="309.5" y="133.9" width="25.0" height="144.1"/>
+      <text class="val" x="322.0" y="128.9" text-anchor="middle">1.70</text><rect class="bar" x="346.3" y="151.7" width="25.0" height="126.3"/>
+      <text class="val" x="358.8" y="146.7" text-anchor="middle">1.49</text><rect class="bar part" x="383.1" y="231.0" width="25.0" height="47.0"/>
+      <text class="val" x="395.6" y="226.0" text-anchor="middle">0.56</text><rect class="bar hit" x="419.9" y="208.7" width="25.0" height="69.3"/>
+      <text class="val" x="432.4" y="203.7" text-anchor="middle">0.82</text><rect class="bar hit" x="456.7" y="184.5" width="25.0" height="93.5"/>
+      <text class="val" x="469.2" y="179.5" text-anchor="middle">1.10</text><rect class="bar hit" x="493.5" y="106.6" width="25.0" height="171.4"/>
+      <text class="val" x="506.0" y="101.6" text-anchor="middle">2.03</text><rect class="bar hit" x="530.3" y="229.0" width="25.0" height="49.0"/>
+      <text class="val" x="542.8" y="224.0" text-anchor="middle">0.58</text><rect class="bar hit" x="567.1" y="244.5" width="25.0" height="33.5"/>
+      <text class="val" x="579.6" y="239.5" text-anchor="middle">0.40</text>
+  <path class="ln-margin" d="M64.4,218.8L101.2,206.9L138.0,195.1L174.8,183.3L211.6,171.4L248.4,159.6L285.2,147.7L322.0,135.9L358.8,124.1L395.6,112.2L432.4,100.4L469.2,88.5L506.0,76.7L542.8,64.8L579.6,53.0"/>
+  <circle class="dot" cx="64.4" cy="218.8" r="2.4"/><circle class="dot" cx="101.2" cy="206.9" r="2.4"/><circle class="dot" cx="138.0" cy="195.1" r="2.4"/><circle class="dot" cx="174.8" cy="183.3" r="2.4"/><circle class="dot" cx="211.6" cy="171.4" r="2.4"/><circle class="dot" cx="248.4" cy="159.6" r="2.4"/><circle class="dot" cx="285.2" cy="147.7" r="2.4"/><circle class="dot" cx="322.0" cy="135.9" r="2.4"/><circle class="dot" cx="358.8" cy="124.1" r="2.4"/><circle class="dot" cx="395.6" cy="112.2" r="2.4"/><circle class="dot" cx="432.4" cy="100.4" r="2.4"/><circle class="dot" cx="469.2" cy="88.5" r="2.4"/><circle class="dot" cx="506.0" cy="76.7" r="2.4"/><circle class="dot" cx="542.8" cy="64.8" r="2.4"/><circle class="dot" cx="579.6" cy="53.0" r="2.4"/>
+  <text class="ax sm" transform="translate(64.4,292) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(101.2,292) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(138.0,292) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(174.8,292) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(211.6,292) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(248.4,292) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(285.2,292) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(322.0,292) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(358.8,292) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(395.6,292) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(432.4,292) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(469.2,292) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(506.0,292) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(542.8,292) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(579.6,292) rotate(-52)" text-anchor="end">9,000</text>
+  <text class="unit" x="46" y="14">조원(보정)</text>
+  <text class="unit" x="598" y="14" text-anchor="end">마진콜 지수(p)</text>
+</svg>
+  <div class="lg"><span><i class="sw hit"></i>마진콜 전량 진입</span><span><i class="sw part"></i>일부 진입</span><span><i class="sw bar"></i>미진입</span><span><i class="sw acc"></i>마진콜 레벨(우축, 상단기준)</span></div>
+  <figcaption>2024.12.31 잔고를 기준선으로 2026.07.30까지의 일별 증가분을 그날 종가의 500p 구간에 배분한 뒤,
+  합계를 사이클 순증 20.52조에 맞춰 0.63배로 보정했다.</figcaption>
+</figure>
+
+<figure>
+  <h4>어디서 쌓이고 어디서 털렸는가</h4>
+  <svg viewBox="0 0 660 300" role="img" aria-label="지수대별 적립과 청산 비교">
+  <line class="grid" x1="46" y1="250.0" x2="644" y2="250.0"/>
+    <text class="ax" x="38" y="253.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="174.8" x2="644" y2="174.8"/>
+    <text class="ax" x="38" y="178.3" text-anchor="end">1.0</text><line class="grid" x1="46" y1="99.6" x2="644" y2="99.6"/>
+    <text class="ax" x="38" y="103.1" text-anchor="end">2.0</text>
+  <rect class="bar fin" x="52.2" y="203.3" width="12.8" height="46.7"/><rect class="bar fin" x="92.0" y="80.1" width="12.8" height="169.9"/><rect class="bar fin" x="131.9" y="67.9" width="12.8" height="182.1"/><rect class="bar fin" x="171.8" y="149.5" width="12.8" height="100.5"/><rect class="bar fin" x="211.6" y="133.2" width="12.8" height="116.8"/><rect class="bar fin" x="251.5" y="162.1" width="12.8" height="87.9"/><rect class="bar fin" x="291.4" y="63.3" width="12.8" height="186.7"/><rect class="bar fin" x="331.2" y="121.9" width="12.8" height="128.1"/><rect class="bar fin" x="371.1" y="137.7" width="12.8" height="112.3"/><rect class="bar fin" x="411.0" y="208.2" width="12.8" height="41.8"/><rect class="bar fout" x="425.7" y="100.7" width="12.8" height="149.3"/><rect class="bar fin" x="450.8" y="188.4" width="12.8" height="61.6"/><rect class="bar fout" x="465.6" y="120.2" width="12.8" height="129.8"/><rect class="bar fin" x="490.7" y="166.9" width="12.8" height="83.1"/><rect class="bar fout" x="505.5" y="213.4" width="12.8" height="36.6"/><rect class="bar fin" x="530.6" y="97.7" width="12.8" height="152.3"/><rect class="bar fout" x="545.3" y="222.4" width="12.8" height="27.6"/><rect class="bar fin" x="570.4" y="206.5" width="12.8" height="43.5"/><rect class="bar fout" x="585.2" y="222.6" width="12.8" height="27.4"/><rect class="bar fin" x="610.3" y="220.3" width="12.8" height="29.7"/><line class="wmark mb" x1="328.1" y1="26" x2="328.1" y2="250.0"/>
+      <text class="wlab mb" x="328.1" y="22.0" text-anchor="middle">평균매수 5,288</text><line class="wmark mu" x1="487.2" y1="26" x2="487.2" y2="250.0"/>
+      <text class="wlab mu" x="487.2" y="22.0" text-anchor="middle">평균청산 7,283</text><text class="ax sm" transform="translate(65.9,264) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(105.8,264) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(145.7,264) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(185.5,264) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(225.4,264) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(265.3,264) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(305.1,264) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(345.0,264) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(384.9,264) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(424.7,264) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(464.6,264) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(504.5,264) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(544.3,264) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(584.2,264) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(624.1,264) rotate(-52)" text-anchor="end">9,000</text>
+  <text class="unit" x="46" y="14">조원</text>
+</svg>
+  <div class="lg"><span><i class="sw fin"></i>적립(보정)</span><span><i class="sw fout"></i>실제 청산</span><span><i class="sw mb"></i>금액가중 평균 매수 지수</span><span><i class="sw mu"></i>금액가중 평균 청산 지수</span></div>
+  <figcaption>가중평균 매수 5,288p, 청산 7,283p.
+  
+  진행 중인 사이클은 청산 국면이 짧아 최근 고지수 물량만 반영된다. 손실률로 읽을 수 있는 값이 아니다.</figcaption>
+</figure>
+
+<div class="box ">
+  <b>모델 vs 실측</b> — 보정 모델 <b>5.48조</b> vs 실측 청산 -4.01조,
+  오차 <b>1.47조</b>. (보정 전 gross 기준은 8.69조로 오차 4.69조.)
+  진행 중인 사이클이다. 신용융자는 결제일 기준이라 급락 당일 청산이 즉시 반영되지 않고, 추가 담보 납입분도 섞여 있다.
+</div>
+<div class="box">
+    <b>거래대금 대비 규모</b> — 청산 국면(2026.06.24~2026.07.24) 총유출
+    <b>4.93조</b>는 그 기간 거래대금(889.86조)의 0.55%,
+    그 시대 정상 하루 거래대금(53.53조)의 0.09배에 해당한다.
+    같은 국면 거래대금은 정상 대비 72% 수준이었다
+    (100% 미만이면 청산이 유동성이 마른 상태에서 진행됐다는 뜻).
+    남은 사다리 15.04조는 <b>오늘 기준</b> 하루 평균 거래대금(35.08조)의
+    0.43배다.
+  </div>
+
+<div class="tables">
+  <div><h4>마진콜 사다리 — 지수가 이 아래로 마감하면 열리는 물량</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">지수(p) 밑</th><th>매수구간(p)</th><th class="n">증가(조)</th><th class="n">누적(조)</th><th class="n">누적/하루거래대금</th></tr></thead>
+      <tbody><tr>
+    <td class="n">5,460</td><td>6,000–6,500</td>
+    <td class="n">+1.49</td><td class="n">1.49</td>
+    <td class="n">4.3%</td></tr><tr>
+    <td class="n">5,040</td><td>5,500–6,000</td>
+    <td class="n">+1.70</td><td class="n">3.20</td>
+    <td class="n">9.1%</td></tr><tr>
+    <td class="n">4,620</td><td>5,000–5,500</td>
+    <td class="n">+2.48</td><td class="n">5.68</td>
+    <td class="n">16.2%</td></tr><tr>
+    <td class="n">4,200</td><td>4,500–5,000</td>
+    <td class="n">+1.17</td><td class="n">6.85</td>
+    <td class="n">19.5%</td></tr><tr>
+    <td class="n">3,780</td><td>4,000–4,500</td>
+    <td class="n">+1.55</td><td class="n">8.40</td>
+    <td class="n">23.9%</td></tr><tr>
+    <td class="n">3,360</td><td>3,500–4,000</td>
+    <td class="n">+1.34</td><td class="n">9.74</td>
+    <td class="n">27.8%</td></tr><tr>
+    <td class="n">2,940</td><td>3,000–3,500</td>
+    <td class="n">+2.42</td><td class="n">12.16</td>
+    <td class="n">34.7%</td></tr><tr>
+    <td class="n">2,520</td><td>2,500–3,000</td>
+    <td class="n">+2.26</td><td class="n">14.42</td>
+    <td class="n">41.1%</td></tr><tr>
+    <td class="n">2,100</td><td>2,000–2,500</td>
+    <td class="n">+0.62</td><td class="n">15.04</td>
+    <td class="n">42.9%</td></tr></tbody>
+      <tfoot><tr><th colspan="3">총 잔여</th><th class="n">15.04</th><th></th></tr></tfoot>
+    </table></div>
+    <figcaption>현재 지수 5,594p 기준. 안 터진 버킷을 마진콜 지수 내림차순으로 나열했다 —
+    지수가 더 떨어질수록 이 순서대로 열린다. 오른쪽 열은 오늘 기준 하루 평균 거래대금 대비 누적 비중이다.</figcaption></div>
+  <div><h4>구간별 누적 신용매수와 마진콜 레벨</h4>
+    <div class="tw"><table>
+      <thead><tr><th>지수 구간(p)</th><th class="n">보정(조)</th><th class="n">gross(조)</th><th class="n">마진콜 레벨(p)</th><th>상태</th></tr></thead>
+      <tbody><tr class="">
+      <td>2,000–2,500</td><td class="n">0.62</td><td class="n dim">0.98</td>
+      <td class="n">2,100</td>
+      <td>–</td></tr><tr class="">
+      <td>2,500–3,000</td><td class="n">2.26</td><td class="n dim">3.58</td>
+      <td class="n">2,520</td>
+      <td>–</td></tr><tr class="">
+      <td>3,000–3,500</td><td class="n">2.42</td><td class="n dim">3.84</td>
+      <td class="n">2,940</td>
+      <td>–</td></tr><tr class="">
+      <td>3,500–4,000</td><td class="n">1.34</td><td class="n dim">2.12</td>
+      <td class="n">3,360</td>
+      <td>–</td></tr><tr class="">
+      <td>4,000–4,500</td><td class="n">1.55</td><td class="n dim">2.46</td>
+      <td class="n">3,780</td>
+      <td>–</td></tr><tr class="">
+      <td>4,500–5,000</td><td class="n">1.17</td><td class="n dim">1.85</td>
+      <td class="n">4,200</td>
+      <td>–</td></tr><tr class="">
+      <td>5,000–5,500</td><td class="n">2.48</td><td class="n dim">3.94</td>
+      <td class="n">4,620</td>
+      <td>–</td></tr><tr class="">
+      <td>5,500–6,000</td><td class="n">1.70</td><td class="n dim">2.70</td>
+      <td class="n">5,040</td>
+      <td>–</td></tr><tr class="">
+      <td>6,000–6,500</td><td class="n">1.49</td><td class="n dim">2.37</td>
+      <td class="n">5,460</td>
+      <td>–</td></tr><tr class="r-part">
+      <td>6,500–7,000</td><td class="n">0.56</td><td class="n dim">0.88</td>
+      <td class="n">5,880</td>
+      <td>청산 진행</td></tr><tr class="r-hit">
+      <td>7,000–7,500</td><td class="n">0.82</td><td class="n dim">1.30</td>
+      <td class="n">6,300</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>7,500–8,000</td><td class="n">1.10</td><td class="n dim">1.75</td>
+      <td class="n">6,720</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>8,000–8,500</td><td class="n">2.03</td><td class="n dim">3.21</td>
+      <td class="n">7,140</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>8,500–9,000</td><td class="n">0.58</td><td class="n dim">0.92</td>
+      <td class="n">7,560</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>9,000–9,500</td><td class="n">0.40</td><td class="n dim">0.63</td>
+      <td class="n">7,980</td>
+      <td>청산 완료</td></tr></tbody>
+      <tfoot><tr><th>합계</th><th class="n">20.52</th><th class="n dim">32.55</th><th></th><th></th></tr></tfoot>
+    </table></div></div>
+  <div><h4>지수대별 실제 청산액 (2026.06.24~2026.07.24)</h4>
+    <div class="tw"><table>
+      <thead><tr><th>지수 구간(p)</th><th class="n">청산액(조)</th><th class="n">비중</th></tr></thead>
+      <tbody><tr>
+        <td>6,500–7,000</td><td class="n">1.99</td>
+        <td class="n">40%</td></tr><tr>
+        <td>7,000–7,500</td><td class="n">1.73</td>
+        <td class="n">35%</td></tr><tr>
+        <td>7,500–8,000</td><td class="n">0.49</td>
+        <td class="n">10%</td></tr><tr>
+        <td>8,000–8,500</td><td class="n">0.37</td>
+        <td class="n">7%</td></tr><tr>
+        <td>8,500–9,000</td><td class="n">0.36</td>
+        <td class="n">7%</td></tr></tbody>
+      <tfoot><tr><th>총유출</th><th class="n">4.93</th><th class="n">순감소 4.01</th></tr></tfoot>
+    </table></div>
+    <figcaption>일별 <b>감소분</b>을 그날 종가 구간에 배분. 청산 국면에도 신규 매수가 섞이므로 총유출이 순감소보다 크다.</figcaption></div>
+  <div><h4>하락 구간 누적 마진콜 노출(보정)</h4>
+    <div class="tw"><table>
+      <thead><tr><th>일자</th><th class="n">종가</th><th class="n">기간 최저</th><th class="n">누적 노출(조)</th></tr></thead>
+      <tbody><tr><td>2026.06.22</td>
+    <td class="n">9114.55</td><td class="n">9114.55</td>
+    <td class="n">0.00</td></tr><tr><td>2026.07.02</td>
+    <td class="n">7648.09</td><td class="n">7648.09</td>
+    <td class="n">0.40</td></tr><tr><td>2026.07.08</td>
+    <td class="n">7246.79</td><td class="n">7246.79</td>
+    <td class="n">0.97</td></tr><tr><td>2026.07.13</td>
+    <td class="n">6806.93</td><td class="n">6806.93</td>
+    <td class="n">3.00</td></tr><tr><td>2026.07.20</td>
+    <td class="n">6516.27</td><td class="n">6516.27</td>
+    <td class="n">4.11</td></tr><tr><td>2026.07.28</td>
+    <td class="n">6023.66</td><td class="n">6023.66</td>
+    <td class="n">4.93</td></tr><tr><td>2026.07.29</td>
+    <td class="n">5663.24</td><td class="n">5663.24</td>
+    <td class="n">5.48</td></tr></tbody>
+    </table></div>
+    <figcaption>반대매매는 되돌릴 수 없으므로 그날까지의 <b>최저 종가</b>로 판정한다.</figcaption></div>
+  <div><h4>추가 하락 시나리오</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">지수(p)</th><th class="n">저점 대비</th><th class="n">누적 노출(조)</th><th class="n">증가(조)</th></tr></thead>
+      <tbody><tr><td class="n">5,500</td>
+    <td class="n">-1.7%</td>
+    <td class="n">5.48</td>
+    <td class="n">0.00</td></tr><tr><td class="n">5,000</td>
+    <td class="n">-10.6%</td>
+    <td class="n">8.68</td>
+    <td class="n">3.20</td></tr><tr><td class="n">4,500</td>
+    <td class="n">-19.6%</td>
+    <td class="n">11.16</td>
+    <td class="n">5.68</td></tr><tr><td class="n">4,000</td>
+    <td class="n">-28.5%</td>
+    <td class="n">12.33</td>
+    <td class="n">6.85</td></tr><tr><td class="n">3,500</td>
+    <td class="n">-37.4%</td>
+    <td class="n">13.88</td>
+    <td class="n">8.40</td></tr></tbody>
+    </table></div></div>
+  <div><h4>담보유지비율 민감도 (지수 5,594)</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">담보유지비율</th><th class="n">계수</th><th class="n">노출(조)</th></tr></thead>
+      <tbody><tr class="">
+    <td class="n">130%</td><td class="n">0.78</td>
+    <td class="n">4.93</td></tr><tr class="r-base">
+    <td class="n">140%</td><td class="n">0.84</td>
+    <td class="n">5.48</td></tr><tr class="">
+    <td class="n">150%</td><td class="n">0.90</td>
+    <td class="n">6.97</td></tr><tr class="">
+    <td class="n">170%</td><td class="n">1.02</td>
+    <td class="n">11.16</td></tr></tbody>
+    </table></div>
+    <figcaption>계수 = 담보유지비율 × 융자비율(60%). 매수 지수 × 계수 = 마진콜 발생 지수.</figcaption></div>
+</div>
+</div>
+<div class="mkt">
+<h3 class="mh">코스닥 <span class="tag">버킷 50p</span></h3>
+<p class="lead">코스닥 신용거래융자를 코스닥 지수로 배분.</p>
+
+<div class="cards">
+  <div class="card"><div class="lb">지수 고점 → 저점</div><div class="vl">-47.4<span class="u">%</span></div><div class="nt">1,226 → 645</div></div>
+  <div class="card"><div class="lb">신용융자 고점</div><div class="vl">11.05<span class="u">조</span></div><div class="nt">2026.04.29</div></div>
+  <div class="card"><div class="lb">실측 청산</div><div class="vl neg">-4.23<span class="u">조</span></div><div class="nt">청산률 -38.3%</div></div>
+  <div class="card"><div class="lb">사이클 순증</div><div class="vl">4.47<span class="u">조</span></div><div class="nt">gross 10.10조 × 0.44</div></div>
+  <div class="card"><div class="lb">마진콜 진입(보정)</div><div class="vl neg">3.44<span class="u">조</span></div><div class="nt">순증의 77%</div></div>
+  <div class="card"><div class="lb">아직 미진입(보정)</div><div class="vl">1.03<span class="u">조</span></div><div class="nt">630p 이탈 시 개시</div></div>
+</div>
+
+<figure>
+  <svg viewBox="0 0 660 330" role="img" aria-label="지수대별 신용융자 누적 매수액과 마진콜 레벨">
+  <rect class="band" x="138.0" y="26" width="460.0" height="252"/>
+      <text class="note" x="368.0" y="38" text-anchor="middle">지수 645 기준 마진콜 진입</text>
+  <line class="grid" x1="46" y1="278.0" x2="598" y2="278.0"/>
+    <text class="ax" x="38" y="281.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="224.6" x2="598" y2="224.6"/>
+    <text class="ax" x="38" y="228.1" text-anchor="end">0.3</text><line class="grid" x1="46" y1="171.2" x2="598" y2="171.2"/>
+    <text class="ax" x="38" y="174.7" text-anchor="end">0.5</text><line class="grid" x1="46" y1="117.8" x2="598" y2="117.8"/>
+    <text class="ax" x="38" y="121.3" text-anchor="end">0.8</text><line class="grid" x1="46" y1="64.4" x2="598" y2="64.4"/>
+    <text class="ax" x="38" y="67.9" text-anchor="end">1.0</text>
+  <text class="ax" x="606" y="281.5">0</text><text class="ax" x="606" y="227.9">250</text><text class="ax" x="606" y="174.4">500</text><text class="ax" x="606" y="120.8">750</text><text class="ax" x="606" y="67.2">1,000</text>
+  <rect class="bar" x="53.4" y="267.9" width="31.3" height="10.1"/>
+      <text class="val" x="69.0" y="262.9" text-anchor="middle">0.05</text><rect class="bar" x="99.4" y="68.0" width="31.3" height="210.0"/>
+      <text class="val" x="115.0" y="63.0" text-anchor="middle">0.98</text><rect class="bar part" x="145.4" y="159.1" width="31.3" height="118.9"/>
+      <text class="val" x="161.0" y="154.1" text-anchor="middle">0.56</text><rect class="bar hit" x="191.4" y="187.1" width="31.3" height="90.9"/>
+      <text class="val" x="207.0" y="182.1" text-anchor="middle">0.43</text><rect class="bar hit" x="237.4" y="185.7" width="31.3" height="92.3"/>
+      <text class="val" x="253.0" y="180.7" text-anchor="middle">0.43</text><rect class="bar hit" x="283.4" y="162.8" width="31.3" height="115.2"/>
+      <text class="val" x="299.0" y="157.8" text-anchor="middle">0.54</text><rect class="bar hit" x="329.4" y="255.5" width="31.3" height="22.5"/>
+      <text class="val" x="345.0" y="250.5" text-anchor="middle">0.11</text><rect class="bar hit" x="375.4" y="247.7" width="31.3" height="30.3"/>
+      <text class="val" x="391.0" y="242.7" text-anchor="middle">0.14</text><rect class="bar hit" x="421.4" y="236.0" width="31.3" height="42.0"/>
+      <text class="val" x="437.0" y="231.0" text-anchor="middle">0.20</text><rect class="bar hit" x="467.4" y="216.3" width="31.3" height="61.7"/>
+      <text class="val" x="483.0" y="211.3" text-anchor="middle">0.29</text><rect class="bar hit" x="513.4" y="143.6" width="31.3" height="134.4"/>
+      <text class="val" x="529.0" y="138.6" text-anchor="middle">0.63</text><rect class="bar hit" x="559.4" y="252.1" width="31.3" height="25.9"/>
+      <text class="val" x="575.0" y="247.1" text-anchor="middle">0.12</text>
+  <path class="ln-margin" d="M69.0,152.0L115.0,143.0L161.0,134.0L207.0,125.0L253.0,116.0L299.0,107.0L345.0,98.0L391.0,89.0L437.0,80.0L483.0,71.0L529.0,62.0L575.0,53.0"/>
+  <circle class="dot" cx="69.0" cy="152.0" r="2.4"/><circle class="dot" cx="115.0" cy="143.0" r="2.4"/><circle class="dot" cx="161.0" cy="134.0" r="2.4"/><circle class="dot" cx="207.0" cy="125.0" r="2.4"/><circle class="dot" cx="253.0" cy="116.0" r="2.4"/><circle class="dot" cx="299.0" cy="107.0" r="2.4"/><circle class="dot" cx="345.0" cy="98.0" r="2.4"/><circle class="dot" cx="391.0" cy="89.0" r="2.4"/><circle class="dot" cx="437.0" cy="80.0" r="2.4"/><circle class="dot" cx="483.0" cy="71.0" r="2.4"/><circle class="dot" cx="529.0" cy="62.0" r="2.4"/><circle class="dot" cx="575.0" cy="53.0" r="2.4"/>
+  <text class="ax sm" x="69.0" y="294" text-anchor="middle">650</text><text class="ax sm" x="115.0" y="294" text-anchor="middle">700</text><text class="ax sm" x="161.0" y="294" text-anchor="middle">750</text><text class="ax sm" x="207.0" y="294" text-anchor="middle">800</text><text class="ax sm" x="253.0" y="294" text-anchor="middle">850</text><text class="ax sm" x="299.0" y="294" text-anchor="middle">900</text><text class="ax sm" x="345.0" y="294" text-anchor="middle">950</text><text class="ax sm" x="391.0" y="294" text-anchor="middle">1,000</text><text class="ax sm" x="437.0" y="294" text-anchor="middle">1,050</text><text class="ax sm" x="483.0" y="294" text-anchor="middle">1,100</text><text class="ax sm" x="529.0" y="294" text-anchor="middle">1,150</text><text class="ax sm" x="575.0" y="294" text-anchor="middle">1,200</text>
+  <text class="unit" x="46" y="14">조원(보정)</text>
+  <text class="unit" x="598" y="14" text-anchor="end">마진콜 지수(p)</text>
+</svg>
+  <div class="lg"><span><i class="sw hit"></i>마진콜 전량 진입</span><span><i class="sw part"></i>일부 진입</span><span><i class="sw bar"></i>미진입</span><span><i class="sw acc"></i>마진콜 레벨(우축, 상단기준)</span></div>
+  <figcaption>2024.12.31 잔고를 기준선으로 2026.07.30까지의 일별 증가분을 그날 종가의 50p 구간에 배분한 뒤,
+  합계를 사이클 순증 4.47조에 맞춰 0.44배로 보정했다.</figcaption>
+</figure>
+
+<figure>
+  <h4>어디서 쌓이고 어디서 털렸는가</h4>
+  <svg viewBox="0 0 660 300" role="img" aria-label="지수대별 적립과 청산 비교">
+  <line class="grid" x1="46" y1="250.0" x2="644" y2="250.0"/>
+    <text class="ax" x="38" y="253.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="202.5" x2="644" y2="202.5"/>
+    <text class="ax" x="38" y="206.0" text-anchor="end">0.3</text><line class="grid" x1="46" y1="155.1" x2="644" y2="155.1"/>
+    <text class="ax" x="38" y="158.6" text-anchor="end">0.5</text><line class="grid" x1="46" y1="107.6" x2="644" y2="107.6"/>
+    <text class="ax" x="38" y="111.1" text-anchor="end">0.8</text><line class="grid" x1="46" y1="60.1" x2="644" y2="60.1"/>
+    <text class="ax" x="38" y="63.6" text-anchor="end">1.0</text>
+  <rect class="bar fin" x="54.0" y="241.0" width="15.9" height="9.0"/><rect class="bar fout" x="71.9" y="230.6" width="15.9" height="19.4"/><rect class="bar fin" x="103.8" y="63.3" width="15.9" height="186.7"/><rect class="bar fin" x="153.6" y="144.3" width="15.9" height="105.7"/><rect class="bar fout" x="171.6" y="85.4" width="15.9" height="164.6"/><rect class="bar fin" x="203.5" y="169.2" width="15.9" height="80.8"/><rect class="bar fout" x="221.4" y="176.6" width="15.9" height="73.4"/><rect class="bar fin" x="253.3" y="168.0" width="15.9" height="82.0"/><rect class="bar fout" x="271.3" y="146.2" width="15.9" height="103.8"/><rect class="bar fin" x="303.1" y="147.6" width="15.9" height="102.4"/><rect class="bar fout" x="321.1" y="133.4" width="15.9" height="116.6"/><rect class="bar fin" x="353.0" y="230.0" width="15.9" height="20.0"/><rect class="bar fout" x="370.9" y="116.6" width="15.9" height="133.4"/><rect class="bar fin" x="402.8" y="223.1" width="15.9" height="26.9"/><rect class="bar fout" x="420.8" y="196.0" width="15.9" height="54.0"/><rect class="bar fin" x="452.6" y="212.7" width="15.9" height="37.3"/><rect class="bar fout" x="470.6" y="169.0" width="15.9" height="81.0"/><rect class="bar fin" x="502.5" y="195.2" width="15.9" height="54.8"/><rect class="bar fout" x="520.4" y="198.5" width="15.9" height="51.5"/><rect class="bar fin" x="552.3" y="130.5" width="15.9" height="119.5"/><rect class="bar fout" x="570.3" y="139.3" width="15.9" height="110.7"/><rect class="bar fin" x="602.1" y="227.0" width="15.9" height="23.0"/><rect class="bar fout" x="620.1" y="220.5" width="15.9" height="29.5"/><line class="wmark mb" x1="332.6" y1="26" x2="332.6" y2="250.0"/>
+      <text class="wlab mb" x="332.6" y="22.0" text-anchor="middle">평균매수 913</text><line class="wmark mu" x1="375.8" y1="26" x2="375.8" y2="250.0"/>
+      <text class="wlab mu" x="375.8" y="22.0" text-anchor="middle">평균청산 956</text><text class="ax sm" x="70.9" y="266" text-anchor="middle">650</text><text class="ax sm" x="120.8" y="266" text-anchor="middle">700</text><text class="ax sm" x="170.6" y="266" text-anchor="middle">750</text><text class="ax sm" x="220.4" y="266" text-anchor="middle">800</text><text class="ax sm" x="270.3" y="266" text-anchor="middle">850</text><text class="ax sm" x="320.1" y="266" text-anchor="middle">900</text><text class="ax sm" x="369.9" y="266" text-anchor="middle">950</text><text class="ax sm" x="419.8" y="266" text-anchor="middle">1,000</text><text class="ax sm" x="469.6" y="266" text-anchor="middle">1,050</text><text class="ax sm" x="519.4" y="266" text-anchor="middle">1,100</text><text class="ax sm" x="569.3" y="266" text-anchor="middle">1,150</text><text class="ax sm" x="619.1" y="266" text-anchor="middle">1,200</text>
+  <text class="unit" x="46" y="14">조원</text>
+</svg>
+  <div class="lg"><span><i class="sw fin"></i>적립(보정)</span><span><i class="sw fout"></i>실제 청산</span><span><i class="sw mb"></i>금액가중 평균 매수 지수</span><span><i class="sw mu"></i>금액가중 평균 청산 지수</span></div>
+  <figcaption>가중평균 매수 913p, 청산 956p.
+  
+  진행 중인 사이클은 청산 국면이 짧아 최근 고지수 물량만 반영된다. 손실률로 읽을 수 있는 값이 아니다.</figcaption>
+</figure>
+
+<div class="box ">
+  <b>모델 vs 실측</b> — 보정 모델 <b>3.44조</b> vs 실측 청산 -4.23조,
+  오차 <b>0.79조</b>. (보정 전 gross 기준은 7.77조로 오차 3.54조.)
+  진행 중인 사이클이다. 신용융자는 결제일 기준이라 급락 당일 청산이 즉시 반영되지 않고, 추가 담보 납입분도 섞여 있다.
+</div>
+<div class="box">
+    <b>거래대금 대비 규모</b> — 청산 국면(2026.04.29~2026.07.29) 총유출
+    <b>4.94조</b>는 그 기간 거래대금(708.67조)의 0.70%,
+    그 시대 정상 하루 거래대금(13.93조)의 0.35배에 해당한다.
+    같은 국면 거래대금은 정상 대비 77% 수준이었다
+    (100% 미만이면 청산이 유동성이 마른 상태에서 진행됐다는 뜻).
+    남은 사다리 1.03조는 <b>오늘 기준</b> 하루 평균 거래대금(5.70조)의
+    0.18배다.
+  </div>
+
+<div class="tables">
+  <div><h4>마진콜 사다리 — 지수가 이 아래로 마감하면 열리는 물량</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">지수(p) 밑</th><th>매수구간(p)</th><th class="n">증가(조)</th><th class="n">누적(조)</th><th class="n">누적/하루거래대금</th></tr></thead>
+      <tbody><tr>
+    <td class="n">630</td><td>700–750</td>
+    <td class="n">+0.98</td><td class="n">0.98</td>
+    <td class="n">17.2%</td></tr><tr>
+    <td class="n">588</td><td>650–700</td>
+    <td class="n">+0.05</td><td class="n">1.03</td>
+    <td class="n">18.1%</td></tr></tbody>
+      <tfoot><tr><th colspan="3">총 잔여</th><th class="n">1.03</th><th></th></tr></tfoot>
+    </table></div>
+    <figcaption>현재 지수 645p 기준. 안 터진 버킷을 마진콜 지수 내림차순으로 나열했다 —
+    지수가 더 떨어질수록 이 순서대로 열린다. 오른쪽 열은 오늘 기준 하루 평균 거래대금 대비 누적 비중이다.</figcaption></div>
+  <div><h4>구간별 누적 신용매수와 마진콜 레벨</h4>
+    <div class="tw"><table>
+      <thead><tr><th>지수 구간(p)</th><th class="n">보정(조)</th><th class="n">gross(조)</th><th class="n">마진콜 레벨(p)</th><th>상태</th></tr></thead>
+      <tbody><tr class="">
+      <td>650–700</td><td class="n">0.05</td><td class="n dim">0.11</td>
+      <td class="n">588</td>
+      <td>–</td></tr><tr class="">
+      <td>700–750</td><td class="n">0.98</td><td class="n dim">2.22</td>
+      <td class="n">630</td>
+      <td>–</td></tr><tr class="r-part">
+      <td>750–800</td><td class="n">0.56</td><td class="n dim">1.26</td>
+      <td class="n">672</td>
+      <td>청산 진행</td></tr><tr class="r-hit">
+      <td>800–850</td><td class="n">0.43</td><td class="n dim">0.96</td>
+      <td class="n">714</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>850–900</td><td class="n">0.43</td><td class="n dim">0.98</td>
+      <td class="n">756</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>900–950</td><td class="n">0.54</td><td class="n dim">1.22</td>
+      <td class="n">798</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>950–1,000</td><td class="n">0.11</td><td class="n dim">0.24</td>
+      <td class="n">840</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>1,000–1,050</td><td class="n">0.14</td><td class="n dim">0.32</td>
+      <td class="n">882</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>1,050–1,100</td><td class="n">0.20</td><td class="n dim">0.44</td>
+      <td class="n">924</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>1,100–1,150</td><td class="n">0.29</td><td class="n dim">0.65</td>
+      <td class="n">966</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>1,150–1,200</td><td class="n">0.63</td><td class="n dim">1.42</td>
+      <td class="n">1,008</td>
+      <td>청산 완료</td></tr><tr class="r-hit">
+      <td>1,200–1,250</td><td class="n">0.12</td><td class="n dim">0.27</td>
+      <td class="n">1,050</td>
+      <td>청산 완료</td></tr></tbody>
+      <tfoot><tr><th>합계</th><th class="n">4.47</th><th class="n dim">10.10</th><th></th><th></th></tr></tfoot>
+    </table></div></div>
+  <div><h4>지수대별 실제 청산액 (2026.04.29~2026.07.29)</h4>
+    <div class="tw"><table>
+      <thead><tr><th>지수 구간(p)</th><th class="n">청산액(조)</th><th class="n">비중</th></tr></thead>
+      <tbody><tr>
+        <td>650–700</td><td class="n">0.10</td>
+        <td class="n">2%</td></tr><tr>
+        <td>750–800</td><td class="n">0.87</td>
+        <td class="n">18%</td></tr><tr>
+        <td>800–850</td><td class="n">0.39</td>
+        <td class="n">8%</td></tr><tr>
+        <td>850–900</td><td class="n">0.55</td>
+        <td class="n">11%</td></tr><tr>
+        <td>900–950</td><td class="n">0.61</td>
+        <td class="n">12%</td></tr><tr>
+        <td>950–1,000</td><td class="n">0.70</td>
+        <td class="n">14%</td></tr><tr>
+        <td>1,000–1,050</td><td class="n">0.28</td>
+        <td class="n">6%</td></tr><tr>
+        <td>1,050–1,100</td><td class="n">0.43</td>
+        <td class="n">9%</td></tr><tr>
+        <td>1,100–1,150</td><td class="n">0.27</td>
+        <td class="n">5%</td></tr><tr>
+        <td>1,150–1,200</td><td class="n">0.58</td>
+        <td class="n">12%</td></tr><tr>
+        <td>1,200–1,250</td><td class="n">0.16</td>
+        <td class="n">3%</td></tr></tbody>
+      <tfoot><tr><th>총유출</th><th class="n">4.94</th><th class="n">순감소 4.23</th></tr></tfoot>
+    </table></div>
+    <figcaption>일별 <b>감소분</b>을 그날 종가 구간에 배분. 청산 국면에도 신규 매수가 섞이므로 총유출이 순감소보다 크다.</figcaption></div>
+  <div><h4>하락 구간 누적 마진콜 노출(보정)</h4>
+    <div class="tw"><table>
+      <thead><tr><th>일자</th><th class="n">종가</th><th class="n">기간 최저</th><th class="n">누적 노출(조)</th></tr></thead>
+      <tbody><tr><td>2026.04.27</td>
+    <td class="n">1226.18</td><td class="n">1226.18</td>
+    <td class="n">0.00</td></tr><tr><td>2026.06.02</td>
+    <td class="n">1026.03</td><td class="n">1026.03</td>
+    <td class="n">0.12</td></tr><tr><td>2026.06.05</td>
+    <td class="n">1002.44</td><td class="n">1002.44</td>
+    <td class="n">0.75</td></tr><tr><td>2026.06.08</td>
+    <td class="n">911.39</td><td class="n">911.39</td>
+    <td class="n">1.24</td></tr><tr><td>2026.06.26</td>
+    <td class="n">851.37</td><td class="n">851.37</td>
+    <td class="n">1.38</td></tr><tr><td>2026.07.07</td>
+    <td class="n">831.23</td><td class="n">831.23</td>
+    <td class="n">1.48</td></tr><tr><td>2026.07.08</td>
+    <td class="n">785.00</td><td class="n">785.00</td>
+    <td class="n">2.02</td></tr><tr><td>2026.07.20</td>
+    <td class="n">749.64</td><td class="n">749.64</td>
+    <td class="n">2.45</td></tr><tr><td>2026.07.28</td>
+    <td class="n">705.85</td><td class="n">705.85</td>
+    <td class="n">2.88</td></tr><tr><td>2026.07.29</td>
+    <td class="n">662.68</td><td class="n">662.68</td>
+    <td class="n">3.44</td></tr></tbody>
+    </table></div>
+    <figcaption>반대매매는 되돌릴 수 없으므로 그날까지의 <b>최저 종가</b>로 판정한다.</figcaption></div>
+  <div><h4>추가 하락 시나리오</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">지수(p)</th><th class="n">저점 대비</th><th class="n">누적 노출(조)</th><th class="n">증가(조)</th></tr></thead>
+      <tbody><tr><td class="n">600</td>
+    <td class="n">-6.9%</td>
+    <td class="n">4.42</td>
+    <td class="n">0.98</td></tr><tr><td class="n">500</td>
+    <td class="n">-22.5%</td>
+    <td class="n">4.47</td>
+    <td class="n">1.03</td></tr><tr><td class="n">450</td>
+    <td class="n">-30.2%</td>
+    <td class="n">4.47</td>
+    <td class="n">1.03</td></tr><tr><td class="n">400</td>
+    <td class="n">-38.0%</td>
+    <td class="n">4.47</td>
+    <td class="n">1.03</td></tr></tbody>
+    </table></div></div>
+  <div><h4>담보유지비율 민감도 (지수 645)</h4>
+    <div class="tw"><table>
+      <thead><tr><th class="n">담보유지비율</th><th class="n">계수</th><th class="n">노출(조)</th></tr></thead>
+      <tbody><tr class="">
+    <td class="n">130%</td><td class="n">0.78</td>
+    <td class="n">2.88</td></tr><tr class="r-base">
+    <td class="n">140%</td><td class="n">0.84</td>
+    <td class="n">3.44</td></tr><tr class="">
+    <td class="n">150%</td><td class="n">0.90</td>
+    <td class="n">4.42</td></tr><tr class="">
+    <td class="n">170%</td><td class="n">1.02</td>
+    <td class="n">4.47</td></tr></tbody>
+    </table></div>
+    <figcaption>계수 = 담보유지비율 × 융자비율(60%). 매수 지수 × 계수 = 마진콜 발생 지수.</figcaption></div>
+</div>
+</div>
+</section>
+</div>
+<div class="cycpane cp-c2021">
 <section>
 <h2>2020–21 사이클</h2>
 <p class="lead">코로나 저점(2020.3) 이후 적립 → 2021.9 신용 고점 → 2022~2023.1 청산. 이미 끝난 국면이라 진행 중인 사이클의 대조군이 된다. 적립 2019.12.31~2021.12.31 · 청산 판정 ~2023.01.31</p>
@@ -1632,726 +2386,7 @@
 </div>
 </div>
 </section>
-<section>
-<h2>2025–26 사이클</h2>
-<p class="lead">2025년 초부터 적립 → 2026.6 신용 고점 → 청산 진행 중. 적립 2024.12.31~2026.07.30 · 청산 판정 ~2026.07.30</p>
-<div class="mkt">
-<h3 class="mh">전체 <span class="tag">버킷 500p</span></h3>
-<p class="lead">신용융자 합계(유가증권+코스닥)를 코스피 지수로 배분. 원 자료와 같은 구성이라 재현 검증의 기준이 된다.</p>
-
-<div class="cards">
-  <div class="card"><div class="lb">지수 고점 → 저점</div><div class="vl">-38.6<span class="u">%</span></div><div class="nt">9,115 → 5,594</div></div>
-  <div class="card"><div class="lb">신용융자 고점</div><div class="vl">38.63<span class="u">조</span></div><div class="nt">2026.06.24</div></div>
-  <div class="card"><div class="lb">실측 청산</div><div class="vl neg">-6.48<span class="u">조</span></div><div class="nt">청산률 -16.8%</div></div>
-  <div class="card"><div class="lb">사이클 순증</div><div class="vl">22.82<span class="u">조</span></div><div class="nt">gross 39.16조 × 0.58</div></div>
-  <div class="card"><div class="lb">마진콜 진입(보정)</div><div class="vl neg">4.72<span class="u">조</span></div><div class="nt">순증의 21%</div></div>
-  <div class="card"><div class="lb">아직 미진입(보정)</div><div class="vl">18.10<span class="u">조</span></div><div class="nt">5,460p 이탈 시 개시</div></div>
 </div>
-
-<figure>
-  <svg viewBox="0 0 660 330" role="img" aria-label="지수대별 신용융자 누적 매수액과 마진콜 레벨">
-  <rect class="band" x="377.2" y="26" width="220.8" height="252"/>
-      <text class="note" x="487.6" y="38" text-anchor="middle">지수 5,594 기준 마진콜 진입</text>
-  <line class="grid" x1="46" y1="278.0" x2="598" y2="278.0"/>
-    <text class="ax" x="38" y="281.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="213.7" x2="598" y2="213.7"/>
-    <text class="ax" x="38" y="217.2" text-anchor="end">1.0</text><line class="grid" x1="46" y1="149.5" x2="598" y2="149.5"/>
-    <text class="ax" x="38" y="153.0" text-anchor="end">2.0</text><line class="grid" x1="46" y1="85.2" x2="598" y2="85.2"/>
-    <text class="ax" x="38" y="88.7" text-anchor="end">3.0</text>
-  <text class="ax" x="606" y="281.5">0</text><text class="ax" x="606" y="225.1">2,000</text><text class="ax" x="606" y="168.7">4,000</text><text class="ax" x="606" y="112.3">6,000</text><text class="ax" x="606" y="55.9">8,000</text>
-  <rect class="bar" x="51.9" y="219.9" width="25.0" height="58.1"/>
-      <text class="val" x="64.4" y="214.9" text-anchor="middle">0.90</text><rect class="bar" x="88.7" y="68.0" width="25.0" height="210.0"/>
-      <text class="val" x="101.2" y="63.0" text-anchor="middle">3.27</text><rect class="bar" x="125.5" y="80.3" width="25.0" height="197.7"/>
-      <text class="val" x="138.0" y="75.3" text-anchor="middle">3.08</text><rect class="bar" x="162.3" y="183.8" width="25.0" height="94.2"/>
-      <text class="val" x="174.8" y="178.8" text-anchor="middle">1.47</text><rect class="bar" x="199.1" y="158.6" width="25.0" height="119.4"/>
-      <text class="val" x="211.6" y="153.6" text-anchor="middle">1.86</text><rect class="bar" x="235.9" y="198.1" width="25.0" height="79.9"/>
-      <text class="val" x="248.4" y="193.1" text-anchor="middle">1.24</text><rect class="bar" x="272.7" y="122.3" width="25.0" height="155.7"/>
-      <text class="val" x="285.2" y="117.3" text-anchor="middle">2.42</text><rect class="bar" x="309.5" y="155.1" width="25.0" height="122.9"/>
-      <text class="val" x="322.0" y="150.1" text-anchor="middle">1.91</text><rect class="bar" x="346.3" y="152.8" width="25.0" height="125.2"/>
-      <text class="val" x="358.8" y="147.8" text-anchor="middle">1.95</text><rect class="bar part" x="383.1" y="239.6" width="25.0" height="38.4"/>
-      <text class="val" x="395.6" y="234.6" text-anchor="middle">0.60</text><rect class="bar hit" x="419.9" y="235.6" width="25.0" height="42.4"/>
-      <text class="val" x="432.4" y="230.6" text-anchor="middle">0.66</text><rect class="bar hit" x="456.7" y="228.3" width="25.0" height="49.7"/>
-      <text class="val" x="469.2" y="223.3" text-anchor="middle">0.77</text><rect class="bar hit" x="493.5" y="169.4" width="25.0" height="108.6"/>
-      <text class="val" x="506.0" y="164.4" text-anchor="middle">1.69</text><rect class="bar hit" x="530.3" y="241.4" width="25.0" height="36.6"/>
-      <text class="val" x="542.8" y="236.4" text-anchor="middle">0.57</text><rect class="bar hit" x="567.1" y="250.6" width="25.0" height="27.4"/>
-      <text class="val" x="579.6" y="245.6" text-anchor="middle">0.43</text>
-  <path class="ln-margin" d="M64.4,218.8L101.2,206.9L138.0,195.1L174.8,183.3L211.6,171.4L248.4,159.6L285.2,147.7L322.0,135.9L358.8,124.1L395.6,112.2L432.4,100.4L469.2,88.5L506.0,76.7L542.8,64.8L579.6,53.0"/>
-  <circle class="dot" cx="64.4" cy="218.8" r="2.4"/><circle class="dot" cx="101.2" cy="206.9" r="2.4"/><circle class="dot" cx="138.0" cy="195.1" r="2.4"/><circle class="dot" cx="174.8" cy="183.3" r="2.4"/><circle class="dot" cx="211.6" cy="171.4" r="2.4"/><circle class="dot" cx="248.4" cy="159.6" r="2.4"/><circle class="dot" cx="285.2" cy="147.7" r="2.4"/><circle class="dot" cx="322.0" cy="135.9" r="2.4"/><circle class="dot" cx="358.8" cy="124.1" r="2.4"/><circle class="dot" cx="395.6" cy="112.2" r="2.4"/><circle class="dot" cx="432.4" cy="100.4" r="2.4"/><circle class="dot" cx="469.2" cy="88.5" r="2.4"/><circle class="dot" cx="506.0" cy="76.7" r="2.4"/><circle class="dot" cx="542.8" cy="64.8" r="2.4"/><circle class="dot" cx="579.6" cy="53.0" r="2.4"/>
-  <text class="ax sm" transform="translate(64.4,292) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(101.2,292) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(138.0,292) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(174.8,292) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(211.6,292) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(248.4,292) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(285.2,292) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(322.0,292) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(358.8,292) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(395.6,292) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(432.4,292) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(469.2,292) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(506.0,292) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(542.8,292) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(579.6,292) rotate(-52)" text-anchor="end">9,000</text>
-  <text class="unit" x="46" y="14">조원(보정)</text>
-  <text class="unit" x="598" y="14" text-anchor="end">마진콜 지수(p)</text>
-</svg>
-  <div class="lg"><span><i class="sw hit"></i>마진콜 전량 진입</span><span><i class="sw part"></i>일부 진입</span><span><i class="sw bar"></i>미진입</span><span><i class="sw acc"></i>마진콜 레벨(우축, 상단기준)</span></div>
-  <figcaption>2024.12.31 잔고를 기준선으로 2026.07.30까지의 일별 증가분을 그날 종가의 500p 구간에 배분한 뒤,
-  합계를 사이클 순증 22.82조에 맞춰 0.58배로 보정했다.</figcaption>
-</figure>
-
-<figure>
-  <h4>어디서 쌓이고 어디서 털렸는가</h4>
-  <svg viewBox="0 0 660 300" role="img" aria-label="지수대별 적립과 청산 비교">
-  <line class="grid" x1="46" y1="250.0" x2="644" y2="250.0"/>
-    <text class="ax" x="38" y="253.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="192.9" x2="644" y2="192.9"/>
-    <text class="ax" x="38" y="196.4" text-anchor="end">1.0</text><line class="grid" x1="46" y1="135.8" x2="644" y2="135.8"/>
-    <text class="ax" x="38" y="139.3" text-anchor="end">2.0</text><line class="grid" x1="46" y1="78.6" x2="644" y2="78.6"/>
-    <text class="ax" x="38" y="82.1" text-anchor="end">3.0</text>
-  <rect class="bar fin" x="52.2" y="198.4" width="12.8" height="51.6"/><rect class="bar fin" x="92.0" y="63.3" width="12.8" height="186.7"/><rect class="bar fin" x="131.9" y="74.2" width="12.8" height="175.8"/><rect class="bar fin" x="171.8" y="166.2" width="12.8" height="83.8"/><rect class="bar fin" x="211.6" y="143.9" width="12.8" height="106.1"/><rect class="bar fin" x="251.5" y="179.0" width="12.8" height="71.0"/><rect class="bar fin" x="291.4" y="111.6" width="12.8" height="138.4"/><rect class="bar fin" x="331.2" y="140.7" width="12.8" height="109.3"/><rect class="bar fout" x="346.0" y="190.5" width="12.8" height="59.5"/><rect class="bar fin" x="371.1" y="138.8" width="12.8" height="111.2"/><rect class="bar fin" x="411.0" y="215.8" width="12.8" height="34.2"/><rect class="bar fout" x="425.7" y="107.3" width="12.8" height="142.7"/><rect class="bar fin" x="450.8" y="212.3" width="12.8" height="37.7"/><rect class="bar fout" x="465.6" y="121.1" width="12.8" height="128.9"/><rect class="bar fin" x="490.7" y="205.8" width="12.8" height="44.2"/><rect class="bar fout" x="505.5" y="216.0" width="12.8" height="34.0"/><rect class="bar fin" x="530.6" y="153.5" width="12.8" height="96.5"/><rect class="bar fout" x="545.3" y="198.7" width="12.8" height="51.3"/><rect class="bar fin" x="570.4" y="217.5" width="12.8" height="32.5"/><rect class="bar fout" x="585.2" y="216.6" width="12.8" height="33.4"/><rect class="bar fin" x="610.3" y="225.7" width="12.8" height="24.3"/><line class="wmark mb" x1="304.5" y1="26" x2="304.5" y2="250.0"/>
-      <text class="wlab mb" x="304.5" y="22.0" text-anchor="middle">평균매수 4,992</text><line class="wmark mu" x1="477.1" y1="26" x2="477.1" y2="250.0"/>
-      <text class="wlab mu" x="477.1" y="22.0" text-anchor="middle">평균청산 7,156</text><text class="ax sm" transform="translate(65.9,264) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(105.8,264) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(145.7,264) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(185.5,264) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(225.4,264) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(265.3,264) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(305.1,264) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(345.0,264) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(384.9,264) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(424.7,264) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(464.6,264) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(504.5,264) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(544.3,264) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(584.2,264) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(624.1,264) rotate(-52)" text-anchor="end">9,000</text>
-  <text class="unit" x="46" y="14">조원</text>
-</svg>
-  <div class="lg"><span><i class="sw fin"></i>적립(보정)</span><span><i class="sw fout"></i>실제 청산</span><span><i class="sw mb"></i>금액가중 평균 매수 지수</span><span><i class="sw mu"></i>금액가중 평균 청산 지수</span></div>
-  <figcaption>가중평균 매수 4,992p, 청산 7,156p.
-  
-  진행 중인 사이클은 청산 국면이 짧아 최근 고지수 물량만 반영된다. 손실률로 읽을 수 있는 값이 아니다.</figcaption>
-</figure>
-
-<div class="box warn">
-  <b>모델 vs 실측</b> — 보정 모델 <b>4.72조</b> vs 실측 청산 -6.48조,
-  오차 <b>1.76조</b>. (보정 전 gross 기준은 8.10조로 오차 1.62조.)
-  진행 중인 사이클이다. 신용융자는 결제일 기준이라 급락 당일 청산이 즉시 반영되지 않고, 추가 담보 납입분도 섞여 있다.
-</div>
-<div class="box">
-    <b>거래대금 대비 규모</b> — 청산 국면(2026.06.24~2026.07.30) 총유출
-    <b>7.87조</b>는 그 기간 거래대금(1210.05조)의 0.65%,
-    그 시대 정상 하루 거래대금(64.69조)의 0.12배에 해당한다.
-    같은 국면 거래대금은 정상 대비 69% 수준이었다
-    (100% 미만이면 청산이 유동성이 마른 상태에서 진행됐다는 뜻).
-    남은 사다리 18.10조는 <b>오늘 기준</b> 하루 평균 거래대금(40.78조)의
-    0.44배다.
-  </div>
-
-<div class="tables">
-  <div><h4>마진콜 사다리 — 지수가 이 아래로 마감하면 열리는 물량</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">지수(p) 밑</th><th>매수구간(p)</th><th class="n">증가(조)</th><th class="n">누적(조)</th><th class="n">누적/하루거래대금</th></tr></thead>
-      <tbody><tr>
-    <td class="n">5,460</td><td>6,000–6,500</td>
-    <td class="n">+1.95</td><td class="n">1.95</td>
-    <td class="n">4.8%</td></tr><tr>
-    <td class="n">5,040</td><td>5,500–6,000</td>
-    <td class="n">+1.91</td><td class="n">3.86</td>
-    <td class="n">9.5%</td></tr><tr>
-    <td class="n">4,620</td><td>5,000–5,500</td>
-    <td class="n">+2.42</td><td class="n">6.28</td>
-    <td class="n">15.4%</td></tr><tr>
-    <td class="n">4,200</td><td>4,500–5,000</td>
-    <td class="n">+1.24</td><td class="n">7.53</td>
-    <td class="n">18.5%</td></tr><tr>
-    <td class="n">3,780</td><td>4,000–4,500</td>
-    <td class="n">+1.86</td><td class="n">9.38</td>
-    <td class="n">23.0%</td></tr><tr>
-    <td class="n">3,360</td><td>3,500–4,000</td>
-    <td class="n">+1.47</td><td class="n">10.85</td>
-    <td class="n">26.6%</td></tr><tr>
-    <td class="n">2,940</td><td>3,000–3,500</td>
-    <td class="n">+3.08</td><td class="n">13.93</td>
-    <td class="n">34.1%</td></tr><tr>
-    <td class="n">2,520</td><td>2,500–3,000</td>
-    <td class="n">+3.27</td><td class="n">17.19</td>
-    <td class="n">42.2%</td></tr><tr>
-    <td class="n">2,100</td><td>2,000–2,500</td>
-    <td class="n">+0.90</td><td class="n">18.10</td>
-    <td class="n">44.4%</td></tr></tbody>
-      <tfoot><tr><th colspan="3">총 잔여</th><th class="n">18.10</th><th></th></tr></tfoot>
-    </table></div>
-    <figcaption>현재 지수 5,594p 기준. 안 터진 버킷을 마진콜 지수 내림차순으로 나열했다 —
-    지수가 더 떨어질수록 이 순서대로 열린다. 오른쪽 열은 오늘 기준 하루 평균 거래대금 대비 누적 비중이다.</figcaption></div>
-  <div><h4>구간별 누적 신용매수와 마진콜 레벨</h4>
-    <div class="tw"><table>
-      <thead><tr><th>지수 구간(p)</th><th class="n">보정(조)</th><th class="n">gross(조)</th><th class="n">마진콜 레벨(p)</th><th>상태</th></tr></thead>
-      <tbody><tr class="">
-      <td>2,000–2,500</td><td class="n">0.90</td><td class="n dim">1.55</td>
-      <td class="n">2,100</td>
-      <td>–</td></tr><tr class="">
-      <td>2,500–3,000</td><td class="n">3.27</td><td class="n dim">5.61</td>
-      <td class="n">2,520</td>
-      <td>–</td></tr><tr class="">
-      <td>3,000–3,500</td><td class="n">3.08</td><td class="n dim">5.28</td>
-      <td class="n">2,940</td>
-      <td>–</td></tr><tr class="">
-      <td>3,500–4,000</td><td class="n">1.47</td><td class="n dim">2.52</td>
-      <td class="n">3,360</td>
-      <td>–</td></tr><tr class="">
-      <td>4,000–4,500</td><td class="n">1.86</td><td class="n dim">3.19</td>
-      <td class="n">3,780</td>
-      <td>–</td></tr><tr class="">
-      <td>4,500–5,000</td><td class="n">1.24</td><td class="n dim">2.13</td>
-      <td class="n">4,200</td>
-      <td>–</td></tr><tr class="">
-      <td>5,000–5,500</td><td class="n">2.42</td><td class="n dim">4.16</td>
-      <td class="n">4,620</td>
-      <td>–</td></tr><tr class="">
-      <td>5,500–6,000</td><td class="n">1.91</td><td class="n dim">3.28</td>
-      <td class="n">5,040</td>
-      <td>–</td></tr><tr class="">
-      <td>6,000–6,500</td><td class="n">1.95</td><td class="n dim">3.34</td>
-      <td class="n">5,460</td>
-      <td>–</td></tr><tr class="r-part">
-      <td>6,500–7,000</td><td class="n">0.60</td><td class="n dim">1.03</td>
-      <td class="n">5,880</td>
-      <td>청산 진행</td></tr><tr class="r-hit">
-      <td>7,000–7,500</td><td class="n">0.66</td><td class="n dim">1.13</td>
-      <td class="n">6,300</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>7,500–8,000</td><td class="n">0.77</td><td class="n dim">1.33</td>
-      <td class="n">6,720</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>8,000–8,500</td><td class="n">1.69</td><td class="n dim">2.90</td>
-      <td class="n">7,140</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>8,500–9,000</td><td class="n">0.57</td><td class="n dim">0.98</td>
-      <td class="n">7,560</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>9,000–9,500</td><td class="n">0.43</td><td class="n dim">0.73</td>
-      <td class="n">7,980</td>
-      <td>청산 완료</td></tr></tbody>
-      <tfoot><tr><th>합계</th><th class="n">22.82</th><th class="n dim">39.16</th><th></th><th></th></tr></tfoot>
-    </table></div></div>
-  <div><h4>지수대별 실제 청산액 (2026.06.24~2026.07.30)</h4>
-    <div class="tw"><table>
-      <thead><tr><th>지수 구간(p)</th><th class="n">청산액(조)</th><th class="n">비중</th></tr></thead>
-      <tbody><tr>
-        <td>5,500–6,000</td><td class="n">1.04</td>
-        <td class="n">13%</td></tr><tr>
-        <td>6,500–7,000</td><td class="n">2.50</td>
-        <td class="n">32%</td></tr><tr>
-        <td>7,000–7,500</td><td class="n">2.26</td>
-        <td class="n">29%</td></tr><tr>
-        <td>7,500–8,000</td><td class="n">0.59</td>
-        <td class="n">8%</td></tr><tr>
-        <td>8,000–8,500</td><td class="n">0.90</td>
-        <td class="n">11%</td></tr><tr>
-        <td>8,500–9,000</td><td class="n">0.58</td>
-        <td class="n">7%</td></tr></tbody>
-      <tfoot><tr><th>총유출</th><th class="n">7.87</th><th class="n">순감소 6.48</th></tr></tfoot>
-    </table></div>
-    <figcaption>일별 <b>감소분</b>을 그날 종가 구간에 배분. 청산 국면에도 신규 매수가 섞이므로 총유출이 순감소보다 크다.</figcaption></div>
-  <div><h4>하락 구간 누적 마진콜 노출(보정)</h4>
-    <div class="tw"><table>
-      <thead><tr><th>일자</th><th class="n">종가</th><th class="n">기간 최저</th><th class="n">누적 노출(조)</th></tr></thead>
-      <tbody><tr><td>2026.06.22</td>
-    <td class="n">9114.55</td><td class="n">9114.55</td>
-    <td class="n">0.00</td></tr><tr><td>2026.07.02</td>
-    <td class="n">7648.09</td><td class="n">7648.09</td>
-    <td class="n">0.43</td></tr><tr><td>2026.07.08</td>
-    <td class="n">7246.79</td><td class="n">7246.79</td>
-    <td class="n">1.00</td></tr><tr><td>2026.07.13</td>
-    <td class="n">6806.93</td><td class="n">6806.93</td>
-    <td class="n">2.68</td></tr><tr><td>2026.07.20</td>
-    <td class="n">6516.27</td><td class="n">6516.27</td>
-    <td class="n">3.46</td></tr><tr><td>2026.07.28</td>
-    <td class="n">6023.66</td><td class="n">6023.66</td>
-    <td class="n">4.12</td></tr><tr><td>2026.07.29</td>
-    <td class="n">5663.24</td><td class="n">5663.24</td>
-    <td class="n">4.72</td></tr></tbody>
-    </table></div>
-    <figcaption>반대매매는 되돌릴 수 없으므로 그날까지의 <b>최저 종가</b>로 판정한다.</figcaption></div>
-  <div><h4>추가 하락 시나리오</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">지수(p)</th><th class="n">저점 대비</th><th class="n">누적 노출(조)</th><th class="n">증가(조)</th></tr></thead>
-      <tbody><tr><td class="n">5,500</td>
-    <td class="n">-1.7%</td>
-    <td class="n">4.72</td>
-    <td class="n">0.00</td></tr><tr><td class="n">5,000</td>
-    <td class="n">-10.6%</td>
-    <td class="n">8.58</td>
-    <td class="n">3.86</td></tr><tr><td class="n">4,500</td>
-    <td class="n">-19.6%</td>
-    <td class="n">11.00</td>
-    <td class="n">6.28</td></tr><tr><td class="n">4,000</td>
-    <td class="n">-28.5%</td>
-    <td class="n">12.24</td>
-    <td class="n">7.53</td></tr><tr><td class="n">3,500</td>
-    <td class="n">-37.4%</td>
-    <td class="n">14.10</td>
-    <td class="n">9.38</td></tr></tbody>
-    </table></div></div>
-  <div><h4>담보유지비율 민감도 (지수 5,594)</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">담보유지비율</th><th class="n">계수</th><th class="n">노출(조)</th></tr></thead>
-      <tbody><tr class="">
-    <td class="n">130%</td><td class="n">0.78</td>
-    <td class="n">4.12</td></tr><tr class="r-base">
-    <td class="n">140%</td><td class="n">0.84</td>
-    <td class="n">4.72</td></tr><tr class="">
-    <td class="n">150%</td><td class="n">0.90</td>
-    <td class="n">6.66</td></tr><tr class="">
-    <td class="n">170%</td><td class="n">1.02</td>
-    <td class="n">11.00</td></tr></tbody>
-    </table></div>
-    <figcaption>계수 = 담보유지비율 × 융자비율(60%). 매수 지수 × 계수 = 마진콜 발생 지수.</figcaption></div>
-</div>
-</div>
-<div class="mkt">
-<h3 class="mh">유가증권 <span class="tag">버킷 500p</span></h3>
-<p class="lead">유가증권시장 신용거래융자만 코스피 지수로 배분. 코스닥분이 섞이지 않은 순수한 지수대별 물량이다.</p>
-
-<div class="cards">
-  <div class="card"><div class="lb">지수 고점 → 저점</div><div class="vl">-38.6<span class="u">%</span></div><div class="nt">9,115 → 5,594</div></div>
-  <div class="card"><div class="lb">신용융자 고점</div><div class="vl">29.75<span class="u">조</span></div><div class="nt">2026.06.24</div></div>
-  <div class="card"><div class="lb">실측 청산</div><div class="vl neg">-4.01<span class="u">조</span></div><div class="nt">청산률 -13.5%</div></div>
-  <div class="card"><div class="lb">사이클 순증</div><div class="vl">20.52<span class="u">조</span></div><div class="nt">gross 32.55조 × 0.63</div></div>
-  <div class="card"><div class="lb">마진콜 진입(보정)</div><div class="vl neg">5.48<span class="u">조</span></div><div class="nt">순증의 27%</div></div>
-  <div class="card"><div class="lb">아직 미진입(보정)</div><div class="vl">15.04<span class="u">조</span></div><div class="nt">5,460p 이탈 시 개시</div></div>
-</div>
-
-<figure>
-  <svg viewBox="0 0 660 330" role="img" aria-label="지수대별 신용융자 누적 매수액과 마진콜 레벨">
-  <rect class="band" x="377.2" y="26" width="220.8" height="252"/>
-      <text class="note" x="487.6" y="38" text-anchor="middle">지수 5,594 기준 마진콜 진입</text>
-  <line class="grid" x1="46" y1="278.0" x2="598" y2="278.0"/>
-    <text class="ax" x="38" y="281.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="193.4" x2="598" y2="193.4"/>
-    <text class="ax" x="38" y="196.9" text-anchor="end">1.0</text><line class="grid" x1="46" y1="108.8" x2="598" y2="108.8"/>
-    <text class="ax" x="38" y="112.3" text-anchor="end">2.0</text>
-  <text class="ax" x="606" y="281.5">0</text><text class="ax" x="606" y="225.1">2,000</text><text class="ax" x="606" y="168.7">4,000</text><text class="ax" x="606" y="112.3">6,000</text><text class="ax" x="606" y="55.9">8,000</text>
-  <rect class="bar" x="51.9" y="225.5" width="25.0" height="52.5"/>
-      <text class="val" x="64.4" y="220.5" text-anchor="middle">0.62</text><rect class="bar" x="88.7" y="86.8" width="25.0" height="191.2"/>
-      <text class="val" x="101.2" y="81.8" text-anchor="middle">2.26</text><rect class="bar" x="125.5" y="73.2" width="25.0" height="204.8"/>
-      <text class="val" x="138.0" y="68.2" text-anchor="middle">2.42</text><rect class="bar" x="162.3" y="164.9" width="25.0" height="113.1"/>
-      <text class="val" x="174.8" y="159.9" text-anchor="middle">1.34</text><rect class="bar" x="199.1" y="146.6" width="25.0" height="131.4"/>
-      <text class="val" x="211.6" y="141.6" text-anchor="middle">1.55</text><rect class="bar" x="235.9" y="179.2" width="25.0" height="98.8"/>
-      <text class="val" x="248.4" y="174.2" text-anchor="middle">1.17</text><rect class="bar" x="272.7" y="68.0" width="25.0" height="210.0"/>
-      <text class="val" x="285.2" y="63.0" text-anchor="middle">2.48</text><rect class="bar" x="309.5" y="133.9" width="25.0" height="144.1"/>
-      <text class="val" x="322.0" y="128.9" text-anchor="middle">1.70</text><rect class="bar" x="346.3" y="151.7" width="25.0" height="126.3"/>
-      <text class="val" x="358.8" y="146.7" text-anchor="middle">1.49</text><rect class="bar part" x="383.1" y="231.0" width="25.0" height="47.0"/>
-      <text class="val" x="395.6" y="226.0" text-anchor="middle">0.56</text><rect class="bar hit" x="419.9" y="208.7" width="25.0" height="69.3"/>
-      <text class="val" x="432.4" y="203.7" text-anchor="middle">0.82</text><rect class="bar hit" x="456.7" y="184.5" width="25.0" height="93.5"/>
-      <text class="val" x="469.2" y="179.5" text-anchor="middle">1.10</text><rect class="bar hit" x="493.5" y="106.6" width="25.0" height="171.4"/>
-      <text class="val" x="506.0" y="101.6" text-anchor="middle">2.03</text><rect class="bar hit" x="530.3" y="229.0" width="25.0" height="49.0"/>
-      <text class="val" x="542.8" y="224.0" text-anchor="middle">0.58</text><rect class="bar hit" x="567.1" y="244.5" width="25.0" height="33.5"/>
-      <text class="val" x="579.6" y="239.5" text-anchor="middle">0.40</text>
-  <path class="ln-margin" d="M64.4,218.8L101.2,206.9L138.0,195.1L174.8,183.3L211.6,171.4L248.4,159.6L285.2,147.7L322.0,135.9L358.8,124.1L395.6,112.2L432.4,100.4L469.2,88.5L506.0,76.7L542.8,64.8L579.6,53.0"/>
-  <circle class="dot" cx="64.4" cy="218.8" r="2.4"/><circle class="dot" cx="101.2" cy="206.9" r="2.4"/><circle class="dot" cx="138.0" cy="195.1" r="2.4"/><circle class="dot" cx="174.8" cy="183.3" r="2.4"/><circle class="dot" cx="211.6" cy="171.4" r="2.4"/><circle class="dot" cx="248.4" cy="159.6" r="2.4"/><circle class="dot" cx="285.2" cy="147.7" r="2.4"/><circle class="dot" cx="322.0" cy="135.9" r="2.4"/><circle class="dot" cx="358.8" cy="124.1" r="2.4"/><circle class="dot" cx="395.6" cy="112.2" r="2.4"/><circle class="dot" cx="432.4" cy="100.4" r="2.4"/><circle class="dot" cx="469.2" cy="88.5" r="2.4"/><circle class="dot" cx="506.0" cy="76.7" r="2.4"/><circle class="dot" cx="542.8" cy="64.8" r="2.4"/><circle class="dot" cx="579.6" cy="53.0" r="2.4"/>
-  <text class="ax sm" transform="translate(64.4,292) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(101.2,292) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(138.0,292) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(174.8,292) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(211.6,292) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(248.4,292) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(285.2,292) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(322.0,292) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(358.8,292) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(395.6,292) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(432.4,292) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(469.2,292) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(506.0,292) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(542.8,292) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(579.6,292) rotate(-52)" text-anchor="end">9,000</text>
-  <text class="unit" x="46" y="14">조원(보정)</text>
-  <text class="unit" x="598" y="14" text-anchor="end">마진콜 지수(p)</text>
-</svg>
-  <div class="lg"><span><i class="sw hit"></i>마진콜 전량 진입</span><span><i class="sw part"></i>일부 진입</span><span><i class="sw bar"></i>미진입</span><span><i class="sw acc"></i>마진콜 레벨(우축, 상단기준)</span></div>
-  <figcaption>2024.12.31 잔고를 기준선으로 2026.07.30까지의 일별 증가분을 그날 종가의 500p 구간에 배분한 뒤,
-  합계를 사이클 순증 20.52조에 맞춰 0.63배로 보정했다.</figcaption>
-</figure>
-
-<figure>
-  <h4>어디서 쌓이고 어디서 털렸는가</h4>
-  <svg viewBox="0 0 660 300" role="img" aria-label="지수대별 적립과 청산 비교">
-  <line class="grid" x1="46" y1="250.0" x2="644" y2="250.0"/>
-    <text class="ax" x="38" y="253.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="174.8" x2="644" y2="174.8"/>
-    <text class="ax" x="38" y="178.3" text-anchor="end">1.0</text><line class="grid" x1="46" y1="99.6" x2="644" y2="99.6"/>
-    <text class="ax" x="38" y="103.1" text-anchor="end">2.0</text>
-  <rect class="bar fin" x="52.2" y="203.3" width="12.8" height="46.7"/><rect class="bar fin" x="92.0" y="80.1" width="12.8" height="169.9"/><rect class="bar fin" x="131.9" y="67.9" width="12.8" height="182.1"/><rect class="bar fin" x="171.8" y="149.5" width="12.8" height="100.5"/><rect class="bar fin" x="211.6" y="133.2" width="12.8" height="116.8"/><rect class="bar fin" x="251.5" y="162.1" width="12.8" height="87.9"/><rect class="bar fin" x="291.4" y="63.3" width="12.8" height="186.7"/><rect class="bar fin" x="331.2" y="121.9" width="12.8" height="128.1"/><rect class="bar fin" x="371.1" y="137.7" width="12.8" height="112.3"/><rect class="bar fin" x="411.0" y="208.2" width="12.8" height="41.8"/><rect class="bar fout" x="425.7" y="100.7" width="12.8" height="149.3"/><rect class="bar fin" x="450.8" y="188.4" width="12.8" height="61.6"/><rect class="bar fout" x="465.6" y="120.2" width="12.8" height="129.8"/><rect class="bar fin" x="490.7" y="166.9" width="12.8" height="83.1"/><rect class="bar fout" x="505.5" y="213.4" width="12.8" height="36.6"/><rect class="bar fin" x="530.6" y="97.7" width="12.8" height="152.3"/><rect class="bar fout" x="545.3" y="222.4" width="12.8" height="27.6"/><rect class="bar fin" x="570.4" y="206.5" width="12.8" height="43.5"/><rect class="bar fout" x="585.2" y="222.6" width="12.8" height="27.4"/><rect class="bar fin" x="610.3" y="220.3" width="12.8" height="29.7"/><line class="wmark mb" x1="328.1" y1="26" x2="328.1" y2="250.0"/>
-      <text class="wlab mb" x="328.1" y="22.0" text-anchor="middle">평균매수 5,288</text><line class="wmark mu" x1="487.2" y1="26" x2="487.2" y2="250.0"/>
-      <text class="wlab mu" x="487.2" y="22.0" text-anchor="middle">평균청산 7,283</text><text class="ax sm" transform="translate(65.9,264) rotate(-52)" text-anchor="end">2,000</text><text class="ax sm" transform="translate(105.8,264) rotate(-52)" text-anchor="end">2,500</text><text class="ax sm" transform="translate(145.7,264) rotate(-52)" text-anchor="end">3,000</text><text class="ax sm" transform="translate(185.5,264) rotate(-52)" text-anchor="end">3,500</text><text class="ax sm" transform="translate(225.4,264) rotate(-52)" text-anchor="end">4,000</text><text class="ax sm" transform="translate(265.3,264) rotate(-52)" text-anchor="end">4,500</text><text class="ax sm" transform="translate(305.1,264) rotate(-52)" text-anchor="end">5,000</text><text class="ax sm" transform="translate(345.0,264) rotate(-52)" text-anchor="end">5,500</text><text class="ax sm" transform="translate(384.9,264) rotate(-52)" text-anchor="end">6,000</text><text class="ax sm" transform="translate(424.7,264) rotate(-52)" text-anchor="end">6,500</text><text class="ax sm" transform="translate(464.6,264) rotate(-52)" text-anchor="end">7,000</text><text class="ax sm" transform="translate(504.5,264) rotate(-52)" text-anchor="end">7,500</text><text class="ax sm" transform="translate(544.3,264) rotate(-52)" text-anchor="end">8,000</text><text class="ax sm" transform="translate(584.2,264) rotate(-52)" text-anchor="end">8,500</text><text class="ax sm" transform="translate(624.1,264) rotate(-52)" text-anchor="end">9,000</text>
-  <text class="unit" x="46" y="14">조원</text>
-</svg>
-  <div class="lg"><span><i class="sw fin"></i>적립(보정)</span><span><i class="sw fout"></i>실제 청산</span><span><i class="sw mb"></i>금액가중 평균 매수 지수</span><span><i class="sw mu"></i>금액가중 평균 청산 지수</span></div>
-  <figcaption>가중평균 매수 5,288p, 청산 7,283p.
-  
-  진행 중인 사이클은 청산 국면이 짧아 최근 고지수 물량만 반영된다. 손실률로 읽을 수 있는 값이 아니다.</figcaption>
-</figure>
-
-<div class="box ">
-  <b>모델 vs 실측</b> — 보정 모델 <b>5.48조</b> vs 실측 청산 -4.01조,
-  오차 <b>1.47조</b>. (보정 전 gross 기준은 8.69조로 오차 4.69조.)
-  진행 중인 사이클이다. 신용융자는 결제일 기준이라 급락 당일 청산이 즉시 반영되지 않고, 추가 담보 납입분도 섞여 있다.
-</div>
-<div class="box">
-    <b>거래대금 대비 규모</b> — 청산 국면(2026.06.24~2026.07.24) 총유출
-    <b>4.93조</b>는 그 기간 거래대금(889.86조)의 0.55%,
-    그 시대 정상 하루 거래대금(53.53조)의 0.09배에 해당한다.
-    같은 국면 거래대금은 정상 대비 72% 수준이었다
-    (100% 미만이면 청산이 유동성이 마른 상태에서 진행됐다는 뜻).
-    남은 사다리 15.04조는 <b>오늘 기준</b> 하루 평균 거래대금(35.08조)의
-    0.43배다.
-  </div>
-
-<div class="tables">
-  <div><h4>마진콜 사다리 — 지수가 이 아래로 마감하면 열리는 물량</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">지수(p) 밑</th><th>매수구간(p)</th><th class="n">증가(조)</th><th class="n">누적(조)</th><th class="n">누적/하루거래대금</th></tr></thead>
-      <tbody><tr>
-    <td class="n">5,460</td><td>6,000–6,500</td>
-    <td class="n">+1.49</td><td class="n">1.49</td>
-    <td class="n">4.3%</td></tr><tr>
-    <td class="n">5,040</td><td>5,500–6,000</td>
-    <td class="n">+1.70</td><td class="n">3.20</td>
-    <td class="n">9.1%</td></tr><tr>
-    <td class="n">4,620</td><td>5,000–5,500</td>
-    <td class="n">+2.48</td><td class="n">5.68</td>
-    <td class="n">16.2%</td></tr><tr>
-    <td class="n">4,200</td><td>4,500–5,000</td>
-    <td class="n">+1.17</td><td class="n">6.85</td>
-    <td class="n">19.5%</td></tr><tr>
-    <td class="n">3,780</td><td>4,000–4,500</td>
-    <td class="n">+1.55</td><td class="n">8.40</td>
-    <td class="n">23.9%</td></tr><tr>
-    <td class="n">3,360</td><td>3,500–4,000</td>
-    <td class="n">+1.34</td><td class="n">9.74</td>
-    <td class="n">27.8%</td></tr><tr>
-    <td class="n">2,940</td><td>3,000–3,500</td>
-    <td class="n">+2.42</td><td class="n">12.16</td>
-    <td class="n">34.7%</td></tr><tr>
-    <td class="n">2,520</td><td>2,500–3,000</td>
-    <td class="n">+2.26</td><td class="n">14.42</td>
-    <td class="n">41.1%</td></tr><tr>
-    <td class="n">2,100</td><td>2,000–2,500</td>
-    <td class="n">+0.62</td><td class="n">15.04</td>
-    <td class="n">42.9%</td></tr></tbody>
-      <tfoot><tr><th colspan="3">총 잔여</th><th class="n">15.04</th><th></th></tr></tfoot>
-    </table></div>
-    <figcaption>현재 지수 5,594p 기준. 안 터진 버킷을 마진콜 지수 내림차순으로 나열했다 —
-    지수가 더 떨어질수록 이 순서대로 열린다. 오른쪽 열은 오늘 기준 하루 평균 거래대금 대비 누적 비중이다.</figcaption></div>
-  <div><h4>구간별 누적 신용매수와 마진콜 레벨</h4>
-    <div class="tw"><table>
-      <thead><tr><th>지수 구간(p)</th><th class="n">보정(조)</th><th class="n">gross(조)</th><th class="n">마진콜 레벨(p)</th><th>상태</th></tr></thead>
-      <tbody><tr class="">
-      <td>2,000–2,500</td><td class="n">0.62</td><td class="n dim">0.98</td>
-      <td class="n">2,100</td>
-      <td>–</td></tr><tr class="">
-      <td>2,500–3,000</td><td class="n">2.26</td><td class="n dim">3.58</td>
-      <td class="n">2,520</td>
-      <td>–</td></tr><tr class="">
-      <td>3,000–3,500</td><td class="n">2.42</td><td class="n dim">3.84</td>
-      <td class="n">2,940</td>
-      <td>–</td></tr><tr class="">
-      <td>3,500–4,000</td><td class="n">1.34</td><td class="n dim">2.12</td>
-      <td class="n">3,360</td>
-      <td>–</td></tr><tr class="">
-      <td>4,000–4,500</td><td class="n">1.55</td><td class="n dim">2.46</td>
-      <td class="n">3,780</td>
-      <td>–</td></tr><tr class="">
-      <td>4,500–5,000</td><td class="n">1.17</td><td class="n dim">1.85</td>
-      <td class="n">4,200</td>
-      <td>–</td></tr><tr class="">
-      <td>5,000–5,500</td><td class="n">2.48</td><td class="n dim">3.94</td>
-      <td class="n">4,620</td>
-      <td>–</td></tr><tr class="">
-      <td>5,500–6,000</td><td class="n">1.70</td><td class="n dim">2.70</td>
-      <td class="n">5,040</td>
-      <td>–</td></tr><tr class="">
-      <td>6,000–6,500</td><td class="n">1.49</td><td class="n dim">2.37</td>
-      <td class="n">5,460</td>
-      <td>–</td></tr><tr class="r-part">
-      <td>6,500–7,000</td><td class="n">0.56</td><td class="n dim">0.88</td>
-      <td class="n">5,880</td>
-      <td>청산 진행</td></tr><tr class="r-hit">
-      <td>7,000–7,500</td><td class="n">0.82</td><td class="n dim">1.30</td>
-      <td class="n">6,300</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>7,500–8,000</td><td class="n">1.10</td><td class="n dim">1.75</td>
-      <td class="n">6,720</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>8,000–8,500</td><td class="n">2.03</td><td class="n dim">3.21</td>
-      <td class="n">7,140</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>8,500–9,000</td><td class="n">0.58</td><td class="n dim">0.92</td>
-      <td class="n">7,560</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>9,000–9,500</td><td class="n">0.40</td><td class="n dim">0.63</td>
-      <td class="n">7,980</td>
-      <td>청산 완료</td></tr></tbody>
-      <tfoot><tr><th>합계</th><th class="n">20.52</th><th class="n dim">32.55</th><th></th><th></th></tr></tfoot>
-    </table></div></div>
-  <div><h4>지수대별 실제 청산액 (2026.06.24~2026.07.24)</h4>
-    <div class="tw"><table>
-      <thead><tr><th>지수 구간(p)</th><th class="n">청산액(조)</th><th class="n">비중</th></tr></thead>
-      <tbody><tr>
-        <td>6,500–7,000</td><td class="n">1.99</td>
-        <td class="n">40%</td></tr><tr>
-        <td>7,000–7,500</td><td class="n">1.73</td>
-        <td class="n">35%</td></tr><tr>
-        <td>7,500–8,000</td><td class="n">0.49</td>
-        <td class="n">10%</td></tr><tr>
-        <td>8,000–8,500</td><td class="n">0.37</td>
-        <td class="n">7%</td></tr><tr>
-        <td>8,500–9,000</td><td class="n">0.36</td>
-        <td class="n">7%</td></tr></tbody>
-      <tfoot><tr><th>총유출</th><th class="n">4.93</th><th class="n">순감소 4.01</th></tr></tfoot>
-    </table></div>
-    <figcaption>일별 <b>감소분</b>을 그날 종가 구간에 배분. 청산 국면에도 신규 매수가 섞이므로 총유출이 순감소보다 크다.</figcaption></div>
-  <div><h4>하락 구간 누적 마진콜 노출(보정)</h4>
-    <div class="tw"><table>
-      <thead><tr><th>일자</th><th class="n">종가</th><th class="n">기간 최저</th><th class="n">누적 노출(조)</th></tr></thead>
-      <tbody><tr><td>2026.06.22</td>
-    <td class="n">9114.55</td><td class="n">9114.55</td>
-    <td class="n">0.00</td></tr><tr><td>2026.07.02</td>
-    <td class="n">7648.09</td><td class="n">7648.09</td>
-    <td class="n">0.40</td></tr><tr><td>2026.07.08</td>
-    <td class="n">7246.79</td><td class="n">7246.79</td>
-    <td class="n">0.97</td></tr><tr><td>2026.07.13</td>
-    <td class="n">6806.93</td><td class="n">6806.93</td>
-    <td class="n">3.00</td></tr><tr><td>2026.07.20</td>
-    <td class="n">6516.27</td><td class="n">6516.27</td>
-    <td class="n">4.11</td></tr><tr><td>2026.07.28</td>
-    <td class="n">6023.66</td><td class="n">6023.66</td>
-    <td class="n">4.93</td></tr><tr><td>2026.07.29</td>
-    <td class="n">5663.24</td><td class="n">5663.24</td>
-    <td class="n">5.48</td></tr></tbody>
-    </table></div>
-    <figcaption>반대매매는 되돌릴 수 없으므로 그날까지의 <b>최저 종가</b>로 판정한다.</figcaption></div>
-  <div><h4>추가 하락 시나리오</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">지수(p)</th><th class="n">저점 대비</th><th class="n">누적 노출(조)</th><th class="n">증가(조)</th></tr></thead>
-      <tbody><tr><td class="n">5,500</td>
-    <td class="n">-1.7%</td>
-    <td class="n">5.48</td>
-    <td class="n">0.00</td></tr><tr><td class="n">5,000</td>
-    <td class="n">-10.6%</td>
-    <td class="n">8.68</td>
-    <td class="n">3.20</td></tr><tr><td class="n">4,500</td>
-    <td class="n">-19.6%</td>
-    <td class="n">11.16</td>
-    <td class="n">5.68</td></tr><tr><td class="n">4,000</td>
-    <td class="n">-28.5%</td>
-    <td class="n">12.33</td>
-    <td class="n">6.85</td></tr><tr><td class="n">3,500</td>
-    <td class="n">-37.4%</td>
-    <td class="n">13.88</td>
-    <td class="n">8.40</td></tr></tbody>
-    </table></div></div>
-  <div><h4>담보유지비율 민감도 (지수 5,594)</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">담보유지비율</th><th class="n">계수</th><th class="n">노출(조)</th></tr></thead>
-      <tbody><tr class="">
-    <td class="n">130%</td><td class="n">0.78</td>
-    <td class="n">4.93</td></tr><tr class="r-base">
-    <td class="n">140%</td><td class="n">0.84</td>
-    <td class="n">5.48</td></tr><tr class="">
-    <td class="n">150%</td><td class="n">0.90</td>
-    <td class="n">6.97</td></tr><tr class="">
-    <td class="n">170%</td><td class="n">1.02</td>
-    <td class="n">11.16</td></tr></tbody>
-    </table></div>
-    <figcaption>계수 = 담보유지비율 × 융자비율(60%). 매수 지수 × 계수 = 마진콜 발생 지수.</figcaption></div>
-</div>
-</div>
-<div class="mkt">
-<h3 class="mh">코스닥 <span class="tag">버킷 50p</span></h3>
-<p class="lead">코스닥 신용거래융자를 코스닥 지수로 배분.</p>
-
-<div class="cards">
-  <div class="card"><div class="lb">지수 고점 → 저점</div><div class="vl">-47.4<span class="u">%</span></div><div class="nt">1,226 → 645</div></div>
-  <div class="card"><div class="lb">신용융자 고점</div><div class="vl">11.05<span class="u">조</span></div><div class="nt">2026.04.29</div></div>
-  <div class="card"><div class="lb">실측 청산</div><div class="vl neg">-4.23<span class="u">조</span></div><div class="nt">청산률 -38.3%</div></div>
-  <div class="card"><div class="lb">사이클 순증</div><div class="vl">4.47<span class="u">조</span></div><div class="nt">gross 10.10조 × 0.44</div></div>
-  <div class="card"><div class="lb">마진콜 진입(보정)</div><div class="vl neg">3.44<span class="u">조</span></div><div class="nt">순증의 77%</div></div>
-  <div class="card"><div class="lb">아직 미진입(보정)</div><div class="vl">1.03<span class="u">조</span></div><div class="nt">630p 이탈 시 개시</div></div>
-</div>
-
-<figure>
-  <svg viewBox="0 0 660 330" role="img" aria-label="지수대별 신용융자 누적 매수액과 마진콜 레벨">
-  <rect class="band" x="138.0" y="26" width="460.0" height="252"/>
-      <text class="note" x="368.0" y="38" text-anchor="middle">지수 645 기준 마진콜 진입</text>
-  <line class="grid" x1="46" y1="278.0" x2="598" y2="278.0"/>
-    <text class="ax" x="38" y="281.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="224.6" x2="598" y2="224.6"/>
-    <text class="ax" x="38" y="228.1" text-anchor="end">0.3</text><line class="grid" x1="46" y1="171.2" x2="598" y2="171.2"/>
-    <text class="ax" x="38" y="174.7" text-anchor="end">0.5</text><line class="grid" x1="46" y1="117.8" x2="598" y2="117.8"/>
-    <text class="ax" x="38" y="121.3" text-anchor="end">0.8</text><line class="grid" x1="46" y1="64.4" x2="598" y2="64.4"/>
-    <text class="ax" x="38" y="67.9" text-anchor="end">1.0</text>
-  <text class="ax" x="606" y="281.5">0</text><text class="ax" x="606" y="227.9">250</text><text class="ax" x="606" y="174.4">500</text><text class="ax" x="606" y="120.8">750</text><text class="ax" x="606" y="67.2">1,000</text>
-  <rect class="bar" x="53.4" y="267.9" width="31.3" height="10.1"/>
-      <text class="val" x="69.0" y="262.9" text-anchor="middle">0.05</text><rect class="bar" x="99.4" y="68.0" width="31.3" height="210.0"/>
-      <text class="val" x="115.0" y="63.0" text-anchor="middle">0.98</text><rect class="bar part" x="145.4" y="159.1" width="31.3" height="118.9"/>
-      <text class="val" x="161.0" y="154.1" text-anchor="middle">0.56</text><rect class="bar hit" x="191.4" y="187.1" width="31.3" height="90.9"/>
-      <text class="val" x="207.0" y="182.1" text-anchor="middle">0.43</text><rect class="bar hit" x="237.4" y="185.7" width="31.3" height="92.3"/>
-      <text class="val" x="253.0" y="180.7" text-anchor="middle">0.43</text><rect class="bar hit" x="283.4" y="162.8" width="31.3" height="115.2"/>
-      <text class="val" x="299.0" y="157.8" text-anchor="middle">0.54</text><rect class="bar hit" x="329.4" y="255.5" width="31.3" height="22.5"/>
-      <text class="val" x="345.0" y="250.5" text-anchor="middle">0.11</text><rect class="bar hit" x="375.4" y="247.7" width="31.3" height="30.3"/>
-      <text class="val" x="391.0" y="242.7" text-anchor="middle">0.14</text><rect class="bar hit" x="421.4" y="236.0" width="31.3" height="42.0"/>
-      <text class="val" x="437.0" y="231.0" text-anchor="middle">0.20</text><rect class="bar hit" x="467.4" y="216.3" width="31.3" height="61.7"/>
-      <text class="val" x="483.0" y="211.3" text-anchor="middle">0.29</text><rect class="bar hit" x="513.4" y="143.6" width="31.3" height="134.4"/>
-      <text class="val" x="529.0" y="138.6" text-anchor="middle">0.63</text><rect class="bar hit" x="559.4" y="252.1" width="31.3" height="25.9"/>
-      <text class="val" x="575.0" y="247.1" text-anchor="middle">0.12</text>
-  <path class="ln-margin" d="M69.0,152.0L115.0,143.0L161.0,134.0L207.0,125.0L253.0,116.0L299.0,107.0L345.0,98.0L391.0,89.0L437.0,80.0L483.0,71.0L529.0,62.0L575.0,53.0"/>
-  <circle class="dot" cx="69.0" cy="152.0" r="2.4"/><circle class="dot" cx="115.0" cy="143.0" r="2.4"/><circle class="dot" cx="161.0" cy="134.0" r="2.4"/><circle class="dot" cx="207.0" cy="125.0" r="2.4"/><circle class="dot" cx="253.0" cy="116.0" r="2.4"/><circle class="dot" cx="299.0" cy="107.0" r="2.4"/><circle class="dot" cx="345.0" cy="98.0" r="2.4"/><circle class="dot" cx="391.0" cy="89.0" r="2.4"/><circle class="dot" cx="437.0" cy="80.0" r="2.4"/><circle class="dot" cx="483.0" cy="71.0" r="2.4"/><circle class="dot" cx="529.0" cy="62.0" r="2.4"/><circle class="dot" cx="575.0" cy="53.0" r="2.4"/>
-  <text class="ax sm" x="69.0" y="294" text-anchor="middle">650</text><text class="ax sm" x="115.0" y="294" text-anchor="middle">700</text><text class="ax sm" x="161.0" y="294" text-anchor="middle">750</text><text class="ax sm" x="207.0" y="294" text-anchor="middle">800</text><text class="ax sm" x="253.0" y="294" text-anchor="middle">850</text><text class="ax sm" x="299.0" y="294" text-anchor="middle">900</text><text class="ax sm" x="345.0" y="294" text-anchor="middle">950</text><text class="ax sm" x="391.0" y="294" text-anchor="middle">1,000</text><text class="ax sm" x="437.0" y="294" text-anchor="middle">1,050</text><text class="ax sm" x="483.0" y="294" text-anchor="middle">1,100</text><text class="ax sm" x="529.0" y="294" text-anchor="middle">1,150</text><text class="ax sm" x="575.0" y="294" text-anchor="middle">1,200</text>
-  <text class="unit" x="46" y="14">조원(보정)</text>
-  <text class="unit" x="598" y="14" text-anchor="end">마진콜 지수(p)</text>
-</svg>
-  <div class="lg"><span><i class="sw hit"></i>마진콜 전량 진입</span><span><i class="sw part"></i>일부 진입</span><span><i class="sw bar"></i>미진입</span><span><i class="sw acc"></i>마진콜 레벨(우축, 상단기준)</span></div>
-  <figcaption>2024.12.31 잔고를 기준선으로 2026.07.30까지의 일별 증가분을 그날 종가의 50p 구간에 배분한 뒤,
-  합계를 사이클 순증 4.47조에 맞춰 0.44배로 보정했다.</figcaption>
-</figure>
-
-<figure>
-  <h4>어디서 쌓이고 어디서 털렸는가</h4>
-  <svg viewBox="0 0 660 300" role="img" aria-label="지수대별 적립과 청산 비교">
-  <line class="grid" x1="46" y1="250.0" x2="644" y2="250.0"/>
-    <text class="ax" x="38" y="253.5" text-anchor="end">0.0</text><line class="grid" x1="46" y1="202.5" x2="644" y2="202.5"/>
-    <text class="ax" x="38" y="206.0" text-anchor="end">0.3</text><line class="grid" x1="46" y1="155.1" x2="644" y2="155.1"/>
-    <text class="ax" x="38" y="158.6" text-anchor="end">0.5</text><line class="grid" x1="46" y1="107.6" x2="644" y2="107.6"/>
-    <text class="ax" x="38" y="111.1" text-anchor="end">0.8</text><line class="grid" x1="46" y1="60.1" x2="644" y2="60.1"/>
-    <text class="ax" x="38" y="63.6" text-anchor="end">1.0</text>
-  <rect class="bar fin" x="54.0" y="241.0" width="15.9" height="9.0"/><rect class="bar fout" x="71.9" y="230.6" width="15.9" height="19.4"/><rect class="bar fin" x="103.8" y="63.3" width="15.9" height="186.7"/><rect class="bar fin" x="153.6" y="144.3" width="15.9" height="105.7"/><rect class="bar fout" x="171.6" y="85.4" width="15.9" height="164.6"/><rect class="bar fin" x="203.5" y="169.2" width="15.9" height="80.8"/><rect class="bar fout" x="221.4" y="176.6" width="15.9" height="73.4"/><rect class="bar fin" x="253.3" y="168.0" width="15.9" height="82.0"/><rect class="bar fout" x="271.3" y="146.2" width="15.9" height="103.8"/><rect class="bar fin" x="303.1" y="147.6" width="15.9" height="102.4"/><rect class="bar fout" x="321.1" y="133.4" width="15.9" height="116.6"/><rect class="bar fin" x="353.0" y="230.0" width="15.9" height="20.0"/><rect class="bar fout" x="370.9" y="116.6" width="15.9" height="133.4"/><rect class="bar fin" x="402.8" y="223.1" width="15.9" height="26.9"/><rect class="bar fout" x="420.8" y="196.0" width="15.9" height="54.0"/><rect class="bar fin" x="452.6" y="212.7" width="15.9" height="37.3"/><rect class="bar fout" x="470.6" y="169.0" width="15.9" height="81.0"/><rect class="bar fin" x="502.5" y="195.2" width="15.9" height="54.8"/><rect class="bar fout" x="520.4" y="198.5" width="15.9" height="51.5"/><rect class="bar fin" x="552.3" y="130.5" width="15.9" height="119.5"/><rect class="bar fout" x="570.3" y="139.3" width="15.9" height="110.7"/><rect class="bar fin" x="602.1" y="227.0" width="15.9" height="23.0"/><rect class="bar fout" x="620.1" y="220.5" width="15.9" height="29.5"/><line class="wmark mb" x1="332.6" y1="26" x2="332.6" y2="250.0"/>
-      <text class="wlab mb" x="332.6" y="22.0" text-anchor="middle">평균매수 913</text><line class="wmark mu" x1="375.8" y1="26" x2="375.8" y2="250.0"/>
-      <text class="wlab mu" x="375.8" y="22.0" text-anchor="middle">평균청산 956</text><text class="ax sm" x="70.9" y="266" text-anchor="middle">650</text><text class="ax sm" x="120.8" y="266" text-anchor="middle">700</text><text class="ax sm" x="170.6" y="266" text-anchor="middle">750</text><text class="ax sm" x="220.4" y="266" text-anchor="middle">800</text><text class="ax sm" x="270.3" y="266" text-anchor="middle">850</text><text class="ax sm" x="320.1" y="266" text-anchor="middle">900</text><text class="ax sm" x="369.9" y="266" text-anchor="middle">950</text><text class="ax sm" x="419.8" y="266" text-anchor="middle">1,000</text><text class="ax sm" x="469.6" y="266" text-anchor="middle">1,050</text><text class="ax sm" x="519.4" y="266" text-anchor="middle">1,100</text><text class="ax sm" x="569.3" y="266" text-anchor="middle">1,150</text><text class="ax sm" x="619.1" y="266" text-anchor="middle">1,200</text>
-  <text class="unit" x="46" y="14">조원</text>
-</svg>
-  <div class="lg"><span><i class="sw fin"></i>적립(보정)</span><span><i class="sw fout"></i>실제 청산</span><span><i class="sw mb"></i>금액가중 평균 매수 지수</span><span><i class="sw mu"></i>금액가중 평균 청산 지수</span></div>
-  <figcaption>가중평균 매수 913p, 청산 956p.
-  
-  진행 중인 사이클은 청산 국면이 짧아 최근 고지수 물량만 반영된다. 손실률로 읽을 수 있는 값이 아니다.</figcaption>
-</figure>
-
-<div class="box ">
-  <b>모델 vs 실측</b> — 보정 모델 <b>3.44조</b> vs 실측 청산 -4.23조,
-  오차 <b>0.79조</b>. (보정 전 gross 기준은 7.77조로 오차 3.54조.)
-  진행 중인 사이클이다. 신용융자는 결제일 기준이라 급락 당일 청산이 즉시 반영되지 않고, 추가 담보 납입분도 섞여 있다.
-</div>
-<div class="box">
-    <b>거래대금 대비 규모</b> — 청산 국면(2026.04.29~2026.07.29) 총유출
-    <b>4.94조</b>는 그 기간 거래대금(708.67조)의 0.70%,
-    그 시대 정상 하루 거래대금(13.93조)의 0.35배에 해당한다.
-    같은 국면 거래대금은 정상 대비 77% 수준이었다
-    (100% 미만이면 청산이 유동성이 마른 상태에서 진행됐다는 뜻).
-    남은 사다리 1.03조는 <b>오늘 기준</b> 하루 평균 거래대금(5.70조)의
-    0.18배다.
-  </div>
-
-<div class="tables">
-  <div><h4>마진콜 사다리 — 지수가 이 아래로 마감하면 열리는 물량</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">지수(p) 밑</th><th>매수구간(p)</th><th class="n">증가(조)</th><th class="n">누적(조)</th><th class="n">누적/하루거래대금</th></tr></thead>
-      <tbody><tr>
-    <td class="n">630</td><td>700–750</td>
-    <td class="n">+0.98</td><td class="n">0.98</td>
-    <td class="n">17.2%</td></tr><tr>
-    <td class="n">588</td><td>650–700</td>
-    <td class="n">+0.05</td><td class="n">1.03</td>
-    <td class="n">18.1%</td></tr></tbody>
-      <tfoot><tr><th colspan="3">총 잔여</th><th class="n">1.03</th><th></th></tr></tfoot>
-    </table></div>
-    <figcaption>현재 지수 645p 기준. 안 터진 버킷을 마진콜 지수 내림차순으로 나열했다 —
-    지수가 더 떨어질수록 이 순서대로 열린다. 오른쪽 열은 오늘 기준 하루 평균 거래대금 대비 누적 비중이다.</figcaption></div>
-  <div><h4>구간별 누적 신용매수와 마진콜 레벨</h4>
-    <div class="tw"><table>
-      <thead><tr><th>지수 구간(p)</th><th class="n">보정(조)</th><th class="n">gross(조)</th><th class="n">마진콜 레벨(p)</th><th>상태</th></tr></thead>
-      <tbody><tr class="">
-      <td>650–700</td><td class="n">0.05</td><td class="n dim">0.11</td>
-      <td class="n">588</td>
-      <td>–</td></tr><tr class="">
-      <td>700–750</td><td class="n">0.98</td><td class="n dim">2.22</td>
-      <td class="n">630</td>
-      <td>–</td></tr><tr class="r-part">
-      <td>750–800</td><td class="n">0.56</td><td class="n dim">1.26</td>
-      <td class="n">672</td>
-      <td>청산 진행</td></tr><tr class="r-hit">
-      <td>800–850</td><td class="n">0.43</td><td class="n dim">0.96</td>
-      <td class="n">714</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>850–900</td><td class="n">0.43</td><td class="n dim">0.98</td>
-      <td class="n">756</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>900–950</td><td class="n">0.54</td><td class="n dim">1.22</td>
-      <td class="n">798</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>950–1,000</td><td class="n">0.11</td><td class="n dim">0.24</td>
-      <td class="n">840</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>1,000–1,050</td><td class="n">0.14</td><td class="n dim">0.32</td>
-      <td class="n">882</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>1,050–1,100</td><td class="n">0.20</td><td class="n dim">0.44</td>
-      <td class="n">924</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>1,100–1,150</td><td class="n">0.29</td><td class="n dim">0.65</td>
-      <td class="n">966</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>1,150–1,200</td><td class="n">0.63</td><td class="n dim">1.42</td>
-      <td class="n">1,008</td>
-      <td>청산 완료</td></tr><tr class="r-hit">
-      <td>1,200–1,250</td><td class="n">0.12</td><td class="n dim">0.27</td>
-      <td class="n">1,050</td>
-      <td>청산 완료</td></tr></tbody>
-      <tfoot><tr><th>합계</th><th class="n">4.47</th><th class="n dim">10.10</th><th></th><th></th></tr></tfoot>
-    </table></div></div>
-  <div><h4>지수대별 실제 청산액 (2026.04.29~2026.07.29)</h4>
-    <div class="tw"><table>
-      <thead><tr><th>지수 구간(p)</th><th class="n">청산액(조)</th><th class="n">비중</th></tr></thead>
-      <tbody><tr>
-        <td>650–700</td><td class="n">0.10</td>
-        <td class="n">2%</td></tr><tr>
-        <td>750–800</td><td class="n">0.87</td>
-        <td class="n">18%</td></tr><tr>
-        <td>800–850</td><td class="n">0.39</td>
-        <td class="n">8%</td></tr><tr>
-        <td>850–900</td><td class="n">0.55</td>
-        <td class="n">11%</td></tr><tr>
-        <td>900–950</td><td class="n">0.61</td>
-        <td class="n">12%</td></tr><tr>
-        <td>950–1,000</td><td class="n">0.70</td>
-        <td class="n">14%</td></tr><tr>
-        <td>1,000–1,050</td><td class="n">0.28</td>
-        <td class="n">6%</td></tr><tr>
-        <td>1,050–1,100</td><td class="n">0.43</td>
-        <td class="n">9%</td></tr><tr>
-        <td>1,100–1,150</td><td class="n">0.27</td>
-        <td class="n">5%</td></tr><tr>
-        <td>1,150–1,200</td><td class="n">0.58</td>
-        <td class="n">12%</td></tr><tr>
-        <td>1,200–1,250</td><td class="n">0.16</td>
-        <td class="n">3%</td></tr></tbody>
-      <tfoot><tr><th>총유출</th><th class="n">4.94</th><th class="n">순감소 4.23</th></tr></tfoot>
-    </table></div>
-    <figcaption>일별 <b>감소분</b>을 그날 종가 구간에 배분. 청산 국면에도 신규 매수가 섞이므로 총유출이 순감소보다 크다.</figcaption></div>
-  <div><h4>하락 구간 누적 마진콜 노출(보정)</h4>
-    <div class="tw"><table>
-      <thead><tr><th>일자</th><th class="n">종가</th><th class="n">기간 최저</th><th class="n">누적 노출(조)</th></tr></thead>
-      <tbody><tr><td>2026.04.27</td>
-    <td class="n">1226.18</td><td class="n">1226.18</td>
-    <td class="n">0.00</td></tr><tr><td>2026.06.02</td>
-    <td class="n">1026.03</td><td class="n">1026.03</td>
-    <td class="n">0.12</td></tr><tr><td>2026.06.05</td>
-    <td class="n">1002.44</td><td class="n">1002.44</td>
-    <td class="n">0.75</td></tr><tr><td>2026.06.08</td>
-    <td class="n">911.39</td><td class="n">911.39</td>
-    <td class="n">1.24</td></tr><tr><td>2026.06.26</td>
-    <td class="n">851.37</td><td class="n">851.37</td>
-    <td class="n">1.38</td></tr><tr><td>2026.07.07</td>
-    <td class="n">831.23</td><td class="n">831.23</td>
-    <td class="n">1.48</td></tr><tr><td>2026.07.08</td>
-    <td class="n">785.00</td><td class="n">785.00</td>
-    <td class="n">2.02</td></tr><tr><td>2026.07.20</td>
-    <td class="n">749.64</td><td class="n">749.64</td>
-    <td class="n">2.45</td></tr><tr><td>2026.07.28</td>
-    <td class="n">705.85</td><td class="n">705.85</td>
-    <td class="n">2.88</td></tr><tr><td>2026.07.29</td>
-    <td class="n">662.68</td><td class="n">662.68</td>
-    <td class="n">3.44</td></tr></tbody>
-    </table></div>
-    <figcaption>반대매매는 되돌릴 수 없으므로 그날까지의 <b>최저 종가</b>로 판정한다.</figcaption></div>
-  <div><h4>추가 하락 시나리오</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">지수(p)</th><th class="n">저점 대비</th><th class="n">누적 노출(조)</th><th class="n">증가(조)</th></tr></thead>
-      <tbody><tr><td class="n">600</td>
-    <td class="n">-6.9%</td>
-    <td class="n">4.42</td>
-    <td class="n">0.98</td></tr><tr><td class="n">500</td>
-    <td class="n">-22.5%</td>
-    <td class="n">4.47</td>
-    <td class="n">1.03</td></tr><tr><td class="n">450</td>
-    <td class="n">-30.2%</td>
-    <td class="n">4.47</td>
-    <td class="n">1.03</td></tr><tr><td class="n">400</td>
-    <td class="n">-38.0%</td>
-    <td class="n">4.47</td>
-    <td class="n">1.03</td></tr></tbody>
-    </table></div></div>
-  <div><h4>담보유지비율 민감도 (지수 645)</h4>
-    <div class="tw"><table>
-      <thead><tr><th class="n">담보유지비율</th><th class="n">계수</th><th class="n">노출(조)</th></tr></thead>
-      <tbody><tr class="">
-    <td class="n">130%</td><td class="n">0.78</td>
-    <td class="n">2.88</td></tr><tr class="r-base">
-    <td class="n">140%</td><td class="n">0.84</td>
-    <td class="n">3.44</td></tr><tr class="">
-    <td class="n">150%</td><td class="n">0.90</td>
-    <td class="n">4.42</td></tr><tr class="">
-    <td class="n">170%</td><td class="n">1.02</td>
-    <td class="n">4.47</td></tr></tbody>
-    </table></div>
-    <figcaption>계수 = 담보유지비율 × 융자비율(60%). 매수 지수 × 계수 = 마진콜 발생 지수.</figcaption></div>
-</div>
-</div>
-</section>
 
 <section>
 <h2>실측 스트레스 지표</h2>
