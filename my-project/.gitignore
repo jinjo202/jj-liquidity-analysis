@@ -1,0 +1,37 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+.next/
+.vercel/
+
+# next.js
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# testing
+/coverage
+
+# manual data ingestion (local downloads, not committed)
+/data/*.xlsx
+/data/*.xls
+/data/*.csv
+
+.vercel
+.env*
