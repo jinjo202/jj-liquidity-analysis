@@ -346,6 +346,12 @@ node scripts/build-email.mjs    # 메일 클라이언트용 리포트           
 대차거래추이(§16.2)만 자동화 밖이다. xlsx 를 받아 `data/` 에 커밋하면
 다음 실행부터 `ingest-lending.mjs` 단계가 자동으로 반영한다.
 
+**상태 확인 경로.** 저장소가 private 이라 Actions 로그를 URL 로 열 수 없다.
+그래서 `scripts/status.mjs` 가 배포되는 `status.json` 에 실행 날짜·계열별 반영일·selfcheck 결과를 남긴다.
+`ranOn` 이 며칠째 그대로면 워크플로가 멈춘 것이다.
+시각이 아니라 날짜만 적는 이유는 실행할 때마다 파일이 달라져 의미 없는 커밋이 쌓이는 것을 막기 위해서다.
+데이터가 그대로이고 `status.json` 만 바뀐 날은 커밋 메시지를 `Refresh status (no new data ...)` 로 구분한다.
+
 ### 9.1 조회 종료일은 '오늘'이다
 
 두 `fetch-*` 의 종료일 기본값은 처음엔 날짜 상수(`'20260729'`)로 박혀 있었다. 그 상태로 다음 날 그냥 다시 돌렸더니

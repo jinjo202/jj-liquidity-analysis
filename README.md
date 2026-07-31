@@ -88,6 +88,18 @@ push 되면 Vercel 이 자동으로 재배포한다.
 `selfcheck.mjs` 가 실패하면 커밋도 push 도 하지 않는다 — 계산이 조용히 깨진 채 배포되는 일이 없다.
 Actions 탭에서 `Run workflow` 로 수동 실행도 된다.
 
+### 잘 돌고 있는지 확인
+
+저장소가 private 이라 Actions 로그를 URL 로 열 수 없다. 대신 배포된 사이트에 상태를 내보낸다.
+
+```
+https://jj-liquidity-analysis.vercel.app/status.json
+```
+
+`ranOn` 이 며칠째 그대로면 워크플로가 멈춘 것이다. `dataThrough` 로 계열별 반영 날짜를,
+`selfcheck` 로 그날 계산이 불변식을 통과했는지 본다(워크플로 순서상 selfcheck 를 통과해야
+이 파일이 갱신된다).
+
 한 가지 예외: **대차거래추이는 API 경로가 없어 자동화 밖이다**(§16.2).
 FREESIS 화면에서 xlsx 를 내려받아 `data/` 에 넣고 커밋하면, 그 다음 실행부터 워크플로가 자동으로 반영한다.
 

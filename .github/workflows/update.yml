@@ -52,17 +52,28 @@ jobs:
           node scripts/build.mjs
           node scripts/build-email.mjs
 
+      # 저장소가 private 이라 Actions 로그를 URL 로 못 연다.
+      # 배포된 사이트의 /status.json 이 그 대체 확인 경로다.
+      - name: Write status
+        run: node scripts/status.mjs
+
       - name: Commit if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if [ -z "$(git status --porcelain)" ]; then
-            echo "변경 없음 — 새 데이터가 아직 공표되지 않았다. 커밋 생략."
+            echo "변경 없음 — 새 데이터도 없고 status.json 도 그대로다. 커밋 생략."
             exit 0
           fi
           LAST=$(node -e "console.log(require('./data/analysis.json').series.at(-1).d)")
+          # status.json 만 바뀌었으면 데이터는 그대로다. 커밋 메시지로 구분해 둔다.
+          if [ -z "$(git status --porcelain -- . ':!status.json')" ]; then
+            MSG="Refresh status (no new data through ${LAST})"
+          else
+            MSG="Update reports through ${LAST}"
+          fi
           git add -A
-          git commit -m "Update reports through ${LAST}"
+          git commit -m "${MSG}"
           git push
 
       - name: Summary
