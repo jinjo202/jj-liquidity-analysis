@@ -72,12 +72,19 @@ async function fetchRange(from, to, attempt = 1) {
   }
 }
 
+// 실패를 한 줄로 내보낸다. 노드 기본 예외 출력은 코드 프레임과 스택이 앞에 붙어
+// 워크플로가 잘라 담을 때 정작 필요한 메시지(상태·길이·본문 머리)가 날아간다.
 const byDate = new Map();
-const endYear = Number(END.slice(0, 4));
-for (let y = Number(START.slice(0, 4)); y <= endYear; y++) {
-  const chunk = await fetchRange(`${y}0101`, y === endYear ? END : `${y}1231`);
-  for (const r of chunk) byDate.set(String(r.TMPV1), r);
-  console.log(`${y}: ${chunk.length} rows`);
+try {
+  const endYear = Number(END.slice(0, 4));
+  for (let y = Number(START.slice(0, 4)); y <= endYear; y++) {
+    const chunk = await fetchRange(`${y}0101`, y === endYear ? END : `${y}1231`);
+    for (const r of chunk) byDate.set(String(r.TMPV1), r);
+    console.log(`${y}: ${chunk.length} rows`);
+  }
+} catch (e) {
+  console.error(`LENDING_FAIL ${e.message}`);
+  process.exit(1);
 }
 const rows = [...byDate.values()];
 if (!rows.length) throw new Error('빈 응답. 파라미터 규격이 바뀌었는지 확인할 것.');

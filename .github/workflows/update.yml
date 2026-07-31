@@ -45,7 +45,8 @@ jobs:
           node scripts/fetch-kofia.mjs   || ERR="$ERR kofia"
           if ! node scripts/fetch-lending.mjs 2>"$RUNNER_TEMP/lending.err"; then
             ERR="$ERR lending"
-            DETAIL=$(tail -c 400 "$RUNNER_TEMP/lending.err" | tr '\n' ' ' | tr -d '"')
+            DETAIL=$(grep -m1 '^LENDING_FAIL' "$RUNNER_TEMP/lending.err" | head -c 500 | tr -d '"')
+            [ -z "$DETAIL" ] && DETAIL=$(head -c 300 "$RUNNER_TEMP/lending.err" | tr '\n' ' ' | tr -d '"')
             echo "LENDING_ERR=$DETAIL" >> "$GITHUB_ENV"
             echo "대차거래 실패: $DETAIL"
           fi
