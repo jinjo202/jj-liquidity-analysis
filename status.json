@@ -1,10 +1,10 @@
 {
   "ranOn": "2026-07-31",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/devbotsender8282/jj-liquidity-analysis/actions/runs/30608350980",
+  "runUrl": "https://github.com/devbotsender8282/jj-liquidity-analysis/actions/runs/30608474896",
   "selfcheck": "passed",
   "fetchErrors": "lending",
-  "lendingError": "[8387680,TMPV5:447163126,TMPV6:22602461}],dsmHeader:}])     at fetchRange (file:///home/runner/work/jj-liquidity-analysis/jj-liquidity-analysis/scripts/fetch-lending.mjs:59:13)     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)     at async file:///home/runner/work/jj-liquidity-analysis/jj-liquidity-analysis/scripts/fetch-lending.mjs:72:17  Node.js v22.23.1",
+  "lendingError": "V4:901314], 꼬리 [63126,TMPV6:22602461}],dsmHeader:}])     at fetchRange (file:///home/runner/work/jj-liquidity-analysis/jj-liquidity-analysis/scripts/fetch-lending.mjs:63:13)     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)     at async file:///home/runner/work/jj-liquidity-analysis/jj-liquidity-analysis/scripts/fetch-lending.mjs:78:17  Node.js v22.23.1",
   "dataThrough": {
     "지수·거래대금": "20260730",
     "신용융자·예탁금": "20260729",
