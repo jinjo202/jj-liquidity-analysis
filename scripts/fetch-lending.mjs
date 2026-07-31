@@ -35,6 +35,8 @@ async function fetchRange(from, to, attempt = 1) {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
         Accept: 'application/json, text/plain, */*',
         'Accept-Language': 'ko-KR,ko;q=0.9,en;q=0.8',
+        // 중간 경로에서 압축 응답이 망가지는 경우를 배제한다.
+        'Accept-Encoding': 'identity',
         Referer: 'https://freesis.kofia.or.kr/stat/FreeSIS.do',
       },
       body: JSON.stringify({
@@ -54,14 +56,20 @@ async function fetchRange(from, to, attempt = 1) {
     // WAF 뒤라 차단 시 200 으로 HTML 이 오기도 하고, 러너에서는 본문 앞뒤에 이물질이
     // 붙어 오는 경우가 있었다(로컬에서는 깨끗했다). 상태코드로는 성공/실패가 안 갈린다.
     // 그래서 먼저 그대로 파싱하고, 실패하면 첫 '{' ~ 마지막 '}' 만 잘라 다시 시도한다.
-    const attemptParse = s => { try { return JSON.parse(s); } catch { return null; } };
+    let why = null;
+    const attemptParse = s => { try { return JSON.parse(s); } catch (e) { why = e.message; return null; } };
     const first = text.indexOf('{'), last = text.lastIndexOf('}');
     const json = attemptParse(text)
       ?? (first >= 0 && last > first ? attemptParse(text.slice(first, last + 1)) : null);
     if (!json) {
-      const clean = s => s.replace(/\s+/g, ' ');
-      throw new Error(`${from}~${to}: JSON 아님 (status ${res.status}, ${text.length}바이트,`
-        + ` 머리 [${clean(text.slice(0, 80))}], 꼬리 [${clean(text.slice(-40))}])`);
+      // 파싱 실패 이유와 '그 위치의 실제 글자'를 같이 남긴다. 길이·머리·꼬리가 정상인데
+      // 파싱만 깨지는 경우는 본문 중간의 제어문자나 인코딩 문제라, 위치를 봐야 안다.
+      const pos = Number(/position (\d+)/.exec(why ?? '')?.[1] ?? -1);
+      const around = pos >= 0
+        ? JSON.stringify(text.slice(Math.max(0, pos - 30), pos + 30))
+        : '(위치 정보 없음)';
+      throw new Error(`${from}~${to}: JSON 아님 (status ${res.status}, ${text.length}자, `
+        + `ct=${res.headers.get('content-type')}, 이유=${why}, 부근=${around})`);
     }
     return json.ds1 ?? [];
   } catch (e) {
