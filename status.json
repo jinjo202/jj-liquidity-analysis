@@ -1,7 +1,7 @@
 {
   "ranOn": "2026-07-31",
-  "ranBy": "local",
-  "runUrl": null,
+  "ranBy": "github-actions",
+  "runUrl": "https://github.com/devbotsender8282/jj-liquidity-analysis/actions/runs/30609724085",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
