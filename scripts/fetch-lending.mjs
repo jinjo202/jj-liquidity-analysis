@@ -51,13 +51,19 @@ async function fetchRange(from, to, attempt = 1) {
       signal: AbortSignal.timeout(60000),
     });
     const text = await res.text();
-    // WAF 뒤라 차단 시 200 으로 HTML 이 오기도 한다. 상태코드로는 성공/실패가 안 갈린다.
-    // 실패 메시지에 길이와 꼬리를 실어야 '잘림'과 '차단'을 구분할 수 있다.
-    try {
-      return JSON.parse(text).ds1 ?? [];
-    } catch {
-      throw new Error(`${from}~${to}: JSON 아님 (status ${res.status}, ${text.length}바이트, 꼬리 [${text.slice(-60).replace(/\s+/g, ' ')}])`);
+    // WAF 뒤라 차단 시 200 으로 HTML 이 오기도 하고, 러너에서는 본문 앞뒤에 이물질이
+    // 붙어 오는 경우가 있었다(로컬에서는 깨끗했다). 상태코드로는 성공/실패가 안 갈린다.
+    // 그래서 먼저 그대로 파싱하고, 실패하면 첫 '{' ~ 마지막 '}' 만 잘라 다시 시도한다.
+    const attemptParse = s => { try { return JSON.parse(s); } catch { return null; } };
+    const first = text.indexOf('{'), last = text.lastIndexOf('}');
+    const json = attemptParse(text)
+      ?? (first >= 0 && last > first ? attemptParse(text.slice(first, last + 1)) : null);
+    if (!json) {
+      const clean = s => s.replace(/\s+/g, ' ');
+      throw new Error(`${from}~${to}: JSON 아님 (status ${res.status}, ${text.length}바이트,`
+        + ` 머리 [${clean(text.slice(0, 80))}], 꼬리 [${clean(text.slice(-40))}])`);
     }
+    return json.ds1 ?? [];
   } catch (e) {
     if (attempt >= 3) throw e;
     console.log(`  ${e.message} — 재시도 ${attempt}`);
