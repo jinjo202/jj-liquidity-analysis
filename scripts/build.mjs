@@ -1152,12 +1152,14 @@ ${Object.entries(p.markets).map(([nm, m]) => marketBlock(nm, m, p.closed)).join(
 const cycleCss = orderedPeriods.length < 2 ? '' : `
   .cycin { position:absolute; opacity:0; pointer-events:none; }
   .tabs.sub { margin-top:26px; }
-  .tabs.sub label b { font-size:13.5px; }
+  .tabs.sub label { padding:9px 14px; border-left-width:1.5px; }
+  .tabs.sub label b { font-size:14px; }
   .cycpane { display:none; }
+  ${orderedPeriods.map(p => `.tabs.sub label[for="cyc-${p.key}"] { border-left:5px solid var(--${p.closed ? 'bar' : 'acc'}); }`).join('\n  ')}
   ${orderedPeriods.map(p => `#cyc-${p.key}:checked ~ .cp-${p.key} { display:block; }`).join('\n  ')}
   ${orderedPeriods.map(p => `#cyc-${p.key}:checked ~ .tabs.sub label[for="cyc-${p.key}"] {
-    color:var(--fg); border-color:var(--line); background:var(--bg); border-bottom:1px solid var(--bg); }`).join('\n  ')}
-  ${orderedPeriods.map(p => `#cyc-${p.key}:checked ~ .tabs.sub label[for="cyc-${p.key}"] b { color:var(--${p.closed ? 'mut' : 'acc'}); }`).join('\n  ')}
+    background:var(--${p.closed ? 'bar' : 'acc'}); border-color:var(--${p.closed ? 'bar' : 'acc'}); color:#fff; }`).join('\n  ')}
+  ${orderedPeriods.map(p => `#cyc-${p.key}:checked ~ .tabs.sub label[for="cyc-${p.key}"] b { color:#fff; }`).join('\n  ')}
   ${orderedPeriods.map(p => `#cyc-${p.key}:focus-visible ~ .tabs.sub label[for="cyc-${p.key}"] { outline:2px solid var(--acc); outline-offset:2px; }`).join('\n  ')}
   .cycpane > section:first-child { border-top:none; margin-top:0; }
   @media print { .tabs.sub { display:none; } .cycpane { display:block !important; } }`;
@@ -1185,19 +1187,19 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
 <style>
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
-    --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec;
+    --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
     --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07);
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
-      --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19;
+      --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
       --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
-    --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec;
+    --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
     --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
-    --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19;
+    --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
     --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
@@ -1251,22 +1253,31 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .pill.pd { background:var(--cr); } .pill.pu { background:var(--kq); }
 
   /* 탭: 라디오 + 형제 선택자만 쓴다. JS 없이 file:// 에서도 그대로 동작한다. */
+  /* 선택된 탭은 색으로 꽉 채운다. 테두리만으로 구분하면 흰 배경에서 거의 안 보였다. */
   .tabin { position:absolute; opacity:0; pointer-events:none; }
-  .tabs { display:flex; gap:8px; margin:18px 0 0; border-bottom:1px solid var(--line); }
-  .tabs label { cursor:pointer; padding:9px 15px 8px; border:1px solid transparent; border-bottom:none;
-    border-radius:8px 8px 0 0; margin-bottom:-1px; color:var(--mut); line-height:1.35; }
-  .tabs label i { display:block; font-size:9.5px; letter-spacing:2px; font-style:normal; opacity:.7; }
-  .tabs label b { display:block; font-size:14px; }
-  .tabs label span { display:block; font-size:11px; }
-  .tabs label:hover { color:var(--fg); }
-  .tabs label.t-all { margin-left:auto; }
+  .tabs { display:flex; gap:10px; margin:20px 0 0; flex-wrap:wrap; align-items:stretch; }
+  .tabs label { flex:1 1 260px; cursor:pointer; padding:11px 16px; line-height:1.35;
+    border:1.5px solid var(--line); border-radius:10px; background:var(--surf);
+    color:var(--mut); position:relative; }
+  .tabs label i { display:block; font-size:9.5px; letter-spacing:2.5px; font-style:normal; opacity:.75; }
+  .tabs label b { display:block; font-size:15.5px; letter-spacing:-.2px; color:var(--fg); }
+  .tabs label span { display:block; font-size:11.5px; }
+  .tabs label:hover { border-color:var(--mut); }
+  .tabs label.t-all { flex:0 1 190px; }
+  /* 선택 상태 — 배경을 파트 색으로 채우고 글자를 흰색으로 뒤집는다. */
   #tab-down:checked ~ .tabs label[for="tab-down"],
   #tab-up:checked ~ .tabs label[for="tab-up"],
-  #tab-all:checked ~ .tabs label[for="tab-all"] {
-    color:var(--fg); border-color:var(--line); background:var(--bg); border-bottom:1px solid var(--bg); }
-  #tab-down:checked ~ .tabs label[for="tab-down"] b { color:var(--cr); }
-  #tab-up:checked ~ .tabs label[for="tab-up"] b { color:var(--kq); }
-  #tab-all:checked ~ .tabs label[for="tab-all"] b { color:var(--acc); }
+  #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
+  #tab-down:checked ~ .tabs label[for="tab-down"] b,
+  #tab-up:checked ~ .tabs label[for="tab-up"] b,
+  #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
+  #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
+  #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
+  #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
+  /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
+  .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
+  .tabs label[for="tab-up"] { border-left:5px solid var(--kq); }
+  .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
   #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up,
   #tab-all:checked ~ .pane { display:block; }
