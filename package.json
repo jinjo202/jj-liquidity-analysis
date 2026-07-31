@@ -1,0 +1,15 @@
+{
+  "name": "jj-liquidity-analysis",
+  "private": true,
+  "type": "module",
+  "description": "리포트 파이프라인 자체는 의존성이 없다. playwright 는 대차거래추이 스크래이핑 전용이며, 그 스크립트를 안 쓰면 설치할 필요도 없다.",
+  "scripts": {
+    "build": "node scripts/analyze.mjs && node scripts/selfcheck.mjs && node scripts/build.mjs && node scripts/build-email.mjs",
+    "fetch": "node scripts/fetch-kospi.mjs && node scripts/fetch-kofia.mjs",
+    "scrape-lending": "node scripts/scrape-lending.mjs",
+    "scrape-lending:headed": "node scripts/scrape-lending.mjs --headed"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
