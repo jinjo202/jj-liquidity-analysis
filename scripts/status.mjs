@@ -22,6 +22,9 @@ const status = {
   // selfcheck 를 통과해야 이 스크립트까지 온다(워크플로 순서). 여기 파일이 갱신됐다는 것 자체가
   // 그날 계산이 불변식을 통과했다는 뜻이다.
   selfcheck: 'passed',
+  // 소스별 실패는 워크플로가 여기로 넘겨준다. 하나가 막혀도 나머지는 갱신되므로,
+  // '값이 안 움직인 것'과 '못 받아온 것'을 이 필드로 구분한다.
+  fetchErrors: (process.env.FETCH_ERRORS ?? '').trim() || null,
   dataThrough: Object.fromEntries((A.daily?.freshness ?? []).map(x => [x.label, x.date])),
   lastSeriesDate: A.series.at(-1).d,
   reproMAE: Number(A.reproMAE.toFixed(4)),

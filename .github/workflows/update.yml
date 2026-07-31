@@ -35,11 +35,17 @@ jobs:
           node-version: '22'
 
       # 외부 패키지가 없으므로 install 단계가 없다.
+      # 소스 하나가 막혀도(러너 IP 차단 등) 나머지는 갱신되어야 한다.
+      # 어느 소스가 실패했는지는 status.json 에 실어 배포한다 —
+      # 저장소가 private 이라 Actions 로그를 URL 로 못 보기 때문이다.
       - name: Fetch
         run: |
-          node scripts/fetch-kospi.mjs
-          node scripts/fetch-kofia.mjs
-          node scripts/fetch-lending.mjs
+          ERR=""
+          node scripts/fetch-kospi.mjs   || ERR="$ERR kospi"
+          node scripts/fetch-kofia.mjs   || ERR="$ERR kofia"
+          node scripts/fetch-lending.mjs || ERR="$ERR lending"
+          echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
+          echo "실패한 소스: ${ERR:-없음}"
 
       # 유가증권/코스닥 분리 신용공여만 아직 API 경로가 없어 커밋된 xlsx 를 쓴다(§8).
       # 파일이 갱신되면 이 단계가 자동으로 반영한다.
