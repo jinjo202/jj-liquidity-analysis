@@ -76,6 +76,9 @@ jobs:
           git commit -m "${MSG}"
           git push
 
+      # run: 은 반드시 블록 스칼라(|)로 쓴다. 한 줄로 쓰면 명령 안의 ': '(콜론+공백)을
+      # YAML 이 키 구분자로 읽어 워크플로 전체가 파싱 실패한다(실제로 두 번 실패했다).
       - name: Summary
         if: always()
-        run: node -e "const a=require('./data/analysis.json');console.log('## 데이터 최신일');for(const x of (a.daily&&a.daily.freshness)||[])console.log('- '+x.label+': '+x.date);" >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          node -e "const a=require('./data/analysis.json');const f=(a.daily&&a.daily.freshness)||[];console.log('## 데이터 최신일');for(const x of f)console.log('- '+x.label+' '+x.date);" >> "$GITHUB_STEP_SUMMARY"

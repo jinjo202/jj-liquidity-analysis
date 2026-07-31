@@ -70,5 +70,17 @@ const dates = A.series.map(r => r.d);
 assert.deepEqual(dates, [...dates].sort(), '시계열이 정렬돼 있지 않다');
 assert.equal(new Set(dates).size, dates.length, '시계열에 중복 날짜가 있다');
 
+// 워크플로 YAML: 한 줄 `run:` 안의 ': '(콜론+공백)은 YAML 이 키 구분자로 읽어
+// 워크플로 전체를 파싱 실패시킨다. 실제로 두 번 당했다. 블록 스칼라(|)를 쓰면 안전하다.
+const wfDir = path.join(import.meta.dirname, '..', '.github', 'workflows');
+if (fs.existsSync(wfDir)) {
+  for (const f of fs.readdirSync(wfDir).filter(n => /\.ya?ml$/.test(n))) {
+    fs.readFileSync(path.join(wfDir, f), 'utf8').split('\n').forEach((line, i) => {
+      const m = /^\s+(run|name|if):\s+([^|>].*)$/.exec(line);
+      assert.ok(!(m && /:\s/.test(m[2])), `${f}:${i + 1} 한 줄 ${m?.[1]}: 안에 ': ' 가 있다 — 블록 스칼라(|)로 바꿀 것`);
+    });
+  }
+}
+
 console.log(`selfcheck OK — ${A.series.length}행, 재현 MAE ${A.reproMAE.toFixed(3)}조, `
   + `사이클 ${A.periods.length}개, 채널 ${A.channels ? 'O' : 'X'}, 미수금 ${A.unpaid ? 'O' : 'X'}`);
