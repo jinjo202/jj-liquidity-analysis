@@ -21,7 +21,10 @@ const status = {
   runUrl: repo && runId ? `https://github.com/${repo}/actions/runs/${runId}` : null,
   // selfcheck 를 통과해야 이 스크립트까지 온다(워크플로 순서). 여기 파일이 갱신됐다는 것 자체가
   // 그날 계산이 불변식을 통과했다는 뜻이다.
-  selfcheck: 'passed',
+  // 실패한 실행이 남기는 값. 성공하면 null 이고, 실패하면 어느 단계에서 멈췄는지가 들어간다.
+  // 실패 실행은 커밋 단계까지 가지 못하므로 워크플로의 'Report failure' 가 대신 커밋한다.
+  failedStage: (process.env.FAILED_STAGE ?? '').trim() || null,
+  selfcheck: process.env.FAILED_STAGE ? 'not reached' : 'passed',
   // 소스별 실패는 워크플로가 여기로 넘겨준다. 하나가 막혀도 나머지는 갱신되므로,
   // '값이 안 움직인 것'과 '못 받아온 것'을 이 필드로 구분한다.
   fetchErrors: (process.env.FETCH_ERRORS ?? '').trim() || null,
