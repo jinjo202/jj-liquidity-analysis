@@ -56,11 +56,19 @@ async function fetchRange(from, to, attempt = 1) {
     // WAF 뒤라 차단 시 200 으로 HTML 이 오기도 하고, 러너에서는 본문 앞뒤에 이물질이
     // 붙어 오는 경우가 있었다(로컬에서는 깨끗했다). 상태코드로는 성공/실패가 안 갈린다.
     // 그래서 먼저 그대로 파싱하고, 실패하면 첫 '{' ~ 마지막 '}' 만 잘라 다시 시도한다.
+    // 서버가 자릿수를 넘는 값을 '######' 로 내보낸다 — 엑셀식 오버플로 표기이고
+    // 유효한 JSON 토큰이 아니라 파싱이 깨진다. 실제로 걸린 곳은 연도별 '합계'/'평균'
+    // 요약 행이었고, 그 행들은 어차피 아래에서 버린다(일자가 숫자가 아니다).
+    // 그래서 값 자리의 '###...' 만 null 로 바꿔 파싱한다.
+    const deHash = s => s.replace(/:\s*[\d.]*#+/g, ':null');
     let why = null;
     const attemptParse = s => { try { return JSON.parse(s); } catch (e) { why = e.message; return null; } };
     const first = text.indexOf('{'), last = text.lastIndexOf('}');
+    const trimmed = first >= 0 && last > first ? text.slice(first, last + 1) : text;
     const json = attemptParse(text)
-      ?? (first >= 0 && last > first ? attemptParse(text.slice(first, last + 1)) : null);
+      ?? attemptParse(deHash(text))
+      ?? attemptParse(trimmed)
+      ?? attemptParse(deHash(trimmed));
     if (!json) {
       // 파싱 실패 이유와 '그 위치의 실제 글자'를 같이 남긴다. 길이·머리·꼬리가 정상인데
       // 파싱만 깨지는 경우는 본문 중간의 제어문자나 인코딩 문제라, 위치를 봐야 안다.
