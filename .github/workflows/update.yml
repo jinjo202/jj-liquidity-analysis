@@ -32,13 +32,13 @@ jobs:
         run: |
           node scripts/fetch-kospi.mjs
           node scripts/fetch-kofia.mjs
+          node scripts/fetch-lending.mjs
 
-      # 대차거래추이·신용공여 분리는 API 경로가 없어 커밋된 xlsx 를 그대로 쓴다
-      # (docs/methodology.md §8, §16.2). 파일이 갱신되면 이 단계가 자동으로 반영한다.
+      # 유가증권/코스닥 분리 신용공여만 아직 API 경로가 없어 커밋된 xlsx 를 쓴다(§8).
+      # 파일이 갱신되면 이 단계가 자동으로 반영한다.
       - name: Re-ingest xlsx (if present)
         run: |
-          node scripts/ingest-split.mjs   || echo "분리 계열 xlsx 없음 — 건너뜀"
-          node scripts/ingest-lending.mjs || echo "대차거래 xlsx 없음 — 건너뜀"
+          node scripts/ingest-split.mjs || echo "분리 계열 xlsx 없음 — 건너뜀"
 
       - name: Analyze
         run: node scripts/analyze.mjs

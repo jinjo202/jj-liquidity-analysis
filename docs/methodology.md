@@ -304,15 +304,16 @@ Windows 내장 `tar.exe`(`%SystemRoot%\System32\tar.exe`, bsdtar 기반)는 zip�
 node scripts/fetch-kospi.mjs    # 네이버 금융 코스피 일별(교차검증용) -> data/kospi-daily.json
 node scripts/fetch-kofia.mjs    # 금투협 FREESIS 일별 11개 지표      -> data/kofia-daily.json
 node scripts/ingest-split.mjs   # (선택) 신용공여 분리 계열 xlsx     -> data/credit-split.json
-node scripts/ingest-lending.mjs # (선택) 대차거래추이 xlsx           -> data/lending-balance.json
+node scripts/fetch-lending.mjs  # 대차거래추이(공매도 프록시)         -> data/lending-balance.json
 node scripts/analyze.mjs        # 사이클 x 시장 배분 + 마진콜 판정    -> data/analysis.json
 node scripts/selfcheck.mjs      # analysis.json 불변식 검사 (선택)
 node scripts/build.mjs          # 웹 리포트                          -> index.html
 node scripts/build-email.mjs    # 메일 클라이언트용 리포트           -> email.html
 ```
 
-두 `ingest-*` 는 xlsx 파일이 있을 때만 돌리면 된다(§8, §16.2). 원본이 그대로면 다시 돌릴 필요가 없고,
+`ingest-split.mjs` 만 xlsx 가 있을 때 돌리면 된다(§8). 원본이 그대로면 다시 돌릴 필요가 없고,
 `analyze.mjs` 가 결과 json 이 없으면 해당 분석을 조용히 건너뛴다.
+대차거래추이는 예전에 xlsx 였으나 지금은 `fetch-lending.mjs` 가 API 로 받는다(§16.2.1).
 
 `index.html`은 데이터와 차트(SVG)를 모두 품고 있어 외부 의존성이 없다. `file://`로 열어도 그대로 보인다.
 `email.html`은 같은 데이터를 메일 렌더러가 견디는 방식(전부 inline style, table 레이아웃, SVG 없음)으로 다시 굽는다.
@@ -343,8 +344,9 @@ node scripts/build-email.mjs    # 메일 클라이언트용 리포트           
   '실제 데이터 범위'로 바꿨다 — 요청 종료일을 적으면 새 데이터가 없는 날에도 파일이 매일 달라져
   빈 커밋이 쌓인다.
 
-대차거래추이(§16.2)만 자동화 밖이다. xlsx 를 받아 `data/` 에 커밋하면
-다음 실행부터 `ingest-lending.mjs` 단계가 자동으로 반영한다.
+남은 수동 구간은 **유가증권/코스닥 분리 신용공여 xlsx**(§8) 하나뿐이다. 사이클 단위로만 쓰이는
+계열이라 자주 갱신할 필요가 없고, 파일을 갱신해 커밋하면 다음 실행부터 자동으로 반영된다.
+대차거래추이는 §16.2.1 에서 API 경로를 찾아 자동화에 들어왔다.
 
 **상태 확인 경로.** 저장소가 private 이라 Actions 로그를 URL 로 열 수 없다.
 그래서 `scripts/status.mjs` 가 배포되는 `status.json` 에 실행 날짜·계열별 반영일·selfcheck 결과를 남긴다.
@@ -663,18 +665,53 @@ FREESIS `대차거래추이`(STATSCU0100000140)도 신용융자 분리(§8)와 �
 (zip 해제·HTML표·CSV 세 형식 자동판별, `pickFile()`이 `data/`와 프로젝트 루트를 모두 뒤진다 —
 사용자가 다운로드 파일을 프로젝트 루트에 두는 경우가 많아서다).
 
-**갱신은 여전히 수동이다.** 2026-07-31 에 다시 확인했으나 상황은 그대로였다:
+### 16.2.1 API 경로를 찾아냈다 — 파라미터 누락이 원인이었다
 
-- `statisticsCustom/STATSCU0100000140BO.do` → "일시적인 오류로 인해 서비스 연결이 되지 않습니다" HTML
-- `meta/getMetaDataList.do` → 같은 오류 페이지
-- KRX 정보데이터시스템 `getJsonData.cmd` → `400 LOGOUT` (세션 없이는 거부)
+2026-07-31 에 다시 파고들어 자동화에 성공했다. 결론부터: **엔드포인트는 처음부터 맞았고,
+파라미터가 모자랐다.**
 
-그래서 최신 대차잔고가 필요하면 FREESIS 화면에서 xlsx 를 다시 내려받아 `data/` 에 넣고
-`node scripts/ingest-lending.mjs` 를 돌린다. `pickFile()` 이 파일명에 '대차'가 들어간 가장 최근 파일을
-자동으로 집으므로 기존 파일을 지울 필요는 없다.
+먼저 막힌 길을 전부 확인했다.
+
+| 시도 | 결과 |
+|---|---|
+| 크로스통계 지표 카탈로그 88개 전수 조회 | 대차거래 **없음** (신용대주 OS0028 은 있음) |
+| `/stat/FreeSIS.do` 에 쿼리스트링 GET | WAF 차단. 네비게이션은 POST 전용 |
+| 엑셀 다운로드 엔드포인트 | 존재하지 않음 — `download()` 은 **이미 렌더된 HTML 표**를 `excelexport.jsp` 로 재직렬화한다 |
+| 앱 정의 파일 `/ui/app/*` | WAF 차단 |
+| `document.visibilityState` 패치 후 SPA 부팅 | 실패. eXBuilder6 는 실제 페인트 프레임을 요구한다 |
+
+그래서 헤드리스 브라우저(Playwright)로 `/stat/main.do` 에 직접 들어가
+`goPage('MSIS10040000000000','STATSCU0100000140')` 를 호출했더니 앱이 정상 렌더됐다
+(프레임셋을 거치지 않는 것이 요령이었다). 그 상태에서 앱이 보내는 **요청 본문을 그대로 캡처**했다.
+
+```json
+POST /meta/getMetaDataList.do   (application/json)
+{"dmSearch":{"tmpV40":"1000000","tmpV41":"1","tmpV1":"D",
+             "tmpV45":"20260430","tmpV46":"20260730","tmpV72":"",
+             "OBJ_NM":"STATSCU0100000140BO"}}
+```
+
+이전 시도가 값 대신 `null` 만 받은 이유가 여기서 드러난다 — `OBJ_NM` 만 보내고
+`tmpV40`(최대 행수)·`tmpV41`(페이지)·`tmpV72`(종목, 빈 값=전체)를 빠뜨렸다.
+세 개를 채우자 평범한 `fetch` 한 번으로 전 구간이 온다. **브라우저는 규격을 알아내는 데만 필요했고,
+알아낸 뒤로는 필요 없다** — Playwright 의존성은 제거했고 프로젝트는 다시 외부 패키지 0 이다.
+
+응답 형태:
+
+```
+{ unit:"", dsmHeader:"",
+  ds1:[ {TMPV1:일자, TMPV2:구분, TMPV3:체결주수, TMPV4:상환주수,
+         TMPV5:잔고주수, TMPV6:잔고금액(백만원)}, ... ] }
+```
+
+최신일이 먼저 오는 내림차순이고, **마지막 두 행은 '합계'/'평균' 요약**이라 일자가 숫자가 아니다.
+`/^\d{8}$/` 로 걸러낸다.
+
+검증: API 산출물과 기존 xlsx 산출물을 대조했더니 **4,096행 전부 일치, 불일치 0**이었다.
+`scripts/ingest-lending.mjs` 와 커밋된 xlsx 는 규격이 바뀔 때를 대비한 폴백으로 남겨 두었다.
 
 덧붙여 대차거래는 **T+1 공표**라, 당일 장중에 그날 잔고를 받을 수는 없다.
-2026-07-31 시점에서 받을 수 있는 최신 관측일은 07-30 이었다(현재 데이터와 동일).
+2026-07-31 시점의 최신 관측일은 07-30 이었다.
 
 ### 16.3 숏커버링 판정 방법
 

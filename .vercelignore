@@ -12,11 +12,5 @@ docs/
 *.xlsx
 *.xls
 
-# package.json 이 배포에 올라가면 Vercel 이 Node 프로젝트로 보고 빌드를 시도한다.
-# 이 저장소의 package.json 은 스크래이핑 스크립트 전용이고 사이트는 정적 HTML 이다.
-package.json
-package-lock.json
-node_modules/
-
 # 구버전 빌드 산출물
 kospi.html

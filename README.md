@@ -22,6 +22,7 @@ Node.js 18+ (외부 패키지 없음, `npm install` 불필요). `fetch`·`zlib` 
 ```bash
 node scripts/fetch-kospi.mjs    # 네이버 금융 코스피 일별(교차검증용) -> data/kospi-daily.json
 node scripts/fetch-kofia.mjs    # 금투협 FREESIS 일별 11개 지표      -> data/kofia-daily.json
+node scripts/fetch-lending.mjs  # 금투협 대차거래추이(공매도 프록시)  -> data/lending-balance.json
 node scripts/analyze.mjs        # 사이클 x 시장 배분 + 마진콜 판정    -> data/analysis.json
 node scripts/selfcheck.mjs      # analysis.json 불변식 검사
 node scripts/build.mjs          # 웹 리포트                          -> index.html
@@ -31,19 +32,18 @@ node scripts/build-email.mjs    # 메일 클라이언트용 리포트           
 두 `fetch-*` 의 조회 종료일 기본값은 **실행 시점의 오늘**이다. 특정 시점을 재현하려면 인자로 넘긴다:
 `node scripts/fetch-kofia.mjs 20260729`.
 
-### xlsx 인제스트 (선택, 이미 커밋되어 있음)
+### xlsx 인제스트 (유가증권/코스닥 분리만, 이미 커밋되어 있음)
 
-FREESIS 의 일부 계열은 크로스통계 API 에 없어 화면에서 xlsx 를 내려받아야 한다
-(`docs/methodology.md` §8, §16.2 에 시도한 경로와 실패 이유 전부 기록).
+유가증권/코스닥 분리 신용공여는 아직 API 경로가 없어 화면에서 xlsx 를 내려받아야 한다(§8).
 받아둔 파일이 `data/` 에 커밋되어 있으므로 **새 PC에서 다시 받을 필요는 없다.**
-더 최신 데이터가 필요할 때만 다시 내려받아 `data/` 에 넣고 실행한다.
 
 ```bash
-node scripts/ingest-split.mjs    # 신용공여 잔고 추이.xlsx -> data/credit-split.json  (유가증권/코스닥 분리)
-node scripts/ingest-lending.mjs  # 대차거래추이.xlsx       -> data/lending-balance.json (대차잔고)
+node scripts/ingest-split.mjs    # 신용공여 잔고 추이.xlsx -> data/credit-split.json
 ```
 
-`pickFile()` 이 파일명에 '신용'/'대차'가 들어간 가장 최근 파일을 `data/` 와 프로젝트 루트에서 자동으로 집는다.
+대차거래추이도 원래는 xlsx 였으나 지금은 `fetch-lending.mjs` 가 API 로 받는다(§16.2).
+`ingest-lending.mjs` 와 커밋된 xlsx 는 API 규격이 바뀔 때를 대비한 폴백으로 남겨 두었다 —
+두 경로의 산출물이 4,096행 전부 일치하는 것을 확인했다.
 
 ## 산출물
 
@@ -100,8 +100,9 @@ https://jj-liquidity-analysis.vercel.app/status.json
 `selfcheck` 로 그날 계산이 불변식을 통과했는지 본다(워크플로 순서상 selfcheck 를 통과해야
 이 파일이 갱신된다).
 
-한 가지 예외: **대차거래추이는 API 경로가 없어 자동화 밖이다**(§16.2).
-FREESIS 화면에서 xlsx 를 내려받아 `data/` 에 넣고 커밋하면, 그 다음 실행부터 워크플로가 자동으로 반영한다.
+남은 수동 구간은 **유가증권/코스닥 분리 신용공여 xlsx** 하나뿐이다(§8).
+사이클 단위로만 쓰이는 계열이라 자주 갱신할 필요가 없고, 파일을 갱신해 커밋하면
+다음 실행부터 워크플로가 자동으로 반영한다.
 
 ## 다른 PC에서 이어서 작업
 
