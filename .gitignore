@@ -1,0 +1,20 @@
+# 제3자 저작물 — 비교 대상인 삼성자산운용 House View 원본 PDF.
+# 방법론(docs/methodology.md §2)에 필요한 값은 전부 표로 옮겨 적어 두었으므로
+# 파일 자체가 없어도 재현·검증은 그대로 된다.
+*.pdf
+
+# 구버전 빌드 산출물(2026-07-29 시점). 현재 파이프라인은 index.html 만 만든다.
+kospi.html
+
+# Claude Code 로컬 권한 설정 — PC마다 다르다.
+.claude/settings.local.json
+
+# OS / 편집기
+Thumbs.db
+desktop.ini
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+node_modules/

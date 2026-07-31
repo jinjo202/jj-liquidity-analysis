@@ -1,0 +1,6 @@
+# PC 사이를 오갈 때 줄바꿈만 바뀐 diff 가 생기지 않게 저장소 안은 LF 로 고정한다.
+* text=auto eol=lf
+
+*.xlsx binary
+*.xls  binary
+*.pdf  binary
