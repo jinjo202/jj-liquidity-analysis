@@ -1,13 +1,13 @@
 {
   "ranOn": "2026-07-31",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/devbotsender8282/jj-liquidity-analysis/actions/runs/30608744451",
+  "runUrl": "https://github.com/devbotsender8282/jj-liquidity-analysis/actions/runs/30608862167",
   "selfcheck": "passed",
-  "fetchErrors": "lending",
-  "lendingError": "LENDING_FAIL 20100101~20101231: JSON 아님 (status 200, 25812자, ct=application/json;charset=UTF-8, 이유=Expected ',' or '}' after property value in JSON at position 25675 (line 1 column 25676), 부근=PV4\\:2113695464,\\TMPV5\\:112685######,\\TMPV6\\:5695820084},{\\T)",
+  "fetchErrors": null,
+  "lendingError": null,
   "dataThrough": {
     "지수·거래대금": "20260730",
-    "신용융자·예탁금": "20260729",
+    "신용융자·예탁금": "20260730",
     "대차잔고": "20260730",
     "교차검증 지수(네이버)": "20260731"
   },
