@@ -1,9 +1,9 @@
 {
   "ranOn": "2026-07-31",
-  "ranBy": "local",
-  "runUrl": null,
+  "ranBy": "github-actions",
+  "runUrl": "https://github.com/devbotsender8282/jj-liquidity-analysis/actions/runs/30608061949",
   "selfcheck": "passed",
-  "fetchErrors": null,
+  "fetchErrors": "lending",
   "dataThrough": {
     "지수·거래대금": "20260730",
     "신용융자·예탁금": "20260729",
