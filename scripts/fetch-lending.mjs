@@ -23,30 +23,60 @@ const today = new Date();
 const END = process.argv[2]
   ?? `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, '0')}${String(today.getDate()).padStart(2, '0')}`;
 
-const res = await fetch(URL_DATA, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json; charset=UTF-8',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    Referer: 'https://freesis.kofia.or.kr/stat/FreeSIS.do',
+const body = JSON.stringify({
+  dmSearch: {
+    tmpV40: '1000000',   // 최대 행수. 작게 주면 잘려서 온다.
+    tmpV41: '1',         // 페이지
+    tmpV1: 'D',          // 자료주기: 일별
+    tmpV45: START,
+    tmpV46: END,
+    tmpV72: '',          // 종목 선택: 빈 값 = 전체
+    OBJ_NM: 'STATSCU0100000140BO',
   },
-  body: JSON.stringify({
-    dmSearch: {
-      tmpV40: '1000000',   // 최대 행수. 작게 주면 잘려서 온다.
-      tmpV41: '1',         // 페이지
-      tmpV1: 'D',          // 자료주기: 일별
-      tmpV45: START,
-      tmpV46: END,
-      tmpV72: '',          // 종목 선택: 빈 값 = 전체
-      OBJ_NM: 'STATSCU0100000140BO',
-    },
-  }),
 });
-if (!res.ok) throw new Error(`freesis ${res.status}`);
 
-const json = await res.json();
+// 이 엔드포인트는 WAF 뒤에 있다. 차단되면 200 으로 HTML 오류 페이지가 오기도 해서
+// 상태코드만 봐서는 성공/실패가 갈리지 않는다. 본문을 직접 보고 판정한다.
+// 실패 메시지에 응답 앞부분을 실어야 원인(차단/규격변경/타임아웃)을 구분할 수 있다.
+async function request(attempt) {
+  const res = await fetch(URL_DATA, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      Accept: 'application/json, text/plain, */*',
+      'Accept-Language': 'ko-KR,ko;q=0.9,en;q=0.8',
+      Origin: 'https://freesis.kofia.or.kr',
+      Referer: 'https://freesis.kofia.or.kr/stat/FreeSIS.do',
+    },
+    body,
+    signal: AbortSignal.timeout(60000),
+  });
+  const text = await res.text();
+  let json;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new Error(`시도 ${attempt}: JSON 아님 (status ${res.status}, ${text.length}바이트) — ${text.slice(0, 160).replace(/\s+/g, ' ')}`);
+  }
+  if (!res.ok) throw new Error(`시도 ${attempt}: freesis ${res.status}`);
+  return json;
+}
+
+let json;
+for (let attempt = 1; ; attempt++) {
+  try {
+    json = await request(attempt);
+    break;
+  } catch (e) {
+    if (attempt >= 3) throw e;
+    console.log(`  ${e.message} — 재시도`);
+    await new Promise(r => setTimeout(r, attempt * 3000));
+  }
+}
+
 const rows = json.ds1 ?? [];
-if (!rows.length) throw new Error('빈 응답. 파라미터 규격이 바뀌었는지 확인할 것.');
+if (!rows.length) throw new Error(`빈 응답 (키: ${Object.keys(json).join(',')}). 파라미터 규격이 바뀌었는지 확인할 것.`);
 
 const series = rows
   .filter(r => /^\d{8}$/.test(String(r.TMPV1)))     // '합계'/'평균' 요약 행 제거

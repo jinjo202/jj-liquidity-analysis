@@ -25,6 +25,7 @@ const status = {
   // 소스별 실패는 워크플로가 여기로 넘겨준다. 하나가 막혀도 나머지는 갱신되므로,
   // '값이 안 움직인 것'과 '못 받아온 것'을 이 필드로 구분한다.
   fetchErrors: (process.env.FETCH_ERRORS ?? '').trim() || null,
+  lendingError: (process.env.LENDING_ERR ?? '').trim().slice(0, 400) || null,
   dataThrough: Object.fromEntries((A.daily?.freshness ?? []).map(x => [x.label, x.date])),
   lastSeriesDate: A.series.at(-1).d,
   reproMAE: Number(A.reproMAE.toFixed(4)),

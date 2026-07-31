@@ -43,7 +43,12 @@ jobs:
           ERR=""
           node scripts/fetch-kospi.mjs   || ERR="$ERR kospi"
           node scripts/fetch-kofia.mjs   || ERR="$ERR kofia"
-          node scripts/fetch-lending.mjs || ERR="$ERR lending"
+          if ! node scripts/fetch-lending.mjs 2>"$RUNNER_TEMP/lending.err"; then
+            ERR="$ERR lending"
+            DETAIL=$(tail -c 400 "$RUNNER_TEMP/lending.err" | tr '\n' ' ' | tr -d '"')
+            echo "LENDING_ERR=$DETAIL" >> "$GITHUB_ENV"
+            echo "대차거래 실패: $DETAIL"
+          fi
           echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
           echo "실패한 소스: ${ERR:-없음}"
 
