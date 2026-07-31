@@ -494,6 +494,45 @@ function ratioChart(rows, marks, unit = '신용융자 / 시가총액 (%)', suf =
 </svg>`;
 }
 
+/** 지표 하나의 1년 추세. 핵심 요약에서 지표를 펼치면 나온다. */
+function trendChart(points, unit, dg) {
+  const W = 640, H = 190, M = { t: 18, r: 52, b: 26, l: 12 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  const vs = points.map(p => p.v);
+  const lo = Math.min(...vs), hi = Math.max(...vs);
+  const pad = (hi - lo) * 0.12 || Math.abs(hi) * 0.05 || 1;
+  const dom = [lo - pad, hi + pad];
+  const xAt = i => scale(i, [0, points.length - 1], [M.l, M.l + iw]);
+  const yAt = v => scale(v, dom, [M.t + ih, M.t]);
+
+  // 분기 시작만 눈금으로 찍는다. 1년치에 월 12개를 다 찍으면 글자가 겹친다.
+  const ticksX = [];
+  let lastQ = null;
+  points.forEach((p, i) => {
+    const q = `${p.d.slice(0, 4)}Q${Math.floor((Number(p.d.slice(4, 6)) - 1) / 3)}`;
+    if (q !== lastQ) { ticksX.push({ i, label: `${p.d.slice(2, 4)}.${p.d.slice(4, 6)}` }); lastQ = q; }
+  });
+
+  const iMax = vs.indexOf(hi), iMin = vs.indexOf(lo);
+  const mark = (i, v, label, cls) => `<circle class="tdot ${cls}" cx="${xAt(i).toFixed(1)}" cy="${yAt(v).toFixed(1)}" r="2.8"/>
+    <text class="ax sm" x="${xAt(i).toFixed(1)}" y="${(yAt(v) + (cls === 'hi' ? -7 : 13)).toFixed(1)}" text-anchor="middle">${label} ${f(v, dg)}</text>`;
+
+  const d = points.map((p, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(p.v).toFixed(1)}`).join('');
+  const area = `${d}L${xAt(points.length - 1).toFixed(1)},${(M.t + ih).toFixed(1)}L${xAt(0).toFixed(1)},${(M.t + ih).toFixed(1)}Z`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 1년 추세">
+  ${ticks(dom[0], dom[1], 3).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${f(v, dg)}</text>`).join('')}
+  ${ticksX.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
+  <path class="tarea" d="${area}"/>
+  <path class="tline" d="${d}"/>
+  ${mark(iMax, hi, '고', 'hi')}
+  ${mark(iMin, lo, '저', 'lo')}
+  <circle class="tdot now" cx="${xAt(points.length - 1).toFixed(1)}" cy="${yAt(vs.at(-1)).toFixed(1)}" r="3.4"/>
+  <text class="unit" x="${M.l}" y="12">${esc(unit)} · 최근 1년 (${points.length}영업일)</text>
+</svg>`;
+}
+
 /** 같은 단위(조원) 계열 여러 개를 한 축에 겹쳐 그린다. */
 function levelChart(rows, lines, unit) {
   const W = 660, H = 260, M = { t: 22, r: 16, b: 34, l: 50 };
@@ -1021,16 +1060,23 @@ if (co && PJ) {
 
   // 전일 대비 변화 스트립 + 계열별 최신 관측일. 매일 열어보는 리포트라면 여기가 첫 화면이다.
   const D = A.daily;
+  // 각 지표는 <details> 다. 눌러야 1년 추세가 펼쳐진다 — 브라우저 기본 기능이라
+  // 스크립트가 없고, 인쇄하면 접힌 것도 함께 나온다.
   const deltaStrip = D ? `<div class="deltas">
   ${D.items.map(it => {
     const up = it.delta >= 0;
-    const dg = it.unit === 'p' ? 2 : 2;
-    return `<div class="dcell">
-      <div class="dl">${esc(it.label)}</div>
+    const dg = 2;
+    const s = it.series ?? [];
+    const yr = s.length > 1 ? (it.value / s[0].v - 1) * 100 : null;
+    const head = `<div class="dl">${esc(it.label)}${it.live ? '<i class="live">장중</i>' : ''}</div>
       <div class="dv">${f(it.value, dg)}<span class="u">${esc(it.unit)}</span></div>
       <div class="dd ${up ? 'up' : 'dn'}">${up ? '▲' : '▼'} ${f(Math.abs(it.delta), dg)} (${up ? '+' : '-'}${f(Math.abs(it.pct), 2)}%)</div>
-      <div class="dt">${dtFull(it.date)}</div>
-    </div>`;
+      <div class="dt">${dtFull(it.date)}${it.source ? ` · ${esc(it.source)}` : ''}</div>`;
+    if (s.length < 2) return `<div class="dcell">${head}</div>`;
+    return `<details class="dcell">
+      <summary>${head}<span class="more">1년 추세 ${yr >= 0 ? '+' : ''}${f(yr, 1)}% ▾</span></summary>
+      <div class="trend">${trendChart(s, `${esc(it.label)} (${esc(it.unit)})`, dg)}</div>
+    </details>`;
   }).join('')}
 </div>
 <div class="fresh">데이터 최신일 —
@@ -1121,8 +1167,22 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .sub { color:var(--mut); font-size:13px; }
   /* 핵심 요약 */
   .summary { margin-top:20px; border-top:none; }
-  .deltas { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:8px; margin:12px 0 8px; }
+  .deltas { display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:8px; margin:12px 0 8px; }
   .dcell { border:1px solid var(--line); border-radius:7px; padding:8px 11px; }
+  details.dcell { padding:0; }
+  details.dcell > summary { padding:8px 11px; cursor:pointer; list-style:none; border-radius:7px; }
+  details.dcell > summary::-webkit-details-marker { display:none; }
+  details.dcell > summary:hover { background:var(--band); }
+  details.dcell[open] { grid-column:1/-1; }
+  details.dcell[open] > summary { border-bottom:1px solid var(--line); border-radius:7px 7px 0 0; }
+  .dcell .more { display:block; font-size:10.5px; color:var(--acc); margin-top:2px; }
+  details.dcell[open] .more { color:var(--mut); }
+  .trend { padding:10px 12px 6px; }
+  .tline { fill:none; stroke:var(--acc); stroke-width:1.5; }
+  .tarea { fill:var(--acc); opacity:.07; stroke:none; }
+  .tdot { fill:var(--mut); } .tdot.now { fill:var(--acc); } .tdot.hi { fill:var(--cr); } .tdot.lo { fill:var(--kq); }
+  .dcell .dl .live { font-style:normal; font-size:9px; background:var(--part); color:#fff;
+    border-radius:3px; padding:1px 4px; margin-left:4px; vertical-align:1px; }
   .dcell .dl { font-size:11px; color:var(--mut); }
   .dcell .dv { font-size:17px; font-variant-numeric:tabular-nums; letter-spacing:-.4px; }
   .dcell .dv .u { font-size:11px; color:var(--mut); margin-left:1px; }

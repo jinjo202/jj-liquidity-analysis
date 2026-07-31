@@ -522,6 +522,13 @@ if (fs.existsSync(kospiPath)) {
 // "어제와 뭐가 달라졌나"와 "이 숫자가 며칠 전 것인가"다.
 // 계열마다 공표 시차가 달라서(지수 T+1, 신용융자 결제일 기준 T+2, 대차 T+1) 각각 표시한다.
 function dailyDelta() {
+  // 1년치 시계열을 같이 싣는다. 리포트에서 지표를 펼치면 추세를 바로 볼 수 있어야
+  // "어제 대비"라는 한 점짜리 정보가 오해를 부르지 않는다.
+  const yearAgo = (() => {
+    const d = String(lastDate);
+    return `${Number(d.slice(0, 4)) - 1}${d.slice(4)}`;
+  })();
+
   const pick = (field, scale = 1) => {
     const rows = raw.series.filter(r => Number.isFinite(r[field]));
     if (rows.length < 2) return null;
@@ -532,6 +539,7 @@ function dailyDelta() {
       value: v(last), prev: v(prev),
       delta: v(last) - v(prev),
       pct: prev[field] ? (v(last) / v(prev) - 1) * 100 : null,
+      series: rows.filter(r => r.date >= yearAgo).map(r => ({ d: r.date, v: v(r) })),
     };
   };
 
@@ -543,6 +551,22 @@ function dailyDelta() {
     { key: 'unpaid', label: '위탁매매미수금', unit: '조', ...pick('OS0024', 1e6) },
   ].filter(x => x.date);
 
+  // 코스피는 FREESIS(EOD, T+1)보다 네이버가 하루 빠르다. 최신 값을 보여주되
+  // 어디서 온 값인지, 장중일 수 있는지를 같이 표시한다(§19).
+  const idxItem = items.find(x => x.key === 'idx');
+  if (idxItem && spotSource && spotSource.date > idxItem.date) {
+    const base = idxItem.value;
+    idxItem.prevDate = idxItem.date;
+    idxItem.prev = base;
+    idxItem.date = spotSource.date;
+    idxItem.value = spotSource.idx;
+    idxItem.delta = spotSource.idx - base;
+    idxItem.pct = (spotSource.idx / base - 1) * 100;
+    idxItem.live = true;
+    idxItem.source = '네이버 금융';
+    idxItem.series = [...idxItem.series, { d: spotSource.date, v: spotSource.idx }];
+  }
+
   if (lending) {
     const s = lending.series;
     if (s.length >= 2) {
@@ -551,6 +575,7 @@ function dailyDelta() {
         key: 'lending', label: '대차잔고', unit: '조',
         date: l.d, prevDate: p.d, value: l.bal, prev: p.bal,
         delta: l.bal - p.bal, pct: (l.bal / p.bal - 1) * 100,
+        series: s.filter(r => r.d >= yearAgo).map(r => ({ d: r.d, v: r.bal })),
       });
     }
   }

@@ -8,6 +8,13 @@ on:
     - cron: '30 10 * * 1-5'   # 19:30 KST — 장 마감(15:30) 후 EOD 공표분
     - cron: '30 23 * * 0-4'   # 08:30 KST 다음날 — 늦게 확정되는 계열 재확인
   workflow_dispatch:           # Actions 탭에서 수동 실행
+  push:
+    # 파이프라인 코드가 바뀌면 바로 돌려서 결과를 확인한다.
+    # 문서만 고친 커밋으로는 돌지 않는다.
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/update.yml'
 
 concurrency:
   group: update-reports
