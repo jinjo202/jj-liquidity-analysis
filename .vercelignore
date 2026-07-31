@@ -1,0 +1,16 @@
+# 배포에 올라가는 것은 리포트 HTML 뿐이다.
+#
+# 저장소는 private 이지만 **배포된 사이트는 공개**다. 아무것도 막지 않으면
+# https://<사이트>/data/kofia-daily.json 같은 URL 로 원본 데이터가 그대로 노출된다.
+# 그래서 데이터·스크립트·방법론 문서는 배포에서 제외한다(저장소에는 그대로 남는다).
+data/
+scripts/
+docs/
+.claude/
+*.md
+*.pdf
+*.xlsx
+*.xls
+
+# 구버전 빌드 산출물
+kospi.html

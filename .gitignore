@@ -9,6 +9,10 @@ kospi.html
 # Claude Code 로컬 권한 설정 — PC마다 다르다.
 .claude/settings.local.json
 
+# Vercel 링크 정보(projectId/orgId). PC마다 다시 link 하면 되고,
+# 커밋하면 다른 PC에서 엉뚱한 프로젝트에 연결될 수 있다.
+.vercel/
+
 # OS / 편집기
 Thumbs.db
 desktop.ini

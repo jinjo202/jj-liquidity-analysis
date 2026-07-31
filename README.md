@@ -72,6 +72,39 @@ data/                  원본 xlsx + 정규화된 json (전부 커밋됨)
 docs/methodology.md    방법론 §1~20
 ```
 
+## 다른 PC에서 이어서 작업
+
+```bash
+git clone <저장소 URL>
+cd <폴더>
+node scripts/analyze.mjs && node scripts/selfcheck.mjs && node scripts/build.mjs && node scripts/build-email.mjs
+```
+
+`data/` 의 원본 xlsx 와 정규화 json 이 전부 커밋되어 있어 **클론 직후 바로 재현된다.**
+`npm install` 없음, Node 18+ 만 있으면 된다. 최신 데이터가 필요하면 `fetch-*` 부터 돌린다.
+
+## 배포 (Vercel)
+
+리포트는 정적 HTML 한 장이라 빌드 설정이 필요 없다. Vercel 대시보드에서
+이 저장소를 Import 하고 아래대로 두면 끝이다.
+
+| 항목 | 값 |
+|---|---|
+| Framework Preset | **Other** |
+| Root Directory | `./` |
+| Build Command | 비움 (override 끄기) |
+| Output Directory | 비움 |
+| Install Command | 비움 |
+
+`package.json` 이 없으므로 Vercel 은 빌드를 시도하지 않고 정적 파일만 배포한다.
+
+**`.vercelignore` 를 반드시 유지할 것.** 저장소는 private 이어도 **배포된 사이트는 공개**다.
+아무것도 막지 않으면 `https://<사이트>/data/kofia-daily.json` 으로 원본 데이터가 그대로 노출된다.
+현재 설정은 `index.html` / `email.html` 만 올린다.
+
+`.vercel/` 은 `.gitignore` 에 들어 있다 — PC마다 다시 link 하면 되고, 커밋하면 다른 PC에서
+엉뚱한 Vercel 프로젝트에 연결될 수 있다.
+
 ## 데이터 출처
 
 - 신용융자·반대매매금액·위탁매매미수금·투자자예탁금·예탁증권담보융자, 코스피/코스닥 지수·시가총액·거래대금:
