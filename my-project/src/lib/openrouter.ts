@@ -58,6 +58,13 @@ export function summarizeForPrompt(snap: AnalysisSnapshot): string {
       lines.push(`숏커버링 후보일(상위 ${l.candidates.length}개): ` +
         l.candidates.map(c => `${formatDateKo(c.date)}(지수+${formatPct(c.dIdxPct ?? 0)}/잔고${formatPct(c.dBalPct ?? 0)})`).join(', '))
     }
+    // 화면의 숏커버 사다리와 같은 숫자를 보게 한다. 이게 없으면 챗봇이 화면에 있는 표를 모른다.
+    if (l.shortCoverLadder?.rows.length) {
+      const sc = l.shortCoverLadder
+      lines.push(`숏커버 사다리(현재 ${formatIdx(sc.currentIdx)} 기준, 지수가 그 위로 올라오면 손실권에 드는 대차잔고): 이미 손실권 ${formatJo(sc.underwaterJo)}, 위쪽에 남은 물량 ${formatJo(sc.aboveJo)}. `
+        + sc.rows.map(r => `${formatIdx(r.threshold)} 위=+${formatJo(r.incrementalJo)}(누적 ${formatJo(r.cumulativeJo)})`).join(', '))
+      lines.push(`주의: 대차거래에는 신용융자의 담보유지비율 같은 공표된 강제 청산 규칙이 없다. 숏커버 사다리는 청산 예정량이 아니라 손실권 진입량이며 커버 압력의 상한으로 읽어야 한다.`)
+    }
     lines.push(`한계: 대차거래는 공매도 외에 ETF 설정/환매, 차익거래 등 다른 목적으로도 일어나므로 잔고 변화 전부가 공매도 포지션 변화는 아니다.`)
   }
   lines.push(`[방법론 요약] 담보유지비율 ${snap.meta.maintenance}, 융자비율 ${snap.meta.loanRatio}, 마진콜 계수 ${snap.meta.marginFactor.toFixed(2)} (매수 지수 대비 -16%에서 반대매매 발생). 지수대별 배분은 일별 신용융자 증가분을 그날 지수 구간에 누적한 값(gross)이며, 중복 계상을 보정해 실제 순증에 맞춰 스케일했다.`)

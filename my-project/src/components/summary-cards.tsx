@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { KospiLive } from '@/components/kospi-live'
 import type { AnalysisSnapshot } from '@/lib/types'
-import { formatJo, formatIdx, formatPct, formatDateKo } from '@/lib/format'
+import { formatJo, formatPct } from '@/lib/format'
 
 export function SummaryCards({ snap }: { snap: AnalysisSnapshot }) {
   const cur = snap.periods.find(p => !p.closed)?.markets['전체']
@@ -9,12 +11,11 @@ export function SummaryCards({ snap }: { snap: AnalysisSnapshot }) {
   const p = snap.projection
   const closed = snap.periods.find(period => period.closed)?.markets['전체']
 
-  const items = [
+  const items: { title: string; body?: ReactNode; value?: string; sub?: string; hint?: string }[] = [
     {
       title: '코스피',
-      value: formatIdx(h.idxLast),
-      sub: `고점 ${formatIdx(h.idxPeak)} 대비 ${formatPct(h.idxDrawdownPct)}`,
-      hint: `${formatDateKo(h.idxLastDate)} 종가 기준입니다.`,
+      // 지수만 장중에도 갱신한다(클라이언트에서 폴링). 나머지 카드는 배치 기준 그대로다.
+      body: <KospiLive fallbackIdx={h.idxLast} fallbackDate={h.idxLastDate} peakIdx={h.idxPeak} />,
     },
     {
       title: '신용융자 잔고',
@@ -44,9 +45,13 @@ export function SummaryCards({ snap }: { snap: AnalysisSnapshot }) {
             <CardTitle className="text-sm font-medium text-muted-foreground">{it.title}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
-            <p className="text-2xl font-semibold tabular-nums">{it.value}</p>
-            <p className="text-xs text-muted-foreground">{it.sub}</p>
-            <p className="text-xs text-muted-foreground/80">{it.hint}</p>
+            {it.body ?? (
+              <>
+                <p className="text-2xl font-semibold tabular-nums">{it.value}</p>
+                <p className="text-xs text-muted-foreground">{it.sub}</p>
+                <p className="text-xs text-muted-foreground/80">{it.hint}</p>
+              </>
+            )}
           </CardContent>
         </Card>
       ))}

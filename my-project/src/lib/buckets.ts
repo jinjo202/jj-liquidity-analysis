@@ -42,6 +42,17 @@ export type LadderRow = {
   incrementalPctOfDay: number | null; cumulativePctOfDay: number | null
 }
 
+export type ShortCoverLadder = {
+  width: number
+  currentIdx: number; currentDate: string
+  grossJo: number; netBuildJo: number; churnScale: number
+  underwaterJo: number   // 현재 지수 아래 구간에서 열린 숏 = 이미 손실권
+  aboveJo: number        // 위쪽에 남은 물량 = 사다리 합계
+  avgDailyTurnoverJo: number | null
+  buckets: BucketRow[]   // 지수대별 숏 적립 분포(보정 후)
+  rows: LadderRow[]
+}
+
 export type MarketAnalysis = {
   churnScale: number
   netBuildJo: number
@@ -203,6 +214,69 @@ export function buildLadder(buckets: Bucket[], scaledBuckets: Bucket[], avgDaily
       cumulativePctOfDay: avgDailyTurnoverJo ? (cum / avgDailyTurnoverJo) * 100 : null,
     };
   });
+}
+
+/**
+ * 숏커버 사다리. 마진콜 사다리와 순서만 반대다.
+ *
+ * 대차잔고 증가분을 그날 지수의 버킷에 쌓으면 '어느 지수대에서 숏이 열렸는가' 가 나온다
+ * (accumulate 를 그대로 쓴다 — 신용융자 적립과 계산이 같고 부호 방향만 반대로 읽는다).
+ * 지수가 그 구간 위로 올라가면 그 물량은 손실권이다.
+ *
+ * 대표 진입 지수로 구간 '하단' 을 쓴다. 마진콜 쪽이 구간 상단을 대표 매수가로 쓰는 것과
+ * 같은 기준이다 — 지수가 움직이는 방향에서 가장 먼저 걸리는 쪽을 대표값으로 잡는다.
+ * 그래서 현재 지수가 걸쳐 있는 구간(low < 현재지수 < high)은 일부만 손실권이어도
+ * 전체를 '이미 손실권' 으로 센다. 마진콜 쪽 triggered 판정과 같은 보수적 규칙이다.
+ *
+ * 신용융자와 결정적으로 다른 점: 담보유지비율에 해당하는 강제 청산 규칙이 공표되지 않는다.
+ * 그래서 계수를 곱하지 않고 손실권 진입만 센다. 이 사다리가 말하는 건 '얼마가 청산된다'
+ * 가 아니라 '얼마가 손실권에 든다' 이고, 손실권 물량이 곧 커버 압력의 상한이다.
+ */
+export function buildShortCoverLadder(o: {
+  rows: DailyRow[]                       // credit 자리에 대차잔고(백만원)를 넣는다
+  currentIdx: number
+  currentDate: string
+  netBuildJo: number                     // 사이클 시작 -> 잔고 고점의 순증. churn 보정 기준
+  width?: number
+  avgDailyTurnoverJo?: number | null
+}): ShortCoverLadder | null {
+  const { rows, currentIdx, currentDate, netBuildJo, avgDailyTurnoverJo = null } = o
+  if (rows.length < 20) return null
+
+  const idxs = rows.map(r => r.idx)
+  const w = o.width ?? pickWidth(Math.max(...idxs) - Math.min(...idxs))
+  const acc = accumulate(rows, w)
+  const grossJo = jo(acc.grossUp)
+  if (grossJo <= 0) return null
+
+  // 같은 물량이 들어왔다 나갔다 하면 gross 는 두 번 센다. 신용융자 쪽과 같은 보정을 쓴다:
+  // 분포는 그대로 두고 합계만 실측 순증에 맞춘다.
+  const churnScale = Math.max(0, netBuildJo / grossJo)
+  const buckets: BucketRow[] = [...acc.buckets.entries()]
+    .map(([low, mil]) => ({ low, high: low + w, jo: jo(mil) * churnScale }))
+    .sort((a, b) => a.low - b.low)
+
+  const underwaterJo = buckets.filter(b => b.low < currentIdx).reduce((s, b) => s + b.jo, 0)
+
+  let cum = 0
+  const ladderRows: LadderRow[] = buckets.filter(b => b.low >= currentIdx).map(b => {
+    cum += b.jo
+    return {
+      threshold: b.low, low: b.low, high: b.high,
+      incrementalJo: b.jo, cumulativeJo: cum,
+      incrementalDays: avgDailyTurnoverJo ? b.jo / avgDailyTurnoverJo : null,
+      cumulativeDays: avgDailyTurnoverJo ? cum / avgDailyTurnoverJo : null,
+      incrementalPctOfDay: avgDailyTurnoverJo ? (b.jo / avgDailyTurnoverJo) * 100 : null,
+      cumulativePctOfDay: avgDailyTurnoverJo ? (cum / avgDailyTurnoverJo) * 100 : null,
+    }
+  })
+
+  return {
+    width: w, currentIdx, currentDate,
+    grossJo, netBuildJo, churnScale,
+    underwaterJo, aboveJo: cum,
+    avgDailyTurnoverJo, buckets, rows: ladderRows,
+  }
 }
 
 /**

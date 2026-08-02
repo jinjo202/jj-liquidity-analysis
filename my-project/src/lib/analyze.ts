@@ -10,7 +10,7 @@
 //   코스닥   : 분리 계열 x 코스닥 지수
 // 유가증권/코스닥은 splitSeries가 있을 때만 계산한다.
 import {
-  analyzeMarket, accumulate, classify, factorOf,
+  analyzeMarket, accumulate, classify, factorOf, buildShortCoverLadder,
   MAINTENANCE, LOAN_RATIO,
   type DailyRow, type IdxRow, type MarketAnalysis, type TurnoverRow,
 } from '@/lib/buckets'
@@ -275,11 +275,23 @@ export function buildAnalysis(
       .sort((a, b) => b.score - a.score)
       .slice(0, 8)
 
+    // 숏커버 사다리: 마진콜 사다리와 순서만 반대로, 지수가 오를 때 손실권에 드는 물량.
+    // 적립 창은 신용융자 쪽과 같은 사이클 창을 쓴다.
+    const milByDate = new Map(lendingSeries.map(r => [r.date, r.balanceMil]))
+    const recentTurnover = turnoverByMarket['전체'].slice(-20)
+    const shortCoverLadder = buildShortCoverLadder({
+      rows: cycleWindow.map(r => ({ date: r.date, idx: r.idx, credit: milByDate.get(r.date)! })),
+      currentIdx: last.idx, currentDate: last.date,
+      netBuildJo: cyclePeak.balJo - cycleWindow[0].balJo,
+      avgDailyTurnoverJo: recentTurnover.length
+        ? recentTurnover.reduce((s, r) => s + r.valueJo, 0) / recentTurnover.length : null,
+    })
+
     return {
       meta: LENDING_META,
       allTimePeak, last,
       cyclePeak, cycleDeclinePct,
-      dayClass, candidates,
+      dayClass, candidates, shortCoverLadder,
       series: merged.filter(r => r.date >= '20200101').map(r => ({ d: r.date, bal: r.balJo, idx: r.idx })),
     }
   }

@@ -133,6 +133,40 @@ describe('buildAnalysis — 대차잔고(공매도 프록시)와 숏커버링', 
     }
   })
 
+  it('숏커버 사다리: 문턱이 오름차순이고 전부 현재 지수 위에 있다', () => {
+    const sc = snap.lending!.shortCoverLadder!
+    expect(sc).toBeTruthy()
+    expect(sc.rows.length).toBeGreaterThan(0)
+    for (const r of sc.rows) expect(r.threshold).toBeGreaterThanOrEqual(sc.currentIdx)
+    for (let i = 1; i < sc.rows.length; i++) {
+      expect(sc.rows[i].threshold).toBeGreaterThan(sc.rows[i - 1].threshold)
+      expect(sc.rows[i].cumulativeJo).toBeGreaterThan(sc.rows[i - 1].cumulativeJo)
+    }
+  })
+
+  it('숏커버 사다리: 누적 합계와 이미 손실권 물량이 보정 후 전체와 맞는다', () => {
+    const sc = snap.lending!.shortCoverLadder!
+    const total = sc.buckets.reduce((s, b) => s + b.jo, 0)
+    expect(sc.underwaterJo + sc.aboveJo).toBeCloseTo(total, 6)
+    expect(sc.rows.at(-1)!.cumulativeJo).toBeCloseTo(sc.aboveJo, 6)
+    // churn 보정은 gross 를 실측 순증에 맞춘다 — 합계가 순증과 같아야 한다.
+    expect(total).toBeCloseTo(sc.netBuildJo, 6)
+    expect(sc.churnScale).toBeGreaterThan(0)
+    expect(sc.churnScale).toBeLessThanOrEqual(1)
+  })
+
+  it('숏커버 사다리: 5,594p 기준 이미 손실권 94.32조 / 위쪽 53.80조', () => {
+    const sc = snap.lending!.shortCoverLadder!
+    expect(sc.width).toBe(500)
+    expect(sc.currentIdx).toBeCloseTo(5593.56, 2)
+    expect(sc.underwaterJo).toBeCloseTo(94.32, 1)
+    expect(sc.aboveJo).toBeCloseTo(53.80, 1)
+    // 현재 지수가 걸친 구간(5,500-6,000)은 이미 손실권으로 세므로 사다리는 6,000p 부터 시작한다.
+    expect(sc.rows[0].threshold).toBe(6000)
+    expect(sc.rows[0].incrementalJo).toBeCloseTo(6.64, 1)
+    expect(sc.rows.at(-1)!.threshold).toBe(8500)
+  })
+
   it('meta에 대차잔고가 공매도 전용이 아니라는 한계 설명이 포함된다', () => {
     const l = snap.lending!
     expect(l.meta.note).toContain('공매도')

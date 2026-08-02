@@ -15,6 +15,7 @@ export function LendingCard({ snap }: { snap: AnalysisSnapshot }) {
   const l = snap.lending
   if (!l) return null
 
+  const sc = l.shortCoverLadder
   const allTimeDeclinePct = (l.last.balJo / l.allTimePeak.balJo - 1) * 100
   const dayClassTotal = l.dayClass.coverType + l.dayClass.jointUnwind + l.dayClass.newShort + l.dayClass.riskOn
 
@@ -62,6 +63,51 @@ export function LendingCard({ snap }: { snap: AnalysisSnapshot }) {
             ))}
           </div>
         </div>
+
+        {sc && sc.rows.length > 0 && (
+          <>
+            <Separator />
+
+            <div>
+              <p className="text-sm font-medium">숏커버 사다리 — 지수가 오르면 손실권에 드는 대차잔고</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                대차잔고가 늘어난 날의 지수를 그 물량의 진입 지수로 보고 지수대별로 쌓았습니다.
+                지수가 그 구간 위로 올라오면 그 물량은 손실 구간에 들어갑니다 — 마진콜 사다리와
+                방향만 반대입니다. 현재 {formatIdx(sc.currentIdx)} 기준 이미 손실권{' '}
+                {formatJo(sc.underwaterJo)}, 위쪽에 남은 물량 {formatJo(sc.aboveJo)}입니다.
+              </p>
+              <div className="mt-2 overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-left text-xs text-muted-foreground">
+                      <th className="py-1.5 pr-4 font-medium">지수</th>
+                      <th className="py-1.5 pr-4 font-medium">손실권 진입</th>
+                      <th className="py-1.5 pr-4 font-medium">누적</th>
+                      <th className="py-1.5 font-medium">누적 / 하루 거래대금</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sc.rows.map(r => (
+                      <tr key={r.threshold} className="border-t">
+                        <td className="py-1.5 pr-4 tabular-nums">{formatIdx(r.threshold)} 위</td>
+                        <td className="py-1.5 pr-4 tabular-nums">+{formatJo(r.incrementalJo)}</td>
+                        <td className="py-1.5 pr-4 tabular-nums">{formatJo(r.cumulativeJo)}</td>
+                        <td className="py-1.5 tabular-nums">
+                          {r.cumulativePctOfDay == null ? '-' : formatPct(r.cumulativePctOfDay)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                신용융자와 달리 대차거래에는 공표된 강제 청산 규칙(담보유지비율)이 없습니다.
+                그래서 이 표는 &apos;얼마가 청산된다&apos;가 아니라 &apos;얼마가 손실권에
+                든다&apos;를 셉니다 — 커버 압력의 상한으로 읽어 주세요.
+              </p>
+            </div>
+          </>
+        )}
 
         <Separator />
 

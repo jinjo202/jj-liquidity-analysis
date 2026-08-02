@@ -1,4 +1,4 @@
-import type { MarketAnalysis } from '@/lib/buckets'
+import type { MarketAnalysis, ShortCoverLadder } from '@/lib/buckets'
 
 export type PeriodAnalysis = {
   key: string; name: string; note: string
@@ -55,6 +55,8 @@ export type LendingAnalysis = {
   cycleDeclinePct: number
   dayClass: { coverType: number; jointUnwind: number; newShort: number; riskOn: number }
   candidates: (LendingDayPoint & { score: number })[]
+  // 이 필드가 생기기 전에 저장된 스냅샷을 그대로 읽을 수 있어야 하므로 optional 이다.
+  shortCoverLadder?: ShortCoverLadder | null
   series: { d: string; bal: number; idx: number }[]
 }
 
