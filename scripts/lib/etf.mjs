@@ -256,6 +256,34 @@ export function analyzeEtf(o) {
     sector: unitsTrendOf(f => f.group === 'sector_lev'),
   };
 
+  /* ---------- 2.6 전체 레버리지 ETF 합계 추이 ---------- */
+  // 그룹별 일별 AUM 을 쌓아 시장 전체 레버리지 규모를 한 장으로 본다.
+  // 여기서는 좌수가 아니라 AUM 을 쓴다 — 상품마다 1좌 가격이 달라 좌수는 더할 수 없다.
+  const aumDates = [...new Set(funds.flatMap(f => rowsOf(f.code).map(r => r.d)))].sort();
+  const groupKeys = etf.groups.map(g => g.key);
+  const aumDaily = aumDates.map(d => {
+    const row = { d, total: 0 };
+    for (const key of groupKeys) {
+      const v = funds.filter(f => f.group === key)
+        .reduce((s, f) => { const r = at(f.code, d); return s + (r ? toJo(aumWon(r)) : 0); }, 0);
+      row[key] = v; row.total += v;
+    }
+    return row;
+  });
+  const aumTotal = (() => {
+    if (!aumDaily.length) return null;
+    const last = aumDaily.at(-1);
+    const peak = aumDaily.reduce((m, r) => (r.total > m.total ? r : m));
+    const back = k => aumDaily[Math.max(0, aumDaily.length - 1 - k)];
+    const chg = k => (back(k).total > 0 ? (last.total / back(k).total - 1) * 100 : null);
+    return {
+      last, peak,
+      fromPeakPct: peak.total > 0 ? (last.total / peak.total - 1) * 100 : null,
+      d1: chg(1), d5: chg(5), d20: chg(20),
+      daysSincePeak: aumDaily.length - 1 - aumDaily.findIndex(r => r.d === peak.d),
+    };
+  })();
+
   /* ---------- 3. 지수 기여 분해 ---------- */
   // 코스피 등락 중 삼성전자·SK하이닉스가 산술적으로 설명하는 몫.
   const mkt = new Map(market.map(m => [m.date, m]));
@@ -288,7 +316,7 @@ export function analyzeEtf(o) {
 
   return {
     asOf: etf.series[etf.universe[0]?.code]?.at(-1)?.d ?? null,
-    checkpoints, groups, perFund, stockDaily, indexContrib, hk, unitsTrend,
+    checkpoints, groups, perFund, stockDaily, indexContrib, hk, unitsTrend, aumDaily, aumTotal,
     coef: { lev2: rebalanceCoef(2), inv2: rebalanceCoef(-2) },
   };
 }

@@ -533,6 +533,61 @@ function trendChart(points, unit, dg, spanLabel = '최근 1년') {
 </svg>`;
 }
 
+/**
+ * 그룹별 AUM 을 쌓아 올린 면적 차트. 레버리지 ETF 시장 전체가 어떻게 부풀었다 꺼졌는지를
+ * 한 장으로 본다. 선 여러 개를 겹치면 합계가 눈에 안 들어와서 누적 면적을 쓴다.
+ */
+function stackChart(rows, keys, unit, marks = []) {
+  const W = 980, H = 300, M = { t: 20, r: 58, b: 34, l: 12 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  if (rows.length < 2) return '';
+  const hi = Math.max(...rows.map(r => keys.reduce((s, k) => s + (r[k.key] ?? 0), 0)));
+  const dom = [0, hi * 1.08];
+  const xAt = i => scale(i, [0, rows.length - 1], [M.l, M.l + iw]);
+  const yAt = v => scale(v, dom, [M.t + ih, M.t]);
+
+  // 아래에서부터 쌓는다. 각 층의 윗선 = 자기 값 + 아래 층 누적.
+  let below = rows.map(() => 0);
+  const layers = keys.map(k => {
+    const top = rows.map((r, i) => below[i] + (r[k.key] ?? 0));
+    const path = `M${top.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join('L')}`
+      + `L${[...below].reverse().map((v, j) => {
+        const i = rows.length - 1 - j;
+        return `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`;
+      }).join('L')}Z`;
+    below = top;
+    return { ...k, path };
+  });
+
+  // x 눈금은 분기 시작만. 하루씩 다 찍으면 글자가 겹친다.
+  const ticksX = [];
+  let lastQ = null;
+  rows.forEach((r, i) => {
+    const q = `${r.d.slice(0, 4)}Q${Math.floor((Number(r.d.slice(4, 6)) - 1) / 3)}`;
+    if (q !== lastQ) { ticksX.push({ i, label: `${r.d.slice(2, 4)}.${r.d.slice(4, 6)}` }); lastQ = q; }
+  });
+
+  const totals = rows.map(r => keys.reduce((s, k) => s + (r[k.key] ?? 0), 0));
+  const iPeak = totals.indexOf(Math.max(...totals));
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
+  ${ticks(dom[0], dom[1], 4).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${f(v, 0)}</text>`).join('')}
+  ${ticksX.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
+  ${layers.map(l => `<path d="${l.path}" fill="${l.color}" fill-opacity="${l.op ?? 0.85}" stroke="none"/>`).join('')}
+  ${marks.map(m => {
+    const i = rows.findIndex(r => r.d >= m.d);
+    if (i < 0) return '';
+    return `<line class="mk" x1="${xAt(i).toFixed(1)}" y1="${M.t}" x2="${xAt(i).toFixed(1)}" y2="${M.t + ih}"/>
+      <text class="ax sm" x="${xAt(i).toFixed(1)}" y="${M.t - 5}" text-anchor="middle">${esc(m.label)}</text>`;
+  }).join('')}
+  <circle class="tdot hi" cx="${xAt(iPeak).toFixed(1)}" cy="${yAt(totals[iPeak]).toFixed(1)}" r="3"/>
+  <text class="ax sm" x="${xAt(iPeak).toFixed(1)}" y="${(yAt(totals[iPeak]) - 7).toFixed(1)}" text-anchor="middle">고점 ${f(totals[iPeak], 1)}조</text>
+  <circle class="tdot now" cx="${xAt(rows.length - 1).toFixed(1)}" cy="${yAt(totals.at(-1)).toFixed(1)}" r="3.4"/>
+  <text class="unit" x="${M.l}" y="12">${esc(unit)}</text>
+</svg>`;
+}
+
 /** 같은 단위(조원) 계열 여러 개를 한 축에 겹쳐 그린다. */
 function levelChart(rows, lines, unit) {
   const W = 660, H = 260, M = { t: 22, r: 16, b: 34, l: 50 };
@@ -1249,6 +1304,30 @@ ${!s.eras ? '' : `<div class="box"><b>반증 — ETF가 없던 시절과 비교<
     <td class="n">${f(p.notionalUsd / 1e9)}</td>
   </tr>`).join('');
 
+  // 전체 레버리지 ETF 시장이 어떻게 부풀었다 꺼졌는지 한 장으로. 그룹을 쌓아 합계를 보여준다.
+  const T = E.aumTotal;
+  const stackKeys = [
+    { key: 'single_lev', label: '단일종목 레버리지 2X', color: 'var(--lv)', op: 0.9 },
+    { key: 'sector_lev', label: '반도체·IT 섹터 레버리지', color: 'var(--cr)', op: 0.75 },
+    { key: 'index_lev', label: '지수 레버리지', color: 'var(--acc)', op: 0.6 },
+    { key: 'single_inv', label: '단일종목 인버스 2X', color: 'var(--part)', op: 0.9 },
+    { key: 'index_inv', label: '지수 인버스 2X', color: 'var(--bar)', op: 0.7 },
+  ].filter(k => E.groups.some(g => g.key === k.key && g.count));
+  const firstSingle = E.perFund.find(x => x.group === 'single_lev')?.listedFrom ?? null;
+  const totalBlock = !T ? '' : `
+<figure class="wide">
+  <h4>레버리지 ETF 합계 AUM — 전체 추이</h4>
+  ${stackChart(E.aumDaily, stackKeys, '국내 상장 레버리지·인버스 ETF 합계 순자산 (조원, 상장좌수 × 종가)',
+    [firstSingle ? { d: firstSingle, label: '단일종목 상장' } : null].filter(Boolean))}
+  <div class="lg">${stackKeys.map(k => `<span><i class="sw" style="background:${k.color}"></i>${esc(k.label)}</span>`).join('')}</div>
+  <figcaption>
+    합계 <b>${f(T.last.total)}조</b> (${dtFull(T.last.d)}) · 고점 ${f(T.peak.total)}조(${dtFull(T.peak.d)}) 대비 <b>${f(T.fromPeakPct, 1)}%</b> ·
+    전일 ${T.d1 >= 0 ? '+' : ''}${f(T.d1, 1)}% / 5일 ${T.d5 >= 0 ? '+' : ''}${f(T.d5, 1)}% / 20일 ${T.d20 >= 0 ? '+' : ''}${f(T.d20, 1)}%.
+    좌수가 아니라 AUM 으로 쌓았다 — 상품마다 1좌 가격이 달라 좌수는 더할 수 없다.
+    <b>이 그림에서 줄어든 높이의 대부분은 환매가 아니라 가격이다</b>(아래 분해 참조).
+  </figcaption>
+</figure>`;
+
   return `<section>
 <h2>지수대별이 아니라 매일 — 레버리지 ETF 수급</h2>
 <div class="verdict">
@@ -1259,6 +1338,8 @@ ${!s.eras ? '' : `<div class="box"><b>반증 — ETF가 없던 시절과 비교<
     반대로 <b>반도체 섹터 레버리지는 좌수가 ${sgn(sectorFirst > 0 ? (sectorLast / sectorFirst - 1) * 100 : null, 0)}%</b>로
     실제 환매가 일어났다 — 같은 '레버리지'라도 두 계열이 정반대로 움직였다.</div>
 </div>
+
+${totalBlock}
 
 <h3>그룹별 AUM (조원, 상장좌수 × 종가)</h3>
 <div class="tw"><table>
@@ -1657,6 +1738,9 @@ ${cycleCss}
   figcaption { font-size:11.5px; color:var(--mut); margin-top:6px; }
   svg { width:100%; height:auto; display:block; min-width:430px; }
   .grid { stroke:var(--line); stroke-width:1; }
+  /* 누적 면적 차트의 사건 표시선(단일종목 상장일 등) */
+  line.mk { stroke:var(--fg); stroke-width:1; stroke-dasharray:3 3; opacity:.45; }
+  figure.wide .lg .sw { height:10px; border-radius:2px; }
   .ax { font-size:10px; fill:var(--mut); } .ax.sm { font-size:9px; }
   .unit { font-size:10px; fill:var(--mut); }
   .val { font-size:9px; fill:var(--fg); font-variant-numeric:tabular-nums; }
