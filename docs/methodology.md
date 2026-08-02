@@ -1061,15 +1061,37 @@ PART 2 에서 숏커버 여력을 지수 상승폭으로 환산하지 않은 것
 
 리포트는 이 셋을 전부 싣는다. 상관이 약하게 나오면 약하다고 쓴다.
 
-### 23.6 홍콩(CSOP)
+### 23.6 홍콩(CSOP) — 자동화되기까지
 
 `7709`(SK Hynix 2x)·`7747`(Samsung 2x)·`7347`(Samsung -2x)은 상품 페이지가 값을 JS 로 채워
-정적 fetch 로는 빈 `<span>` 만 온다. 내부 API(`website-api.csopasset.com/cmsApi/NAV/product`)는
-파라미터를 못 맞춰 500 이 떨어졌다. 그래서 브라우저로 열어 읽은 **시점 스냅샷**만 있다
-(`data/csop-snapshot.json`). 일별 좌수 히스토리가 없어 **시점 비교와 리밸런싱 계산에서 제외**했다.
-국내 기준 리밸런싱 수치는 그만큼 하한이다.
+정적 fetch 로는 빈 `<span>` 만 온다. 내부 API(`website-api.csopasset.com/cmsApi/NAV/product`)에
+`fundCode`·`productCode`·slug 등 짐작 가는 파라미터를 다 넣어 봤지만 전부 500 이었다.
+처음에는 브라우저로 열어 읽은 시점 스냅샷으로 때웠다.
 
-갱신은 자동이 아니다. 사람이 다시 읽어 그 파일을 고쳐야 한다.
+풀린 경로는 파라미터 추측이 아니라 **페이지가 로드하는 상품 전용 JS 를 읽는 것**이었다.
+상품 페이지는 `asset/lai/js/hk-skhy-2l.js` 같은 전용 스크립트를 `$.getScript` 로 불러오고,
+그 안에 요청이 통째로 있다:
+
+```js
+url: webApi + "/cmsApi/NAV/product",  method: "POST",
+data: JSON.stringify({ "productName": FundName })
+// FundName = 'CSOP SK Hynix Daily Max (2x) Leveraged Product'  ← 상품 전체 영문명
+```
+
+키가 코드가 아니라 **상품 전체 영문명 문자열**이라 추측으로는 맞출 수 없었던 것이다.
+이 바디로 POST 하면 통화별(HKD/USD) 행에 `NAV`(1좌)·`AUM`(총순자산)·**`Shares`(좌수)**·
+`ContractValue`(스왑 명목 익스포저)·기준일이 온다. Node 에서 Origin 헤더만 붙이면 그대로 동작한다.
+
+`scripts/fetch-csop.mjs` 가 이걸 매일 받아 두 파일을 쓴다.
+
+- `data/csop-snapshot.json` — 최신 스냅샷. analyze 가 읽는다. **자동 생성이므로 손대지 말 것.**
+- `data/csop-daily.json` — 기준일별 히스토리. 과거를 주는 API(ChartData)는 403 이라
+  백필은 불가능하다 — **수집을 시작한 2026-08-02 이후부터만 쌓인다.**
+
+한계 둘. (1) 좌수 추이는 히스토리가 쌓여야 말할 수 있으므로, 그전까지 홍콩분은 시점 비교와
+리밸런싱 계산에서 제외한다(국내 수치는 그만큼 하한). (2) 조회 키가 상품명 문자열이라
+**상품이 개명되면 조용히 깨진다** — 실제로 2026 년에 'Daily' → 'Daily Max' 개명이 있었다.
+`selfcheck.mjs` 의 NAV×좌수≈AUM 항등식과 워크플로의 `fetchErrors=csop` 가 그때의 경보다.
 
 ## 24. PART 4 — 다음 주 수급 전망
 

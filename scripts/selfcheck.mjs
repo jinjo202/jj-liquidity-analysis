@@ -122,6 +122,19 @@ if (A.etf) {
     if (r.sharePct == null) continue;
     assert.ok(Math.abs(r.sharePct) < 1000, `${r.d} 지수 기여 몫이 비정상: ${r.sharePct}`);
   }
+
+  // §23.6 홍콩 CSOP: NAV(1좌) x 좌수 = 총순자산 이어야 한다. API 가 이름 규칙으로 조회하는
+  // 구조라, 상품 개명 등으로 응답이 어긋나면 이 항등식이 먼저 깨진다.
+  for (const p of E.hk?.products ?? []) {
+    assert.ok(p.outstandingUnits > 0 && p.totalNavUsd > 0, `${p.ticker} 좌수/AUM 이 0 이하`);
+    if (p.navPerUnitUsd) {
+      near(p.navPerUnitUsd * p.outstandingUnits / p.totalNavUsd, 1, 0.02, `${p.ticker} NAV×좌수 vs AUM`);
+    }
+    // 명목 익스포저 부호는 배수 부호를 따른다(레버리지 +, 인버스 -).
+    if (Number.isFinite(p.notionalUsd) && p.notionalUsd !== 0) {
+      assert.ok(Math.sign(p.notionalUsd) === Math.sign(p.lev), `${p.ticker} 명목 익스포저 부호가 배수와 다르다`);
+    }
+  }
 }
 
 // §24 다음 주 수급 전망(PART 4)

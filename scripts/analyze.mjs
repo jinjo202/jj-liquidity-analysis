@@ -855,7 +855,7 @@ if (etf) {
   }
 
   if (etf.hk) {
-    console.log(`\n  [홍콩 CSOP 단일종목 L&I — ${etf.hk.asOf} 스냅샷, 일별 좌수 없음]`);
+    console.log(`\n  [홍콩 CSOP 단일종목 L&I — ${etf.hk.asOf} 기준, 좌수 히스토리는 20260802 부터 누적]`);
     for (const p of etf.hk.products) {
       console.log(`    ${p.ticker} ${p.name}`);
       console.log(`      NAV US$${(p.totalNavUsd / 1e9).toFixed(2)}bn  좌수 ${(p.outstandingUnits / 1e6).toFixed(1)}M`

@@ -53,6 +53,8 @@ jobs:
           fi
           # PART 3. 실패해도 나머지는 갱신되어야 한다 — analyze 가 파일 없으면 건너뛴다.
           node scripts/fetch-etf.mjs || ERR="$ERR etf"
+          # 홍콩 CSOP. 실패하면 어제 스냅샷이 그대로 남는다 — 그걸로 충분하다.
+          node scripts/fetch-csop.mjs || ERR="$ERR csop"
           echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
           echo "실패한 소스: ${ERR:-없음}"
 

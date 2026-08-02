@@ -68,15 +68,16 @@ selfcheck OK — 4,326행, 재현 MAE 0.051조, 사이클 2개, 채널 O, 미수
 
 주의: 스케줄은 정시가 아니다. **60일 무활동이면 GitHub 이 cron 을 자동 정지**한다.
 
-## 5. 아직 사람 손이 필요한 것 3개
+## 5. 아직 사람 손이 필요한 것 2개
 
 | 무엇 | 왜 | 어떻게 |
 |---|---|---|
 | 유가증권/코스닥 분리 신용공여 xlsx | API 경로 없음(§8) | FREESIS > 주식 > 신용공여현황 에서 받아 `data/` 에 넣고 `node scripts/ingest-split.mjs` |
-| 홍콩 CSOP 스냅샷 | 상품 페이지가 JS 로 값을 채워 정적 fetch 불가, 내부 API 파라미터 못 맞춤(§23.6) | 브라우저로 열어 `data/csop-snapshot.json` 수정. 일별 좌수는 아직 못 구함 |
 | 외사 리서치 수치 | PDF 는 제3자 저작물이라 저장소에 안 넣는다(`.gitignore` 의 `*.pdf`) | 새 리포트 읽고 `data/street-anchors.json` 갱신(출처·발간일 필수) |
 
-대차거래추이는 예전엔 수동이었으나 API 를 찾아 자동화됨(§16.2.1).
+대차거래추이(§16.2.1)와 **홍콩 CSOP(§23.6, 2026-08-02)** 는 수동이었다가 API 를 찾아 자동화됨.
+CSOP 조회 키는 **상품 전체 영문명**이라 상품이 개명되면 `scripts/fetch-csop.mjs` 의 `PRODUCTS` 를
+고쳐야 한다 — 깨지면 status.json 의 `fetchErrors` 에 `csop` 가 뜬다.
 
 ## 6. 저장소 구조
 
@@ -86,6 +87,7 @@ scripts/
   fetch-kofia.mjs      FREESIS 크로스통계 11개 지표
   fetch-lending.mjs    FREESIS 대차거래추이 API
   fetch-etf.mjs        레버리지 ETF 24종 + 삼성전자·SK하이닉스 일별 좌수·종가·거래대금
+  fetch-csop.mjs       홍콩 CSOP 3종 좌수·순자산 (일별 히스토리는 20260802 부터 쌓임)
   ingest-split.mjs     분리 신용공여 xlsx 파싱 (수동 입력)
   ingest-lending.mjs   대차거래 xlsx 파싱 — API 규격 바뀔 때 폴백
   analyze.mjs          전 계산 → data/analysis.json
@@ -100,7 +102,8 @@ scripts/
   lib/xlsx.mjs         xlsx/HTML표/CSV 자동판별 리더
 data/                  원본 + 정규화 json 전부 커밋됨 (클론 직후 바로 재현)
   street-anchors.json  외사 리서치 수치(수동)
-  csop-snapshot.json   홍콩 CSOP 스냅샷(수동)
+  csop-snapshot.json   홍콩 CSOP 최신 스냅샷(자동 생성 — 손대지 말 것)
+  csop-daily.json      홍콩 CSOP 기준일별 히스토리(자동 누적)
 docs/methodology.md    §1~24
 docs/plan-part3.md     PART 3 착수 전 계획서(기록용, 살아있는 문서는 §23)
 ```
@@ -179,7 +182,7 @@ node scripts/alert-verdict.mjs --dry    # 상태 갱신 없이 확인만 (수동
 
 ## 11. 다음에 고려할 만한 것 (지시 아님)
 
-- 홍콩 CSOP 일별 좌수 경로 — HKEX 공시나 iNAV 피드에 있을 수 있다
+- CSOP 히스토리가 며칠 쌓이면(csop-daily.json) 홍콩분도 좌수 추이 판정에 넣기
 - 분리 신용공여도 API 경로가 있을 수 있다(대차거래처럼 브라우저로 요청 캡처)
 - my-project 웹앱에 PART 3·4 이식(지금은 정적 리포트에만 있다)
 - 워크플로가 며칠 조용하면 `status.json` 의 `ranOn` 확인하는 습관

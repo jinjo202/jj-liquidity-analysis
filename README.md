@@ -26,6 +26,7 @@ node scripts/fetch-index.mjs    # 네이버 코스피·코스닥 일별(장중 �
 node scripts/fetch-kofia.mjs    # 금투협 FREESIS 일별 11개 지표      -> data/kofia-daily.json
 node scripts/fetch-lending.mjs  # 금투협 대차거래추이(공매도 프록시)  -> data/lending-balance.json
 node scripts/fetch-etf.mjs      # 레버리지 ETF 일별 상장좌수·종가(다음)  -> data/etf-daily.json
+node scripts/fetch-csop.mjs     # 홍콩 CSOP 좌수·순자산(운용사 API)     -> data/csop-{daily,snapshot}.json
 node scripts/analyze.mjs        # 사이클 x 시장 배분 + 마진콜 판정    -> data/analysis.json
 node scripts/selfcheck.mjs      # analysis.json 불변식 검사
 node scripts/build.mjs          # 웹 리포트                          -> index.html

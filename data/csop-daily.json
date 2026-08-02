@@ -1,0 +1,64 @@
+{
+ "products": [
+  {
+   "ticker": "7709",
+   "slug": "hk-skhy-2l",
+   "name": "CSOP SK Hynix Daily Max (2x) Leveraged Product",
+   "underlying": "000660",
+   "lev": 2,
+   "series": [
+    {
+     "d": "20260731",
+     "units": 984000000,
+     "totalNavUsd": 5497561724.56,
+     "navPerUnitUsd": 5.587,
+     "navPerUnitHkd": 43.8049,
+     "closeHkd": 42.52,
+     "notionalUsd": 10629375334.22,
+     "deemedNavUsd": 5307066256.32
+    }
+   ]
+  },
+  {
+   "ticker": "7747",
+   "slug": "hk-smsn-2l",
+   "name": "CSOP Samsung Electronics Daily Max (2x) Leveraged Product",
+   "underlying": "005930",
+   "lev": 2,
+   "series": [
+    {
+     "d": "20260731",
+     "units": 111500000,
+     "totalNavUsd": 1170266087.72,
+     "navPerUnitUsd": 10.4957,
+     "navPerUnitHkd": 82.2915,
+     "closeHkd": 77.46,
+     "notionalUsd": 2327553838.62,
+     "deemedNavUsd": 1165964089.23
+    }
+   ]
+  },
+  {
+   "ticker": "7347",
+   "slug": "hk-smsn-2i",
+   "name": "CSOP Samsung Electronics Daily Max (-2x) Inverse Product",
+   "underlying": "005930",
+   "lev": -2,
+   "series": [
+    {
+     "d": "20260731",
+     "units": 127000000,
+     "totalNavUsd": 13509399.12,
+     "navPerUnitUsd": 0.1064,
+     "navPerUnitHkd": 0.8342,
+     "closeHkd": 0.922,
+     "notionalUsd": -26883215.63,
+     "deemedNavUsd": 13281225.52
+    }
+   ]
+  }
+ ],
+ "updatedAt": "2026-08-02",
+ "source": "website-api.csopasset.com/cmsApi/NAV/product (POST {productName})",
+ "note": "기준일(HstDateFormat)별 1행. 과거 API 가 없어 20260802 수집 시작 이후만 존재한다(§23.6)."
+}
