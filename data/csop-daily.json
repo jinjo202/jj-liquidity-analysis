@@ -3516,5 +3516,5 @@
  ],
  "updatedAt": "2026-08-02",
  "source": "website-api.csopasset.com/cmsApi/NAV/product (POST {productName})",
- "note": "기준일(HstDateFormat)별 1행. 과거 API 가 없어 20260802 수집 시작 이후만 존재한다(§23.6). 상장~20260801 구간은 HKEXnews CCASS(SDW) 발행좌수로 백필(src:hkex-sdw) — 등록기관 기준이라 CSOP 딜링일 기준과 T+2 창에서 어긋날 수 있다(§23.6)."
+ "note": "기준일(HstDateFormat)별 1행. 과거 API 가 없어 20260802 수집 시작 이후만 존재한다(§23.6)."
 }
