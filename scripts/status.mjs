@@ -33,7 +33,23 @@ const status = {
   lastSeriesDate: A.series.at(-1).d,
   reproMAE: Number(A.reproMAE.toFixed(4)),
   cycles: A.periods.map(p => p.key),
-  note: '자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다.',
+  // 매일 확인할 지표 하나. 사이트를 열지 않고도 이 파일만 보면 판정이 나온다(§23.2).
+  // verdict: building(쌓이는 중) / flat(정체) / rolling(꺾였다)
+  singleStockEtfUnits: (() => {
+    const u = A.etf?.unitsTrend?.single;
+    if (!u) return null;
+    const r = n => (Number.isFinite(n) ? Number(n.toFixed(1)) : null);
+    return {
+      date: u.last.d,
+      unitsMillion: Math.round(u.last.unitsM),
+      verdict: u.verdict,
+      changePct: { d1: r(u.d1), d5: r(u.d5), d10: r(u.d10) },
+      peak: { date: u.peak.d, unitsMillion: Math.round(u.peak.unitsM), fromPeakPct: r(u.fromPeakPct), tradingDaysSince: u.daysSincePeak },
+      consecutiveDownDays: u.downStreak,
+    };
+  })(),
+  note: '자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다.'
+    + ' singleStockEtfUnits.verdict 가 rolling 으로 바뀌면 레버리지 ETF 환매가 실제로 시작된 것이다.',
 };
 
 fs.writeFileSync(path.join(ROOT, 'status.json'), JSON.stringify(status, null, 2) + '\n');

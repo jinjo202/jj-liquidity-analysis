@@ -207,6 +207,55 @@ export function analyzeEtf(o) {
     };
   }
 
+  /* ---------- 2.5 좌수 추이 — 꺾였는가 ---------- */
+  // 이 프로젝트에서 매일 확인할 지표는 이것 하나다. AUM 은 가격이 섞여 있어
+  // 수급이 정리됐는지를 못 알려준다. 좌수가 꺾이는 날이 진짜 디레버리징의 시작이다.
+  function unitsTrendOf(filter) {
+    const dates = [...new Set(funds.filter(filter).flatMap(f => rowsOf(f.code).map(r => r.d)))].sort();
+    const series = dates.map(d => {
+      let units = 0, aumJo = 0, n = 0;
+      for (const f of funds.filter(filter)) {
+        const r = at(f.code, d);
+        if (!r) continue;
+        units += r.units; aumJo += toJo(aumWon(r)); n++;
+      }
+      return { d, unitsM: units / 1e6, aumJo, n };
+    }).filter(x => x.n > 0);
+    if (series.length < 3) return null;
+
+    const last = series.at(-1);
+    const peak = series.reduce((m, r) => (r.unitsM > m.unitsM ? r : m));
+    const daysSincePeak = series.length - 1 - series.findIndex(r => r.d === peak.d);
+    const back = k => series[Math.max(0, series.length - 1 - k)];
+    const chg = k => (back(k).unitsM > 0 ? (last.unitsM / back(k).unitsM - 1) * 100 : null);
+
+    // 연속 감소일. 하루 반짝 감소는 꺾인 게 아니다.
+    let downStreak = 0;
+    for (let i = series.length - 1; i > 0; i--) {
+      if (series[i].unitsM < series[i - 1].unitsM) downStreak++;
+      else break;
+    }
+
+    const d5 = chg(5);
+    const verdict = d5 == null ? 'unknown'
+      : d5 > 1 ? 'building'      // 아직 쌓이는 중
+      : d5 < -1 ? 'rolling'      // 꺾였다
+      : 'flat';                  // 정체 — 꺾이는 길목일 수 있다
+    return {
+      series, last, peak, daysSincePeak, downStreak,
+      d1: chg(1), d5, d10: chg(10),
+      fromPeakPct: peak.unitsM > 0 ? (last.unitsM / peak.unitsM - 1) * 100 : null,
+      verdict,
+    };
+  }
+
+  const unitsTrend = {
+    single: unitsTrendOf(f => f.group === 'single_lev'),
+    samsung: unitsTrendOf(f => f.group === 'single_lev' && underlyingOf(f.name) === '005930'),
+    hynix: unitsTrendOf(f => f.group === 'single_lev' && underlyingOf(f.name) === '000660'),
+    sector: unitsTrendOf(f => f.group === 'sector_lev'),
+  };
+
   /* ---------- 3. 지수 기여 분해 ---------- */
   // 코스피 등락 중 삼성전자·SK하이닉스가 산술적으로 설명하는 몫.
   const mkt = new Map(market.map(m => [m.date, m]));
@@ -239,7 +288,7 @@ export function analyzeEtf(o) {
 
   return {
     asOf: etf.series[etf.universe[0]?.code]?.at(-1)?.d ?? null,
-    checkpoints, groups, perFund, stockDaily, indexContrib, hk,
+    checkpoints, groups, perFund, stockDaily, indexContrib, hk, unitsTrend,
     coef: { lev2: rebalanceCoef(2), inv2: rebalanceCoef(-2) },
   };
 }

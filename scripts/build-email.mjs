@@ -640,8 +640,41 @@ if (co && PJ) {
     데이터 최신일 — ${D.freshness.map(x => `${esc(x.label)} ${dtFull(x.date)}${x.live ? '(장중 갱신)' : ''}`).join(' · ')}<br>
     계열마다 공표 시차가 다르다: 지수 T+1, 신용융자는 결제일 기준이라 하루 더 늦다.</div>` : '';
 
+  // 매일 볼 것 — 좌수가 꺾였는지. 메일에서는 SVG 를 못 쓰므로 숫자와 최근 10일 표로 낸다.
+  const U = A.etf?.unitsTrend?.single ?? null;
+  const VERD = {
+    building: { label: '아직 쌓이는 중', color: C.cr, line: '좌수가 계속 늘고 있다. 디레버리징은 시작되지 않았다.' },
+    flat: { label: '정체 — 꺾이는 길목', color: C.mut, line: '증가가 멈췄다. 감소로 넘어가는지 며칠 더 봐야 한다.' },
+    rolling: { label: '꺾였다', color: C.kq ?? C.acc, line: '좌수가 실제로 줄기 시작했다. 여기서부터가 진짜 환매다.' },
+    unknown: { label: '판정 불가', color: C.mut, line: '표본이 모자란다.' },
+  };
+  const watchTable = !U ? '' : (() => {
+    const v = VERD[U.verdict];
+    const recent = U.series.slice(-10);
+    const cells = recent.map(r => `<td align="right" style="${FONT}font-size:11px;color:${C.fg};padding:3px 6px;border-top:1px solid ${C.line};">${f(r.unitsM, 0)}</td>`).join('');
+    const heads = recent.map(r => `<td align="right" style="${FONT}font-size:10px;color:${C.mut};padding:3px 6px;">${r.d.slice(4, 6)}.${r.d.slice(6, 8)}</td>`).join('');
+    return `
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-left:4px solid ${v.color};border-radius:0 8px 8px 0;margin:8px 0 14px;">
+  <tr><td bgcolor="${C.surf ?? C.band}" style="padding:12px 15px;">
+    <div style="${FONT}font-size:10.5px;letter-spacing:1.5px;color:${C.mut};">매일 볼 것 · 단일종목 레버리지 ETF 상장좌수</div>
+    <div style="${FONT}font-size:22px;font-weight:bold;color:${C.fg};margin-top:2px;">${f(U.last.unitsM, 0)}<span style="font-size:12px;font-weight:normal;color:${C.mut};"> 백만좌</span>
+      <span style="font-size:13px;color:${v.color};">— ${esc(v.label)}</span></div>
+    <div style="${FONT}font-size:11.5px;color:${C.mut};margin-top:4px;">
+      전일 ${U.d1 >= 0 ? '+' : ''}${f(U.d1, 1)}% · 5일 ${U.d5 >= 0 ? '+' : ''}${f(U.d5, 1)}% · 10일 ${U.d10 >= 0 ? '+' : ''}${f(U.d10, 1)}%
+      · 최대 대비 ${f(U.fromPeakPct, 1)}% (${dtFull(U.peak.d)}) · 연속 감소 ${U.downStreak}일</div>
+    <div style="${FONT}font-size:12px;color:${C.fg};margin-top:6px;line-height:1.6;">${esc(v.line)}
+      AUM 은 가격이 섞여 있어 이 판정에 쓸 수 없다 — 좌수로만 본다.</div>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+      <tr>${heads}</tr>
+      <tr>${cells}</tr>
+    </table>
+  </td></tr>
+</table>`;
+  })();
+
   summaryHtml = `
 ${sectionTitle('핵심 요약')}
+${watchTable}
 ${deltaTable}
 ${freshLine}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-left:4px solid ${C.acc};border-radius:0 8px 8px 0;margin:8px 0 14px;">

@@ -495,7 +495,7 @@ function ratioChart(rows, marks, unit = '신용융자 / 시가총액 (%)', suf =
 }
 
 /** 지표 하나의 1년 추세. 핵심 요약에서 지표를 펼치면 나온다. */
-function trendChart(points, unit, dg) {
+function trendChart(points, unit, dg, spanLabel = '최근 1년') {
   const W = 640, H = 190, M = { t: 18, r: 52, b: 26, l: 12 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
   const vs = points.map(p => p.v);
@@ -529,7 +529,7 @@ function trendChart(points, unit, dg) {
   ${mark(iMax, hi, '고', 'hi')}
   ${mark(iMin, lo, '저', 'lo')}
   <circle class="tdot now" cx="${xAt(points.length - 1).toFixed(1)}" cy="${yAt(vs.at(-1)).toFixed(1)}" r="3.4"/>
-  <text class="unit" x="${M.l}" y="12">${esc(unit)} · 최근 1년 (${points.length}영업일)</text>
+  <text class="unit" x="${M.l}" y="12">${esc(unit)} · ${esc(spanLabel)} (${points.length}영업일)</text>
 </svg>`;
 }
 
@@ -1084,9 +1084,50 @@ if (co && PJ) {
   <span class="fn">계열마다 공표 시차가 다르다: 지수 T+1, 신용융자는 결제일 기준이라 하루 더 늦다.</span>
 </div>` : '';
 
+  // 매일 확인할 지표 하나. AUM 은 가격이 섞여 수급이 정리됐는지를 못 알려준다 —
+  // 좌수가 꺾이는 날이 진짜 디레버리징의 시작이라, 첫 화면에 고정으로 올린다(§23.2).
+  const U = A.etf?.unitsTrend?.single ?? null;
+  const VERD = {
+    building: { label: '아직 쌓이는 중', cls: 'w-build', line: '좌수가 계속 늘고 있다. 디레버리징은 시작되지 않았다.' },
+    flat: { label: '정체 — 꺾이는 길목', cls: 'w-flat', line: '증가가 멈췄다. 감소로 넘어가는지 며칠 더 봐야 한다.' },
+    rolling: { label: '꺾였다', cls: 'w-roll', line: '좌수가 실제로 줄기 시작했다. 여기서부터가 진짜 환매다.' },
+    unknown: { label: '판정 불가', cls: 'w-flat', line: '표본이 모자란다.' },
+  };
+  const watchBox = !U ? '' : (() => {
+    const v = VERD[U.verdict];
+    const sub = [['samsung', '삼성전자'], ['hynix', 'SK하이닉스'], ['sector', '반도체 섹터']]
+      .map(([k, name]) => {
+        const t = A.etf.unitsTrend[k];
+        if (!t) return '';
+        return `<div class="wsub"><b>${esc(name)}</b> ${f(t.last.unitsM, 0)}백만좌
+          <span class="${t.d5 >= 0 ? 'up' : 'dn'}">5일 ${t.d5 >= 0 ? '+' : ''}${f(t.d5, 1)}%</span>
+          <span class="mut">고점대비 ${f(t.fromPeakPct, 1)}%</span></div>`;
+      }).join('');
+    return `<div class="watch ${v.cls}">
+  <div class="wl">매일 볼 것 · 단일종목 레버리지 ETF 상장좌수</div>
+  <div class="wmain">
+    <div class="wv">${f(U.last.unitsM, 0)}<span class="u">백만좌</span></div>
+    <div class="wtag">${esc(v.label)}</div>
+  </div>
+  <div class="wnums">
+    <span>전일 <b class="${U.d1 >= 0 ? 'up' : 'dn'}">${U.d1 >= 0 ? '+' : ''}${f(U.d1, 1)}%</b></span>
+    <span>5일 <b class="${U.d5 >= 0 ? 'up' : 'dn'}">${U.d5 >= 0 ? '+' : ''}${f(U.d5, 1)}%</b></span>
+    <span>10일 <b class="${U.d10 >= 0 ? 'up' : 'dn'}">${U.d10 >= 0 ? '+' : ''}${f(U.d10, 1)}%</b></span>
+    <span>최대 대비 <b>${f(U.fromPeakPct, 1)}%</b> <span class="mut">(${dtFull(U.peak.d)}, ${U.daysSincePeak}거래일 전)</span></span>
+    <span>연속 감소 <b>${U.downStreak}일</b></span>
+  </div>
+  <div class="wline">${esc(v.line)} AUM 은 가격이 섞여 있어 이 판정에 쓸 수 없다 — 좌수로만 본다.</div>
+  <div class="wtrend">${trendChart(U.series.map(r => ({ d: r.d, v: r.unitsM })),
+    '단일종목 레버리지 ETF 상장좌수 (백만좌)', 0, `상장(${dtFull(U.series[0].d)}) 이후`)}</div>
+  ${sub}
+</div>`;
+  })();
+
   summarySection = `<section class="summary">
 <h2>핵심 요약</h2>
 <p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
+
+${watchBox}
 
 ${deltaStrip}
 
@@ -1558,6 +1599,25 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-next:checked ~ .p-next, #tab-all:checked ~ .pane { display:block; }
   tr.dim td { opacity:.55; }
   td.up { color:var(--kq); } td.dn { color:var(--cr); }
+  /* 매일 볼 것 — 첫 화면 고정 박스. 판정에 따라 색이 바뀐다. */
+  .watch { margin:18px 0 4px; padding:14px 16px 12px; border-radius:10px;
+    border:1.5px solid var(--line); border-left:6px solid var(--mut); background:var(--surf); }
+  .watch.w-build { border-left-color:var(--cr); }
+  .watch.w-flat { border-left-color:var(--part); }
+  .watch.w-roll { border-left-color:var(--kq); }
+  .wl { font-size:10px; letter-spacing:2px; color:var(--mut); }
+  .wmain { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-top:2px; }
+  .wv { font-size:30px; font-weight:700; letter-spacing:-.5px; }
+  .wv .u { font-size:13px; font-weight:400; color:var(--mut); margin-left:3px; }
+  .wtag { font-size:13px; font-weight:600; padding:2px 10px; border-radius:20px; color:#fff; background:var(--mut); }
+  .w-build .wtag { background:var(--cr); } .w-flat .wtag { background:var(--part); } .w-roll .wtag { background:var(--kq); }
+  .wnums { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--mut); margin-top:5px; }
+  .wnums b { color:var(--fg); }
+  .wline { font-size:12.5px; margin-top:7px; }
+  .wtrend { margin-top:8px; max-width:640px; }
+  .wsub { display:inline-block; margin:6px 14px 0 0; font-size:12px; color:var(--mut); }
+  .wsub b { color:var(--fg); }
+  .wsub span { margin-left:5px; }
   .pane > section:first-child { border-top:none; }
   /* 파트 머리말. 전체 보기에서 두 파트의 경계를 만든다. */
   .parthead { margin:22px 0 4px; padding:11px 14px; border-radius:7px; color:#fff; }

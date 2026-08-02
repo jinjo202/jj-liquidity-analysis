@@ -103,6 +103,19 @@ if (A.etf) {
     assert.ok(s.funds.length > 0, `${s.name} 에 연결된 ETF 가 없다`);
   }
 
+  // 좌수 추이(매일 보는 지표). 판정이 실제 변화율과 어긋나면 안 된다.
+  for (const [k, u] of Object.entries(E.unitsTrend ?? {})) {
+    if (!u) continue;
+    const ds = u.series.map(r => r.d);
+    assert.deepEqual(ds, [...ds].sort(), `${k} 좌수 계열이 정렬돼 있지 않다`);
+    assert.equal(new Set(ds).size, ds.length, `${k} 좌수 계열에 중복 날짜가 있다`);
+    assert.ok(u.peak.unitsM >= u.last.unitsM - 1e-6, `${k} 최대 좌수가 최신보다 작다`);
+    assert.ok(u.fromPeakPct <= 1e-6, `${k} 고점 대비가 양수다`);
+    assert.ok(u.downStreak >= 0 && u.downStreak < u.series.length, `${k} 연속 감소일이 범위 밖`);
+    const expect = u.d5 == null ? 'unknown' : u.d5 > 1 ? 'building' : u.d5 < -1 ? 'rolling' : 'flat';
+    assert.equal(u.verdict, expect, `${k} 판정이 5일 변화율과 어긋난다 (${u.d5})`);
+  }
+
   // 지수 기여는 산술 분해라, 두 종목 몫이 지수 등락을 넘어서면 계산이 틀린 것이다.
   // (다만 다른 종목이 반대로 움직이면 100% 를 넘을 수 있어 상한은 크게 잡는다.)
   for (const r of E.indexContrib) {

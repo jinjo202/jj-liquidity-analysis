@@ -18,5 +18,22 @@
     "c2021",
     "c2026"
   ],
-  "note": "자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다."
+  "singleStockEtfUnits": {
+    "date": "20260731",
+    "unitsMillion": 783,
+    "verdict": "building",
+    "changePct": {
+      "d1": 6.4,
+      "d5": 6.8,
+      "d10": 6.1
+    },
+    "peak": {
+      "date": "20260731",
+      "unitsMillion": 783,
+      "fromPeakPct": 0,
+      "tradingDaysSince": 0
+    },
+    "consecutiveDownDays": 0
+  },
+  "note": "자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다. singleStockEtfUnits.verdict 가 rolling 으로 바뀌면 레버리지 ETF 환매가 실제로 시작된 것이다."
 }

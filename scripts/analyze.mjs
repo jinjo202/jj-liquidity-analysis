@@ -793,6 +793,19 @@ if (etf) {
   console.log(`\n${'#'.repeat(66)}\n# 레버리지 ETF 수급 (PART 3)`);
   console.log(`  시점: ${cps.map(d => `${lab(d)}(${d})`).join('  ')}`);
 
+  const VERDICT = { building: '아직 쌓이는 중', flat: '정체 — 꺾이는 길목', rolling: '꺾였다', unknown: '판정 불가' };
+  if (etf.unitsTrend?.single) {
+    const u = etf.unitsTrend.single;
+    console.log(`\n  [★ 매일 볼 것 — 단일종목 레버리지 좌수] ${VERDICT[u.verdict]}`);
+    console.log(`    ${u.last.d}  ${f(u.last.unitsM, 0)}백만좌  (전일 ${f(u.d1, 1)}% / 5일 ${f(u.d5, 1)}% / 10일 ${f(u.d10, 1)}%)`);
+    console.log(`    최대 ${f(u.peak.unitsM, 0)}백만좌 (${u.peak.d}, ${u.daysSincePeak}거래일 전) 대비 ${f(u.fromPeakPct, 1)}%`
+      + `   연속 감소 ${u.downStreak}일`);
+    for (const [k, label] of [['samsung', '삼성전자'], ['hynix', 'SK하이닉스'], ['sector', '반도체 섹터']]) {
+      const t = etf.unitsTrend[k];
+      if (t) console.log(`      ${label.padEnd(10)} ${f(t.last.unitsM, 0).padStart(6)}백만좌  5일 ${f(t.d5, 1).padStart(6)}%  고점대비 ${f(t.fromPeakPct, 1).padStart(6)}%  ${VERDICT[t.verdict]}`);
+    }
+  }
+
   console.log(`\n  [그룹별 AUM(조원) = 상장좌수 x 종가]`);
   console.log(`    ${'그룹'.padEnd(24)}${cps.map(d => lab(d).padStart(12)).join('')}`);
   for (const g of etf.groups) {
