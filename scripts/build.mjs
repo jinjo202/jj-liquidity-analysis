@@ -1,4 +1,4 @@
-// data/analysis.json 을 읽어 index.html 한 장으로 굽는다.
+﻿// data/analysis.json 을 읽어 index.html 한 장으로 굽는다.
 // 차트는 빌드 시점에 SVG 문자열로 만들어 넣는다. 런타임 의존성이 없어야
 // file:// 로 열어도 그대로 보이고, fetch 로 데이터를 읽지 않으므로 CORS 문제도 없다.
 import fs from 'node:fs';
@@ -1120,6 +1120,150 @@ ${A.spot ? `<div class="box warn">
 </section>`;
 }
 
+/* ---------- PART 3 레버리지 ETF 수급 ---------- */
+// PART 1·2 는 잔고를 본다. PART 3 은 매일 강제로 나가는 매매를 본다 —
+// 레버리지 ETF 는 잔고가 그대로여도 기초자산이 움직이면 그날 안에 사거나 판다(§23).
+const etfSection = !A.etf ? '' : (() => {
+  const E = A.etf;
+  const cps = E.checkpoints.map(c => c.date);
+  const lab = d => E.checkpointLabels?.[d] ?? dtFull(d);
+  const sgn = (n, d = 1) => (n == null || !Number.isFinite(n) ? '-' : `${n >= 0 ? '+' : ''}${n.toFixed(d)}`);
+  const single = E.groups.find(g => g.key === 'single_lev');
+  const sectorG = E.groups.find(g => g.key === 'sector_lev');
+
+  // 한 줄 판정은 좌수로 낸다 — AUM 이 줄어도 좌수가 늘었으면 물량은 남아 있는 것이다.
+  const unitsFirst = single?.sums[0]?.units ?? 0;
+  const unitsLast = single?.sums.at(-1)?.units ?? 0;
+  const unitsMult = unitsFirst > 0 ? unitsLast / unitsFirst : null;
+  const sectorFirst = sectorG?.sums[0]?.units ?? 0;
+  const sectorLast = sectorG?.sums.at(-1)?.units ?? 0;
+
+  const groupRows = E.groups.filter(g => g.count).map(g => `<tr>
+    <td>${esc(g.label)} <span class="mut">(${g.count}종)</span></td>
+    ${g.sums.map(s => `<td class="n">${f(s.aumJo)}</td>`).join('')}
+    <td class="n">${sgn(g.sums[0].units > 0 ? (g.sums.at(-1).units / g.sums[0].units - 1) * 100 : null, 0)}%</td>
+  </tr>`).join('');
+
+  const fundRows = E.perFund
+    .filter(x => x.group === 'single_lev' || x.group === 'single_inv')
+    .sort((a, b) => (b.snaps.at(-1).aumJo ?? 0) - (a.snaps.at(-1).aumJo ?? 0))
+    .map(x => `<tr>
+      <td>${esc(x.name)}</td>
+      <td class="n">${x.lev > 0 ? '2X' : '-2X'}</td>
+      ${x.snaps.map(s => `<td class="n">${s.units == null ? '-' : f(s.units / 1e6, 1)}</td>`).join('')}
+      <td class="n">${f(x.snaps.at(-1).aumJo)}</td>
+      <td class="n">${x.full ? sgn(x.full.unitsPct, 0) + '%' : '-'}</td>
+      <td class="n">${x.full ? sgn(x.full.pricePct, 0) + '%' : '-'}</td>
+      <td class="n">${x.full ? sgn(x.full.aumPct, 0) + '%' : '-'}</td>
+    </tr>`).join('');
+
+  const stockBlocks = Object.values(E.stockDaily).map(s => {
+    const rows = s.series.slice(-12).reverse().map(r => `<tr>
+      <td>${dtFull(r.d)}</td>
+      <td class="n">${sgn(r.ret, 1)}%</td>
+      <td class="n">${sgn(r.flowJo, 2)}조</td>
+      <td class="n">${f(r.flowPctTurnover, 1)}%</td>
+      <td class="n">${f(r.amplitude, 1)}%</td>
+      <td class="n">${sgn(r.idxContribPct, 2)}%p</td>
+    </tr>`).join('');
+    const t = s.test;
+    return `<h3>${esc(s.name)} — 단일종목 ETF ${s.funds.length}종</h3>
+<p class="lead">필요 매매액 = 계수 × 직전 AUM × 그날 수익률. 2X 는 계수 2, −2X 는 6이다.
+  아래는 최근 12거래일이다.</p>
+<div class="tw"><table>
+  <thead><tr><th>일자</th><th class="n">종목 등락</th><th class="n">리밸런싱 필요액</th>
+    <th class="n">그날 거래대금 대비</th><th class="n">일중 진폭</th><th class="n">코스피 기여</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table></div>
+<div class="box">리밸런싱 수요 상위 ${t.topN}일의 평균 일중 진폭 <b>${f(t.topMeanAmplitude, 1)}%</b>,
+  나머지 ${f(t.restMeanAmplitude, 1)}%. 상관계수 r=${f(t.corrFlowAmplitude, 2)}.
+  ${Math.abs(t.corrFlowAmplitude ?? 0) < 0.35
+    ? '방향은 맞지만 상관은 약하다 — 리밸런싱이 유일한 원인이라고 말할 수 있는 수준이 아니다.'
+    : '리밸런싱이 큰 날 실제로 더 출렁였다.'}</div>
+${!s.eras ? '' : `<div class="box"><b>반증 — ETF가 없던 시절과 비교</b>:
+  평균 일중 진폭이 2025년 <b>${f(s.eras.before2025.meanAmplitude, 1)}%</b>(${s.eras.before2025.days}일) →
+  2026년 상장 전 <b>${f(s.eras.before2026.meanAmplitude, 1)}%</b>(${s.eras.before2026.days}일) →
+  상장 후 <b>${f(s.eras.after.meanAmplitude, 1)}%</b>(${s.eras.after.days}일).
+  변동성 상승은 <b>단일종목 ETF 상장 전에 이미 시작됐다.</b> 상장 후 다시
+  ${f((s.eras.after.meanAmplitude / s.eras.before2026.meanAmplitude - 1) * 100, 0)}% 더 커진 건 사실이지만,
+  ETF가 유일한 원인이라고는 이 데이터로 말할 수 없다.</div>`}`;
+  }).join('\n');
+
+  const contribRows = [...E.indexContrib]
+    .sort((a, b) => Math.abs(b.contribPct) - Math.abs(a.contribPct)).slice(0, 10)
+    .map(r => `<tr>
+      <td>${dtFull(r.d)}</td>
+      <td class="n">${sgn(r.idxRet, 2)}%</td>
+      <td class="n">${sgn(r.contribPct, 2)}%p</td>
+      <td class="n">${f(r.sharePct, 0)}%</td>
+      <td class="n">${sgn(r.flowJo, 2)}조</td>
+    </tr>`).join('');
+
+  const hkRows = !E.hk ? '' : E.hk.products.map(p => `<tr>
+    <td>${esc(p.ticker)}</td>
+    <td>${esc(p.name)}</td>
+    <td class="n">${p.lev > 0 ? '2X' : '-2X'}</td>
+    <td class="n">${f(p.totalNavUsd / 1e9)}</td>
+    <td class="n">${f(p.outstandingUnits / 1e6, 1)}</td>
+    <td class="n">${f(p.notionalUsd / 1e9)}</td>
+  </tr>`).join('');
+
+  return `<section>
+<h2>지수대별이 아니라 매일 — 레버리지 ETF 수급</h2>
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">삼성전자·SK하이닉스 <b>단일종목 레버리지 ETF는 정리되지 않았다</b>.
+    ${lab(cps[0])}(${dtFull(cps[0])}) 대비 ${lab(cps.at(-1))} 상장좌수가
+    <b>${f(unitsMult, 1)}배</b>로 늘었다. AUM이 줄어든 구간이 있어도 그건 환매가 아니라 가격이 빠진 것이다.
+    반대로 <b>반도체 섹터 레버리지는 좌수가 ${sgn(sectorFirst > 0 ? (sectorLast / sectorFirst - 1) * 100 : null, 0)}%</b>로
+    실제 환매가 일어났다 — 같은 '레버리지'라도 두 계열이 정반대로 움직였다.</div>
+</div>
+
+<h3>그룹별 AUM (조원, 상장좌수 × 종가)</h3>
+<div class="tw"><table>
+  <thead><tr><th>그룹</th>${cps.map(d => `<th class="n">${lab(d)}<br><span class="mut">${dtFull(d)}</span></th>`).join('')}<th class="n">좌수 변화</th></tr></thead>
+  <tbody>${groupRows}</tbody>
+</table></div>
+<div class="box">단일종목 레버리지 ETF는 <b>${dtFull(E.perFund.find(x => x.group === 'single_lev')?.listedFrom ?? cps[0])} 상장</b>으로
+  카테고리 자체가 두 달밖에 안 됐다. 그 사이에 ${f(single?.sums[0].aumJo)}조 → ${f(single?.sums.at(-1).aumJo)}조가 됐고,
+  중간 고점은 ${f(Math.max(...(single?.sums.map(s => s.aumJo) ?? [0])))}조였다.</div>
+
+<h3>단일종목 ETF 상세 — 좌수(백만좌)와 AUM 분해</h3>
+<div class="tw"><table>
+  <thead><tr><th>종목</th><th class="n">배수</th>${cps.map(d => `<th class="n">${lab(d)}</th>`).join('')}
+    <th class="n">현재 AUM(조)</th><th class="n">유출입</th><th class="n">가격</th><th class="n">AUM</th></tr></thead>
+  <tbody>${fundRows}</tbody>
+</table></div>
+<div class="box">AUM = 좌수 × 가격이라 로그로 보면 정확히 갈린다: <b>Δln AUM = Δln 좌수 + Δln 가격</b>.
+  유출입(좌수)이 플러스인데 AUM이 덜 늘었다면 가격이 그만큼 깎아먹은 것이다.</div>
+
+${stockBlocks}
+
+<h3>코스피 등락 중 두 종목이 설명하는 몫</h3>
+<p class="lead">비중 × 수익률의 산술 분해다. 가격충격 계수를 추정한 값이 아니다 —
+  PART 2에서 숏커버를 지수 상승폭으로 환산하지 않은 것과 같은 이유다.</p>
+<div class="tw"><table>
+  <thead><tr><th>일자</th><th class="n">코스피</th><th class="n">두 종목 기여</th><th class="n">설명 비중</th><th class="n">두 종목 리밸 합계</th></tr></thead>
+  <tbody>${contribRows}</tbody>
+</table></div>
+
+${E.hk ? `<h3>홍콩 CSOP 단일종목 L&amp;I (${dtFull(E.hk.asOf)} 기준)</h3>
+<div class="tw"><table>
+  <thead><tr><th>코드</th><th>상품</th><th class="n">배수</th><th class="n">순자산(US$bn)</th>
+    <th class="n">좌수(백만)</th><th class="n">명목 익스포저(US$bn)</th></tr></thead>
+  <tbody>${hkRows}</tbody>
+</table></div>
+<div class="box warn">홍콩분은 <b>일별 좌수 히스토리를 구하지 못했다</b>(운용사 사이트가 현재값만 준다).
+  그래서 시점 비교와 일별 리밸런싱 계산에서 <b>제외</b>했다 — 위 표는 규모 비교용이다.
+  국내 리밸런싱 수치는 그만큼 <b>과소</b>다.</div>` : ''}
+
+<div class="box warn"><b>한계</b> — 대차거래·신용융자와 달리 이 계산에는 공표된 강제 청산 규칙이 없다.
+  리밸런싱 필요액은 상품 설계상 <b>반드시 나가야 하는 매매</b>지만, 실제 체결 시각·분할 여부·스왑 상대방의
+  헤지 방식은 공개되지 않는다. 또 AUM은 NAV가 아니라 <b>종가 × 좌수</b>로 계산했다(일별 NAV 소스 없음).
+  괴리율만큼 오차가 있다.</div>
+</section>`;
+})();
+
 /* ---------- 사이클별 상세 — 탭 ---------- */
 // 두 사이클을 세로로 이어 붙이면 어느 쪽 숫자를 보고 있는지 헷갈린다.
 // 바깥 탭(§9)과 같은 방식으로 라디오 + 형제 선택자만 쓴다. 스크립트 없음.
@@ -1188,19 +1332,19 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
     --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07);
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
       --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); }
+      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
     --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); }
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
     --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); }
+    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
@@ -1267,19 +1411,23 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   /* 선택 상태 — 배경을 파트 색으로 채우고 글자를 흰색으로 뒤집는다. */
   #tab-down:checked ~ .tabs label[for="tab-down"],
   #tab-up:checked ~ .tabs label[for="tab-up"],
+  #tab-etf:checked ~ .tabs label[for="tab-etf"],
   #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] b,
   #tab-up:checked ~ .tabs label[for="tab-up"] b,
+  #tab-etf:checked ~ .tabs label[for="tab-etf"] b,
   #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
   #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
+  #tab-etf:checked ~ .tabs label[for="tab-etf"] { background:var(--lv); border-color:var(--lv); }
   #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
   /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
   .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
   .tabs label[for="tab-up"] { border-left:5px solid var(--kq); }
+  .tabs label[for="tab-etf"] { border-left:5px solid var(--lv); }
   .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
-  #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up,
+  #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up, #tab-etf:checked ~ .p-etf,
   #tab-all:checked ~ .pane { display:block; }
   .pane > section:first-child { border-top:none; }
   /* 파트 머리말. 전체 보기에서 두 파트의 경계를 만든다. */
@@ -1288,8 +1436,11 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .parthead b { font-size:16px; }
   .ph-down { background:var(--cr); }
   .ph-up { background:var(--kq); }
+  .ph-etf { background:var(--lv); }
+  .pill.pl { background:var(--lv); }
   #tab-down:focus-visible ~ .tabs label[for="tab-down"],
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
+  #tab-etf:focus-visible ~ .tabs label[for="tab-etf"],
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
   @media print { .tabs { display:none; } .pane { display:block !important; } }
 ${cycleCss}
@@ -1387,11 +1538,13 @@ ${summarySection}
 
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">
+${etfSection ? '<input type="radio" name="tab" id="tab-etf" class="tabin">' : ''}
 <input type="radio" name="tab" id="tab-all" class="tabin">
 <nav class="tabs">
   <label for="tab-down"><i>PART 1</i><b>신용잔고</b><span>얼마나 더 하락할 수 있나 — 반대매매 잔여</span></label>
   <label for="tab-up"><i>PART 2</i><b>공매도·숏커버링</b><span>얼마나 더 상승할 수 있나 — 대차 되갚기 잔여</span></label>
-  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>두 파트를 이어서 본다</span></label>
+  ${etfSection ? '<label for="tab-etf"><i>PART 3</i><b>레버리지 ETF</b><span>변동성은 어디서 왔나 — 매일 나가는 강제 매매</span></label>' : ''}
+  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>세 파트를 이어서 본다</span></label>
 </nav>
 
 <div class="pane p-down">
@@ -1457,6 +1610,13 @@ ${lendingSection}
 ${coverSection}
 
 </div><!-- /p-up -->
+
+${etfSection ? `<div class="pane p-etf">
+<div class="parthead ph-etf"><i>PART 3</i><b>레버리지 ETF — 변동성은 어디서 왔나</b></div>
+
+${etfSection}
+
+</div><!-- /p-etf -->` : ''}
 
 <footer>
   <b>데이터 출처</b>

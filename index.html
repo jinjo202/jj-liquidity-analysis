@@ -3,19 +3,19 @@
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
     --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07);
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
       --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); }
+      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
     --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); }
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
     --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); }
+    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
@@ -82,19 +82,23 @@
   /* 선택 상태 — 배경을 파트 색으로 채우고 글자를 흰색으로 뒤집는다. */
   #tab-down:checked ~ .tabs label[for="tab-down"],
   #tab-up:checked ~ .tabs label[for="tab-up"],
+  #tab-etf:checked ~ .tabs label[for="tab-etf"],
   #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] b,
   #tab-up:checked ~ .tabs label[for="tab-up"] b,
+  #tab-etf:checked ~ .tabs label[for="tab-etf"] b,
   #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
   #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
+  #tab-etf:checked ~ .tabs label[for="tab-etf"] { background:var(--lv); border-color:var(--lv); }
   #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
   /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
   .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
   .tabs label[for="tab-up"] { border-left:5px solid var(--kq); }
+  .tabs label[for="tab-etf"] { border-left:5px solid var(--lv); }
   .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
-  #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up,
+  #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up, #tab-etf:checked ~ .p-etf,
   #tab-all:checked ~ .pane { display:block; }
   .pane > section:first-child { border-top:none; }
   /* 파트 머리말. 전체 보기에서 두 파트의 경계를 만든다. */
@@ -103,8 +107,11 @@
   .parthead b { font-size:16px; }
   .ph-down { background:var(--cr); }
   .ph-up { background:var(--kq); }
+  .ph-etf { background:var(--lv); }
+  .pill.pl { background:var(--lv); }
   #tab-down:focus-visible ~ .tabs label[for="tab-down"],
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
+  #tab-etf:focus-visible ~ .tabs label[for="tab-etf"],
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
   @media print { .tabs { display:none; } .pane { display:block !important; } }
 
@@ -376,11 +383,13 @@
 
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">
+<input type="radio" name="tab" id="tab-etf" class="tabin">
 <input type="radio" name="tab" id="tab-all" class="tabin">
 <nav class="tabs">
   <label for="tab-down"><i>PART 1</i><b>신용잔고</b><span>얼마나 더 하락할 수 있나 — 반대매매 잔여</span></label>
   <label for="tab-up"><i>PART 2</i><b>공매도·숏커버링</b><span>얼마나 더 상승할 수 있나 — 대차 되갚기 잔여</span></label>
-  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>두 파트를 이어서 본다</span></label>
+  <label for="tab-etf"><i>PART 3</i><b>레버리지 ETF</b><span>변동성은 어디서 왔나 — 매일 나가는 강제 매매</span></label>
+  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>세 파트를 이어서 본다</span></label>
 </nav>
 
 <div class="pane p-down">
@@ -2719,6 +2728,498 @@ FREESIS 대차거래추이(일별, 시장 전체)에서 받았다.</p>
 </section>
 
 </div><!-- /p-up -->
+
+<div class="pane p-etf">
+<div class="parthead ph-etf"><i>PART 3</i><b>레버리지 ETF — 변동성은 어디서 왔나</b></div>
+
+<section>
+<h2>지수대별이 아니라 매일 — 레버리지 ETF 수급</h2>
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">삼성전자·SK하이닉스 <b>단일종목 레버리지 ETF는 정리되지 않았다</b>.
+    5월말(2026.05.29) 대비 최근 상장좌수가
+    <b>3.9배</b>로 늘었다. AUM이 줄어든 구간이 있어도 그건 환매가 아니라 가격이 빠진 것이다.
+    반대로 <b>반도체 섹터 레버리지는 좌수가 -45%</b>로
+    실제 환매가 일어났다 — 같은 '레버리지'라도 두 계열이 정반대로 움직였다.</div>
+</div>
+
+<h3>그룹별 AUM (조원, 상장좌수 × 종가)</h3>
+<div class="tw"><table>
+  <thead><tr><th>그룹</th><th class="n">5월말<br><span class="mut">2026.05.29</span></th><th class="n">지수 고점<br><span class="mut">2026.06.22</span></th><th class="n">6월말<br><span class="mut">2026.06.30</span></th><th class="n">최근<br><span class="mut">2026.07.31</span></th><th class="n">좌수 변화</th></tr></thead>
+  <tbody><tr>
+    <td>단일종목 레버리지 2X <span class="mut">(14종)</span></td>
+    <td class="n">5.23</td><td class="n">15.54</td><td class="n">15.18</td><td class="n">8.62</td>
+    <td class="n">+291%</td>
+  </tr><tr>
+    <td>단일종목 인버스 2X <span class="mut">(2종)</span></td>
+    <td class="n">0.10</td><td class="n">0.16</td><td class="n">0.27</td><td class="n">0.16</td>
+    <td class="n">+223%</td>
+  </tr><tr>
+    <td>반도체·IT 섹터 레버리지 <span class="mut">(3종)</span></td>
+    <td class="n">6.70</td><td class="n">5.60</td><td class="n">4.10</td><td class="n">1.71</td>
+    <td class="n">-45%</td>
+  </tr><tr>
+    <td>지수 레버리지(대조군) <span class="mut">(4종)</span></td>
+    <td class="n">14.98</td><td class="n">15.79</td><td class="n">12.90</td><td class="n">8.98</td>
+    <td class="n">+89%</td>
+  </tr><tr>
+    <td>지수 인버스2X(대조군) <span class="mut">(1종)</span></td>
+    <td class="n">0.91</td><td class="n">0.76</td><td class="n">0.91</td><td class="n">0.62</td>
+    <td class="n">-30%</td>
+  </tr></tbody>
+</table></div>
+<div class="box">단일종목 레버리지 ETF는 <b>2026.05.27 상장</b>으로
+  카테고리 자체가 두 달밖에 안 됐다. 그 사이에 5.23조 → 8.62조가 됐고,
+  중간 고점은 15.54조였다.</div>
+
+<h3>단일종목 ETF 상세 — 좌수(백만좌)와 AUM 분해</h3>
+<div class="tw"><table>
+  <thead><tr><th>종목</th><th class="n">배수</th><th class="n">5월말</th><th class="n">지수 고점</th><th class="n">6월말</th><th class="n">최근</th>
+    <th class="n">현재 AUM(조)</th><th class="n">유출입</th><th class="n">가격</th><th class="n">AUM</th></tr></thead>
+  <tbody><tr>
+      <td>KODEX SK하이닉스단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">68.3</td><td class="n">135.6</td><td class="n">168.6</td><td class="n">292.0</td>
+      <td class="n">3.23</td>
+      <td class="n">+327%</td>
+      <td class="n">-63%</td>
+      <td class="n">+58%</td>
+    </tr><tr>
+      <td>KODEX 삼성전자단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">53.3</td><td class="n">109.5</td><td class="n">142.5</td><td class="n">167.1</td>
+      <td class="n">2.11</td>
+      <td class="n">+213%</td>
+      <td class="n">-48%</td>
+      <td class="n">+63%</td>
+    </tr><tr>
+      <td>TIGER SK하이닉스단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">37.4</td><td class="n">100.8</td><td class="n">113.6</td><td class="n">192.7</td>
+      <td class="n">1.82</td>
+      <td class="n">+416%</td>
+      <td class="n">-63%</td>
+      <td class="n">+92%</td>
+    </tr><tr>
+      <td>TIGER 삼성전자단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">29.9</td><td class="n">69.8</td><td class="n">79.6</td><td class="n">92.7</td>
+      <td class="n">1.07</td>
+      <td class="n">+211%</td>
+      <td class="n">-49%</td>
+      <td class="n">+59%</td>
+    </tr><tr>
+      <td>SOL SK하이닉스선물단일종목인버스2X</td>
+      <td class="n">-2X</td>
+      <td class="n">2.6</td><td class="n">15.4</td><td class="n">30.2</td><td class="n">18.2</td>
+      <td class="n">0.14</td>
+      <td class="n">+586%</td>
+      <td class="n">-48%</td>
+      <td class="n">+255%</td>
+    </tr><tr>
+      <td>ACE SK하이닉스단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">1.0</td><td class="n">4.8</td><td class="n">4.8</td><td class="n">7.5</td>
+      <td class="n">0.07</td>
+      <td class="n">+648%</td>
+      <td class="n">-64%</td>
+      <td class="n">+172%</td>
+    </tr><tr>
+      <td>SOL SK하이닉스단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">2.6</td><td class="n">3.3</td><td class="n">3.5</td><td class="n">7.0</td>
+      <td class="n">0.06</td>
+      <td class="n">+164%</td>
+      <td class="n">-63%</td>
+      <td class="n">-3%</td>
+    </tr><tr>
+      <td>ACE 삼성전자단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">1.0</td><td class="n">5.6</td><td class="n">4.9</td><td class="n">5.3</td>
+      <td class="n">0.06</td>
+      <td class="n">+425%</td>
+      <td class="n">-48%</td>
+      <td class="n">+175%</td>
+    </tr><tr>
+      <td>RISE SK하이닉스단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">1.9</td><td class="n">4.6</td><td class="n">5.3</td><td class="n">5.5</td>
+      <td class="n">0.05</td>
+      <td class="n">+192%</td>
+      <td class="n">-63%</td>
+      <td class="n">+9%</td>
+    </tr><tr>
+      <td>RISE 삼성전자단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">1.8</td><td class="n">3.8</td><td class="n">4.8</td><td class="n">3.6</td>
+      <td class="n">0.04</td>
+      <td class="n">+109%</td>
+      <td class="n">-48%</td>
+      <td class="n">+8%</td>
+    </tr><tr>
+      <td>1Q 삼성전자선물단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">0.5</td><td class="n">1.2</td><td class="n">1.5</td><td class="n">2.2</td>
+      <td class="n">0.03</td>
+      <td class="n">+368%</td>
+      <td class="n">-50%</td>
+      <td class="n">+135%</td>
+    </tr><tr>
+      <td>1Q SK하이닉스선물단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">0.5</td><td class="n">1.2</td><td class="n">1.5</td><td class="n">2.8</td>
+      <td class="n">0.03</td>
+      <td class="n">+481%</td>
+      <td class="n">-67%</td>
+      <td class="n">+92%</td>
+    </tr><tr>
+      <td>PLUS 삼성전자선물단일종목인버스2X</td>
+      <td class="n">-2X</td>
+      <td class="n">3.6</td><td class="n">4.3</td><td class="n">3.9</td><td class="n">1.9</td>
+      <td class="n">0.02</td>
+      <td class="n">-47%</td>
+      <td class="n">-35%</td>
+      <td class="n">-66%</td>
+    </tr><tr>
+      <td>PLUS 삼성전자단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">0.8</td><td class="n">1.1</td><td class="n">1.1</td><td class="n">1.5</td>
+      <td class="n">0.02</td>
+      <td class="n">+82%</td>
+      <td class="n">-49%</td>
+      <td class="n">-7%</td>
+    </tr><tr>
+      <td>KIWOOM SK하이닉스선물단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">0.5</td><td class="n">1.0</td><td class="n">1.0</td><td class="n">1.7</td>
+      <td class="n">0.02</td>
+      <td class="n">+235%</td>
+      <td class="n">-64%</td>
+      <td class="n">+20%</td>
+    </tr><tr>
+      <td>KIWOOM 삼성전자선물단일종목레버리지</td>
+      <td class="n">2X</td>
+      <td class="n">0.5</td><td class="n">0.9</td><td class="n">0.8</td><td class="n">0.9</td>
+      <td class="n">0.01</td>
+      <td class="n">+85%</td>
+      <td class="n">-49%</td>
+      <td class="n">-5%</td>
+    </tr></tbody>
+</table></div>
+<div class="box">AUM = 좌수 × 가격이라 로그로 보면 정확히 갈린다: <b>Δln AUM = Δln 좌수 + Δln 가격</b>.
+  유출입(좌수)이 플러스인데 AUM이 덜 늘었다면 가격이 그만큼 깎아먹은 것이다.</div>
+
+<h3>삼성전자 — 단일종목 ETF 8종</h3>
+<p class="lead">필요 매매액 = 계수 × 직전 AUM × 그날 수익률. 2X 는 계수 2, −2X 는 6이다.
+  아래는 최근 12거래일이다.</p>
+<div class="tw"><table>
+  <thead><tr><th>일자</th><th class="n">종목 등락</th><th class="n">리밸런싱 필요액</th>
+    <th class="n">그날 거래대금 대비</th><th class="n">일중 진폭</th><th class="n">코스피 기여</th></tr></thead>
+  <tbody><tr>
+      <td>2026.07.31</td>
+      <td class="n">+26.8%</td>
+      <td class="n">+1.28조</td>
+      <td class="n">8.6%</td>
+      <td class="n">9.1%</td>
+      <td class="n">+7.56%p</td>
+    </tr><tr>
+      <td>2026.07.30</td>
+      <td class="n">-0.7%</td>
+      <td class="n">-0.03조</td>
+      <td class="n">0.4%</td>
+      <td class="n">11.6%</td>
+      <td class="n">-0.19%p</td>
+    </tr><tr>
+      <td>2026.07.29</td>
+      <td class="n">-5.2%</td>
+      <td class="n">-0.28조</td>
+      <td class="n">2.1%</td>
+      <td class="n">21.5%</td>
+      <td class="n">-1.36%p</td>
+    </tr><tr>
+      <td>2026.07.28</td>
+      <td class="n">-13.4%</td>
+      <td class="n">-0.95조</td>
+      <td class="n">10.4%</td>
+      <td class="n">9.8%</td>
+      <td class="n">-3.49%p</td>
+    </tr><tr>
+      <td>2026.07.27</td>
+      <td class="n">+1.8%</td>
+      <td class="n">+0.12조</td>
+      <td class="n">2.2%</td>
+      <td class="n">4.9%</td>
+      <td class="n">+0.48%p</td>
+    </tr><tr>
+      <td>2026.07.24</td>
+      <td class="n">-7.6%</td>
+      <td class="n">-0.60조</td>
+      <td class="n">9.1%</td>
+      <td class="n">7.8%</td>
+      <td class="n">-2.02%p</td>
+    </tr><tr>
+      <td>2026.07.23</td>
+      <td class="n">+3.6%</td>
+      <td class="n">+0.28조</td>
+      <td class="n">6.4%</td>
+      <td class="n">3.7%</td>
+      <td class="n">+0.99%p</td>
+    </tr><tr>
+      <td>2026.07.22</td>
+      <td class="n">+0.6%</td>
+      <td class="n">+0.04조</td>
+      <td class="n">0.8%</td>
+      <td class="n">6.1%</td>
+      <td class="n">+0.16%p</td>
+    </tr><tr>
+      <td>2026.07.21</td>
+      <td class="n">+6.1%</td>
+      <td class="n">+0.44조</td>
+      <td class="n">8.4%</td>
+      <td class="n">7.9%</td>
+      <td class="n">+1.68%p</td>
+    </tr><tr>
+      <td>2026.07.20</td>
+      <td class="n">-4.3%</td>
+      <td class="n">-0.34조</td>
+      <td class="n">5.7%</td>
+      <td class="n">7.2%</td>
+      <td class="n">-1.15%p</td>
+    </tr><tr>
+      <td>2026.07.16</td>
+      <td class="n">-8.8%</td>
+      <td class="n">-0.80조</td>
+      <td class="n">11.7%</td>
+      <td class="n">5.1%</td>
+      <td class="n">-2.34%p</td>
+    </tr><tr>
+      <td>2026.07.15</td>
+      <td class="n">+6.3%</td>
+      <td class="n">+0.52조</td>
+      <td class="n">7.7%</td>
+      <td class="n">4.1%</td>
+      <td class="n">+1.72%p</td>
+    </tr></tbody>
+</table></div>
+<div class="box">리밸런싱 수요 상위 9일의 평균 일중 진폭 <b>9.5%</b>,
+  나머지 7.0%. 상관계수 r=0.20.
+  방향은 맞지만 상관은 약하다 — 리밸런싱이 유일한 원인이라고 말할 수 있는 수준이 아니다.</div>
+<div class="box"><b>반증 — ETF가 없던 시절과 비교</b>:
+  평균 일중 진폭이 2025년 <b>2.4%</b>(242일) →
+  2026년 상장 전 <b>4.3%</b>(96일) →
+  상장 후 <b>7.5%</b>(46일).
+  변동성 상승은 <b>단일종목 ETF 상장 전에 이미 시작됐다.</b> 상장 후 다시
+  74% 더 커진 건 사실이지만,
+  ETF가 유일한 원인이라고는 이 데이터로 말할 수 없다.</div>
+<h3>SK하이닉스 — 단일종목 ETF 8종</h3>
+<p class="lead">필요 매매액 = 계수 × 직전 AUM × 그날 수익률. 2X 는 계수 2, −2X 는 6이다.
+  아래는 최근 12거래일이다.</p>
+<div class="tw"><table>
+  <thead><tr><th>일자</th><th class="n">종목 등락</th><th class="n">리밸런싱 필요액</th>
+    <th class="n">그날 거래대금 대비</th><th class="n">일중 진폭</th><th class="n">코스피 기여</th></tr></thead>
+  <tbody><tr>
+      <td>2026.07.31</td>
+      <td class="n">+30.0%</td>
+      <td class="n">+2.53조</td>
+      <td class="n">14.7%</td>
+      <td class="n">7.7%</td>
+      <td class="n">+6.90%p</td>
+    </tr><tr>
+      <td>2026.07.30</td>
+      <td class="n">-5.6%</td>
+      <td class="n">-0.49조</td>
+      <td class="n">4.0%</td>
+      <td class="n">13.0%</td>
+      <td class="n">-1.18%p</td>
+    </tr><tr>
+      <td>2026.07.29</td>
+      <td class="n">-9.6%</td>
+      <td class="n">-1.01조</td>
+      <td class="n">5.9%</td>
+      <td class="n">26.6%</td>
+      <td class="n">-2.11%p</td>
+    </tr><tr>
+      <td>2026.07.28</td>
+      <td class="n">-14.6%</td>
+      <td class="n">-1.96조</td>
+      <td class="n">16.7%</td>
+      <td class="n">8.0%</td>
+      <td class="n">-3.28%p</td>
+    </tr><tr>
+      <td>2026.07.27</td>
+      <td class="n">+3.2%</td>
+      <td class="n">+0.40조</td>
+      <td class="n">5.9%</td>
+      <td class="n">6.3%</td>
+      <td class="n">+0.76%p</td>
+    </tr><tr>
+      <td>2026.07.24</td>
+      <td class="n">-8.3%</td>
+      <td class="n">-1.21조</td>
+      <td class="n">13.6%</td>
+      <td class="n">8.1%</td>
+      <td class="n">-1.91%p</td>
+    </tr><tr>
+      <td>2026.07.23</td>
+      <td class="n">+4.9%</td>
+      <td class="n">+0.65조</td>
+      <td class="n">8.3%</td>
+      <td class="n">5.4%</td>
+      <td class="n">+1.14%p</td>
+    </tr><tr>
+      <td>2026.07.22</td>
+      <td class="n">-0.3%</td>
+      <td class="n">-0.04조</td>
+      <td class="n">0.5%</td>
+      <td class="n">9.6%</td>
+      <td class="n">-0.08%p</td>
+    </tr><tr>
+      <td>2026.07.21</td>
+      <td class="n">+4.1%</td>
+      <td class="n">+0.50조</td>
+      <td class="n">6.0%</td>
+      <td class="n">8.6%</td>
+      <td class="n">+0.97%p</td>
+    </tr><tr>
+      <td>2026.07.20</td>
+      <td class="n">-4.2%</td>
+      <td class="n">-0.56조</td>
+      <td class="n">5.3%</td>
+      <td class="n">8.9%</td>
+      <td class="n">-1.00%p</td>
+    </tr><tr>
+      <td>2026.07.16</td>
+      <td class="n">-11.5%</td>
+      <td class="n">-1.77조</td>
+      <td class="n">17.3%</td>
+      <td class="n">5.3%</td>
+      <td class="n">-2.71%p</td>
+    </tr><tr>
+      <td>2026.07.15</td>
+      <td class="n">+8.8%</td>
+      <td class="n">+1.18조</td>
+      <td class="n">9.4%</td>
+      <td class="n">4.9%</td>
+      <td class="n">+2.20%p</td>
+    </tr></tbody>
+</table></div>
+<div class="box">리밸런싱 수요 상위 9일의 평균 일중 진폭 <b>10.2%</b>,
+  나머지 8.5%. 상관계수 r=0.19.
+  방향은 맞지만 상관은 약하다 — 리밸런싱이 유일한 원인이라고 말할 수 있는 수준이 아니다.</div>
+<div class="box"><b>반증 — ETF가 없던 시절과 비교</b>:
+  평균 일중 진폭이 2025년 <b>3.5%</b>(242일) →
+  2026년 상장 전 <b>5.0%</b>(96일) →
+  상장 후 <b>8.8%</b>(46일).
+  변동성 상승은 <b>단일종목 ETF 상장 전에 이미 시작됐다.</b> 상장 후 다시
+  78% 더 커진 건 사실이지만,
+  ETF가 유일한 원인이라고는 이 데이터로 말할 수 없다.</div>
+
+<h3>코스피 등락 중 두 종목이 설명하는 몫</h3>
+<p class="lead">비중 × 수익률의 산술 분해다. 가격충격 계수를 추정한 값이 아니다 —
+  PART 2에서 숏커버를 지수 상승폭으로 환산하지 않은 것과 같은 이유다.</p>
+<div class="tw"><table>
+  <thead><tr><th>일자</th><th class="n">코스피</th><th class="n">두 종목 기여</th><th class="n">설명 비중</th><th class="n">두 종목 리밸 합계</th></tr></thead>
+  <tbody><tr>
+      <td>2026.07.31</td>
+      <td class="n">+17.91%</td>
+      <td class="n">+14.46%p</td>
+      <td class="n">81%</td>
+      <td class="n">+3.81조</td>
+    </tr><tr>
+      <td>2026.07.28</td>
+      <td class="n">-10.84%</td>
+      <td class="n">-6.77%p</td>
+      <td class="n">62%</td>
+      <td class="n">-2.91조</td>
+    </tr><tr>
+      <td>2026.06.23</td>
+      <td class="n">-9.99%</td>
+      <td class="n">-6.71%p</td>
+      <td class="n">67%</td>
+      <td class="n">-3.97조</td>
+    </tr><tr>
+      <td>2026.07.13</td>
+      <td class="n">-8.95%</td>
+      <td class="n">-6.48%p</td>
+      <td class="n">72%</td>
+      <td class="n">-3.75조</td>
+    </tr><tr>
+      <td>2026.06.09</td>
+      <td class="n">+8.18%</td>
+      <td class="n">+6.34%p</td>
+      <td class="n">77%</td>
+      <td class="n">+1.69조</td>
+    </tr><tr>
+      <td>2026.07.02</td>
+      <td class="n">-7.89%</td>
+      <td class="n">-6.06%p</td>
+      <td class="n">77%</td>
+      <td class="n">-3.83조</td>
+    </tr><tr>
+      <td>2026.06.25</td>
+      <td class="n">+5.42%</td>
+      <td class="n">+5.23%p</td>
+      <td class="n">96%</td>
+      <td class="n">+2.87조</td>
+    </tr><tr>
+      <td>2026.07.03</td>
+      <td class="n">+5.76%</td>
+      <td class="n">+5.09%p</td>
+      <td class="n">88%</td>
+      <td class="n">+2.32조</td>
+    </tr><tr>
+      <td>2026.07.16</td>
+      <td class="n">-6.37%</td>
+      <td class="n">-5.06%p</td>
+      <td class="n">79%</td>
+      <td class="n">-2.58조</td>
+    </tr><tr>
+      <td>2026.06.08</td>
+      <td class="n">-8.29%</td>
+      <td class="n">-4.57%p</td>
+      <td class="n">55%</td>
+      <td class="n">-1.26조</td>
+    </tr></tbody>
+</table></div>
+
+<h3>홍콩 CSOP 단일종목 L&amp;I (2026.07.31 기준)</h3>
+<div class="tw"><table>
+  <thead><tr><th>코드</th><th>상품</th><th class="n">배수</th><th class="n">순자산(US$bn)</th>
+    <th class="n">좌수(백만)</th><th class="n">명목 익스포저(US$bn)</th></tr></thead>
+  <tbody><tr>
+    <td>7709</td>
+    <td>CSOP SK Hynix Daily Max (2x) Leveraged Product</td>
+    <td class="n">2X</td>
+    <td class="n">5.50</td>
+    <td class="n">984.0</td>
+    <td class="n">10.63</td>
+  </tr><tr>
+    <td>7747</td>
+    <td>CSOP Samsung Electronics Daily Max (2x) Leveraged Product</td>
+    <td class="n">2X</td>
+    <td class="n">1.17</td>
+    <td class="n">111.5</td>
+    <td class="n">2.33</td>
+  </tr><tr>
+    <td>7347</td>
+    <td>CSOP Samsung Electronics Daily Max (-2x) Inverse Product</td>
+    <td class="n">-2X</td>
+    <td class="n">0.01</td>
+    <td class="n">127.0</td>
+    <td class="n">-0.03</td>
+  </tr></tbody>
+</table></div>
+<div class="box warn">홍콩분은 <b>일별 좌수 히스토리를 구하지 못했다</b>(운용사 사이트가 현재값만 준다).
+  그래서 시점 비교와 일별 리밸런싱 계산에서 <b>제외</b>했다 — 위 표는 규모 비교용이다.
+  국내 리밸런싱 수치는 그만큼 <b>과소</b>다.</div>
+
+<div class="box warn"><b>한계</b> — 대차거래·신용융자와 달리 이 계산에는 공표된 강제 청산 규칙이 없다.
+  리밸런싱 필요액은 상품 설계상 <b>반드시 나가야 하는 매매</b>지만, 실제 체결 시각·분할 여부·스왑 상대방의
+  헤지 방식은 공개되지 않는다. 또 AUM은 NAV가 아니라 <b>종가 × 좌수</b>로 계산했다(일별 NAV 소스 없음).
+  괴리율만큼 오차가 있다.</div>
+</section>
+
+</div><!-- /p-etf -->
 
 <footer>
   <b>데이터 출처</b>

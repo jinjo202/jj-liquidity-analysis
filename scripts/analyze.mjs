@@ -12,6 +12,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { analyzeMarket, accumulate, classify, factorOf, MAINTENANCE, LOAN_RATIO } from './lib/buckets.mjs';
+import { analyzeEtf } from './lib/etf.mjs';
 
 const DIR = path.join(import.meta.dirname, '..', 'data');
 const raw = JSON.parse(fs.readFileSync(path.join(DIR, 'kofia-daily.json'), 'utf8'));
@@ -378,6 +379,42 @@ if (fs.existsSync(lendingPath)) {
   };
 }
 
+/* ---------- 레버리지 ETF 수급(PART 3) ---------- */
+// data/etf-daily.json 이 있을 때만 계산한다. 대차잔고와 같은 방식으로 완만하게 저하시킨다.
+const etfPath = path.join(DIR, 'etf-daily.json');
+let etf = null;
+if (fs.existsSync(etfPath)) {
+  const etfData = JSON.parse(fs.readFileSync(etfPath, 'utf8'));
+  const csopPath = path.join(DIR, 'csop-snapshot.json');
+  const csop = fs.existsSync(csopPath) ? JSON.parse(fs.readFileSync(csopPath, 'utf8')) : null;
+
+  // 비중 계산용 코스피 지수·시총(억원 -> 조원).
+  const market = raw.series
+    .filter(r => Number.isFinite(r.OS0001) && Number.isFinite(r.OS0008))
+    .map(r => ({ date: r.date, idx: r.OS0001, mcapJo: (r.OS0008 * 100) / 1e6 }));
+
+  // 비교 시점: 5월말 / 지수 고점 / 6월말 / 최신. 고점은 박아두지 않고 사이클에서 찾는다.
+  const openP = PERIODS.find(p => !p.closed);
+  const cycleIdx = market.filter(m => m.date >= openP.accBase && m.date <= openP.evalEnd);
+  const idxPeak = cycleIdx.reduce((m, r) => (r.idx > m.idx ? r : m), cycleIdx[0]);
+  const etfLast = Object.values(etfData.series).map(s => s.at(-1)?.d).filter(Boolean).sort().at(-1);
+  const onOrBefore = d => {
+    const all = etfData.series['005930'] ?? Object.values(etfData.series)[0] ?? [];
+    return all.filter(r => r.d <= d).at(-1)?.d ?? d;
+  };
+  const named = [
+    [onOrBefore('20260531'), '5월말'],
+    [idxPeak.date, '지수 고점'],
+    [onOrBefore('20260630'), '6월말'],
+    [etfLast, '최근'],
+  ];
+  const checkpointDates = [...new Set(named.map(([d]) => d))].sort();
+
+  etf = analyzeEtf({ etf: etfData, csop, market, checkpointDates });
+  // 같은 날짜에 이름이 겹치면(예: 6월말이 곧 고점) 먼저 붙은 이름을 남긴다.
+  if (etf) etf.checkpointLabels = Object.fromEntries([...named].reverse());
+}
+
 /* ---------- 실측 스트레스 지표 ---------- */
 // OS0025(반대매매금액)는 위탁매매 미수금에 대한 반대매매다. 신용융자 반대매매는
 // 공표되지 않으므로 추정치의 검증값이 아니라 별도 스트레스 축으로만 쓴다.
@@ -613,7 +650,7 @@ const out = {
     hasSplit: !!split, markets: Object.keys(inputs), crossCheckRows,
     source: raw.meta, splitSource: split?.meta ?? null,
   },
-  periods, repro, reproMAE, stress, projection, monthly, lending, channels, unpaid, spot, daily,
+  periods, repro, reproMAE, stress, projection, monthly, lending, etf, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   series: raw.series
     .filter(r => Number.isFinite(r.OS0001))
@@ -722,6 +759,70 @@ for (const key of ['closed', 'open']) {
   mo.months.forEach((m, i) => {
     console.log(`  ${m.ym}  코스피지수 ${f(mo.kIdxIdx[i], 1)} (${k0(m.kIdx)})  코스닥지수 ${f(mo.qIdxIdx[i], 1)} (${k0(m.qIdx)})  코스피거래대금 ${f(m.kToJo)}조  코스닥거래대금 ${f(m.qToJo)}조`);
   });
+}
+
+if (etf) {
+  const cps = etf.checkpoints.map(c => c.date);
+  const lab = d => etf.checkpointLabels?.[d] ?? d.slice(4, 6) + '/' + d.slice(6, 8);
+  console.log(`\n${'#'.repeat(66)}\n# 레버리지 ETF 수급 (PART 3)`);
+  console.log(`  시점: ${cps.map(d => `${lab(d)}(${d})`).join('  ')}`);
+
+  console.log(`\n  [그룹별 AUM(조원) = 상장좌수 x 종가]`);
+  console.log(`    ${'그룹'.padEnd(24)}${cps.map(d => lab(d).padStart(12)).join('')}`);
+  for (const g of etf.groups) {
+    if (!g.count) continue;
+    console.log(`    ${(g.label + ` (${g.count})`).padEnd(24)}${g.sums.map(s => f(s.aumJo).padStart(12)).join('')}`);
+  }
+
+  console.log(`\n  [단일종목 상위 6종 — 좌수(백만좌)와 AUM 분해]`);
+  const top = etf.perFund
+    .filter(x => x.group === 'single_lev' || x.group === 'single_inv')
+    .sort((a, b) => (b.snaps.at(-1).aumJo ?? 0) - (a.snaps.at(-1).aumJo ?? 0)).slice(0, 6);
+  for (const x of top) {
+    const s0 = x.snaps[0], s1 = x.snaps.at(-1);
+    console.log(`    ${x.name}`);
+    console.log(`      좌수 ${f(s0.units / 1e6, 1)}M -> ${f(s1.units / 1e6, 1)}M`
+      + `   AUM ${f(s0.aumJo)}조 -> ${f(s1.aumJo)}조`);
+    if (x.full) {
+      console.log(`      분해: AUM ${f(x.full.aumPct, 1)}% = 유출입 ${f(x.full.unitsPct, 1)}% + 가격 ${f(x.full.pricePct, 1)}%`);
+    }
+  }
+
+  for (const s of Object.values(etf.stockDaily)) {
+    const t = s.test;
+    const recent = s.series.slice(-5);
+    console.log(`\n  [${s.name}] 단일종목 ETF ${s.funds.length}종 리밸런싱`);
+    console.log(`    최근 5거래일  (리밸=필요 매매액, 계수 2X=${etf.coef.lev2} / -2X=${etf.coef.inv2})`);
+    for (const r of recent) {
+      console.log(`      ${r.d}  수익률 ${f(r.ret, 1).padStart(6)}%  리밸 ${f(r.flowJo).padStart(6)}조`
+        + `  = 거래대금의 ${f(r.flowPctTurnover, 1).padStart(5)}%   일중진폭 ${f(r.amplitude, 1)}%`
+        + `   지수기여 ${f(r.idxContribPct, 2)}%p`);
+    }
+    console.log(`    리밸 수요 상위 ${t.topN}일 평균 일중진폭 ${f(t.topMeanAmplitude, 1)}% vs 나머지 ${f(t.restMeanAmplitude, 1)}%`
+      + `   (상관 r=${f(t.corrFlowAmplitude, 2)})`);
+    if (s.eras) {
+      const e = s.eras;
+      console.log(`    [반증] 평균 일중진폭  2025년 ${f(e.before2025.meanAmplitude, 1)}% (${e.before2025.days}일)`
+        + `  /  2026년 상장 전 ${f(e.before2026.meanAmplitude, 1)}% (${e.before2026.days}일)`
+        + `  /  상장 후 ${f(e.after.meanAmplitude, 1)}% (${e.after.days}일)`);
+    }
+  }
+
+  const big = [...etf.indexContrib].sort((a, b) => Math.abs(b.contribPct) - Math.abs(a.contribPct)).slice(0, 5);
+  console.log(`\n  [코스피 등락 중 삼성전자+SK하이닉스 산술 기여 상위 5일]`);
+  for (const r of big) {
+    console.log(`    ${r.d}  코스피 ${f(r.idxRet, 2).padStart(7)}%  기여 ${f(r.contribPct, 2).padStart(6)}%p`
+      + `  (${f(r.sharePct, 0)}%)   두 종목 리밸 합계 ${f(r.flowJo)}조`);
+  }
+
+  if (etf.hk) {
+    console.log(`\n  [홍콩 CSOP 단일종목 L&I — ${etf.hk.asOf} 스냅샷, 일별 좌수 없음]`);
+    for (const p of etf.hk.products) {
+      console.log(`    ${p.ticker} ${p.name}`);
+      console.log(`      NAV US$${(p.totalNavUsd / 1e9).toFixed(2)}bn  좌수 ${(p.outstandingUnits / 1e6).toFixed(1)}M`
+        + `  명목익스포저 US$${(p.notionalUsd / 1e9).toFixed(2)}bn`);
+    }
+  }
 }
 
 if (lending) {

@@ -59,6 +59,58 @@ if (A.lending?.cover) {
   assert.ok(cv.dailyTurnoverJo > 0, '일평균 거래대금이 0 이하다');
 }
 
+// §23 레버리지 ETF(PART 3)
+if (A.etf) {
+  const E = A.etf;
+  assert.ok(E.checkpoints.length >= 3, '비교 시점이 3개 미만이다');
+  const cps = E.checkpoints.map(c => c.date);
+  assert.deepEqual(cps, [...cps].sort(), '비교 시점이 정렬돼 있지 않다');
+
+  // 리밸런싱 계수. 인버스가 레버리지보다 커야 한다 — 이게 뒤집히면 부호 규칙이 깨진 것이다.
+  assert.equal(E.coef.lev2, 2, '2X 리밸런싱 계수가 2가 아니다');
+  assert.equal(E.coef.inv2, 6, '-2X 리밸런싱 계수가 6이 아니다');
+  assert.ok(E.coef.inv2 > E.coef.lev2, '인버스 계수가 레버리지보다 작다');
+
+  // 로그 분해: AUM = 좌수 x 가격 이므로 Δln 이 정확히 더해져야 한다.
+  for (const f of E.perFund) {
+    for (const d of [f.full, ...(f.legs ?? [])].filter(Boolean)) {
+      if (d.dAum == null || d.dUnits == null || d.dPrice == null) continue;
+      near(d.dAum, d.dUnits + d.dPrice, 1e-9, `${f.code} AUM 분해`);
+      near(d.aumFromJo, (d.unitsFrom * d.closeFrom) / 1e12, 1e-9, `${f.code} 시작 AUM`);
+      near(d.aumToJo, (d.unitsTo * d.closeTo) / 1e12, 1e-9, `${f.code} 종료 AUM`);
+    }
+  }
+
+  // 그룹 합계는 구성종목 합과 같아야 한다.
+  for (const g of E.groups) {
+    const members = E.perFund.filter(f => f.group === g.key);
+    g.sums.forEach((s, i) => {
+      const sum = members.reduce((acc, m) => acc + (m.snaps[i].aumJo ?? 0), 0);
+      near(s.aumJo, sum, 1e-9, `${g.key} 그룹 합계`);
+    });
+  }
+
+  // 리밸런싱은 추세 증폭이다 — 필요 매매액 부호가 기초자산 수익률과 같아야 한다.
+  // (2X 는 계수 2, -2X 는 6 으로 둘 다 양수이므로 부호는 항상 r 을 따른다.)
+  for (const s of Object.values(E.stockDaily)) {
+    assert.ok(s.series.length > 10, `${s.name} 일별 계열이 너무 짧다`);
+    for (const r of s.series) {
+      if (Math.abs(r.ret) < 1e-9 || Math.abs(r.flowJo) < 1e-9) continue;
+      assert.ok(Math.sign(r.flowJo) === Math.sign(r.ret),
+        `${s.name} ${r.d} 리밸 부호가 수익률과 다르다 (${r.flowJo} vs ${r.ret})`);
+      if (r.flowPctTurnover != null) assert.ok(r.flowPctTurnover >= 0, '거래대금 대비가 음수다');
+    }
+    assert.ok(s.funds.length > 0, `${s.name} 에 연결된 ETF 가 없다`);
+  }
+
+  // 지수 기여는 산술 분해라, 두 종목 몫이 지수 등락을 넘어서면 계산이 틀린 것이다.
+  // (다만 다른 종목이 반대로 움직이면 100% 를 넘을 수 있어 상한은 크게 잡는다.)
+  for (const r of E.indexContrib) {
+    if (r.sharePct == null) continue;
+    assert.ok(Math.abs(r.sharePct) < 1000, `${r.d} 지수 기여 몫이 비정상: ${r.sharePct}`);
+  }
+}
+
 // §19 장중 지수는 FREESIS 최종일보다 뒤여야 한다.
 if (A.spot) {
   assert.ok(A.spot.date > A.spot.baseDate, 'spot 날짜가 기준일보다 앞선다');
@@ -83,4 +135,5 @@ if (fs.existsSync(wfDir)) {
 }
 
 console.log(`selfcheck OK — ${A.series.length}행, 재현 MAE ${A.reproMAE.toFixed(3)}조, `
-  + `사이클 ${A.periods.length}개, 채널 ${A.channels ? 'O' : 'X'}, 미수금 ${A.unpaid ? 'O' : 'X'}`);
+  + `사이클 ${A.periods.length}개, 채널 ${A.channels ? 'O' : 'X'}, 미수금 ${A.unpaid ? 'O' : 'X'}, `
+  + `ETF ${A.etf ? `O(${A.etf.perFund.length}종)` : 'X'}`);

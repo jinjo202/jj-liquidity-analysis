@@ -51,6 +51,8 @@ jobs:
             echo "LENDING_ERR=$DETAIL" >> "$GITHUB_ENV"
             echo "대차거래 실패: $DETAIL"
           fi
+          # PART 3. 실패해도 나머지는 갱신되어야 한다 — analyze 가 파일 없으면 건너뛴다.
+          node scripts/fetch-etf.mjs || ERR="$ERR etf"
           echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
           echo "실패한 소스: ${ERR:-없음}"
 

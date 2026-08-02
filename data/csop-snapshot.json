@@ -1,0 +1,46 @@
+{
+  "_note": "홍콩 CSOP 단일종목 L&I 상품 스냅샷. csopasset.com 상품 페이지는 값을 JS 로 채워 정적 fetch 로는 안 잡히고(빈 span 만 온다), 내부 API(website-api.csopasset.com/cmsApi/NAV/product)는 파라미터를 못 맞췄다. 그래서 브라우저로 열어 읽은 값이다. 일별 좌수 히스토리는 확보하지 못했다 — 이 파일은 시점 스냅샷이며 갱신하려면 사람이 다시 읽어야 한다(§23 한계).",
+  "asOf": "20260731",
+  "scrapedAt": "2026-08-02",
+  "source": "https://www.csopasset.com/en/products/{slug}",
+  "products": [
+    {
+      "ticker": "7709",
+      "slug": "hk-skhy-2l",
+      "name": "CSOP SK Hynix Daily Max (2x) Leveraged Product",
+      "underlying": "000660",
+      "lev": 2,
+      "listingDate": "20251016",
+      "totalNavUsd": 5497561724.56,
+      "outstandingUnits": 984000000,
+      "navPerUnitUsd": 5.587,
+      "navPerUnitHkd": 43.8049,
+      "closeHkd": 42.52,
+      "notionalUsd": 10629375330,
+      "swapCounterparty": "J.P. Morgan Securities PLC"
+    },
+    {
+      "ticker": "7747",
+      "slug": "hk-smsn-2l",
+      "name": "CSOP Samsung Electronics Daily Max (2x) Leveraged Product",
+      "underlying": "005930",
+      "lev": 2,
+      "totalNavUsd": 1170266087.72,
+      "outstandingUnits": 111500000,
+      "navPerUnitUsd": 10.4957,
+      "closeHkd": 77.46,
+      "notionalUsd": 2327553838.62
+    },
+    {
+      "ticker": "7347",
+      "slug": "hk-smsn-2i",
+      "name": "CSOP Samsung Electronics Daily Max (-2x) Inverse Product",
+      "underlying": "005930",
+      "lev": -2,
+      "totalNavUsd": 13509399.12,
+      "outstandingUnits": 127000000,
+      "navPerUnitUsd": 0.1064,
+      "notionalUsd": -26883215.63
+    }
+  ]
+}

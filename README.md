@@ -6,6 +6,7 @@
 |---|---|
 | **PART 1 — 신용잔고** | 얼마나 더 **하락**할 수 있나 (지수대별 신용매수 누적 → 반대매매 잔여) |
 | **PART 2 — 공매도·숏커버링** | 얼마나 더 **상승**할 수 있나 (대차잔고 → 되갚기 잔여) |
+| **PART 3 — 레버리지 ETF** | 변동성은 **어디서 왔나** (상장좌수·AUM 분해 → 매일 나가는 강제 리밸런싱) |
 
 비교 대상은 삼성자산운용 투자리서치센터 House View「7.29일 급락 코멘트: 신용매수 반대매매 추정」(2026-07-29).
 그 자료는 Quantiwise(유료 단말)를 썼으나 여기서는 공개 소스만 쓴다. 원 자료 막대 11개를
@@ -23,6 +24,7 @@ Node.js 18+ (외부 패키지 없음, `npm install` 불필요). `fetch`·`zlib` 
 node scripts/fetch-index.mjs    # 네이버 코스피·코스닥 일별(장중 최신)  -> data/{kospi,kosdaq}-daily.json
 node scripts/fetch-kofia.mjs    # 금투협 FREESIS 일별 11개 지표      -> data/kofia-daily.json
 node scripts/fetch-lending.mjs  # 금투협 대차거래추이(공매도 프록시)  -> data/lending-balance.json
+node scripts/fetch-etf.mjs      # 레버리지 ETF 일별 상장좌수·종가(다음)  -> data/etf-daily.json
 node scripts/analyze.mjs        # 사이클 x 시장 배분 + 마진콜 판정    -> data/analysis.json
 node scripts/selfcheck.mjs      # analysis.json 불변식 검사
 node scripts/build.mjs          # 웹 리포트                          -> index.html
@@ -48,7 +50,7 @@ node scripts/ingest-split.mjs    # 신용공여 잔고 추이.xlsx -> data/credi
 ## 산출물
 
 - **`index.html`** — 웹 리포트. 데이터와 SVG 차트를 전부 품고 있어 외부 의존성이 없다.
-  `file://` 로 열어도 그대로 보인다. 탭 3개(PART 1 / PART 2 / 전체), 스크립트 0줄(라디오 + CSS 형제 선택자).
+  `file://` 로 열어도 그대로 보인다. 탭 4개(PART 1 / PART 2 / PART 3 / 전체), 스크립트 0줄(라디오 + CSS 형제 선택자).
 - **`email.html`** — 같은 데이터를 메일 렌더러가 견디는 방식으로 다시 구운 것.
   전부 inline style, table 레이아웃, SVG·grid·flex·media query 없음. 빌드 끝에 비호환 패턴을 자동 검사한다.
 - **`data/analysis.json`** — 두 리포트의 공통 입력. 계산은 전부 여기서 끝나 있다.
