@@ -1867,7 +1867,10 @@ ${cycleCss}
   .bench .bv.neg { color:var(--cr); }
   .bench .bb { font-size:11.5px; color:var(--mut); margin-top:3px; }
   .bench .bc { font-size:11.5px; color:var(--part); margin-top:3px; }
-  .tables { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:20px; margin-top:16px; }
+  /* 파트가 넷이라 auto-fit 으로 두면 넓은 화면에서 3+1 로 갈려 마지막 컬럼만 혼자 남는다.
+     2×2 로 고정한다 — 1·2(잔고 양방향)와 3·4(ETF·전망)가 줄로도 짝이 맞는다. */
+  .tables { display:grid; grid-template-columns:1fr; gap:20px; margin-top:16px; }
+  @media (min-width:760px) { .tables { grid-template-columns:1fr 1fr; } }
   .tw { overflow-x:auto; }
   table { border-collapse:collapse; width:100%; font-size:12.5px; min-width:270px; }
   th,td { padding:5px 9px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
