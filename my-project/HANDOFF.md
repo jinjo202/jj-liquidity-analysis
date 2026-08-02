@@ -41,6 +41,13 @@
 - **이번 변경(숏커버 사다리·장중 지수)은 아직 배포 전이다.** 배포하고 배치를 한 번 돌려야
   스냅샷에 `shortCoverLadder` 가 생기고 카드에 표가 나타난다(그전까지는 그 구역만 숨는다).
 
+## 원본 프로젝트가 앞서 있는 부분 (2026-08-02)
+
+원본 정적 리포트에 **PART 3(레버리지 ETF 수급)**, **PART 4(다음 주 수급 전망)** 가 생겼는데
+이 웹앱에는 아직 없다. 이식하려면 원본의 `scripts/lib/etf.mjs`·`lib/outlook.mjs` 와
+`data/etf-daily.json` 수집 경로(`scripts/fetch-etf.mjs`, 다음 금융의 `listedSharesCount`)를 옮겨야 한다.
+자세한 내용은 원본 `../docs/methodology.md` §23~24, `../HANDOVER.md` 참조.
+
 ## 다음에 하면 좋을 것 (선택)
 
 - **대차잔고 자동 수집**: 원본 프로젝트가 FREESIS 대차거래추이 API 경로를 찾아 자동화했다
