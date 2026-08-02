@@ -67,7 +67,8 @@ function pearson(xs, ys) {
 /**
  * @param {object} o
  * @param {object} o.etf        data/etf-daily.json
- * @param {object|null} o.csop  data/csop-snapshot.json (홍콩, 시점 스냅샷만)
+ * @param {object|null} o.csop  data/csop-snapshot.json (홍콩 최신 스냅샷)
+ * @param {object|null} [o.csopDaily]  data/csop-daily.json (홍콩 일별 좌수 히스토리)
  * @param {{date:string,idx:number,mcapJo:number}[]} o.market  코스피 지수·시총(FREESIS)
  * @param {string[]} o.checkpointDates  비교 시점(오름차순). 마지막은 최신일.
  */
@@ -304,13 +305,28 @@ export function analyzeEtf(o) {
   }).filter(Boolean);
 
   /* ---------- 4. 홍콩(CSOP) ---------- */
-  // 일별 좌수 히스토리가 없어 시점 스냅샷만 쓴다. 규모 비교와 명목 익스포저까지만 말한다.
+  // 스냅샷(csop-snapshot)에 일별 히스토리(csop-daily)를 붙인다. 히스토리는
+  // 상장~직전일은 HKEX SDW 발행좌수(src:hkex-sdw), 이후는 CSOP 신고좌수다(§23.6).
+  const { csopDaily } = o;
   const hk = csop ? {
     asOf: csop.asOf,
-    products: csop.products.map(p => ({
-      ...p,
-      navJo: null,     // 환율은 아래에서 채운다
-    })),
+    products: csop.products.map(p => {
+      const series = (csopDaily?.products?.find(x => x.ticker === p.ticker)?.series ?? [])
+        .map(r => ({ d: r.d, unitsM: r.units / 1e6, src: r.src ?? 'csop' }));
+      let trend = null;
+      if (series.length >= 6) {
+        const last = series.at(-1);
+        const peak = series.reduce((m, r) => (r.unitsM > m.unitsM ? r : m));
+        const back = k => series[Math.max(0, series.length - 1 - k)];
+        trend = {
+          days: series.length,
+          d5: back(5).unitsM > 0 ? (last.unitsM / back(5).unitsM - 1) * 100 : null,
+          fromPeakPct: peak.unitsM > 0 ? (last.unitsM / peak.unitsM - 1) * 100 : null,
+          peakDate: peak.d,
+        };
+      }
+      return { ...p, navJo: null, series, trend };
+    }),
     note: csop._note,
   } : null;
 

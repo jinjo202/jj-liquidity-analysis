@@ -388,6 +388,8 @@ if (fs.existsSync(etfPath)) {
   const etfData = JSON.parse(fs.readFileSync(etfPath, 'utf8'));
   const csopPath = path.join(DIR, 'csop-snapshot.json');
   const csop = fs.existsSync(csopPath) ? JSON.parse(fs.readFileSync(csopPath, 'utf8')) : null;
+  const csopDailyPath = path.join(DIR, 'csop-daily.json');
+  const csopDaily = fs.existsSync(csopDailyPath) ? JSON.parse(fs.readFileSync(csopDailyPath, 'utf8')) : null;
 
   // 비중 계산용 코스피 지수·시총(억원 -> 조원).
   const market = raw.series
@@ -411,7 +413,7 @@ if (fs.existsSync(etfPath)) {
   ];
   const checkpointDates = [...new Set(named.map(([d]) => d))].sort();
 
-  etf = analyzeEtf({ etf: etfData, csop, market, checkpointDates });
+  etf = analyzeEtf({ etf: etfData, csop, csopDaily, market, checkpointDates });
   // 같은 날짜에 이름이 겹치면(예: 6월말이 곧 고점) 먼저 붙은 이름을 남긴다.
   if (etf) etf.checkpointLabels = Object.fromEntries([...named].reverse());
 }

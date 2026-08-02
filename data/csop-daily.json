@@ -8,6 +8,306 @@
    "lev": 2,
    "series": [
     {
+     "d": "20251016",
+     "units": 3000000,
+     "ccassUnits": 6000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251017",
+     "units": 3000000,
+     "ccassUnits": 6000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251020",
+     "units": 3000000,
+     "ccassUnits": 9000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251021",
+     "units": 4500000,
+     "ccassUnits": 15000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251022",
+     "units": 7500000,
+     "ccassUnits": 33000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251023",
+     "units": 16500000,
+     "ccassUnits": 41000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251024",
+     "units": 20500000,
+     "ccassUnits": 41000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251027",
+     "units": 20500000,
+     "ccassUnits": 51000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251028",
+     "units": 25500000,
+     "ccassUnits": 64000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251030",
+     "units": 32000000,
+     "ccassUnits": 118000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251031",
+     "units": 59000000,
+     "ccassUnits": 136000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251103",
+     "units": 68000000,
+     "ccassUnits": 149000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251104",
+     "units": 74500000,
+     "ccassUnits": 159000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251105",
+     "units": 79500000,
+     "ccassUnits": 223000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251106",
+     "units": 111500000,
+     "ccassUnits": 298000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251107",
+     "units": 149000000,
+     "ccassUnits": 337000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251110",
+     "units": 168500000,
+     "ccassUnits": 353000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251111",
+     "units": 176500000,
+     "ccassUnits": 370000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251112",
+     "units": 185000000,
+     "ccassUnits": 419000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251113",
+     "units": 209500000,
+     "ccassUnits": 438000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251114",
+     "units": 219000000,
+     "ccassUnits": 445000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251117",
+     "units": 222500000,
+     "ccassUnits": 474000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251118",
+     "units": 237000000,
+     "ccassUnits": 495000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251119",
+     "units": 247500000,
+     "ccassUnits": 505000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251120",
+     "units": 252500000,
+     "ccassUnits": 509000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251121",
+     "units": 254500000,
+     "ccassUnits": 526000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251124",
+     "units": 263000000,
+     "ccassUnits": 548000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251125",
+     "units": 268000000,
+     "ccassUnits": 539000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251126",
+     "units": 269500000,
+     "ccassUnits": 553000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251127",
+     "units": 276500000,
+     "ccassUnits": 568000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251128",
+     "units": 284000000,
+     "ccassUnits": 570000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251201",
+     "units": 285000000,
+     "ccassUnits": 572000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251202",
+     "units": 286000000,
+     "ccassUnits": 572000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251203",
+     "units": 286000000,
+     "ccassUnits": 574000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251204",
+     "units": 287000000,
+     "ccassUnits": 574000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251205",
+     "units": 285000000,
+     "ccassUnits": 570000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251208",
+     "units": 285000000,
+     "ccassUnits": 570000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251209",
+     "units": 285000000,
+     "ccassUnits": 572000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251210",
+     "units": 283000000,
+     "ccassUnits": 566000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251211",
+     "units": 283000000,
+     "ccassUnits": 566000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251212",
+     "units": 277000000,
+     "ccassUnits": 556000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251215",
+     "units": 278000000,
+     "ccassUnits": 567000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251216",
+     "units": 283500000,
+     "ccassUnits": 576000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251217",
+     "units": 288000000,
+     "ccassUnits": 590000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251218",
+     "units": 295000000,
+     "ccassUnits": 598000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251219",
+     "units": 299000000,
+     "ccassUnits": 602000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251222",
+     "units": 301000000,
+     "ccassUnits": 613000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251223",
+     "units": 301000000,
+     "ccassUnits": 613000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251224",
+     "units": 303000000,
+     "ccassUnits": 613000000,
+     "src": "hkex-sdw"
+    },
+    {
+     "d": "20251229",
+     "units": 311000000,
+     "ccassUnits": 629000000,
+     "src": "hkex-sdw"
+    },
+    {
      "d": "20260731",
      "units": 984000000,
      "totalNavUsd": 5497561724.56,

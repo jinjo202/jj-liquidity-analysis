@@ -1301,8 +1301,16 @@ ${!s.eras ? '' : `<div class="box"><b>반증 — ETF가 없던 시절과 비교<
     <td class="n">${p.lev > 0 ? '2X' : '-2X'}</td>
     <td class="n">${f(p.totalNavUsd / 1e9)}</td>
     <td class="n">${f(p.outstandingUnits / 1e6, 1)}</td>
+    <td class="n">${p.trend?.d5 == null ? '-' : sgn(p.trend.d5, 1) + '%'}</td>
+    <td class="n">${p.trend?.fromPeakPct == null ? '-' : f(p.trend.fromPeakPct, 1) + '%'}</td>
     <td class="n">${f(p.notionalUsd / 1e9)}</td>
   </tr>`).join('');
+  // 홍콩 최대 상품(7709)의 좌수 추이. 국내 '매일 볼 것' 차트와 같은 질문을 홍콩에 묻는 것이다.
+  const hk7709 = E.hk?.products.find(p => p.ticker === '7709');
+  const hkChart = hk7709?.series?.length >= 10
+    ? trendChart(hk7709.series.map(r => ({ d: r.d, v: r.unitsM })),
+      '7709 CSOP SK Hynix 2x 상장좌수 (백만좌)', 0, `상장(${dtFull(hk7709.series[0].d)}) 이후`)
+    : '';
 
   // 전체 레버리지 ETF 시장이 어떻게 부풀었다 꺼졌는지 한 장으로. 그룹을 쌓아 합계를 보여준다.
   const T = E.aumTotal;
@@ -1372,9 +1380,17 @@ ${stockBlocks}
 ${E.hk ? `<h3>홍콩 CSOP 단일종목 L&amp;I (${dtFull(E.hk.asOf)} 기준)</h3>
 <div class="tw"><table>
   <thead><tr><th>코드</th><th>상품</th><th class="n">배수</th><th class="n">순자산(US$bn)</th>
-    <th class="n">좌수(백만)</th><th class="n">명목 익스포저(US$bn)</th></tr></thead>
+    <th class="n">좌수(백만)</th><th class="n">좌수 5일</th><th class="n">좌수 고점 대비</th><th class="n">명목 익스포저(US$bn)</th></tr></thead>
   <tbody>${hkRows}</tbody>
 </table></div>
+${hkChart ? `<figure>
+  <h4>7709 좌수 추이 — 홍콩도 같은 질문: 꺾였는가</h4>
+  ${hkChart}
+  <figcaption>상장~2026-08-01 은 HKEX CCASS 조회(SDW)의 <b>등록기관 발행좌수</b>로 백필했고,
+    이후는 CSOP 신고좌수(딜링일 기준)다. 창출·환매가 T+2 로 결제되는 동안 두 기준이 어긋날 수 있어
+    이음새(2026-08-01/02)에 단차가 보일 수 있다 — 7/31 실측으로 등록기관 829M vs CSOP 984M vs
+    CCASS 보유 1,048M 이었다(§23.6). 추세를 읽는 데는 지장이 없다.</figcaption>
+</figure>` : ''}
 <div class="box warn">홍콩분은 이제 <b>매일 자동 수집</b>된다(운용사 내부 API, §23.6). 다만 과거를 주는
   API 가 없어 좌수 히스토리는 <b>수집을 시작한 2026-08-02 이후부터만</b> 쌓인다(<code>data/csop-daily.json</code>).
   추이를 말할 만큼 쌓이기 전까지는 시점 비교와 일별 리밸런싱 계산에서 <b>제외</b>한다 —

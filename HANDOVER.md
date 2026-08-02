@@ -2,6 +2,36 @@
 
 최종 갱신 2026-08-02. 계정/PC 를 바꿔 이어서 작업할 때 이 문서 하나로 시작할 수 있게 썼다.
 
+## 0. ★ 중단된 작업 — "이어서해" 하면 여기부터
+
+**홍콩 CSOP 좌수 히스토리 백필이 도중에 끊겼다** (2026-08-02, 계정 전환으로 중단).
+
+```
+상태: 7709 = 51/207일 (20251016..20260122 SDW 백필 + 20260731 CSOP)
+      7747 = 1일 (20260731 만)   7347 = 1일 (20260731 만)
+```
+
+이어서 하는 법 — 클론 후 이 한 줄이면 된다(이미 있는 날짜는 건너뛰고 25행마다 저장하므로
+몇 번을 끊고 재실행해도 안전하다). 완주까지 총 10~15분, 10분 타임아웃에 걸리면 그냥 또 실행:
+
+```bash
+node scripts/backfill-csop-units.mjs
+```
+
+끝나면(출력에 `csop-daily.json 갱신 — N행 추가`) 파이프라인 돌리고 커밋:
+
+```bash
+node scripts/analyze.mjs && node scripts/selfcheck.mjs && node scripts/build.mjs && node scripts/build-email.mjs && node scripts/status.mjs
+git add -A && git commit -m "Backfill HK CSOP units history from HKEX SDW" && git push
+```
+
+리포트의 "7709 좌수 추이" 차트(PART 3 홍콩 절)와 표의 "좌수 5일/고점 대비" 컬럼은
+히스토리가 차면 자동으로 나타난다 — 코드는 전부 커밋돼 있고 데이터만 마저 채우면 된다.
+배경과 함정(세 가지 좌수 기준, 12개월 창)은 `docs/methodology.md` §23.6.
+
+이미 확인된 데이터 하나: **7347(삼성 인버스) 좌수가 5M(2025-11) → 1,038M(2026-05-29) → 127M(현재)**.
+5월 말까지 인버스가 200배 폭증했다가 붕괴했다 — 백필이 끝나면 이 서사가 차트로 나온다.
+
 ## 1. 이게 뭔가
 
 증권사 유료 단말(Quantiwise) 기반 리서치를 공개 데이터만으로 재현하고, 반대 방향(숏커버)과
@@ -87,7 +117,8 @@ scripts/
   fetch-kofia.mjs      FREESIS 크로스통계 11개 지표
   fetch-lending.mjs    FREESIS 대차거래추이 API
   fetch-etf.mjs        레버리지 ETF 24종 + 삼성전자·SK하이닉스 일별 좌수·종가·거래대금
-  fetch-csop.mjs       홍콩 CSOP 3종 좌수·순자산 (일별 히스토리는 20260802 부터 쌓임)
+  fetch-csop.mjs       홍콩 CSOP 3종 좌수·순자산 (매일, 운용사 API)
+  backfill-csop-units.mjs  홍콩 좌수 과거분 백필 (HKEX SDW, 갭 패치용 재실행 가능)
   ingest-split.mjs     분리 신용공여 xlsx 파싱 (수동 입력)
   ingest-lending.mjs   대차거래 xlsx 파싱 — API 규격 바뀔 때 폴백
   analyze.mjs          전 계산 → data/analysis.json
@@ -103,7 +134,8 @@ scripts/
 data/                  원본 + 정규화 json 전부 커밋됨 (클론 직후 바로 재현)
   street-anchors.json  외사 리서치 수치(수동)
   csop-snapshot.json   홍콩 CSOP 최신 스냅샷(자동 생성 — 손대지 말 것)
-  csop-daily.json      홍콩 CSOP 기준일별 히스토리(자동 누적)
+  csop-daily.json      홍콩 CSOP 기준일별 히스토리 — 상장~20260801 은 HKEX SDW 백필,
+                       이후는 CSOP 신고좌수. SDW 는 12개월 창이라 이 파일을 지우면 복구 불가
 docs/methodology.md    §1~24
 docs/plan-part3.md     PART 3 착수 전 계획서(기록용, 살아있는 문서는 §23)
 ```
@@ -182,7 +214,8 @@ node scripts/alert-verdict.mjs --dry    # 상태 갱신 없이 확인만 (수동
 
 ## 11. 다음에 고려할 만한 것 (지시 아님)
 
-- CSOP 히스토리가 며칠 쌓이면(csop-daily.json) 홍콩분도 좌수 추이 판정에 넣기
+- 홍콩 좌수도 이제 상장일부터 히스토리가 있다(§23.6) — 카톡 알림 판정에 7709 를 합류시킬지 검토
+- 러너가 CSOP 수집을 며칠 놓치면 `node scripts/backfill-csop-units.mjs` 한 번으로 갭이 메워진다
 - 분리 신용공여도 API 경로가 있을 수 있다(대차거래처럼 브라우저로 요청 캡처)
 - my-project 웹앱에 PART 3·4 이식(지금은 정적 리포트에만 있다)
 - 워크플로가 며칠 조용하면 `status.json` 의 `ranOn` 확인하는 습관

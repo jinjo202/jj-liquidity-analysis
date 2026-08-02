@@ -134,6 +134,11 @@ if (A.etf) {
     if (Number.isFinite(p.notionalUsd) && p.notionalUsd !== 0) {
       assert.ok(Math.sign(p.notionalUsd) === Math.sign(p.lev), `${p.ticker} 명목 익스포저 부호가 배수와 다르다`);
     }
+    // 좌수 히스토리(SDW 백필 + CSOP 일별): 정렬·중복·양수. 기준 혼합(§23.6)은 허용하되 순서는 지켜야 한다.
+    const ds = (p.series ?? []).map(r => r.d);
+    assert.deepEqual(ds, [...ds].sort(), `${p.ticker} 좌수 계열이 정렬돼 있지 않다`);
+    assert.equal(new Set(ds).size, ds.length, `${p.ticker} 좌수 계열에 중복 날짜가 있다`);
+    for (const r of p.series ?? []) assert.ok(r.unitsM > 0, `${p.ticker} ${r.d} 좌수가 0 이하`);
   }
 }
 
