@@ -1113,6 +1113,64 @@ if (co && PJ) {
       '매수 물량 몇 조가 지수 몇 %가 되는지는 이 데이터로 알 수 없다. 대차잔고 감소 전부가 숏커버도 아니다(ETF 환매·차익거래 포함).'),
   ].filter(Boolean).join('') : '';
 
+  // PART 3·4 도 같은 형식으로 결론을 올린다. 본문과 어긋나지 않게 숫자는 전부
+  // 본문이 쓰는 것과 같은 필드에서 끌어온다(A.etf / A.outlook).
+  const E = A.etf, O = A.outlook;
+  const gsum = k => E?.groups.find(g => g.key === k && g.count) ?? null;
+  const gPct = g => (g && g.sums[0].units > 0 ? (g.sums.at(-1).units / g.sums[0].units - 1) * 100 : null);
+  const sgl = gsum('single_lev'), sec = gsum('sector_lev'), TA = E?.aumTotal;
+  const unitsMult = sgl && sgl.sums[0].units > 0 ? sgl.sums.at(-1).units / sgl.sums[0].units : null;
+  const era = Object.values(E?.stockDaily ?? {})[0] ?? null;
+  const hk7709s = E?.hk?.products.find(p => p.ticker === '7709') ?? null;
+  const hkInv = E?.hk?.products.find(p => p.lev < 0 && p.trend?.fromPeakPct != null) ?? null;
+
+  const etfList = !E ? '' : [
+    unitsMult ? li(`AUM은 반토막인데 좌수는 ${f(unitsMult, 1)}배다`,
+      `단일종목 레버리지 좌수 ${f(sgl.sums[0].units / 1e6, 0)}백만 → <b>${f(sgl.sums.at(-1).units / 1e6, 0)}백만좌</b>.
+       ${TA ? `합계 AUM은 고점 대비 ${f(TA.fromPeakPct, 1)}% 빠졌지만` : 'AUM은 줄었지만'}
+       그 감소는 <b>환매가 아니라 가격</b>이다. 물량은 그대로 남아 있다.`) : '',
+    sec ? li('같은 "레버리지"인데 두 계열이 정반대다',
+      `반도체 섹터 레버리지는 좌수가 <b>${f(gPct(sec), 0)}%</b> — 여기선 실제 환매가 일어났다.
+       단일종목만 쌓이고 있다. 한 덩어리로 묶어 "레버리지가 정리됐다"고 읽으면 틀린다.`) : '',
+    era?.eras ? li('그래도 ETF를 변동성의 범인으로 지목하진 않는다',
+      `${esc(era.name)} 평균 일중 진폭은 상장 전 이미 ${f(era.eras.before2025.meanAmplitude, 1)}% →
+       ${f(era.eras.before2026.meanAmplitude, 1)}%로 올라와 있었다(상장 후 ${f(era.eras.after.meanAmplitude, 1)}%).
+       <b>변동성 상승은 상장 전에 시작됐다</b> — 증폭은 했어도 원인은 아니다.`) : '',
+    hk7709s ? li('홍콩도 같은 그림이다',
+      `7709(하이닉스 2X) 좌수 5일 <b>${hk7709s.trend?.d5 >= 0 ? '+' : ''}${f(hk7709s.trend?.d5, 1)}%</b>로
+       아직 쌓이는 쪽이다.
+       ${hkInv ? `반면 인버스 상품은 고점 대비 <b>${f(hkInv.trend.fromPeakPct, 0)}%</b>로,
+       역방향 베팅이 이미 쓸려 나갔다.` : ''}`) : '',
+    li('공표된 청산 규칙이 없다는 점은 PART 1·2와 다르다',
+      '리밸런싱 필요액은 상품 설계상 반드시 나가야 하는 매매지만, 체결 시각과 스왑 상대방의 헤지 방식은 공개되지 않는다. 사다리처럼 문턱을 찍어 말할 수 없다.'),
+  ].filter(Boolean).join('');
+
+  const nextList = !O ? '' : [
+    O.firstTrigger ? li(`아래쪽은 ${f(Math.abs(O.firstTrigger.gapPct), 1)}% 버퍼가 생겼다`,
+      `마진콜 첫 문턱이 ${k0(O.firstTrigger.threshold)}p다. 다음 주에 신용발 강제 매도가 나오려면
+       그만큼 <b>더 빠져야</b> 한다. 지금 지수에서 새로 열리는 물량은 없다.`) : '',
+    O.short ? li('위쪽은 오히려 연료가 쌓였다',
+      `대차잔고 ${f(O.short.balJo)}조, 직전일 <b>${O.short.dBalPct >= 0 ? '+' : ''}${f(O.short.dBalPct, 1)}%</b>.
+       지수가 크게 오른 날 잔고가 같이 늘었다면 <b>반등에 맞서 새로 짠 숏</b>이고,
+       더 오르면 되갚아야 할 물량이다.`) : '',
+    O.scenarios?.length ? (() => {
+      const s5 = O.scenarios.at(-1);
+      return li(`지수 ±${f(Math.abs(s5.retPct), 0)}%면 그날 ${f(Math.abs(s5.flowJo), 2)}조가 기계적으로 나온다`,
+        `두 종목 하루 거래대금의 ${f(s5.pctOfTurnover, 1)}%. 오르면 사고 내리면 파는 크기가 <b>대칭</b>이라
+         방향이 아니라 <b>진폭</b>을 키운다. 좌수가 사상 최대이므로 증폭기는 장전된 상태다.`);
+    })() : '',
+    (() => {
+      const base = O.baseRates.find(x => x.n > 100);
+      return base ? li('과거 유사 국면으로 방향은 못 읽는다',
+        `조건을 건 표본들이 기준선(${base.n}일, 중앙값 ${base.median >= 0 ? '+' : ''}${f(base.median, 1)}%,
+         상승확률 ${f(base.upRate, 0)}%)과 크게 다르지 않다. 이 표는 <b>진폭의 참고치</b>지 방향의 근거가 아니다.`) : '';
+    })(),
+    O.anchors ? li('외사와 갈리는 지점은 하나다 — AUM이냐 좌수냐',
+      `${esc(O.anchors.sources.map(s => s.house).join('·'))} 모두 ETF AUM 반토막을 디레버리징의 진척으로 읽는다.
+       우리 분해로는 그 감소가 거의 전부 가격이고 좌수는 늘었다.
+       <b>AUM으로 보면 끝나가고, 좌수로 보면 시작도 안 했다.</b>`) : '',
+  ].filter(Boolean).join('');
+
   // 전일 대비 변화 스트립 + 계열별 최신 관측일. 매일 열어보는 리포트라면 여기가 첫 화면이다.
   const D = A.daily;
   // 각 지표는 <details> 다. 눌러야 1년 추세가 펼쳐진다 — 브라우저 기본 기능이라
@@ -1201,6 +1259,14 @@ ${deltaStrip}
   ${upList ? `<div class="sumcol c-up">
     <h4><span class="pill pu">PART 2</span> 얼마나 더 상승할 수 있나 — 공매도·숏커버링</h4>
     <ul class="find">${upList}</ul>
+  </div>` : ''}
+  ${etfList ? `<div class="sumcol c-etf">
+    <h4><span class="pill pl">PART 3</span> 변동성은 어디서 왔나 — 레버리지 ETF</h4>
+    <ul class="find">${etfList}</ul>
+  </div>` : ''}
+  ${nextList ? `<div class="sumcol c-next">
+    <h4><span class="pill pn">PART 4</span> 지수가 어디로 가면 뭐가 따라 나오나 — 다음 주 수급</h4>
+    <ul class="find">${nextList}</ul>
   </div>` : ''}
 </div>
 
@@ -1391,10 +1457,12 @@ ${hkChart ? `<figure>
     이음새(2026-08-01/02)에 단차가 보일 수 있다 — 7/31 실측으로 등록기관 829M vs CSOP 984M vs
     CCASS 보유 1,048M 이었다(§23.6). 추세를 읽는 데는 지장이 없다.</figcaption>
 </figure>` : ''}
-<div class="box warn">홍콩분은 이제 <b>매일 자동 수집</b>된다(운용사 내부 API, §23.6). 다만 과거를 주는
-  API 가 없어 좌수 히스토리는 <b>수집을 시작한 2026-08-02 이후부터만</b> 쌓인다(<code>data/csop-daily.json</code>).
-  추이를 말할 만큼 쌓이기 전까지는 시점 비교와 일별 리밸런싱 계산에서 <b>제외</b>한다 —
-  위 표는 규모 비교용이고, 국내 리밸런싱 수치는 그만큼 <b>과소</b>다.</div>` : ''}
+<div class="box warn">홍콩분은 <b>매일 자동 수집</b>되고(운용사 내부 API, §23.6), 상장 이후 구간은
+  HKEX CCASS(SDW) 조회로 백필해 좌수 추이를 읽을 수 있다(<code>data/csop-daily.json</code>).
+  다만 <b>일별 리밸런싱 계산에서는 여전히 제외</b>한다 — 일별 NAV 소스가 없어 국내와 같은
+  "계수 × AUM × 수익률"을 홍콩분에 적용할 수 없기 때문이다. 위 표와 차트는 규모·추세 비교용이고,
+  아래 리밸런싱 수치는 홍콩분이 빠진 만큼 <b>과소</b>다.
+  SDW 는 12개월 창만 열어 두므로 상장 초기 구간은 지금 받아 둔 것이 마지막이다.</div>` : ''}
 
 <div class="box warn"><b>한계</b> — 대차거래·신용융자와 달리 이 계산에는 공표된 강제 청산 규칙이 없다.
   리밸런싱 필요액은 상품 설계상 <b>반드시 나가야 하는 매매</b>지만, 실제 체결 시각·분할 여부·스왑 상대방의
@@ -1654,6 +1722,8 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .sumcol ul.find li b { color:var(--fg); }
   .c-down { border-top:3px solid var(--cr); }
   .c-up { border-top:3px solid var(--kq); }
+  .c-etf { border-top:3px solid var(--lv); }
+  .c-next { border-top:3px solid var(--nx); }
   .pill { display:inline-block; font-size:9.5px; letter-spacing:1.5px; padding:2px 6px; border-radius:4px;
     color:#fff; vertical-align:2px; margin-right:5px; font-weight:600; }
   .pill.pd { background:var(--cr); } .pill.pu { background:var(--kq); }
@@ -1725,7 +1795,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ph-up { background:var(--kq); }
   .ph-etf { background:var(--lv); }
   .ph-next { background:var(--nx); }
-  .pill.pl { background:var(--lv); }
+  .pill.pl { background:var(--lv); } .pill.pn { background:var(--nx); }
   #tab-down:focus-visible ~ .tabs label[for="tab-down"],
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
   #tab-etf:focus-visible ~ .tabs label[for="tab-etf"],

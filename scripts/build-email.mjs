@@ -621,6 +621,44 @@ if (co && PJ) {
       '매수 물량과 지수 변화의 매핑 근거가 이 데이터에 없다. 대차잔고 감소 전부가 숏커버도 아니다.'],
   ]) : '';
 
+  // PART 3·4 도 결론을 올린다. index.html 의 같은 컬럼과 같은 필드에서 뽑는다.
+  const E = A.etf, O = A.outlook;
+  const gsum = k => E?.groups.find(g => g.key === k && g.count) ?? null;
+  const sgl = gsum('single_lev'), sec = gsum('sector_lev'), TA = E?.aumTotal;
+  const unitsMult = sgl && sgl.sums[0].units > 0 ? sgl.sums.at(-1).units / sgl.sums[0].units : null;
+  const secPct = sec && sec.sums[0].units > 0 ? (sec.sums.at(-1).units / sec.sums[0].units - 1) * 100 : null;
+  const era = Object.values(E?.stockDaily ?? {})[0] ?? null;
+  const hk7709s = E?.hk?.products.find(p => p.ticker === '7709') ?? null;
+  const hkInv = E?.hk?.products.find(p => p.lev < 0 && p.trend?.fromPeakPct != null) ?? null;
+  const s5 = O?.scenarios?.at(-1) ?? null;
+  const baseRow = O?.baseRates.find(x => x.n > 100) ?? null;
+
+  const etfBullets = !E ? '' : bullets([
+    unitsMult && [`AUM은 반토막인데 좌수는 ${f(unitsMult, 1)}배다`,
+      `단일종목 레버리지 좌수 ${f(sgl.sums[0].units / 1e6, 0)}백만 → <b>${f(sgl.sums.at(-1).units / 1e6, 0)}백만좌</b>.${TA ? ` 합계 AUM 고점 대비 ${f(TA.fromPeakPct, 1)}% 감소는 환매가 아니라 가격이다.` : ''}`],
+    sec && ['같은 "레버리지"인데 두 계열이 정반대다',
+      `반도체 섹터 레버리지는 좌수 <b>${f(secPct, 0)}%</b> — 여기선 실제 환매가 났다. 한 덩어리로 "정리됐다"고 읽으면 틀린다.`],
+    era?.eras && ['그래도 ETF를 변동성의 범인으로 지목하진 않는다',
+      `${esc(era.name)} 평균 일중 진폭은 상장 전 이미 ${f(era.eras.before2025.meanAmplitude, 1)}% → ${f(era.eras.before2026.meanAmplitude, 1)}%였다(상장 후 ${f(era.eras.after.meanAmplitude, 1)}%).`],
+    hk7709s && ['홍콩도 같은 그림이다',
+      `7709 좌수 5일 <b>${hk7709s.trend?.d5 >= 0 ? '+' : ''}${f(hk7709s.trend?.d5, 1)}%</b>로 아직 쌓인다.${hkInv ? ` 인버스는 고점 대비 ${f(hkInv.trend.fromPeakPct, 0)}%로 이미 쓸려 나갔다.` : ''}`],
+    ['공표된 청산 규칙이 없다는 점은 PART 1·2와 다르다',
+      '리밸런싱 필요액은 설계상 나가야 하는 매매지만 체결 시각·헤지 방식은 비공개다. 사다리처럼 문턱을 못 찍는다.'],
+  ]);
+
+  const nextBullets = !O ? '' : bullets([
+    O.firstTrigger && [`아래쪽은 ${f(Math.abs(O.firstTrigger.gapPct), 1)}% 버퍼가 생겼다`,
+      `마진콜 첫 문턱 ${k0(O.firstTrigger.threshold)}p. 신용발 강제 매도가 나오려면 그만큼 더 빠져야 한다.`],
+    O.short && ['위쪽은 오히려 연료가 쌓였다',
+      `대차잔고 ${f(O.short.balJo)}조, 직전일 <b>${O.short.dBalPct >= 0 ? '+' : ''}${f(O.short.dBalPct, 1)}%</b>. 반등에 맞서 새로 짠 숏이면 더 오를 때 되갚아야 한다.`],
+    s5 && [`지수 ±${f(Math.abs(s5.retPct), 0)}%면 그날 ${f(Math.abs(s5.flowJo), 2)}조가 기계적으로 나온다`,
+      `두 종목 하루 거래대금의 ${f(s5.pctOfTurnover, 1)}%. 대칭이라 방향이 아니라 <b>진폭</b>을 키운다.`],
+    baseRow && ['과거 유사 국면으로 방향은 못 읽는다',
+      `조건부 표본이 기준선(${baseRow.n}일, 중앙값 ${baseRow.median >= 0 ? '+' : ''}${f(baseRow.median, 1)}%, 상승확률 ${f(baseRow.upRate, 0)}%)과 크게 다르지 않다.`],
+    O.anchors && ['외사와 갈리는 지점은 하나다 — AUM이냐 좌수냐',
+      `${esc(O.anchors.sources.map(s => s.house).join('·'))} 모두 AUM 반토막을 진척으로 읽지만, 우리 분해로는 거의 전부 가격이고 좌수는 늘었다.`],
+  ]);
+
   // 전일 대비 변화 — 매일 오는 메일이라면 여기가 첫 화면이다.
   const D = A.daily;
   const deltaTable = D ? table(
@@ -689,6 +727,8 @@ ${freshLine}
 ${subTitle('PART 1 — 얼마나 더 하락할 수 있나 (신용잔고)')}
 ${downBullets}
 ${upBullets ? `${subTitle('PART 2 — 얼마나 더 상승할 수 있나 (공매도·숏커버링)')}\n${upBullets}` : ''}
+${etfBullets ? `${subTitle('PART 3 — 변동성은 어디서 왔나 (레버리지 ETF)')}\n${etfBullets}` : ''}
+${nextBullets ? `${subTitle('PART 4 — 지수가 어디로 가면 뭐가 따라 나오나 (다음 주 수급)')}\n${nextBullets}` : ''}
 `;
 }
 
