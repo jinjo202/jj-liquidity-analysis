@@ -1264,6 +1264,129 @@ ${E.hk ? `<h3>홍콩 CSOP 단일종목 L&amp;I (${dtFull(E.hk.asOf)} 기준)</h3
 </section>`;
 })();
 
+/* ---------- PART 4 다음 주 수급 전망 ---------- */
+// 방향을 맞히려는 게 아니다. 지수가 어디로 가면 어떤 물량이 기계적으로 따라 나오는지를
+// 미리 적어 두고, 다음 주에 실제 움직임과 대조해 수급이 원인이었는지 판정하려는 것이다.
+const outlookSection = !A.outlook ? '' : (() => {
+  const O = A.outlook;
+  const sgn = (n, d = 1) => (n == null || !Number.isFinite(n) ? '-' : `${n >= 0 ? '+' : ''}${n.toFixed(d)}`);
+
+  const scenRows = O.scenarios.map(s => `<tr${Math.abs(s.retPct) === 1 ? ' class="dim"' : ''}>
+    <td class="n">${sgn(s.retPct, 0)}%</td>
+    <td class="n">${k0(s.idxLevel)}p</td>
+    <td class="n ${s.flowJo >= 0 ? 'up' : 'dn'}">${s.flowJo >= 0 ? '순매수' : '순매도'} ${f(Math.abs(s.flowJo))}조</td>
+    <td class="n">${f(s.pctOfTurnover, 1)}%</td>
+  </tr>`).join('');
+
+  const ladderRows = O.ladder.slice(0, 6).map(r => `<tr>
+    <td class="n">${k0(r.threshold)}p</td>
+    <td class="n">${f(r.gapPct, 1)}%</td>
+    <td class="n">+${f(r.incrementalJo)}조</td>
+    <td class="n">${f(r.cumulativeJo)}조</td>
+  </tr>`).join('');
+
+  const baseRows = O.baseRates.map(b => `<tr${b.n < 10 ? ' class="dim"' : ''}>
+    <td>${esc(b.label)}</td>
+    <td class="n">${b.n}</td>
+    <td class="n">${sgn(b.median, 1)}%</td>
+    <td class="n">${f(b.upRate, 0)}%</td>
+    <td class="n">${sgn(b.p25, 1)} ~ ${sgn(b.p75, 1)}%</td>
+  </tr>`).join('');
+
+  const eventRows = O.events.map(e => `<tr>
+    <td class="n">${dtFull(e.date)}</td>
+    <td>${esc(e.label)}</td>
+    <td>${esc(e.detail)}</td>
+  </tr>`).join('');
+
+  const anchorRows = !O.anchors ? '' : O.anchors.items.map(it => {
+    const src = O.anchors.sources.find(s => s.key === it.src);
+    return `<tr>
+      <td>${esc(src ? src.house : it.src)}<br><span class="mut">${src ? dtFull(src.date) : ''}</span></td>
+      <td>${esc(it.metric)}</td>
+      <td>${esc(it.value)}</td>
+      <td class="mut">${esc(it.note ?? '')}</td>
+    </tr>`;
+  }).join('');
+
+  const short = O.short;
+  const ft = O.firstTrigger;
+
+  return `<section>
+<h2>다음 주 수급 전망 — 지수가 어디로 가면 무엇이 따라 나오나</h2>
+<div class="box warn"><b>이 절은 방향을 맞히려는 게 아니다.</b> 수급으로 미리 알 수 있는 것은
+  "지수가 X% 움직이면 기계적으로 얼마가 따라 나오는가"이지 "지수가 어디로 갈 것인가"가 아니다.
+  아래 숫자를 먼저 적어 두는 이유는, 다음 주에 실제로 나온 움직임과 대조해야
+  <b>수급이 원인이었는지 아닌지</b>를 판정할 수 있기 때문이다. 투자 판단의 근거로 쓰라고 만든 표가 아니다.</div>
+
+<div class="verdict">
+  <div class="vl">수급 구도 요약</div>
+  <div class="vt">현재 ${k0(O.state.spotIdx)}p(${dtFull(O.state.spotDate)}), 직전일 ${sgn(O.state.lastRet, 1)}%,
+    20거래일 낙폭 ${f(O.state.drawdown20, 1)}%.
+    ${ft ? `<b>아래쪽</b>은 마진콜 첫 문턱이 ${k0(ft.threshold)}p로 지금보다 <b>${f(ft.gapPct, 1)}%</b> 아래라 버퍼가 생겼다.` : ''}
+    ${short ? `<b>위쪽</b>은 대차잔고가 ${f(short.balJo)}조로 직전일 ${sgn(short.dBalPct, 1)}% 늘어,
+    반등이 이어지면 되갚아야 할 물량이 오히려 쌓인 상태다.` : ''}
+    그리고 다음 주에는 레버리지 수요를 줄이는 제도 변경이 겹친다.</div>
+</div>
+
+<h3>지수 시나리오별 레버리지 ETF 강제 매매</h3>
+<p class="lead">삼성전자·SK하이닉스 단일종목 레버리지·인버스 ${(A.etf?.perFund ?? []).filter(x => x.group === 'single_lev' || x.group === 'single_inv').length}종의
+  현재 AUM에 각 상품의 계수(2X=2, −2X=6)를 곱한 값이다. 두 종목이 코스피 등락의 60~80%를 설명하므로
+  지수 등락률을 종목 등락률의 대용치로 썼다 — 거친 근사다.</p>
+<div class="tw"><table>
+  <thead><tr><th class="n">지수 시나리오</th><th class="n">지수 레벨</th><th class="n">그날 강제 매매</th><th class="n">두 종목 하루 거래대금 대비</th></tr></thead>
+  <tbody>${scenRows}</tbody>
+</table></div>
+<div class="box">대칭이다 — 오르면 사고 내리면 파는 크기가 같다. 중요한 건 <b>좌수가 사상 최대</b>라는 점이다.
+  증폭기는 꺼진 게 아니라 장전된 채로 남아 있다(PART 3).</div>
+
+${ft ? `<h3>아래로 열리는 물량 — 마진콜 사다리까지의 거리</h3>
+<div class="tw"><table>
+  <thead><tr><th class="n">문턱</th><th class="n">지금 대비</th><th class="n">열리는 물량</th><th class="n">누적</th></tr></thead>
+  <tbody>${ladderRows}</tbody>
+</table></div>
+<div class="box">사다리는 FREESIS 확정 지수로 계산돼 있고, 반등한 현재 지수에서 첫 문턱까지는
+  <b>${f(ft.gapPct, 1)}%</b>다. 이 거리가 곧 <b>다음 주 신용발 강제 매도가 나오려면 필요한 하락폭</b>이다.</div>` : ''}
+
+${short ? `<h3>위로 나오는 물량 — 숏커버 연료</h3>
+<div class="box">대차잔고 <b>${f(short.balJo)}조</b>(${dtFull(short.date)}), 직전일 <b>${sgn(short.dBalPct, 1)}%</b>.
+  사이클 고점은 ${f(short.cyclePeakJo)}조였다. 지수가 크게 오른 날 잔고가 같이 늘었다면
+  <b>반등에 맞서 새로 짠 숏</b>이라는 뜻이고, 그 물량은 지수가 더 오르면 되갚아야 한다.
+  PART 2 기준 잔여 커버 여력은 ${f(short.coverLowJo)}~${f(short.coverHighJo)}조다.</div>` : ''}
+
+<h3>과거 유사 국면의 다음 5거래일</h3>
+<p class="lead">2010년 이후 코스피 일별로, 조건을 만족한 날의 <b>다음 5거래일 수익률 분포</b>다.
+  표본이 10개 미만인 줄은 흐리게 뒀다 — 그건 근거가 아니라 일화다.</p>
+<div class="tw"><table>
+  <thead><tr><th>조건</th><th class="n">표본</th><th class="n">중앙값</th><th class="n">상승 확률</th><th class="n">25~75분위</th></tr></thead>
+  <tbody>${baseRows}</tbody>
+</table></div>
+<div class="box"><b>기준선(전 구간)과 크게 다르지 않다.</b> 급락 뒤 반등이라는 조건만으로는
+  다음 주 방향이 갈리지 않는다는 뜻이다. 방향을 이 표에서 읽으려 하면 안 된다.</div>
+
+${eventRows ? `<h3>다음 주 이후 예정된 제도 변경</h3>
+<div class="tw"><table>
+  <thead><tr><th class="n">일자</th><th>내용</th><th>세부</th></tr></thead>
+  <tbody>${eventRows}</tbody>
+</table></div>
+<div class="box">셋 다 <b>레버리지 재축적을 어렵게 만드는</b> 방향이다. 하방 증폭기를 약화시키는 동시에,
+  레버리지가 밀어 올리던 상승 탄력도 같이 줄인다. 방향보다 <b>진폭</b>에 먼저 영향을 준다.</div>` : ''}
+
+${anchorRows ? `<h3>외사 리서치 수치와 대조</h3>
+<p class="lead">원문 PDF는 제3자 저작물이라 저장소에 넣지 않았다. 대조에 필요한 수치만 옮겨 적었다.</p>
+<div class="tw"><table>
+  <thead><tr><th>출처</th><th>지표</th><th>값</th><th>비고</th></tr></thead>
+  <tbody>${anchorRows}</tbody>
+</table></div>
+<div class="box"><b>여기서 우리 계산과 갈리는 지점이 있다.</b> 세 하우스 모두 레버리지 ETF AUM이
+  반토막 났다는 점을 디레버리징의 진척으로 읽는다. 그런데 우리 분해(PART 3)로는 그 감소가
+  <b>거의 전부 가격효과</b>이고 좌수는 오히려 늘었다. J.P. Morgan도 같은 관찰을 적어 두었다 —
+  자금 유입은 계속 플러스라는 것이다.
+  <b>AUM으로 보면 정리가 끝나가는 것처럼 보이고, 좌수로 보면 아직 시작도 안 했다.</b>
+  둘 중 어느 쪽을 보느냐가 다음 국면의 판단을 가른다.</div>` : ''}
+</section>`;
+})();
+
 /* ---------- 사이클별 상세 — 탭 ---------- */
 // 두 사이클을 세로로 이어 붙이면 어느 쪽 숫자를 보고 있는지 헷갈린다.
 // 바깥 탭(§9)과 같은 방식으로 라디오 + 형제 선택자만 쓴다. 스크립트 없음.
@@ -1332,19 +1455,19 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
     --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5;
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
       --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
+      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
     --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; }
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
     --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
+    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
@@ -1412,23 +1535,29 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-down:checked ~ .tabs label[for="tab-down"],
   #tab-up:checked ~ .tabs label[for="tab-up"],
   #tab-etf:checked ~ .tabs label[for="tab-etf"],
+  #tab-next:checked ~ .tabs label[for="tab-next"],
   #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] b,
   #tab-up:checked ~ .tabs label[for="tab-up"] b,
   #tab-etf:checked ~ .tabs label[for="tab-etf"] b,
+  #tab-next:checked ~ .tabs label[for="tab-next"] b,
   #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
   #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
   #tab-etf:checked ~ .tabs label[for="tab-etf"] { background:var(--lv); border-color:var(--lv); }
+  #tab-next:checked ~ .tabs label[for="tab-next"] { background:var(--nx); border-color:var(--nx); }
   #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
   /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
   .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
   .tabs label[for="tab-up"] { border-left:5px solid var(--kq); }
   .tabs label[for="tab-etf"] { border-left:5px solid var(--lv); }
+  .tabs label[for="tab-next"] { border-left:5px solid var(--nx); }
   .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
   #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up, #tab-etf:checked ~ .p-etf,
-  #tab-all:checked ~ .pane { display:block; }
+  #tab-next:checked ~ .p-next, #tab-all:checked ~ .pane { display:block; }
+  tr.dim td { opacity:.55; }
+  td.up { color:var(--kq); } td.dn { color:var(--cr); }
   .pane > section:first-child { border-top:none; }
   /* 파트 머리말. 전체 보기에서 두 파트의 경계를 만든다. */
   .parthead { margin:22px 0 4px; padding:11px 14px; border-radius:7px; color:#fff; }
@@ -1437,10 +1566,12 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ph-down { background:var(--cr); }
   .ph-up { background:var(--kq); }
   .ph-etf { background:var(--lv); }
+  .ph-next { background:var(--nx); }
   .pill.pl { background:var(--lv); }
   #tab-down:focus-visible ~ .tabs label[for="tab-down"],
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
   #tab-etf:focus-visible ~ .tabs label[for="tab-etf"],
+  #tab-next:focus-visible ~ .tabs label[for="tab-next"],
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
   @media print { .tabs { display:none; } .pane { display:block !important; } }
 ${cycleCss}
@@ -1539,12 +1670,14 @@ ${summarySection}
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">
 ${etfSection ? '<input type="radio" name="tab" id="tab-etf" class="tabin">' : ''}
+${outlookSection ? '<input type="radio" name="tab" id="tab-next" class="tabin">' : ''}
 <input type="radio" name="tab" id="tab-all" class="tabin">
 <nav class="tabs">
   <label for="tab-down"><i>PART 1</i><b>신용잔고</b><span>얼마나 더 하락할 수 있나 — 반대매매 잔여</span></label>
   <label for="tab-up"><i>PART 2</i><b>공매도·숏커버링</b><span>얼마나 더 상승할 수 있나 — 대차 되갚기 잔여</span></label>
   ${etfSection ? '<label for="tab-etf"><i>PART 3</i><b>레버리지 ETF</b><span>변동성은 어디서 왔나 — 매일 나가는 강제 매매</span></label>' : ''}
-  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>세 파트를 이어서 본다</span></label>
+  ${outlookSection ? '<label for="tab-next"><i>PART 4</i><b>다음 주 수급</b><span>지수가 어디로 가면 무엇이 따라 나오나</span></label>' : ''}
+  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>네 파트를 이어서 본다</span></label>
 </nav>
 
 <div class="pane p-down">
@@ -1617,6 +1750,13 @@ ${etfSection ? `<div class="pane p-etf">
 ${etfSection}
 
 </div><!-- /p-etf -->` : ''}
+
+${outlookSection ? `<div class="pane p-next">
+<div class="parthead ph-next"><i>PART 4</i><b>다음 주 수급 — 지수가 어디로 가면 무엇이 따라 나오나</b></div>
+
+${outlookSection}
+
+</div><!-- /p-next -->` : ''}
 
 <footer>
   <b>데이터 출처</b>

@@ -3,19 +3,19 @@
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
     --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5;
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
       --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
+      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
     --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; }
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
     --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; }
+    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
@@ -83,23 +83,29 @@
   #tab-down:checked ~ .tabs label[for="tab-down"],
   #tab-up:checked ~ .tabs label[for="tab-up"],
   #tab-etf:checked ~ .tabs label[for="tab-etf"],
+  #tab-next:checked ~ .tabs label[for="tab-next"],
   #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] b,
   #tab-up:checked ~ .tabs label[for="tab-up"] b,
   #tab-etf:checked ~ .tabs label[for="tab-etf"] b,
+  #tab-next:checked ~ .tabs label[for="tab-next"] b,
   #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
   #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
   #tab-etf:checked ~ .tabs label[for="tab-etf"] { background:var(--lv); border-color:var(--lv); }
+  #tab-next:checked ~ .tabs label[for="tab-next"] { background:var(--nx); border-color:var(--nx); }
   #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
   /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
   .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
   .tabs label[for="tab-up"] { border-left:5px solid var(--kq); }
   .tabs label[for="tab-etf"] { border-left:5px solid var(--lv); }
+  .tabs label[for="tab-next"] { border-left:5px solid var(--nx); }
   .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
   #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up, #tab-etf:checked ~ .p-etf,
-  #tab-all:checked ~ .pane { display:block; }
+  #tab-next:checked ~ .p-next, #tab-all:checked ~ .pane { display:block; }
+  tr.dim td { opacity:.55; }
+  td.up { color:var(--kq); } td.dn { color:var(--cr); }
   .pane > section:first-child { border-top:none; }
   /* 파트 머리말. 전체 보기에서 두 파트의 경계를 만든다. */
   .parthead { margin:22px 0 4px; padding:11px 14px; border-radius:7px; color:#fff; }
@@ -108,10 +114,12 @@
   .ph-down { background:var(--cr); }
   .ph-up { background:var(--kq); }
   .ph-etf { background:var(--lv); }
+  .ph-next { background:var(--nx); }
   .pill.pl { background:var(--lv); }
   #tab-down:focus-visible ~ .tabs label[for="tab-down"],
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
   #tab-etf:focus-visible ~ .tabs label[for="tab-etf"],
+  #tab-next:focus-visible ~ .tabs label[for="tab-next"],
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
   @media print { .tabs { display:none; } .pane { display:block !important; } }
 
@@ -384,12 +392,14 @@
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">
 <input type="radio" name="tab" id="tab-etf" class="tabin">
+<input type="radio" name="tab" id="tab-next" class="tabin">
 <input type="radio" name="tab" id="tab-all" class="tabin">
 <nav class="tabs">
   <label for="tab-down"><i>PART 1</i><b>신용잔고</b><span>얼마나 더 하락할 수 있나 — 반대매매 잔여</span></label>
   <label for="tab-up"><i>PART 2</i><b>공매도·숏커버링</b><span>얼마나 더 상승할 수 있나 — 대차 되갚기 잔여</span></label>
   <label for="tab-etf"><i>PART 3</i><b>레버리지 ETF</b><span>변동성은 어디서 왔나 — 매일 나가는 강제 매매</span></label>
-  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>세 파트를 이어서 본다</span></label>
+  <label for="tab-next"><i>PART 4</i><b>다음 주 수급</b><span>지수가 어디로 가면 무엇이 따라 나오나</span></label>
+  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>네 파트를 이어서 본다</span></label>
 </nav>
 
 <div class="pane p-down">
@@ -3220,6 +3230,283 @@ FREESIS 대차거래추이(일별, 시장 전체)에서 받았다.</p>
 </section>
 
 </div><!-- /p-etf -->
+
+<div class="pane p-next">
+<div class="parthead ph-next"><i>PART 4</i><b>다음 주 수급 — 지수가 어디로 가면 무엇이 따라 나오나</b></div>
+
+<section>
+<h2>다음 주 수급 전망 — 지수가 어디로 가면 무엇이 따라 나오나</h2>
+<div class="box warn"><b>이 절은 방향을 맞히려는 게 아니다.</b> 수급으로 미리 알 수 있는 것은
+  "지수가 X% 움직이면 기계적으로 얼마가 따라 나오는가"이지 "지수가 어디로 갈 것인가"가 아니다.
+  아래 숫자를 먼저 적어 두는 이유는, 다음 주에 실제로 나온 움직임과 대조해야
+  <b>수급이 원인이었는지 아닌지</b>를 판정할 수 있기 때문이다. 투자 판단의 근거로 쓰라고 만든 표가 아니다.</div>
+
+<div class="verdict">
+  <div class="vl">수급 구도 요약</div>
+  <div class="vt">현재 6,595p(2026.07.31), 직전일 +17.9%,
+    20거래일 낙폭 -18.5%.
+    <b>아래쪽</b>은 마진콜 첫 문턱이 5,460p로 지금보다 <b>-17.2%</b> 아래라 버퍼가 생겼다.
+    <b>위쪽</b>은 대차잔고가 155.86조로 직전일 +16.8% 늘어,
+    반등이 이어지면 되갚아야 할 물량이 오히려 쌓인 상태다.
+    그리고 다음 주에는 레버리지 수요를 줄이는 제도 변경이 겹친다.</div>
+</div>
+
+<h3>지수 시나리오별 레버리지 ETF 강제 매매</h3>
+<p class="lead">삼성전자·SK하이닉스 단일종목 레버리지·인버스 16종의
+  현재 AUM에 각 상품의 계수(2X=2, −2X=6)를 곱한 값이다. 두 종목이 코스피 등락의 60~80%를 설명하므로
+  지수 등락률을 종목 등락률의 대용치로 썼다 — 거친 근사다.</p>
+<div class="tw"><table>
+  <thead><tr><th class="n">지수 시나리오</th><th class="n">지수 레벨</th><th class="n">그날 강제 매매</th><th class="n">두 종목 하루 거래대금 대비</th></tr></thead>
+  <tbody><tr>
+    <td class="n">-5%</td>
+    <td class="n">6,266p</td>
+    <td class="n dn">순매도 0.91조</td>
+    <td class="n">2.8%</td>
+  </tr><tr>
+    <td class="n">-3%</td>
+    <td class="n">6,398p</td>
+    <td class="n dn">순매도 0.55조</td>
+    <td class="n">1.7%</td>
+  </tr><tr class="dim">
+    <td class="n">-1%</td>
+    <td class="n">6,529p</td>
+    <td class="n dn">순매도 0.18조</td>
+    <td class="n">0.6%</td>
+  </tr><tr class="dim">
+    <td class="n">+1%</td>
+    <td class="n">6,661p</td>
+    <td class="n up">순매수 0.18조</td>
+    <td class="n">0.6%</td>
+  </tr><tr>
+    <td class="n">+3%</td>
+    <td class="n">6,793p</td>
+    <td class="n up">순매수 0.55조</td>
+    <td class="n">1.7%</td>
+  </tr><tr>
+    <td class="n">+5%</td>
+    <td class="n">6,925p</td>
+    <td class="n up">순매수 0.91조</td>
+    <td class="n">2.8%</td>
+  </tr></tbody>
+</table></div>
+<div class="box">대칭이다 — 오르면 사고 내리면 파는 크기가 같다. 중요한 건 <b>좌수가 사상 최대</b>라는 점이다.
+  증폭기는 꺼진 게 아니라 장전된 채로 남아 있다(PART 3).</div>
+
+<h3>아래로 열리는 물량 — 마진콜 사다리까지의 거리</h3>
+<div class="tw"><table>
+  <thead><tr><th class="n">문턱</th><th class="n">지금 대비</th><th class="n">열리는 물량</th><th class="n">누적</th></tr></thead>
+  <tbody><tr>
+    <td class="n">5,460p</td>
+    <td class="n">-17.2%</td>
+    <td class="n">+1.95조</td>
+    <td class="n">1.95조</td>
+  </tr><tr>
+    <td class="n">5,040p</td>
+    <td class="n">-23.6%</td>
+    <td class="n">+1.91조</td>
+    <td class="n">3.86조</td>
+  </tr><tr>
+    <td class="n">4,620p</td>
+    <td class="n">-30.0%</td>
+    <td class="n">+2.42조</td>
+    <td class="n">6.28조</td>
+  </tr><tr>
+    <td class="n">4,200p</td>
+    <td class="n">-36.3%</td>
+    <td class="n">+1.24조</td>
+    <td class="n">7.53조</td>
+  </tr><tr>
+    <td class="n">3,780p</td>
+    <td class="n">-42.7%</td>
+    <td class="n">+1.86조</td>
+    <td class="n">9.38조</td>
+  </tr><tr>
+    <td class="n">3,360p</td>
+    <td class="n">-49.1%</td>
+    <td class="n">+1.47조</td>
+    <td class="n">10.85조</td>
+  </tr></tbody>
+</table></div>
+<div class="box">사다리는 FREESIS 확정 지수로 계산돼 있고, 반등한 현재 지수에서 첫 문턱까지는
+  <b>-17.2%</b>다. 이 거리가 곧 <b>다음 주 신용발 강제 매도가 나오려면 필요한 하락폭</b>이다.</div>
+
+<h3>위로 나오는 물량 — 숏커버 연료</h3>
+<div class="box">대차잔고 <b>155.86조</b>(2026.07.31), 직전일 <b>+16.8%</b>.
+  사이클 고점은 195.30조였다. 지수가 크게 오른 날 잔고가 같이 늘었다면
+  <b>반등에 맞서 새로 짠 숏</b>이라는 뜻이고, 그 물량은 지수가 더 오르면 되갚아야 한다.
+  PART 2 기준 잔여 커버 여력은 -14.22~108.69조다.</div>
+
+<h3>과거 유사 국면의 다음 5거래일</h3>
+<p class="lead">2010년 이후 코스피 일별로, 조건을 만족한 날의 <b>다음 5거래일 수익률 분포</b>다.
+  표본이 10개 미만인 줄은 흐리게 뒀다 — 그건 근거가 아니라 일화다.</p>
+<div class="tw"><table>
+  <thead><tr><th>조건</th><th class="n">표본</th><th class="n">중앙값</th><th class="n">상승 확률</th><th class="n">25~75분위</th></tr></thead>
+  <tbody><tr>
+    <td>전 구간(기준선)</td>
+    <td class="n">4321</td>
+    <td class="n">+0.3%</td>
+    <td class="n">56%</td>
+    <td class="n">-1.1 ~ +1.6%</td>
+  </tr><tr>
+    <td>20거래일 내 고점 대비 -20% 이하</td>
+    <td class="n">20</td>
+    <td class="n">-1.5%</td>
+    <td class="n">45%</td>
+    <td class="n">-7.7 ~ +7.0%</td>
+  </tr><tr>
+    <td>20거래일 내 고점 대비 -15% 이하</td>
+    <td class="n">48</td>
+    <td class="n">+2.3%</td>
+    <td class="n">58%</td>
+    <td class="n">-4.4 ~ +6.5%</td>
+  </tr><tr>
+    <td>하루 +3% 이상 급등 직후</td>
+    <td class="n">49</td>
+    <td class="n">-0.3%</td>
+    <td class="n">45%</td>
+    <td class="n">-3.9 ~ +3.8%</td>
+  </tr><tr class="dim">
+    <td>하루 +8% 이상 급등 직후</td>
+    <td class="n">5</td>
+    <td class="n">+7.2%</td>
+    <td class="n">80%</td>
+    <td class="n">+4.7 ~ +7.8%</td>
+  </tr><tr class="dim">
+    <td>급락(-15%) 국면 안의 +3% 급등일</td>
+    <td class="n">7</td>
+    <td class="n">-1.1%</td>
+    <td class="n">43%</td>
+    <td class="n">-8.7 ~ +6.4%</td>
+  </tr></tbody>
+</table></div>
+<div class="box"><b>기준선(전 구간)과 크게 다르지 않다.</b> 급락 뒤 반등이라는 조건만으로는
+  다음 주 방향이 갈리지 않는다는 뜻이다. 방향을 이 표에서 읽으려 하면 안 된다.</div>
+
+<h3>다음 주 이후 예정된 제도 변경</h3>
+<div class="tw"><table>
+  <thead><tr><th class="n">일자</th><th>내용</th><th>세부</th></tr></thead>
+  <tbody><tr>
+    <td class="n">2026.08.03</td>
+    <td>CSOP 유연 레버리지 전환</td>
+    <td>홍콩 단일종목 L&amp;I 가 고정 2배에서 최대 2배·최소 1.1배로 바뀐다</td>
+  </tr><tr>
+    <td class="n">2026.08.05</td>
+    <td>레버리지 ETF 최소 예탁금 상향</td>
+    <td>1,000만원 → 3,000만원</td>
+  </tr><tr>
+    <td class="n">2026.08.19</td>
+    <td>증거금 현금만 인정</td>
+    <td>대용증권으로 증거금을 채울 수 없게 된다</td>
+  </tr></tbody>
+</table></div>
+<div class="box">셋 다 <b>레버리지 재축적을 어렵게 만드는</b> 방향이다. 하방 증폭기를 약화시키는 동시에,
+  레버리지가 밀어 올리던 상승 탄력도 같이 줄인다. 방향보다 <b>진폭</b>에 먼저 영향을 준다.</div>
+
+<h3>외사 리서치 수치와 대조</h3>
+<p class="lead">원문 PDF는 제3자 저작물이라 저장소에 넣지 않았다. 대조에 필요한 수치만 옮겨 적었다.</p>
+<div class="tw"><table>
+  <thead><tr><th>출처</th><th>지표</th><th>값</th><th>비고</th></tr></thead>
+  <tbody><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>레버리지 ETF AUM(한국 기초자산)</td>
+      <td>US$50bn(6월말) → US$26bn</td>
+      <td class="mut">언와인드 75% 진행, '수용 가능' 수준을 ~US$18bn 으로 제시</td>
+    </tr><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>레버리지 ETF 자금 흐름</td>
+      <td>유입은 계속 플러스</td>
+      <td class="mut">AUM 감소는 대부분 시장 하락 때문이라고 명시(Figure 9) — 우리 좌수 분해와 같은 결론</td>
+    </tr><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>신용융자 잔고</td>
+      <td>US$25bn → US$21bn</td>
+      <td class="mut">시총 대비 0.5%. 미국 1.9%, 중국A 2.8% 와 비교</td>
+    </tr><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>헤지펀드 L/S 비율(JPM Prime)</td>
+      <td>&gt;5.5배 → &lt;4배</td>
+      <td class="mut">디레버리징 50% 이상 진행</td>
+    </tr><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>외국인 순매도</td>
+      <td>YTD US$110bn 초과</td>
+      <td class="mut">약 90% 가 메모리 2종목. MSCI EM 비중 9.5%/8.3%(6월말) → 7.5%/5.7%</td>
+    </tr><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>VKOSPI/VIX</td>
+      <td>약 5배</td>
+      <td class="mut">평시 1배</td>
+    </tr><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>규제 일정</td>
+      <td>8/5 최소 예탁금 1,000만→3,000만원, 8/19 증거금 현금만 인정, 단일종목 레버리지 신규 상장 중단, 11월 최소 거래단위 1→20주</td>
+      <td class="mut">레버리지 재축적을 막는 방향</td>
+    </tr><tr>
+      <td>J.P. Morgan<br><span class="mut">2026.07.21</span></td>
+      <td>12개월 KOSPI 목표</td>
+      <td>12,500</td>
+      <td class="mut">OW 유지</td>
+    </tr><tr>
+      <td>Nomura<br><span class="mut">2026.07.28</span></td>
+      <td>레버리지 ETF AUM</td>
+      <td>KRW27조 (7/23 기준)</td>
+      <td class="mut">전체 ETF 450조의 약 6%. 레버리지 ETF 보유의 약 85% 가 개인</td>
+    </tr><tr>
+      <td>Nomura<br><span class="mut">2026.07.28</span></td>
+      <td>레버리지 ETF 수익률</td>
+      <td>6/22 고점 이후 -53%</td>
+      <td class="mut">같은 기간 코스피 -22%</td>
+    </tr><tr>
+      <td>Nomura<br><span class="mut">2026.07.28</span></td>
+      <td>외국인 순매도</td>
+      <td>KRW158조 (US$108bn)</td>
+      <td class="mut">벤치마크 비중이 포트폴리오 한도를 넘어선 데 따른 기계적 매도로 해석</td>
+    </tr><tr>
+      <td>Nomura<br><span class="mut">2026.07.28</span></td>
+      <td>2026 KOSPI 목표</td>
+      <td>10,000–11,000</td>
+      <td class="mut">2026F P/E 10.5–11.5배. 하방 리스크로 '개인의 레버리지 재축적' 을 명시</td>
+    </tr><tr>
+      <td>Nomura<br><span class="mut">2026.07.28</span></td>
+      <td>자사주 매입</td>
+      <td>2026F KRW116조</td>
+      <td class="mut">약 90% 가 반도체 2사. 다음 구조적 수요원으로 제시</td>
+    </tr><tr>
+      <td>Goldman Sachs<br><span class="mut">2026.08.01</span></td>
+      <td>레버리지 ETF AUM</td>
+      <td>US$53bn → US$26bn</td>
+      <td class="mut">유통시총 대비 1.9%</td>
+    </tr><tr>
+      <td>Goldman Sachs<br><span class="mut">2026.08.01</span></td>
+      <td>신용융자 잔고</td>
+      <td>US$25bn → US$22bn</td>
+      <td class="mut">시총 대비 약 0.5%</td>
+    </tr><tr>
+      <td>Goldman Sachs<br><span class="mut">2026.08.01</span></td>
+      <td>밸류에이션</td>
+      <td>NTM P/E 4.7배</td>
+      <td class="mut">2001년 이후 최저이자 GFC 저점 아래</td>
+    </tr><tr>
+      <td>Goldman Sachs<br><span class="mut">2026.08.01</span></td>
+      <td>Korea Equity Risk Barometer</td>
+      <td>-0.3</td>
+      <td class="mut">위험회피 구간</td>
+    </tr><tr>
+      <td>Goldman Sachs<br><span class="mut">2026.08.01</span></td>
+      <td>7월 코스피</td>
+      <td>월간 -22%, GFC 이후 최악</td>
+      <td class="mut">7/31 은 사상 최대 일간 상승 + 사상 최대 일간 외국인 순매수</td>
+    </tr></tbody>
+</table></div>
+<div class="box"><b>여기서 우리 계산과 갈리는 지점이 있다.</b> 세 하우스 모두 레버리지 ETF AUM이
+  반토막 났다는 점을 디레버리징의 진척으로 읽는다. 그런데 우리 분해(PART 3)로는 그 감소가
+  <b>거의 전부 가격효과</b>이고 좌수는 오히려 늘었다. J.P. Morgan도 같은 관찰을 적어 두었다 —
+  자금 유입은 계속 플러스라는 것이다.
+  <b>AUM으로 보면 정리가 끝나가는 것처럼 보이고, 좌수로 보면 아직 시작도 안 했다.</b>
+  둘 중 어느 쪽을 보느냐가 다음 국면의 판단을 가른다.</div>
+</section>
+
+</div><!-- /p-next -->
 
 <footer>
   <b>데이터 출처</b>

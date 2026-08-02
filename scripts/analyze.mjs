@@ -13,6 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { analyzeMarket, accumulate, classify, factorOf, MAINTENANCE, LOAN_RATIO } from './lib/buckets.mjs';
 import { analyzeEtf } from './lib/etf.mjs';
+import { buildOutlook } from './lib/outlook.mjs';
 
 const DIR = path.join(import.meta.dirname, '..', 'data');
 const raw = JSON.parse(fs.readFileSync(path.join(DIR, 'kofia-daily.json'), 'utf8'));
@@ -644,13 +645,38 @@ function dailyDelta() {
 
 const daily = dailyDelta();
 
+/* ---------- 다음 주 수급 전망(PART 4) ---------- */
+// 방향을 맞히려는 게 아니라, 지수가 어디로 가면 어떤 물량이 기계적으로 따라 나오는지를
+// 미리 적어 두는 것이다. 다음 주에 실제 움직임과 대조하면 수급이 원인이었는지 판정할 수 있다.
+const kospiSeries = raw.series.filter(r => Number.isFinite(r.OS0001)).map(r => ({ d: r.date, i: r.OS0001 }));
+const openMarket = periods.find(p => !p.closed)?.markets['전체'] ?? null;
+
+// 규제 일정은 계산으로 나오지 않는다. 외사 리포트에서 옮겨 적고 출처를 단다(data/street-anchors.json).
+const anchorsPath = path.join(DIR, 'street-anchors.json');
+const anchors = fs.existsSync(anchorsPath) ? JSON.parse(fs.readFileSync(anchorsPath, 'utf8')) : null;
+const EVENTS = [
+  { date: '20260803', label: 'CSOP 유연 레버리지 전환', detail: '홍콩 단일종목 L&I 가 고정 2배에서 최대 2배·최소 1.1배로 바뀐다', impact: 'down-flow' },
+  { date: '20260805', label: '레버리지 ETF 최소 예탁금 상향', detail: '1,000만원 → 3,000만원', impact: 'down-flow' },
+  { date: '20260819', label: '증거금 현금만 인정', detail: '대용증권으로 증거금을 채울 수 없게 된다', impact: 'down-flow' },
+];
+
+const outlook = buildOutlook({
+  series: kospiSeries,
+  etf, lending,
+  marginLadder: openMarket?.ladder ?? [],
+  spotIdx: spot?.idx ?? kospiSeries.at(-1)?.i,
+  spotDate: spot?.date ?? kospiSeries.at(-1)?.d,
+  events: EVENTS,
+});
+if (outlook && anchors) outlook.anchors = anchors;
+
 const out = {
   meta: {
     maintenance: MAINTENANCE, loanRatio: LOAN_RATIO, marginFactor: factorOf(),
     hasSplit: !!split, markets: Object.keys(inputs), crossCheckRows,
     source: raw.meta, splitSource: split?.meta ?? null,
   },
-  periods, repro, reproMAE, stress, projection, monthly, lending, etf, channels, unpaid, spot, daily,
+  periods, repro, reproMAE, stress, projection, monthly, lending, etf, outlook, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   series: raw.series
     .filter(r => Number.isFinite(r.OS0001))
@@ -822,6 +848,47 @@ if (etf) {
       console.log(`      NAV US$${(p.totalNavUsd / 1e9).toFixed(2)}bn  좌수 ${(p.outstandingUnits / 1e6).toFixed(1)}M`
         + `  명목익스포저 US$${(p.notionalUsd / 1e9).toFixed(2)}bn`);
     }
+  }
+}
+
+if (outlook) {
+  const O = outlook;
+  console.log(`\n${'#'.repeat(66)}\n# 다음 주 수급 전망 (PART 4)`);
+  console.log(`  현재 ${k0(O.state.spotIdx)}p (${O.state.spotDate})  직전일 ${f(O.state.lastRet, 1)}%`
+    + `  20일 낙폭 ${f(O.state.drawdown20, 1)}%  60일 낙폭 ${f(O.state.drawdown60, 1)}%`);
+
+  console.log(`\n  [지수 시나리오별 레버리지 ETF 강제 매매]`);
+  for (const s of O.scenarios) {
+    console.log(`    ${s.retPct > 0 ? '+' : ''}${s.retPct}%  (${k0(s.idxLevel)}p)  ->  `
+      + `${s.flowJo >= 0 ? '순매수' : '순매도'} ${f(Math.abs(s.flowJo))}조`
+      + `  = 두 종목 하루 거래대금의 ${f(s.pctOfTurnover, 1)}%`);
+  }
+
+  if (O.firstTrigger) {
+    console.log(`\n  [아래로 열리는 물량 — 마진콜 사다리]`);
+    console.log(`    첫 문턱 ${k0(O.firstTrigger.threshold)}p — 지금보다 ${f(O.firstTrigger.gapPct, 1)}% 아래`
+      + ` (열리는 물량 ${f(O.firstTrigger.incrementalJo)}조)`);
+    for (const r of O.ladder.slice(1, 4)) {
+      console.log(`    ${k0(r.threshold)}p (${f(r.gapPct, 1)}%)  +${f(r.incrementalJo)}조  누적 ${f(r.cumulativeJo)}조`);
+    }
+  }
+
+  if (O.short) {
+    console.log(`\n  [위로 나오는 물량 — 숏커버]`);
+    console.log(`    대차잔고 ${f(O.short.balJo)}조 (${O.short.date})  전일 대비 ${f(O.short.dBalPct, 1)}%`
+      + `  사이클 고점 ${f(O.short.cyclePeakJo)}조`);
+    console.log(`    잔여 커버 여력 ${f(O.short.coverLowJo)}~${f(O.short.coverHighJo)}조`);
+  }
+
+  console.log(`\n  [과거 유사 국면의 다음 5거래일 코스피 수익률]`);
+  for (const b of O.baseRates) {
+    console.log(`    ${b.label.padEnd(28)} n=${String(b.n).padStart(4)}  중앙값 ${f(b.median, 1).padStart(6)}%`
+      + `  상승확률 ${f(b.upRate, 0).padStart(4)}%  [${f(b.p25, 1)} ~ ${f(b.p75, 1)}]`);
+  }
+
+  if (O.events.length) {
+    console.log(`\n  [예정된 제도 변경]`);
+    for (const e of O.events) console.log(`    ${e.date}  ${e.label} — ${e.detail}`);
   }
 }
 

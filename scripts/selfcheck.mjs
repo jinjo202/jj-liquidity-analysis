@@ -111,6 +111,39 @@ if (A.etf) {
   }
 }
 
+// §24 다음 주 수급 전망(PART 4)
+if (A.outlook) {
+  const O = A.outlook;
+
+  // 시나리오는 대칭이어야 한다 — 같은 크기의 상승·하락에 같은 크기의 반대 부호 물량.
+  for (const s of O.scenarios) {
+    const mirror = O.scenarios.find(x => x.retPct === -s.retPct);
+    if (!mirror) continue;
+    near(s.flowJo, -mirror.flowJo, 1e-6, `시나리오 ${s.retPct}% 대칭성`);
+    assert.ok(Math.sign(s.flowJo) === Math.sign(s.retPct) || s.flowJo === 0,
+      `시나리오 ${s.retPct}% 부호가 뒤집혔다`);
+  }
+
+  // 사다리 거리: 문턱은 현재 지수보다 아래여야 하고(gap 음수), 누적은 단조 증가여야 한다.
+  for (let i = 0; i < O.ladder.length; i++) {
+    const r = O.ladder[i];
+    if (r.gapPct != null) assert.ok(r.gapPct < 0, `사다리 문턱 ${r.threshold} 이 현재 지수 위에 있다`);
+    if (i > 0) assert.ok(r.cumulativeJo >= O.ladder[i - 1].cumulativeJo, '사다리 누적이 줄었다');
+  }
+
+  // base rate 는 분위수 순서와 확률 범위가 지켜져야 한다.
+  for (const b of O.baseRates) {
+    assert.ok(b.n >= 0, `${b.key} 표본 수가 음수다`);
+    if (!b.n) continue;
+    assert.ok(b.p25 <= b.median && b.median <= b.p75, `${b.key} 분위수 순서가 깨졌다`);
+    assert.ok(b.min <= b.p25 && b.p75 <= b.max, `${b.key} 최소/최대가 분위수 밖에 없다`);
+    assert.ok(b.upRate >= 0 && b.upRate <= 100, `${b.key} 상승확률 범위 밖: ${b.upRate}`);
+  }
+  // 기준선은 전 구간이라 표본이 가장 커야 한다 — 조건부가 더 크면 조건이 안 걸린 것이다.
+  const all = O.baseRates.find(b => b.key === 'all');
+  if (all) for (const b of O.baseRates) assert.ok(b.n <= all.n, `${b.key} 표본이 전 구간보다 크다`);
+}
+
 // §19 장중 지수는 FREESIS 최종일보다 뒤여야 한다.
 if (A.spot) {
   assert.ok(A.spot.date > A.spot.baseDate, 'spot 날짜가 기준일보다 앞선다');

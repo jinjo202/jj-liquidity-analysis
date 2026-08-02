@@ -1,0 +1,29 @@
+{
+  "_note": "외사 리서치에서 옮겨 적은 수치만 모은 파일. 원문 PDF 는 제3자 저작물이라 저장소에 넣지 않는다(.gitignore *.pdf). 우리 계산과 대조하는 용도이며, 각 항목은 출처와 발간일을 달았다. 사람이 새 리포트를 읽고 갱신한다.",
+  "updated": "2026-08-02",
+  "sources": [
+    { "key": "jpm0721", "house": "J.P. Morgan", "title": "Korea Equity Strategy — Update on the de-leveraging process in Korea", "date": "20260721" },
+    { "key": "nomura0728", "house": "Nomura", "title": "Korea Strategy — Korea's next re-rating", "date": "20260728" },
+    { "key": "gs0801", "house": "Goldman Sachs", "title": "Korea Weekly Kickstart", "date": "20260801" }
+  ],
+  "items": [
+    { "src": "jpm0721", "metric": "레버리지 ETF AUM(한국 기초자산)", "value": "US$50bn(6월말) → US$26bn", "note": "언와인드 75% 진행, '수용 가능' 수준을 ~US$18bn 으로 제시" },
+    { "src": "jpm0721", "metric": "레버리지 ETF 자금 흐름", "value": "유입은 계속 플러스", "note": "AUM 감소는 대부분 시장 하락 때문이라고 명시(Figure 9) — 우리 좌수 분해와 같은 결론" },
+    { "src": "jpm0721", "metric": "신용융자 잔고", "value": "US$25bn → US$21bn", "note": "시총 대비 0.5%. 미국 1.9%, 중국A 2.8% 와 비교" },
+    { "src": "jpm0721", "metric": "헤지펀드 L/S 비율(JPM Prime)", "value": ">5.5배 → <4배", "note": "디레버리징 50% 이상 진행" },
+    { "src": "jpm0721", "metric": "외국인 순매도", "value": "YTD US$110bn 초과", "note": "약 90% 가 메모리 2종목. MSCI EM 비중 9.5%/8.3%(6월말) → 7.5%/5.7%" },
+    { "src": "jpm0721", "metric": "VKOSPI/VIX", "value": "약 5배", "note": "평시 1배" },
+    { "src": "jpm0721", "metric": "규제 일정", "value": "8/5 최소 예탁금 1,000만→3,000만원, 8/19 증거금 현금만 인정, 단일종목 레버리지 신규 상장 중단, 11월 최소 거래단위 1→20주", "note": "레버리지 재축적을 막는 방향" },
+    { "src": "jpm0721", "metric": "12개월 KOSPI 목표", "value": "12,500", "note": "OW 유지" },
+    { "src": "nomura0728", "metric": "레버리지 ETF AUM", "value": "KRW27조 (7/23 기준)", "note": "전체 ETF 450조의 약 6%. 레버리지 ETF 보유의 약 85% 가 개인" },
+    { "src": "nomura0728", "metric": "레버리지 ETF 수익률", "value": "6/22 고점 이후 -53%", "note": "같은 기간 코스피 -22%" },
+    { "src": "nomura0728", "metric": "외국인 순매도", "value": "KRW158조 (US$108bn)", "note": "벤치마크 비중이 포트폴리오 한도를 넘어선 데 따른 기계적 매도로 해석" },
+    { "src": "nomura0728", "metric": "2026 KOSPI 목표", "value": "10,000–11,000", "note": "2026F P/E 10.5–11.5배. 하방 리스크로 '개인의 레버리지 재축적' 을 명시" },
+    { "src": "nomura0728", "metric": "자사주 매입", "value": "2026F KRW116조", "note": "약 90% 가 반도체 2사. 다음 구조적 수요원으로 제시" },
+    { "src": "gs0801", "metric": "레버리지 ETF AUM", "value": "US$53bn → US$26bn", "note": "유통시총 대비 1.9%" },
+    { "src": "gs0801", "metric": "신용융자 잔고", "value": "US$25bn → US$22bn", "note": "시총 대비 약 0.5%" },
+    { "src": "gs0801", "metric": "밸류에이션", "value": "NTM P/E 4.7배", "note": "2001년 이후 최저이자 GFC 저점 아래" },
+    { "src": "gs0801", "metric": "Korea Equity Risk Barometer", "value": "-0.3", "note": "위험회피 구간" },
+    { "src": "gs0801", "metric": "7월 코스피", "value": "월간 -22%, GFC 이후 최악", "note": "7/31 은 사상 최대 일간 상승 + 사상 최대 일간 외국인 순매수" }
+  ]
+}
