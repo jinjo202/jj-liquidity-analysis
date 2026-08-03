@@ -154,20 +154,20 @@ function flowChart(m) {
     ? `<text class="ax sm" transform="translate(${cx(i).toFixed(1)},${M.t + ih + 14}) rotate(-52)" text-anchor="end">${k0(l)}</text>`
     : `<text class="ax sm" x="${cx(i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${k0(l)}</text>`).join('');
 
-  const wb = m.unwind.weightedBuildIdx, wu = m.unwind.weightedUnwindIdx;
-  const mark = (v, cls, lb) => {
-    if (v == null) return '';
-    const i = (v - lows[0]) / width;
-    const x = M.l + bw * (i + 0.5);
-    if (x < M.l || x > M.l + iw) return '';
-    return `<line class="wmark ${cls}" x1="${x.toFixed(1)}" y1="${M.t}" x2="${x.toFixed(1)}" y2="${(M.t + ih).toFixed(1)}"/>
-      <text class="wlab ${cls}" x="${x.toFixed(1)}" y="${(M.t - 4).toFixed(1)}" text-anchor="middle">${lb} ${k0(v)}</text>`;
-  };
+  // 평균매수·평균청산이 한 버킷 안에 들면 두 라벨이 같은 자리에 찍힌다(실측 913 vs 956).
+  const xOfIdx = v => M.l + bw * ((v - lows[0]) / width + 0.5);
+  const mark = placeLabels(
+    [[m.unwind.weightedBuildIdx, 'mb', '평균매수'], [m.unwind.weightedUnwindIdx, 'mu', '평균청산']]
+      .filter(([v]) => v != null && xOfIdx(v) >= M.l && xOfIdx(v) <= M.l + iw)
+      .map(([v, cls, lb]) => ({ cx: xOfIdx(v), cy: M.t - 4, cls, text: `${lb} ${k0(v)}` })),
+    { W, minY: 2 }
+  ).map(p => `<line class="wmark ${p.cls}" x1="${p.cx.toFixed(1)}" y1="${M.t}" x2="${p.cx.toFixed(1)}" y2="${(M.t + ih).toFixed(1)}"/>
+      <text class="wlab ${p.cls}" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle">${esc(p.text)}</text>`).join('');
 
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="지수대별 적립과 청산 비교">
   ${ticks(0, vMax).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
     <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${f(v, 1)}</text>`).join('')}
-  ${pair}${mark(wb, 'mb', '평균매수')}${mark(wu, 'mu', '평균청산')}${xLab}
+  ${pair}${mark}${xLab}
   <text class="unit" x="${M.l}" y="14">조원</text>
 </svg>`;
 }
@@ -598,8 +598,14 @@ function trendChart(points, unit, dg, spanLabel = '최근 1년') {
   });
 
   const iMax = vs.indexOf(hi), iMin = vs.indexOf(lo);
-  const mark = (i, v, label, cls) => `<circle class="tdot ${cls}" cx="${xAt(i).toFixed(1)}" cy="${yAt(v).toFixed(1)}" r="2.8"/>
-    <text class="ax sm" x="${xAt(i).toFixed(1)}" y="${(yAt(v) + (cls === 'hi' ? -7 : 13)).toFixed(1)}" text-anchor="middle">${label} ${f(v, dg)}</text>`;
+  // 최고·최저가 계열 끝에 있으면 가운데 정렬 라벨의 절반이 밖으로 잘렸다('저 200' 실측).
+  // 오른쪽은 눈금 숫자가 있는 자리라, 플롯 폭(M.l+iw) 안으로만 민다.
+  const mark = placeLabels([
+    { cx: xAt(iMax), cy: yAt(hi) - 7, dotY: yAt(hi), cls: 'hi', text: `고 ${f(hi, dg)}` },
+    { cx: xAt(iMin), cy: yAt(lo) + 13, dotY: yAt(lo), cls: 'lo', text: `저 ${f(lo, dg)}` },
+  ], { W: M.l + iw, minY: M.t })
+    .map(p => `<circle class="tdot ${p.cls}" cx="${p.cx.toFixed(1)}" cy="${p.dotY.toFixed(1)}" r="2.8"/>
+    <text class="ax sm" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle">${esc(p.text)}</text>`).join('');
 
   const d = points.map((p, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(p.v).toFixed(1)}`).join('');
   const area = `${d}L${xAt(points.length - 1).toFixed(1)},${(M.t + ih).toFixed(1)}L${xAt(0).toFixed(1)},${(M.t + ih).toFixed(1)}Z`;
@@ -610,8 +616,7 @@ function trendChart(points, unit, dg, spanLabel = '최근 1년') {
   ${ticksX.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
   <path class="tarea" d="${area}"/>
   <path class="tline" d="${d}"/>
-  ${mark(iMax, hi, '고', 'hi')}
-  ${mark(iMin, lo, '저', 'lo')}
+  ${mark}
   <circle class="tdot now" cx="${xAt(points.length - 1).toFixed(1)}" cy="${yAt(vs.at(-1)).toFixed(1)}" r="3.4"/>
   <text class="unit" x="${M.l}" y="12">${esc(unit)} · ${esc(spanLabel)} (${points.length}영업일)</text>
 </svg>`;
