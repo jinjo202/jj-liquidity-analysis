@@ -598,7 +598,12 @@ function trendChart(points, unit, dg, spanLabel = '최근 1년') {
   let lastQ = null;
   points.forEach((p, i) => {
     const q = `${p.d.slice(0, 4)}Q${Math.floor((Number(p.d.slice(4, 6)) - 1) / 3)}`;
-    if (q !== lastQ) { ticksX.push({ i, label: `${p.d.slice(2, 4)}.${p.d.slice(4, 6)}` }); lastQ = q; }
+    if (q === lastQ) return;
+    lastQ = q;
+    // 계열이 연말에서 시작하면 첫 눈금(24.12)과 다음 분기 눈금(25.01)이 하루 차이로 붙어
+    // 라벨이 포개진다. 'YY.MM' 은 26px 안팎이라 그보다 좁으면 그 분기는 건너뛴다.
+    if (ticksX.length && xAt(i) - xAt(ticksX.at(-1).i) < 34) return;
+    ticksX.push({ i, label: `${p.d.slice(2, 4)}.${p.d.slice(4, 6)}` });
   });
 
   const iMax = vs.indexOf(hi), iMin = vs.indexOf(lo);
@@ -735,11 +740,18 @@ function lendingChart(series, cyclePeakDate) {
     if (y !== lastY) { yearTicks.push({ i, label: `'${y.slice(2)}` }); lastY = y; }
   });
 
+  // '잔고 고점' 라벨은 M.t-4 에 있어 축 제목 줄(y=14)과 같은 높이였고, 고점이 계열 끝쪽이라
+  // 오른쪽의 '코스피(p)' 와 겹쳤다. 축 제목 줄을 비켜 플롯 안쪽으로 내리고, 오른쪽 끝에서는
+  // 라벨이 잘리지 않게 안으로 민다.
   const peakI = series.findIndex(p => p.d === cyclePeakDate);
-  const peakMark = peakI >= 0
-    ? `<line class="wmark mu" x1="${xAt(peakI).toFixed(1)}" y1="${M.t}" x2="${xAt(peakI).toFixed(1)}" y2="${(M.t + ih).toFixed(1)}"/>
-       <text class="wlab mu" x="${xAt(peakI).toFixed(1)}" y="${(M.t - 4).toFixed(1)}" text-anchor="middle">잔고 고점</text>`
-    : '';
+  const peakMark = peakI < 0 ? '' : (() => {
+    const [p] = placeLabels(
+      [{ cx: xAt(peakI), cy: M.t + 12, text: '잔고 고점' }],
+      { W: M.l + iw, minY: M.t }
+    );
+    return `<line class="wmark mu" x1="${xAt(peakI).toFixed(1)}" y1="${M.t}" x2="${xAt(peakI).toFixed(1)}" y2="${(M.t + ih).toFixed(1)}"/>
+       <text class="wlab mu" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle">잔고 고점</text>`;
+  })();
 
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="대차잔고와 코스피 지수 추이">
   ${ticks(0, bDom[1]).map(v => `<line class="grid" x1="${M.l}" y1="${bAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${bAt(v).toFixed(1)}"/>
@@ -1048,9 +1060,13 @@ ${SH ? `<figure>
   <h4>대차잔고 — 주수 기준 (억주)</h4>
   ${trendChart(SH.series, '대차잔고 주수 (억주)', 2, `${dtFull(SH.series[0].d)} 이후`)}
   <figcaption>같은 기간 금액 곡선은 지수를 따라 출렁이지만 주수는 그렇지 않다.
-    고점 ${dtFull(SH.peakDate)} ${f(SH.peakShares / 1e8, 2)}억주 → 최저 ${dtFull(SH.troughDate)} ${f(SH.troughShares / 1e8, 2)}억주(${f(SH.troughFromPeakPct, 1)}%)
-    → 현재 ${f(SH.nowShares / 1e8, 2)}억주. <b>7월 중순 이후 다시 늘고 있다</b> —
-    1차 되돌림은 ${dtFull(SH.troughDate)}에 멈췄고, 그 뒤로는 되갚기가 아니라 재차 쌓이는 국면이다.</figcaption>
+    사이클 시작 ${f(SH.series[0].v, 2)}억주에서 고점 ${dtFull(SH.peakDate)} ${f(SH.peakShares / 1e8, 2)}억주까지
+    <b>${f(SH.peakShares / 1e8 / SH.series[0].v, 1)}배</b>로 쌓였고, 되돌린 것은 최저 ${dtFull(SH.troughDate)}
+    ${f(SH.troughShares / 1e8, 2)}억주(고점 대비 ${f(SH.troughFromPeakPct, 1)}%)까지가 전부다.
+    현재 ${f(SH.nowShares / 1e8, 2)}억주로 <b>7월 중순 이후 다시 늘고 있다</b> —
+    1차 되돌림은 ${dtFull(SH.troughDate)}에 멈췄고, 그 뒤로는 되갚기가 아니라 재차 쌓이는 국면이다.
+    <span class="mut">차트의 '저' 표시는 그린 구간 전체의 최저(사이클 시작 수준)이고,
+    되돌림의 최저는 ${dtFull(SH.troughDate)} ${f(SH.troughShares / 1e8, 2)}억주다.</span></figcaption>
 </figure>` : ''}
 
 <div class="box warn">

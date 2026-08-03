@@ -471,7 +471,11 @@ if (fs.existsSync(lendingPath)) {
       moneyDeclinePct: (Math.exp(dMoney) - 1) * 100,
       sharesSinceMoneyPeakPct: (Math.exp(dShares) - 1) * 100,
       priceShareOfMoveePct: dMoney !== 0 ? ((dMoney - dShares) / dMoney) * 100 : null,
-      series: shareRows.filter((r, i) => i % 3 === 0 || i === shareRows.length - 1)
+      // 3일에 하나씩 솎되 고점·최저는 반드시 남긴다 — 안 그러면 차트의 고/저 라벨이
+      // 카드 숫자와 어긋난다(실제로 31.91억주가 31.83으로 찍혔다).
+      series: shareRows
+        .filter((r, i) => i % 3 === 0 || i === shareRows.length - 1
+          || r.date === pk.date || r.date === trough.date)
         .map(r => ({ d: r.date, v: r.balShares / 1e8 })),   // 억주
     };
   })();
