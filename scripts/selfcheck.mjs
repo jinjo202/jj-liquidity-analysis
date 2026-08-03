@@ -199,6 +199,33 @@ if (fs.existsSync(wfDir)) {
   }
 }
 
+// 종목별 대차잔고·외국인 지분율. 원본 잔고금액(백만원)과 주수 × 종가가 어긋나면
+// 소스가 스케일이나 컬럼 의미를 바꾼 것이다 — 그때 조용히 10배 틀린 숫자를 싣지 않게 막는다.
+if (A.stockFlow) {
+  const raw = JSON.parse(fs.readFileSync(
+    path.join(import.meta.dirname, '..', 'data', 'stock-flows.json'), 'utf8'));
+  for (const st of raw.stocks) {
+    const cmp = st.series.filter(r => r.close && r.balanceMil && r.balanceShares);
+    assert.ok(cmp.length > 100, `${st.name}: 교차검증할 행이 ${cmp.length}개뿐이다`);
+    for (const r of cmp) {
+      const rel = Math.abs((r.balanceShares * r.close) / 1e6 - r.balanceMil) / r.balanceMil;
+      assert.ok(rel < 0.01,
+        `${st.name} ${r.d}: 잔고금액이 주수×종가와 ${(rel * 100).toFixed(1)}% 어긋난다 — 소스 단위가 바뀌었는지 확인할 것`);
+    }
+  }
+  for (const it of A.stockFlow.items) {
+    assert.ok(it.listedShares > 0, `${it.name}: 상장주식수가 없다`);
+    assert.ok(it.peak.shares >= it.last.shares, `${it.name}: 고점이 현재보다 작다`);
+    assert.ok(it.last.pctListed > 0 && it.last.pctListed < 20,
+      `${it.name}: 상장주식수 대비 ${it.last.pctListed}% — 범위 밖이다`);
+    if (it.foreign) {
+      assert.ok(it.foreign.fromLowPp >= 0, `${it.name}: 저점 대비 회복이 음수다`);
+      assert.ok(it.foreign.high.foreignPct >= it.foreign.last.foreignPct,
+        `${it.name}: 외국인 최고가 현재보다 낮다`);
+    }
+  }
+}
+
 // 시장별 되돌림 진척. 표에 그대로 나가는 숫자라 자기모순이 없어야 한다.
 if (A.meta.hasSplit) {
   assert.ok(A.divergence, '분리 데이터가 있는데 divergence 가 없다');

@@ -682,12 +682,18 @@ function stackChart(rows, keys, unit, marks = []) {
 }
 
 /** 같은 단위(조원) 계열 여러 개를 한 축에 겹쳐 그린다. */
-function levelChart(rows, lines, unit) {
+// dg: 축 눈금 소수 자리. zeroBase:false 면 값 범위에 맞춰 하한을 올린다 —
+// 외국인 지분율(46~56%)처럼 0에서 먼 계열은 0 기준으로 그리면 움직임이 안 보인다.
+function levelChart(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
   const W = 660, H = 260, M = { t: 22, r: 16, b: 34, l: 50 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
-  const vMax = Math.max(...lines.flatMap(L => rows.map(r => r[L.key] ?? 0))) * 1.1;
+  const vals = lines.flatMap(L => rows.map(r => r[L.key]).filter(Number.isFinite));
+  const hi = Math.max(...vals), lo = Math.min(...vals);
+  const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.05 || 1;
+  const vMin = zeroBase ? 0 : lo - pad;
+  const vMax = zeroBase ? hi * 1.1 : hi + pad;
   const xAt = i => scale(i, [0, rows.length - 1], [M.l, M.l + iw]);
-  const yAt = v => scale(v, [0, vMax], [M.t + ih, M.t]);
+  const yAt = v => scale(v, [vMin, vMax], [M.t + ih, M.t]);
 
   const yearTicks = [];
   let lastY = null;
@@ -703,8 +709,8 @@ function levelChart(rows, lines, unit) {
   }).join('');
 
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
-  ${ticks(0, vMax).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${f(v, 0)}</text>`).join('')}
+  ${ticks(vMin, vMax).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${f(v, dg)}</text>`).join('')}
   ${yearTicks.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${t.label}</text>`).join('')}
   ${paths}
   <text class="unit" x="${M.l}" y="13">${esc(unit)}</text>
@@ -897,6 +903,91 @@ FREESIS 대차거래추이(일별, 시장 전체)에서 받았다.</p>
 }
 
 /* ---------- 숏커버 여력 (상승 압력) ---------- */
+
+/* ---------- 종목별 대차잔고·외국인 지분율 ---------- */
+// 시장 전체 잔고는 "얼마나 더 오를 수 있나" 를 묻는다. 여기서는 그 잔고가 어디에 붙어 있는지를 묻는다.
+const stockFlowSection = !A.stockFlow ? '' : (() => {
+  const S = A.stockFlow, items = S.items;
+  const [a, b] = items;
+  const cls = ['ln-idx', 'ln-cr'];
+
+  // 두 종목을 한 축에 놓으려면 정규화가 필요하다 — 주수는 스케일이 8배, 금액은 주가가 6.5배 차이라
+  // 둘 다 그대로는 비교가 안 된다. 상장주식수 대비 비중이 유일하게 같은 자로 잰 값이다.
+  const merge = key => {
+    const dates = [...new Set(items.flatMap(it => it.series.map(r => r.d)))].sort();
+    const by = items.map(it => new Map(it.series.map(r => [r.d, r[key]])));
+    return dates.map(d => ({ d, ...Object.fromEntries(items.map((it, i) => [it.code, by[i].get(d) ?? null])) }));
+  };
+  const lines = items.map((it, i) => ({ key: it.code, cls: cls[i] }));
+  const legend = items.map((it, i) => `<span><i class="sw ${i ? 'cr' : 'acc'}"></i>${esc(it.name)}</span>`).join('');
+
+  const row = (label, fn) => `<tr><td>${label}</td>${items.map(it => `<td class="n">${fn(it)}</td>`).join('')}</tr>`;
+
+  return `<section>
+<h2>그 잔고는 어디에 붙어 있나 — 삼성전자·SK하이닉스</h2>
+<p class="lead">시장 전체 대차잔고(위)가 얼마나 남았는지를 물었다면, 여기서는 <b>어느 종목에</b> 남았는지를 본다.
+  코스피 등락의 상당 부분을 두 종목이 설명하므로(PART 3), 지수의 상방 여력을 볼 때 이 둘의 잔고가
+  시장 평균과 같이 움직이는지가 중요하다. 외국인 지분율을 나란히 놓은 이유는, 되갚기(숏커버)와
+  외국인 재유입이 상방을 만드는 두 축이기 때문이다.</p>
+
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">두 종목이 갈렸다. <b>${esc(a.name)}는 대차잔고가 다시 쌓이는 중</b>(20일 ${a.d20Pct >= 0 ? '+' : ''}${f(a.d20Pct, 1)}%)이고,
+    <b>${esc(b.name)}는 고점 대비 ${f(b.fromPeakPct, 1)}%</b>로 이미 대부분 정리됐다(20일 ${b.d20Pct >= 0 ? '+' : ''}${f(b.d20Pct, 1)}%).
+    외국인 지분율은 반대로 <b>${esc(b.name)}가 저점에서 ${f(b.foreign.fromLowPp, 2)}%p 되돌아왔고</b>
+    ${esc(a.name)}는 ${f(a.foreign.fromLowPp, 2)}%p로 아직 저점 근처다.</div>
+</div>
+
+<figure>
+  <h4>대차잔고 — 상장주식수 대비 비중</h4>
+  ${levelChart(merge('pctListed'), lines, '대차잔고 / 상장주식수 (%)', { dg: 1, zeroBase: false })}
+  <div class="lg">${legend}</div>
+  <figcaption>주수를 상장주식수로 나눠 같은 자로 맞췄다. 주수 그대로는 ${esc(a.name)}가
+    ${f(a.last.shares / b.last.shares, 1)}배라 한 축에 못 놓고, 금액으로는 주가가 달라
+    ${f(a.last.valueJo)}조 vs ${f(b.last.valueJo)}조로 <b>거의 같아 보이는 착시</b>가 생긴다.</figcaption>
+</figure>
+
+<figure>
+  <h4>외국인 지분율</h4>
+  ${levelChart(merge('foreignPct'), lines, '외국인 지분율 (%)', { dg: 1, zeroBase: false })}
+  <div class="lg">${legend}</div>
+  <figcaption>네이버 금융 일별(외국인 보유주식수 ÷ 상장주식수). 0 기준이 아니라 값 범위에 맞춰 그렸다 —
+    46~56% 구간의 움직임을 0부터 그리면 직선으로 보인다.</figcaption>
+</figure>
+
+<div class="tw"><table>
+  <thead><tr><th>${dtFull(S.asOf)} 기준</th>${items.map(it => `<th class="n">${esc(it.name)}</th>`).join('')}</tr></thead>
+  <tbody>
+    ${row('대차잔고(백만주)', it => f(it.last.shares / 1e6, 1))}
+    ${row('상장주식수 대비', it => f(it.last.pctListed, 2) + '%')}
+    ${row('잔고 평가액(조)', it => f(it.last.valueJo))}
+    ${row('사이클 고점', it => `${f(it.peak.shares / 1e6, 1)} <span class="mut">${dtFull(it.peak.d)}</span>`)}
+    ${row('고점 대비', it => `<b class="${it.fromPeakPct <= -30 ? 'up' : 'dn'}">${f(it.fromPeakPct, 1)}%</b>`)}
+    ${row('최근 20일', it => `<b class="${it.d20Pct >= 0 ? 'dn' : 'up'}">${it.d20Pct >= 0 ? '+' : ''}${f(it.d20Pct, 1)}%</b>`)}
+    ${row('최근 60일', it => `${it.d60Pct >= 0 ? '+' : ''}${f(it.d60Pct, 1)}%`)}
+    ${row('외국인 지분율', it => it.foreign ? f(it.foreign.last.foreignPct, 2) + '%' : '-')}
+    ${row('외국인 최고', it => it.foreign ? `${f(it.foreign.high.foreignPct, 2)}% <span class="mut">${dtFull(it.foreign.high.d)}</span>` : '-')}
+    ${row('외국인 최저', it => it.foreign ? `${f(it.foreign.low.foreignPct, 2)}% <span class="mut">${dtFull(it.foreign.low.d)}</span>` : '-')}
+    ${row('저점 대비 회복', it => it.foreign ? `<b class="${it.foreign.fromLowPp >= 1 ? 'up' : ''}">+${f(it.foreign.fromLowPp, 2)}%p</b>` : '-')}
+  </tbody>
+</table></div>
+
+<div class="box">
+  <b>왜 대차잔고를 주수로 보나</b> — 금액으로 보면 ${esc(a.name)} ${f(a.last.valueJo)}조,
+  ${esc(b.name)} ${f(b.last.valueJo)}조로 거의 같다. 그런데 주수는
+  ${f(a.last.shares / 1e6, 1)}백만주 vs ${f(b.last.shares / 1e6, 1)}백만주로 ${f(a.last.shares / b.last.shares, 1)}배 차이다.
+  주가가 오르면 한 주도 안 늘어도 금액이 커진다 — PART 3 에서 ETF 를 AUM 이 아니라 좌수로 본 것과 같은 이유다.
+</div>
+
+<div class="box warn">
+  <b>한계</b> — 대차잔고는 공매도의 <b>프록시</b>일 뿐이다. 빌린 주식이 전부 공매도로 나가는 것은 아니고
+  (차익거래·ETF 설정·의결권 관련 대차가 섞인다), 반대로 되갚기가 전부 숏커버 매수인 것도 아니다.
+  외국인 지분율은 <b>보유 기준</b>이라 대차로 빌려준 주식도 그대로 잡힌다 — 두 계열을 더하거나 빼면 안 되고,
+  각각의 방향만 읽어야 한다. 종목별 실제 공매도 잔고(순보유잔고)는 KRX 가 따로 공표하지만
+  정보데이터시스템이 봇 차단이라 이 파이프라인에서는 받지 못한다(§26).
+</div>
+</section>`;
+})();
 
 let coverSection = '';
 if (A.lending?.cover) {
@@ -2079,6 +2170,8 @@ ${unpaidSection}
 ${lendingSection}
 
 ${coverSection}
+
+${stockFlowSection}
 
 </div><!-- /p-up -->
 

@@ -55,6 +55,8 @@ jobs:
           node scripts/fetch-etf.mjs || ERR="$ERR etf"
           # 홍콩 CSOP. 실패하면 어제 스냅샷이 그대로 남는다 — 그걸로 충분하다.
           node scripts/fetch-csop.mjs || ERR="$ERR csop"
+          # PART 2 보조. 종목별 대차잔고(FREESIS)와 외국인 지분율(네이버).
+          node scripts/fetch-stock-flows.mjs || ERR="$ERR stockflows"
           echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
           echo "실패한 소스: ${ERR:-없음}"
 

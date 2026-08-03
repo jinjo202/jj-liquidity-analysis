@@ -129,6 +129,71 @@ const ratioSeries = raw.series
   }));
 const ratioAt = d => ratioSeries.find(r => r.date === d) ?? null;
 
+/* ---------- 종목별 대차잔고·외국인 지분율 (PART 2 보조) ---------- */
+// 시장 전체 대차잔고는 "얼마나 더 오를 수 있나" 를 묻는다. 여기서는 그 잔고가 어느 종목에
+// 붙어 있는지를 묻는다 — 코스피 등락의 상당 부분을 두 종목이 설명하기 때문이다(PART 3).
+//
+// 주수로 본다. 금액은 가격이 섞여 두 종목을 비교할 수 없다 — 실제로 삼성 94.7백만주와
+// 하이닉스 13.6백만주가 금액으로는 24.9조 vs 23.4조로 거의 같아 보인다(주가가 6.5배 차이).
+// 종목 간 비교는 상장주식수 대비 비중으로 한다.
+const stockFlowPath = path.join(DIR, 'stock-flows.json');
+const stockFlows = fs.existsSync(stockFlowPath)
+  ? JSON.parse(fs.readFileSync(stockFlowPath, 'utf8'))
+  : null;
+
+function analyzeStockFlows() {
+  if (!stockFlows?.stocks?.length) return null;
+  // 상장주식수(units)와 종가는 etf-daily.json 이 두 종목까지 같이 받아 둔다(§23).
+  const etfFile = path.join(DIR, 'etf-daily.json');
+  const px = fs.existsSync(etfFile)
+    ? JSON.parse(fs.readFileSync(etfFile, 'utf8')).series ?? null
+    : null;
+
+  const items = stockFlows.stocks.map(st => {
+    const listed = px?.[st.code]?.at(-1)?.units ?? null;
+    const rows = st.series
+      .filter(r => Number.isFinite(r.balanceShares))
+      .map(r => ({
+        d: r.d,
+        shares: r.balanceShares,
+        pctListed: listed ? (r.balanceShares / listed) * 100 : null,
+        valueJo: r.close ? (r.balanceShares * r.close) / 1e12 : null,
+        foreignPct: r.foreignPct ?? null,
+        close: r.close ?? null,
+      }));
+    if (rows.length < 20) return null;
+
+    const first = rows[0], last = rows.at(-1);
+    const peak = rows.reduce((a, r) => (r.shares > a.shares ? r : a));
+    const trough = rows.reduce((a, r) => (r.shares < a.shares ? r : a));
+    const fRows = rows.filter(r => r.foreignPct != null);
+    const fFirst = fRows[0] ?? null, fLast = fRows.at(-1) ?? null;
+    const fHigh = fRows.length ? fRows.reduce((a, r) => (r.foreignPct > a.foreignPct ? r : a)) : null;
+    const fLow = fRows.length ? fRows.reduce((a, r) => (r.foreignPct < a.foreignPct ? r : a)) : null;
+    const back = n => rows[Math.max(0, rows.length - 1 - n)];
+
+    return {
+      code: st.code, name: st.name, listedShares: listed,
+      first, last, peak, trough,
+      fromPeakPct: peak.shares > 0 ? (last.shares / peak.shares - 1) * 100 : null,
+      d20Pct: (last.shares / back(20).shares - 1) * 100,
+      d60Pct: (last.shares / back(60).shares - 1) * 100,
+      foreign: fLast && {
+        first: fFirst, last: fLast, high: fHigh, low: fLow,
+        // 저점에서 얼마나 되돌아왔나. 외국인이 다시 들어오는지가 숏커버와 함께 상방을 만든다.
+        fromLowPp: fLast.foreignPct - fLow.foreignPct,
+        d20Pp: fLast.foreignPct - (back(20).foreignPct ?? fLast.foreignPct),
+      },
+      // 차트용. 385일을 다 실으면 index.html 이 커진다 — 3일에 하나씩 + 마지막 날.
+      series: rows.filter((r, i) => i % 3 === 0 || i === rows.length - 1),
+    };
+  }).filter(Boolean);
+
+  if (!items.length) return null;
+  return { asOf: items[0].last.d, source: stockFlows.meta, items };
+}
+const stockFlow = analyzeStockFlows();
+
 /* ---------- 시장별 되돌림 진척 ---------- */
 // 합계만 보면 "아직 17%밖에 안 풀렸다"로 읽히는데, 쪼개면 두 시장이 정반대다.
 // 코스닥은 이번 사이클에 쌓은 것을 거의 다 토해냈고 코스피는 거의 그대로 들고 있다.
@@ -739,6 +804,7 @@ const out = {
   periods, repro, reproMAE, stress, projection, monthly, lending, etf, outlook, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   divergence,
+  stockFlow,
   series: raw.series
     .filter(r => Number.isFinite(r.OS0001))
     .map(r => ({ d: r.date, i: r.OS0001, q: r.OS0002 ?? null, c: r.OS0026 ?? null })),
