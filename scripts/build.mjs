@@ -444,15 +444,16 @@ const divergenceSection = !A.divergence ? '' : (() => {
 </div>
 
 <div class="tw"><table>
-  <thead><tr><th>${dtFull(D.asOf)} 기준</th>${cols.map(c => `<th class="n">${esc(c.market)}</th>`).join('')}</tr></thead>
+  <thead><tr><th>항목 <span class="mut">잔고는 ${dtFull(D.asOf)} 확정치</span></th>${cols.map(c => `<th class="n">${esc(c.market)}</th>`).join('')}</tr></thead>
   <tbody>
-    ${row('사이클 시작 잔고(조)', c => f(c.startJo))}
+    ${row('사이클 시작 잔고(조)', c => f(c.startJo), `${dtFull(K.startDate)}`)}
     ${row('고점 잔고(조)', c => `${f(c.peakJo)} <span class="mut">${dtFull(c.peakDate)}</span>`)}
-    ${row('현재 잔고(조)', c => f(c.lastJo))}
+    ${row('현재 잔고(조)', c => f(c.lastJo), `${dtFull(D.asOf)}`)}
     ${row('이번 사이클에 쌓은 것(조)', c => f(c.builtJo))}
     ${row('되돌린 것(조)', c => f(c.retracedJo))}
     ${row('<b>쌓은 것 대비 되돌림</b>', c => `<b>${f(c.retracedPctOfBuild, 0)}%</b>`)}
-    ${row('현재 잔고 / 시작 잔고', c => `${f(c.multipleOfStart, 2)}배`)}
+    ${row('현재 잔고 / 시작 잔고', c => `${f(c.multipleOfStart, 2)}배`,
+      `${dtFull(D.asOf)} ÷ ${dtFull(K.startDate)}`)}
     ${row('고점 대비 청산률', c => f(c.unwindPct, 1) + '%')}
     ${row('직전 사이클 최종 청산률', c => f(c.prevUnwindPct, 1) + '%', '(완주한 값)')}
     ${row('신용/시총', c => c.now ? f(c.now.ratio, 3) + '%' : '-')}
@@ -489,7 +490,10 @@ const divergenceSection = !A.divergence ? '' : (() => {
   (직전 저점끼리 ${f(Q.prevTrough.ratio, 3)}% vs ${f(K.prevTrough.ratio, 3)}%). 그래서 위 표는 두 시장을 서로 견주지 않고
   <b>각자의 과거</b>와 견줬다. 또 비율의 분모인 시가총액이 급락으로 빠르게 줄어 비율이 실제보다 높게 보인다 —
   코스피가 저점 비율 위에 있다는 판정은 그만큼 <b>보수적</b>이고, 코스닥이 저점 아래라는 판정은 그만큼 <b>더 강하다</b>.
-  ${done ? `잔고 기준일(${dtFull(D.asOf)})은 지수보다 하루 늦다 — 신용융자는 결제일 기준이다.` : ''}
+  <br><b>기준일</b> — "시작"은 ${dtFull(K.startDate)}로, 이번 사이클의 적립 기준일(2025년에 쌓인 몫을 재는
+  출발선)이다. "현재"는 ${dtFull(D.asOf)}로, <b>시장별 분리 잔고가 나와 있는 마지막 날</b>이다.
+  신용융자는 결제일 기준이라 지수(${dtFull(A.series.at(-1).d)})보다 늦게 확정되고, 분리 계열은
+  전체 계열(${dtFull(A.channels?.last?.date ?? D.asOf)})보다 하루 더 늦다. 배수는 이 두 날짜의 잔고 비다.
 </div>
 </section>`;
 })();

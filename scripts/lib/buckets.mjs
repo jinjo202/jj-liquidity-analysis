@@ -280,7 +280,7 @@ export function analyzeMarket({ rows, idxRows, accBase, accEnd, evalEnd, width, 
       idxDrawdownPct: (troughIdx / idxPeak.idx - 1) * 100,
       idxLast: evalWindow.at(-1).idx, idxLastDate: evalWindow.at(-1).date,
 
-      creditStartJo: jo(accRows[0].credit),
+      creditStartJo: jo(accRows[0].credit), creditStartDate: accRows[0].date,
       creditPeakDate: creditPeak.date, creditPeakJo: jo(creditPeak.credit),
       creditTroughDate: creditTrough.date, creditTroughJo: jo(creditTrough.credit),
       creditLastJo: jo(creditWindow.at(-1).credit), creditLastDate: creditWindow.at(-1).date,

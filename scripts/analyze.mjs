@@ -159,7 +159,8 @@ function marketDivergence() {
     const retracedJo = h.creditPeakJo - h.creditLastJo;
     return {
       market: name,
-      startJo: h.creditStartJo, peakJo: h.creditPeakJo, peakDate: h.creditPeakDate,
+      startJo: h.creditStartJo, startDate: h.creditStartDate,
+      peakJo: h.creditPeakJo, peakDate: h.creditPeakDate,
       lastJo: h.creditLastJo, lastDate: h.creditLastDate,
       builtJo, retracedJo,
       // 이번 사이클에 쌓은 것 중 몇 %를 되돌렸나. 고점 대비 청산률(unwindPct)과 달리
