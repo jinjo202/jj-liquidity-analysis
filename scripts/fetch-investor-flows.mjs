@@ -4,7 +4,7 @@
 // 개인이 팔았는데 기관이 받아 좌수가 그대로일 수도 있다. 항복 판정은 이 조각이 있어야 선다.
 //
 // 소스 선정 기록(2026-08-03):
-//   KRX 정보데이터시스템 — 개인을 직접 주지만 봇 차단(fetch-etf.mjs 와 같은 이유). 못 쓴다.
+//   KRX 정보데이터시스템 — 개인을 직접 주지만 로그인이 필요하다(KRX Data Marketplace). 익명 요청은 400 LOGOUT.
 //   네이버 item/frgn, 다음 investor/days — 기관·외국인만 준다. 개인은 없다.
 //   ★ 네이버 모바일 m.stock.naver.com/api/stock/{code}/trend — individualPureBuyQuant 로
 //     개인 순매수를 **직접** 준다. 개별주·ETF 모두 동작한다. 채택.

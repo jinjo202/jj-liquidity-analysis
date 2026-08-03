@@ -19,7 +19,7 @@
 //
 // 2) 외국인 지분율 — 네이버 금융 `item/frgn.naver`. 한 페이지 20행이고 EUC-KR 이다.
 //    행: 날짜 | 종가 | 전일비 | 등락률 | 거래량 | 기관순매매 | 외국인순매매 | 외국인보유주식수 | 외국인지분율.
-//    KRX 정보데이터시스템은 봇 차단이라 못 쓴다(fetch-etf.mjs 의 소스 선정 기록과 같은 이유).
+//    KRX 정보데이터시스템은 로그인이 필요해 익명으로는 못 쓴다(§23.1).
 //
 // 사용법: node scripts/fetch-stock-flows.mjs [시작일 YYYYMMDD]
 import fs from 'node:fs';
@@ -128,7 +128,7 @@ async function fetchForeign(code, fromDate) {
 const out = {
   meta: {
     lending: 'FREESIS 대차거래추이 (STATSCU0100000140, tmpV72=종목코드). 잔고금액(백만원)은 교차검증용으로만 두고, 표시 금액은 주수 × 종가로 계산한다(§26).',
-    foreign: '네이버 금융 item/frgn (외국인 보유주식수·지분율). KRX 정보데이터시스템은 봇 차단이라 쓰지 못한다.',
+    foreign: '네이버 금융 item/frgn (외국인 보유주식수·지분율). KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.',
     fetchedAt: new Date().toISOString().slice(0, 10),
     start: START,
   },
