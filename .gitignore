@@ -28,3 +28,6 @@ scratch/
 
 # 스크래이핑 원본 응답. 파싱 규칙 확정 전까지는 로컬에서만 본다.
 data/lending-raw.json
+
+.vercel
+.env*
