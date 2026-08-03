@@ -112,12 +112,24 @@ jobs:
           git add -A
           git commit -m "${MSG}"
           # 돌고 있는 사이에 원격이 움직였을 수 있다(사람이 push 하거나 앞선 실행이 커밋하거나).
-          # 그대로 push 하면 non-fast-forward 로 거절된다. rebase 후 한 번 더 시도한다.
-          git push || {
-            echo "push 거절 — 원격을 rebase 후 재시도"
-            git pull --rebase origin main
-            git push
-          }
+          # 그대로 push 하면 non-fast-forward 로 거절된다. rebase 후 다시 시도한다.
+          #
+          # 예전에는 여기서 그냥 `git pull --rebase` 였는데, status.json 은 실행마다 ranBy/runUrl 이
+          # 달라 **항상 충돌**한다. 충돌이 나면 rebase 가 중단된 채 스텝이 exit 1 로 죽었다
+          # (실제로 두 실행이 겹쳤을 때 그렇게 실패했다).
+          # 이 커밋이 건드리는 것은 전부 생성물(index/email/data/status)이고, 이번 실행이 가장
+          # 최신 데이터로 방금 만든 것이다. 따라서 충돌하면 우리 쪽을 택하는 게 옳다 —
+          # rebase 에서 '적용 중인 커밋'을 가리키는 것은 -X theirs 다(-X ours 는 원격).
+          for i in 1 2 3; do
+            if git push; then exit 0; fi
+            echo "push 거절 (${i}/3) — 원격을 rebase 후 재시도"
+            git pull --rebase -X theirs origin main || {
+              echo "rebase 실패 — 중단하고 이번 실행은 포기한다(다음 스케줄이 다시 만든다)"
+              git rebase --abort || true
+              exit 1
+            }
+          done
+          git push
 
       # 실패해도 그 사실이 배포된 status.json 에 남아야 한다. 저장소가 private 이라
       # Actions 로그를 URL 로 못 보고, 실패한 실행은 위 커밋 단계까지 가지 못하기 때문이다.
