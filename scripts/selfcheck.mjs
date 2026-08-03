@@ -3,6 +3,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { placeLabels } from './lib/labels.mjs';
 
 const A = JSON.parse(fs.readFileSync(
   path.join(import.meta.dirname, '..', 'data', 'analysis.json'), 'utf8'));
@@ -195,6 +196,25 @@ if (fs.existsSync(wfDir)) {
       const m = /^\s+(run|name|if):\s+([^|>].*)$/.exec(line);
       assert.ok(!(m && /:\s/.test(m[2])), `${f}:${i + 1} 한 줄 ${m?.[1]}: 안에 ': ' 가 있다 — 블록 스칼라(|)로 바꿀 것`);
     });
+  }
+}
+
+// 차트 라벨 배치(lib/labels.mjs). 예탁금 커버리지 차트에서 '26 고점'과 '현재'가 한 달 차이라
+// 라벨이 같은 자리에 겹쳐 찍혔고, 맨 오른쪽 라벨은 절반이 뷰박스 밖으로 잘렸다. 둘 다 여기서 막는다.
+{
+  const W = 660, minY = 22;
+  const placed = placeLabels([
+    { cx: 640, cy: 113, text: '2026 고점 3.53배' },
+    { cx: 644, cy: 120, text: '현재 3.25배' },      // 위와 4px 차이 — 예전엔 그대로 겹쳤다
+    { cx: 468, cy: 132, text: '2021 고점 2.74배' },
+  ], { W, minY });
+  for (const p of placed) {
+    assert.ok(p.x - p.w / 2 >= 0 && p.x + p.w / 2 <= W, `라벨이 뷰박스 밖이다: ${p.text}`);
+    assert.ok(p.y > minY, `라벨이 차트 위로 넘쳤다: ${p.text}`);
+  }
+  for (const [a, b] of placed.flatMap((x, i) => placed.slice(i + 1).map(y => [x, y]))) {
+    const overlap = Math.abs(a.x - b.x) < (a.w + b.w) / 2 && Math.abs(a.y - b.y) < 10;
+    assert.ok(!overlap, `라벨이 겹친다: "${a.text}" vs "${b.text}"`);
   }
 }
 

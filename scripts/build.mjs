@@ -3,6 +3,7 @@
 // file:// 로 열어도 그대로 보이고, fetch 로 데이터를 읽지 않으므로 CORS 문제도 없다.
 import fs from 'node:fs';
 import path from 'node:path';
+import { placeLabels } from './lib/labels.mjs';
 
 const ROOT = path.join(import.meta.dirname, '..');
 const A = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'analysis.json'), 'utf8'));
@@ -477,12 +478,18 @@ function ratioChart(rows, marks, unit = '신용융자 / 시가총액 (%)', suf =
     if (y !== lastY) { yearTicks.push({ i, label: `'${y.slice(2)}` }); lastY = y; }
   });
 
-  const mk = marks.filter(Boolean).map(mm => {
-    const i = rows.findIndex(r => r.date >= mm.date);
-    if (i < 0) return '';
-    return `<circle class="rdot" cx="${xAt(i).toFixed(1)}" cy="${yAt(mm.ratio).toFixed(1)}" r="3.2"/>
-      <text class="ax sm" x="${xAt(i).toFixed(1)}" y="${(yAt(mm.ratio) - 8).toFixed(1)}" text-anchor="middle">${mm.label} ${f(mm.ratio, dg)}${suf}</text>`;
-  }).join('');
+  // 기준점 라벨은 서로 겹치고 오른쪽 끝에서 잘렸다 — 배치는 labels.mjs 가 푼다(selfcheck 가 검증).
+  const mk = placeLabels(
+    marks.filter(Boolean)
+      .map(mm => ({ mm, i: rows.findIndex(r => r.date >= mm.date) }))
+      .filter(x => x.i >= 0)
+      .map(({ mm, i }) => ({
+        cx: xAt(i), cy: yAt(mm.ratio) - 8, dotY: yAt(mm.ratio),
+        text: `${mm.label} ${f(mm.ratio, dg)}${suf}`,
+      })),
+    { W, minY: M.t }
+  ).map(p => `<circle class="rdot" cx="${p.cx.toFixed(1)}" cy="${p.dotY.toFixed(1)}" r="3.2"/>
+      <text class="ax sm" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle">${esc(p.text)}</text>`).join('');
 
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="신용융자 대 시가총액 비율">
   ${ticks(0, vMax).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
