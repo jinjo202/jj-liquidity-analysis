@@ -1093,6 +1093,7 @@ ${SH ? `<figure>
 let channelsSection = '';
 if (A.channels) {
   const C = A.channels;
+  const CD = C.creditToDeposit;      // 커버리지의 역수 + 정상 수준 기준선
   const markRows = C.marks.map(m => `<tr>
     <td>${esc(m.label)}</td><td>${dtFull(m.date)}</td>
     <td class="n">${f(m.depositJo)}</td><td class="n">${f(m.creditJo)}</td>
@@ -1154,6 +1155,42 @@ if (A.channels) {
     <th class="n">담보융자(조)</th><th class="n">총 레버리지(조)</th><th class="n">커버리지(배)</th></tr></thead>
   <tbody>${markRows}</tbody>
 </table></div>
+
+${!CD ? '' : `<h3>같은 값을 뒤집어서 — 예탁금 대비 신용융자</h3>
+<p class="lead">커버리지(예탁금 ÷ 신용융자)를 뒤집으면 <b>"빚이 대기자금의 몇 %인가"</b>가 된다. 같은 정보지만
+  이쪽이 과열 여부를 묻기 쉽다. 그리고 <b>고점 대비로만 보면 안 된다</b> — 그 고점이 정상이었을 수도 있기 때문에,
+  중앙값을 기준선으로 같이 놓는다.</p>
+
+<div class="cards">
+  <div class="card"><div class="lb">현재 신용융자/예탁금</div><div class="vl">${f(CD.last.ratio, 1)}<span class="u">%</span></div><div class="nt">${f(CD.last.creditJo)}조 ÷ ${f(CD.last.depositJo, 0)}조 · 역대 ${f(CD.pct, 0)}분위</div></div>
+  <div class="card"><div class="lb">역대 최고</div><div class="vl">${f(CD.high.ratio, 1)}<span class="u">%</span></div><div class="nt">${dtFull(CD.high.date)} · 현재는 그 ${f(CD.last.ratio / CD.high.ratio * 100, 0)}% 수준</div></div>
+  <div class="card"><div class="lb">정상 수준(최근 3년 중앙값)</div><div class="vl">${f(CD.normal.y3, 1)}<span class="u">%</span></div><div class="nt">전 구간 ${f(CD.normal.all, 1)}% · 2024년 ${f(CD.normal.y2024, 1)}%</div></div>
+  ${CD.total ? `<div class="card"><div class="lb">총 레버리지/예탁금</div><div class="vl">${f(CD.total.last.ratio, 1)}<span class="u">%</span></div><div class="nt">담보융자 포함 · 역대 ${f(CD.total.pct, 0)}분위</div></div>` : ''}
+</div>
+
+<div class="box warn">
+  <b>신용 고점달도 과열이 아니었다</b> — 신용융자 절대액이 사상 최대 ${f(CD.atCreditPeak?.creditJo)}조를 찍은
+  ${dtFull(CD.atCreditPeak?.date)}조차 이 비율은 <b>${f(CD.atCreditPeak?.ratio, 1)}%</b>였다. 예탁금이
+  ${f(CD.atCreditPeak?.depositJo, 0)}조로 같이 불어났기 때문이다. 그 달 최대치도 ${f(CD.peakMonthHigh?.ratio, 1)}%로
+  최근 3년 중앙값 ${f(CD.normal.y3, 1)}%보다 <b>낮았다</b>.
+  현재 ${f(CD.last.ratio, 1)}%는 "정상까지 내려왔다"가 아니라 <b>정상보다 아래</b>다.
+</div>
+
+${CD.divergesFromTotal ? `<div class="box warn">
+  <b>담보융자를 더하면 방향이 뒤집힌다</b> — 신용융자만 보면 신용 고점달 ${f(CD.peakMonthHigh.ratio, 1)}% →
+  현재 ${f(CD.last.ratio, 1)}%로 내려왔다. 그런데 총 레버리지(신용+담보융자) 기준으로는
+  그 달 ${f(CD.total.peakMonthHigh.totRatio, 1)}% → 현재 <b>${f(CD.total.last.ratio, 1)}%로 오히려 높다</b>.
+  담보융자가 안 줄어드는 사이 <b>예탁금이 더 빨리 빠졌기</b> 때문이다.
+  위에서 말한 "사다리가 안 세는 레버리지"가 비율에서도 똑같이 드러난다.
+</div>` : ''}
+
+<div class="box">
+  <b>이 비율이 낮다고 안전한 것은 아니다</b> — 분모인 예탁금이 급락 때 같이 빠진다.
+  실제로 ${dtFull(CD.atCreditPeak?.date)} ${f(CD.atCreditPeak?.depositJo, 0)}조 → ${dtFull(CD.last.date)} ${f(CD.last.depositJo, 0)}조로
+  ${f((1 - CD.last.depositJo / (CD.atCreditPeak?.depositJo ?? 1)) * 100, 0)}% 줄었다. 분자와 분모가 같은 방향으로 움직이면
+  비율은 위험을 <b>과소평가</b>한다. 역대 최고 ${f(CD.high.ratio, 1)}%(${dtFull(CD.high.date)})가 나온 것도
+  예탁금 규모가 지금과 전혀 달랐던 시절이기 때문이다. 또 예탁금은 <b>대기자금</b>이지 반드시 매수에 쓰이는 돈이 아니다.
+</div>`}
 
 <div class="box">
   <b>이 사이클은 2021년보다 실탄이 두껍다</b> — 커버리지는 2021년 신용 고점에서 ${f(C.marks.find(m => m.label === '2021 신용 고점')?.coverage)}배였는데

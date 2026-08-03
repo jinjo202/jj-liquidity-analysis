@@ -199,6 +199,27 @@ if (fs.existsSync(wfDir)) {
   }
 }
 
+// 예탁금 대비 신용융자(§28). 커버리지의 역수라 둘이 어긋나면 둘 중 하나가 틀린 것이다.
+if (A.channels?.creditToDeposit) {
+  const CD = A.channels.creditToDeposit;
+  near(CD.last.ratio, (CD.last.creditJo / CD.last.depositJo) * 100, 1e-6, '신용/예탁금');
+  near(CD.last.ratio, 100 / A.channels.last.coverage, 1e-6, '커버리지의 역수와 불일치');
+  assert.ok(CD.high.ratio >= CD.last.ratio, '역대 최고가 현재보다 낮다');
+  assert.ok(CD.low.ratio <= CD.last.ratio, '역대 최저가 현재보다 높다');
+  assert.ok(CD.pct >= 0 && CD.pct <= 100, `백분위 범위 밖: ${CD.pct}`);
+  for (const [k, v] of Object.entries(CD.normal)) {
+    assert.ok(v > 0 && v < 100, `정상 기준선 ${k} 가 범위 밖이다: ${v}`);
+  }
+  if (CD.total) {
+    // 총 레버리지는 신용을 포함하므로 언제나 신용 단독보다 크거나 같아야 한다.
+    assert.ok(CD.total.last.ratio >= CD.last.ratio,
+      `총 레버리지 비율(${CD.total.last.ratio})이 신용 단독(${CD.last.ratio})보다 작다`);
+    assert.equal(CD.divergesFromTotal,
+      CD.last.ratio < CD.peakMonthHigh.ratio && CD.total.last.ratio > CD.total.peakMonthHigh.totRatio,
+      '역전 판정이 값과 어긋난다');
+  }
+}
+
 // 투자자별 순매수(§27). 소스가 20거래일 창만 주므로 누적이 끊기지 않았는지,
 // 그리고 합계·판정이 계열과 어긋나지 않는지 본다.
 if (A.investorFlow) {

@@ -681,8 +681,62 @@ function leverageChannels() {
     { label: '현재', ...last },
   ].filter(m => m && Number.isFinite(m.coverage));
 
+  // 커버리지의 역수 = 예탁금 대비 신용융자(%). 같은 정보인데 이쪽이 "빚이 대기자금의 몇 %인가"로
+  // 바로 읽힌다. 커버리지에는 없던 것을 하나 더 붙인다 — **정상 수준 기준선**.
+  // 고점 대비로만 보면 "고점보다 낮으니 안전"이 되는데, 그 고점이 비정상이었으면 무의미하다.
+  // 그래서 중앙값을 여러 창으로 내서 지금이 그 위인지 아래인지로 판정한다.
+  const medOf = arr => { const s = [...arr].sort((a, b) => a - b); return s.length ? s[Math.floor(s.length / 2)] : null; };
+  const ratioRows = rows.map(r => ({ ...r, ratio: (r.creditJo / r.depositJo) * 100 }));
+  const totRows = ratioRows.filter(r => r.pledgeJo != null)
+    .map(r => ({ ...r, totRatio: (r.totalLevJo / r.depositJo) * 100 }));
+  const win = (rs, a, b) => rs.filter(r => r.date >= a && r.date <= b);
+  const pctile = (rs, key, v) => {
+    const s = rs.map(r => r[key]).sort((a, b) => a - b);
+    return (s.filter(x => x <= v).length / s.length) * 100;
+  };
+  const openBase = periods.find(p => !p.closed)?.accBase ?? '20241231';
+  const rLast = ratioRows.at(-1), tLast = totRows.at(-1);
+  const junePeak = (rs, key) => {
+    // 이번 사이클에서 신용융자 절대액이 고점을 찍은 달. "그때 과열이었나" 를 묻는 기준점이다.
+    const pk = hB?.creditPeakDate;
+    if (!pk) return null;
+    const w = win(rs, `${pk.slice(0, 6)}01`, `${pk.slice(0, 6)}31`);
+    return w.length ? w.reduce((m, r) => (r[key] > m[key] ? r : m)) : null;
+  };
+
+  const creditToDeposit = {
+    last: { date: rLast.date, ratio: rLast.ratio, creditJo: rLast.creditJo, depositJo: rLast.depositJo },
+    high: ratioRows.reduce((m, r) => (r.ratio > m.ratio ? r : m)),
+    low: ratioRows.reduce((m, r) => (r.ratio < m.ratio ? r : m)),
+    cycleHigh: (() => { const w = win(ratioRows, openBase, '29991231'); return w.length ? w.reduce((m, r) => (r.ratio > m.ratio ? r : m)) : null; })(),
+    peakMonthHigh: junePeak(ratioRows, 'ratio'),
+    atCreditPeak: hB ? ratioRows.find(r => r.date === hB.creditPeakDate) ?? null : null,
+    pct: pctile(ratioRows, 'ratio', rLast.ratio),
+    normal: {
+      all: medOf(ratioRows.map(r => r.ratio)),
+      y3: medOf(win(ratioRows, '20230801', '29991231').map(r => r.ratio)),
+      y2024: medOf(win(ratioRows, '20240101', '20241231').map(r => r.ratio)),
+      preCycle: medOf(win(ratioRows, '20241201', '20241231').map(r => r.ratio)),
+    },
+    // 담보융자까지 더한 총 레버리지. 신용 단독과 방향이 갈릴 수 있어 반드시 같이 본다.
+    total: !tLast ? null : {
+      last: { date: tLast.date, ratio: tLast.totRatio },
+      high: totRows.reduce((m, r) => (r.totRatio > m.totRatio ? r : m)),
+      peakMonthHigh: junePeak(totRows, 'totRatio'),
+      pct: pctile(totRows, 'totRatio', tLast.totRatio),
+      normal: {
+        all: medOf(totRows.map(r => r.totRatio)),
+        y3: medOf(win(totRows, '20230801', '29991231').map(r => r.totRatio)),
+      },
+    },
+  };
+  // 신용 단독은 고점 아래인데 총 레버리지는 그렇지 않은 경우가 있다 — 그때 서사가 갈린다.
+  creditToDeposit.divergesFromTotal = !!(creditToDeposit.total?.peakMonthHigh
+    && creditToDeposit.last.ratio < creditToDeposit.peakMonthHigh?.ratio
+    && creditToDeposit.total.last.ratio > creditToDeposit.total.peakMonthHigh.totRatio);
+
   return {
-    last, pct, covMin, covMax, levPeak, marks,
+    last, pct, covMin, covMax, levPeak, marks, creditToDeposit,
     pledgeSharePct: last.pledgeJo != null ? (last.pledgeJo / last.totalLevJo) * 100 : null,
     series: rows.filter((r, i) => i % 5 === 0 || i === rows.length - 1)
       .map(r => ({ d: r.date, dep: r.depositJo, cr: r.creditJo, pl: r.pledgeJo, cov: r.coverage })),
