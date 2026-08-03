@@ -967,9 +967,43 @@ const stockFlowSection = !A.stockFlow ? '' : (() => {
     46~56% 구간의 움직임을 0부터 그리면 직선으로 보인다.</figcaption>
 </figure>
 
+${items.map(it => {
+  const s = it.series.filter(r => r.close && r.foreignPct != null);
+  if (s.length < 20) return '';
+  const first = s[0], last = s.at(-1);
+  const pxPct = (last.close / first.close - 1) * 100;
+  const shPct = (last.shares / first.shares - 1) * 100;
+  const frPp = last.foreignPct - first.foreignPct;
+  const span = `${dtFull(first.d)} 이후`;
+  // 세 계열을 한 축에 얹을 수 없다 — 주가는 이 구간에 몇 배가 됐고 지분율은 몇 %p 움직였다.
+  // 지수화(=100)해도 주가가 나머지를 눌러 평평하게 만든다. x축만 맞춘 3단으로 쌓는다.
+  return `<figure>
+  <h4>${esc(it.name)} — 주가 · 대차잔고 · 외국인 지분율</h4>
+  ${trendChart(s.map(r => ({ d: r.d, v: r.close })), `${esc(it.name)} 주가 (원)`, 0, span)}
+  ${trendChart(s.map(r => ({ d: r.d, v: r.shares / 1e6 })), '대차잔고 (백만주) — 공매도 프록시', 0, span)}
+  ${trendChart(s.map(r => ({ d: r.d, v: r.foreignPct })), '외국인 지분율 (%)', 1, span)}
+  <figcaption>같은 기간 주가 <b>${pxPct >= 0 ? '+' : ''}${f(pxPct, 0)}%</b>,
+    대차잔고 주수 <b>${shPct >= 0 ? '+' : ''}${f(shPct, 1)}%</b>,
+    외국인 지분율 <b>${frPp >= 0 ? '+' : ''}${f(frPp, 2)}%p</b>.
+    세 계열은 축이 서로 달라 <b>따로 그렸다</b> — 지수화해서 겹치면 주가가 나머지를 눌러 평평하게 만든다.
+    x축 구간만 같다.</figcaption>
+</figure>`;
+}).join('')}
+
+<div class="box">
+  <b>주가가 오르는 내내 외국인 비중은 줄었다</b> — 이 구간은 전체로 보면 급등장이다
+  (${esc(items[0].name)} ${f((items[0].last.close / items[0].series[0].close - 1) * 100, 0)}%,
+  ${esc(items[1].name)} ${f((items[1].last.close / items[1].series[0].close - 1) * 100, 0)}%).
+  그런데 외국인 지분율은 오히려 ${f(items[0].foreign.first.foreignPct - items[0].foreign.last.foreignPct, 1)}~${f(items[1].foreign.first.foreignPct - items[1].foreign.last.foreignPct, 1)}%p 낮아졌다.
+  <b>올라가는 주식을 외국인이 덜어냈다</b>는 뜻이고, 그 물량을 받은 쪽이 개인이다(PART 3 투자자별 순매수).
+  대차잔고 주수도 구간 전체로는 줄었다 — <b>다만 최근 흐름은 종목별로 갈린다</b>(위 판정 참조).
+  주가 급등을 공매도 탓으로, 급락을 공매도 급증 탓으로 돌리는 설명은 이 세 계열 어디에서도 잘 지지되지 않는다.
+</div>
+
 <div class="tw"><table>
   <thead><tr><th>${dtFull(S.asOf)} 기준</th>${items.map(it => `<th class="n">${esc(it.name)}</th>`).join('')}</tr></thead>
   <tbody>
+    ${row('주가(원)', it => k0(it.last.close))}
     ${row('대차잔고(백만주)', it => f(it.last.shares / 1e6, 1))}
     ${row('상장주식수 대비', it => f(it.last.pctListed, 2) + '%')}
     ${row('잔고 평가액(조)', it => f(it.last.valueJo))}
