@@ -57,6 +57,8 @@ jobs:
           node scripts/fetch-csop.mjs || ERR="$ERR csop"
           # PART 2 보조. 종목별 대차잔고(FREESIS)와 외국인 지분율(네이버).
           node scripts/fetch-stock-flows.mjs || ERR="$ERR stockflows"
+          # 투자자별 순매수. 소스가 20거래일 창만 줘서 매일 받아야 히스토리가 이어진다(§27).
+          node scripts/fetch-investor-flows.mjs || ERR="$ERR investorflows"
           echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
           echo "실패한 소스: ${ERR:-없음}"
 

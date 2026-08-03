@@ -199,6 +199,24 @@ if (fs.existsSync(wfDir)) {
   }
 }
 
+// 투자자별 순매수(§27). 소스가 20거래일 창만 주므로 누적이 끊기지 않았는지,
+// 그리고 합계·판정이 계열과 어긋나지 않는지 본다.
+if (A.investorFlow) {
+  const V = A.investorFlow;
+  assert.ok(V.items.length > 5, `투자자 계열이 ${V.items.length}종목뿐이다`);
+  for (const x of V.items) {
+    near(x.individual, x.series.reduce((s, r) => s + r.i, 0), 1e-6, `${x.name} 개인 합계`);
+    assert.equal(x.buyDays + x.sellDays <= x.days, true, `${x.name} 매수일+매도일이 관측일을 넘는다`);
+    assert.ok(x.series.length === x.days, `${x.name} 계열 길이 불일치`);
+    const ds = x.series.map(r => r.d);
+    assert.deepEqual(ds, [...ds].sort(), `${x.name} 날짜가 정렬돼 있지 않다`);
+    assert.equal(new Set(ds).size, ds.length, `${x.name} 날짜 중복`);
+  }
+  assert.equal(V.summary.netBuyers, V.items.filter(x => x.individual > 0).length, '순매수 종목 수 불일치');
+  assert.equal(V.summary.verdict,
+    V.summary.netBuyers > V.items.length / 2 ? 'averaging-down' : 'capitulating', '판정이 집계와 어긋난다');
+}
+
 // 대차잔고 주수 분해(§16.4.1). 금액만 보고 "되갚아졌다" 고 읽던 실수를 다시 하지 않게,
 // 분해 항등식(Δln금액 = Δln주수 + Δln단가)이 성립하는지 검사한다.
 if (A.lending?.cover?.shares) {

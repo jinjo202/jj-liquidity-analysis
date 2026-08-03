@@ -1708,6 +1708,77 @@ ${hkChart ? `<figure>
 </section>`;
 })();
 
+/* ---------- 투자자별 순매수 ---------- */
+// 좌수가 늘었다는 사실만으로는 누가 샀는지 모른다. 항복(자발적 투항)인지 물타기인지는
+// 여기서만 갈린다 — 강제 청산 지표(반대매매·미수금)와 정반대 얘기를 할 수 있다.
+const investorSection = !A.investorFlow ? '' : (() => {
+  const V = A.investorFlow, S = V.summary;
+  const M = n => `${n >= 0 ? '+' : ''}${f(n / 1e6, 2)}`;
+  const rows = [...V.items]
+    .filter(x => x.kind === 'stock' || x.group === 'single_lev' || x.group === 'single_inv')
+    .slice(0, 12)
+    .map(x => `<tr>
+      <td>${esc(x.name)}${x.kind === 'stock' ? ' <span class="mut">주식</span>' : ''}</td>
+      <td class="n ${x.individual >= 0 ? 'dn' : 'up'}"><b>${M(x.individual)}</b></td>
+      <td class="n">${M(x.institution)}</td>
+      <td class="n">${M(x.foreign)}</td>
+      <td class="n">${x.buyDays}/${x.sellDays}</td>
+      <td class="n ${x.retPct >= 0 ? 'up' : 'dn'}">${x.retPct == null ? '-' : `${x.retPct >= 0 ? '+' : ''}${f(x.retPct, 1)}%`}</td>
+    </tr>`).join('');
+
+  const inv = V.items.filter(x => x.group === 'single_inv');
+  const invSold = inv.filter(x => x.individual < 0);
+
+  return `<section>
+<h2>좌수를 떠받친 건 누구인가 — 투자자별 순매수</h2>
+<p class="lead">좌수가 늘었다는 것은 <b>설정(creation)</b>이 일어났다는 뜻이고, 설정은 순매수가 있어야 일어난다.
+  그런데 좌수만 봐서는 <b>누가</b> 샀는지 모른다 — 개인이 팔았는데 기관이 받아 좌수가 유지될 수도 있다.
+  그래서 투자자별 순매수를 따로 받는다. 이게 있어야 "개인이 항복했나"에 답할 수 있다.</p>
+
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">${S.verdict === 'averaging-down'
+    ? `<b>개인은 항복하지 않았다 — 물타기했다.</b> ${dtFull(V.from)}~${dtFull(V.asOf)} ${V.days}거래일 동안
+       ${S.total}종목 중 <b>${S.netBuyers}종목</b>에서 개인이 순매수였고, 단일종목 레버리지 ${S.levCount}종만 보면
+       ${S.levNetBuyers}종이 순매수로 합계 <b>${M(S.levTotalIndividual)}백만주</b>다.
+       그 사이 이 상품들은 반토막 났다.`
+    : `<b>개인이 순매도로 돌아섰다.</b> ${S.total}종목 중 순매수는 ${S.netBuyers}종목뿐이다 —
+       항복 국면일 수 있다.`}</div>
+</div>
+
+<div class="tw"><table>
+  <thead><tr><th>종목 <span class="mut">${dtFull(V.from)}~${dtFull(V.asOf)}</span></th>
+    <th class="n">개인(백만주)</th><th class="n">기관</th><th class="n">외국인</th>
+    <th class="n">개인 매수일/매도일</th><th class="n">기간 등락</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table></div>
+
+${invSold.length ? `<div class="box">
+  <b>방향이 일관된다 — 내리는 걸 사고 오르는 걸 팔았다</b><br>
+  같은 기간 인버스 상품에서는 개인이 순매도다(${invSold.map(x => `${esc(x.name)} ${M(x.individual)}백만주,
+  그 상품 수익률 ${x.retPct >= 0 ? '+' : ''}${f(x.retPct, 1)}%`).join(' / ')}).
+  <b>오른 상품(인버스)은 팔고 빠진 상품(레버리지)은 샀다</b> — 반등에 베팅하는 전형적인 물타기다.
+  하락에 베팅한 쪽이 이익 실현으로 빠져나가는 국면이기도 하다.
+</div>` : ''}
+
+<div class="box warn">
+  <b>이 표를 항복 지표로 쓸 때의 한계</b><br>
+  ① <b>수량(주)이지 금액이 아니다.</b> 1좌 가격이 상품마다 달라 종목 간 절대량 비교는 의미가 없다 —
+  각 종목의 방향과 자기 기준 강도만 읽어야 한다.
+  ② 소스가 <b>최근 ${V.days}거래일</b>만 준다(§27). 그 이전은 누적 수집으로만 늘어나므로
+  지금은 이 창 안에서의 판정이다.
+  ③ 순매수는 <b>순(net)</b>이라 같은 개인 안에서 사는 사람과 파는 사람이 상쇄된다.
+  "개인 전체가 샀다"가 아니라 "개인 합계가 순매수였다"로 읽어야 한다.
+</div>
+
+<div class="box">
+  <b>강제 청산 지표와 정반대다</b> — 같은 기간 반대매매는 역대 상위 0.3%, 위탁매매미수금은 역대 6위였다(PART 1).
+  <b>신용으로 산 개인은 강제로 털렸는데, 현금·ETF로 산 개인은 오히려 사들였다.</b>
+  자발적 투항(항복)은 아직 안 나왔다는 뜻이고, 팔아야 할 물량이 남아 있다는 쪽으로 읽는 게 자연스럽다.
+</div>
+</section>`;
+})();
+
 /* ---------- PART 4 다음 주 수급 전망 ---------- */
 // 방향을 맞히려는 게 아니다. 지수가 어디로 가면 어떤 물량이 기계적으로 따라 나오는지를
 // 미리 적어 두고, 다음 주에 실제 움직임과 대조해 수급이 원인이었는지 판정하려는 것이다.
@@ -2223,6 +2294,8 @@ ${etfSection ? `<div class="pane p-etf">
 <div class="parthead ph-etf"><i>PART 3</i><b>레버리지 ETF — 변동성은 어디서 왔나</b></div>
 
 ${etfSection}
+
+${investorSection}
 
 </div><!-- /p-etf -->` : ''}
 

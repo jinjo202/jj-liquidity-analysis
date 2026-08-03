@@ -1,0 +1,3263 @@
+{
+ "meta": {
+  "source": "네이버 모바일 m.stock.naver.com/api/stock/{code}/trend (individualPureBuyQuant). 최근 20거래일만 오므로 매일 받아 누적한다(§27).",
+  "unit": "순매수 수량(주). 금액이 아니라서 종목 간 직접 비교는 할 수 없다.",
+  "fetchedAt": "2026-08-03"
+ },
+ "items": [
+  {
+   "code": "005930",
+   "name": "삼성전자",
+   "kind": "stock",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 1917050,
+     "foreign": -2018562,
+     "institution": 14823,
+     "close": 318000
+    },
+    {
+     "d": "20260707",
+     "individual": 7870568,
+     "foreign": -6145090,
+     "institution": -1852807,
+     "close": 296000
+    },
+    {
+     "d": "20260708",
+     "individual": 2031705,
+     "foreign": -3015093,
+     "institution": 971031,
+     "close": 277500
+    },
+    {
+     "d": "20260709",
+     "individual": -1739937,
+     "foreign": 845552,
+     "institution": 1107761,
+     "close": 278000
+    },
+    {
+     "d": "20260710",
+     "individual": -2851466,
+     "foreign": 625985,
+     "institution": 2313745,
+     "close": 285000
+    },
+    {
+     "d": "20260713",
+     "individual": 4206987,
+     "foreign": -716994,
+     "institution": -3246131,
+     "close": 254500
+    },
+    {
+     "d": "20260714",
+     "individual": -4132630,
+     "foreign": -1128775,
+     "institution": 5326105,
+     "close": 263000
+    },
+    {
+     "d": "20260715",
+     "individual": -1363799,
+     "foreign": 1799843,
+     "institution": -413531,
+     "close": 279500
+    },
+    {
+     "d": "20260716",
+     "individual": 5211886,
+     "foreign": -826076,
+     "institution": -4567849,
+     "close": 255000
+    },
+    {
+     "d": "20260720",
+     "individual": 255913,
+     "foreign": 1129083,
+     "institution": -1468948,
+     "close": 244000
+    },
+    {
+     "d": "20260721",
+     "individual": -3654326,
+     "foreign": 1943936,
+     "institution": 1823763,
+     "close": 259000
+    },
+    {
+     "d": "20260722",
+     "individual": -381003,
+     "foreign": 2136159,
+     "institution": -1718094,
+     "close": 260500
+    },
+    {
+     "d": "20260723",
+     "individual": -1181665,
+     "foreign": 1299490,
+     "institution": -120579,
+     "close": 270000
+    },
+    {
+     "d": "20260724",
+     "individual": 6675340,
+     "foreign": -3428259,
+     "institution": -3378638,
+     "close": 249500
+    },
+    {
+     "d": "20260727",
+     "individual": 2801281,
+     "foreign": -3319368,
+     "institution": 487617,
+     "close": 254000
+    },
+    {
+     "d": "20260728",
+     "individual": 7377129,
+     "foreign": -6554668,
+     "institution": -635592,
+     "close": 220000
+    },
+    {
+     "d": "20260729",
+     "individual": -2434946,
+     "foreign": -3550689,
+     "institution": 5971830,
+     "close": 208500
+    },
+    {
+     "d": "20260730",
+     "individual": -413758,
+     "foreign": 656680,
+     "institution": -237928,
+     "close": 207000
+    },
+    {
+     "d": "20260731",
+     "individual": -11681307,
+     "foreign": 8359011,
+     "institution": 3618959,
+     "close": 262500
+    },
+    {
+     "d": "20260803",
+     "individual": 8658155,
+     "foreign": -3896489,
+     "institution": -5039954,
+     "close": 239500
+    }
+   ]
+  },
+  {
+   "code": "000660",
+   "name": "SK하이닉스",
+   "kind": "stock",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 586434,
+     "foreign": -27696,
+     "institution": -584423,
+     "close": 2343000
+    },
+    {
+     "d": "20260707",
+     "individual": 553638,
+     "foreign": -542009,
+     "institution": -23811,
+     "close": 2201000
+    },
+    {
+     "d": "20260708",
+     "individual": 178421,
+     "foreign": 88312,
+     "institution": -285353,
+     "close": 2076000
+    },
+    {
+     "d": "20260709",
+     "individual": -179724,
+     "foreign": -209485,
+     "institution": 404365,
+     "close": 2186000
+    },
+    {
+     "d": "20260710",
+     "individual": 550090,
+     "foreign": -768843,
+     "institution": 204193,
+     "close": 2180000
+    },
+    {
+     "d": "20260713",
+     "individual": 1440630,
+     "foreign": -704671,
+     "institution": -781727,
+     "close": 1845000
+    },
+    {
+     "d": "20260714",
+     "individual": -1357280,
+     "foreign": 664541,
+     "institution": 697670,
+     "close": 1913000
+    },
+    {
+     "d": "20260715",
+     "individual": -582862,
+     "foreign": 331145,
+     "institution": 265930,
+     "close": 2082000
+    },
+    {
+     "d": "20260716",
+     "individual": 1067656,
+     "foreign": -469637,
+     "institution": -628785,
+     "close": 1842000
+    },
+    {
+     "d": "20260720",
+     "individual": 180897,
+     "foreign": 331597,
+     "institution": -527040,
+     "close": 1764000
+    },
+    {
+     "d": "20260721",
+     "individual": -116422,
+     "foreign": -237417,
+     "institution": 366154,
+     "close": 1836000
+    },
+    {
+     "d": "20260722",
+     "individual": -85833,
+     "foreign": 640418,
+     "institution": -564978,
+     "close": 1830000
+    },
+    {
+     "d": "20260723",
+     "individual": -529529,
+     "foreign": 689697,
+     "institution": -148136,
+     "close": 1919000
+    },
+    {
+     "d": "20260724",
+     "individual": 1431548,
+     "foreign": -976779,
+     "institution": -483881,
+     "close": 1759000
+    },
+    {
+     "d": "20260727",
+     "individual": 376010,
+     "foreign": -615917,
+     "institution": 231139,
+     "close": 1816000
+    },
+    {
+     "d": "20260728",
+     "individual": 1414492,
+     "foreign": -1826337,
+     "institution": 388673,
+     "close": 1550000
+    },
+    {
+     "d": "20260729",
+     "individual": 103198,
+     "foreign": -921877,
+     "institution": 791370,
+     "close": 1401000
+    },
+    {
+     "d": "20260730",
+     "individual": -373392,
+     "foreign": 444498,
+     "institution": -80151,
+     "close": 1322000
+    },
+    {
+     "d": "20260731",
+     "individual": -2463959,
+     "foreign": 2205767,
+     "institution": 277183,
+     "close": 1718000
+    },
+    {
+     "d": "20260803",
+     "individual": 1368737,
+     "foreign": -1107357,
+     "institution": -288012,
+     "close": 1567000
+    }
+   ]
+  },
+  {
+   "code": "122630",
+   "name": "KODEX 레버리지",
+   "kind": "etf",
+   "group": "index_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 157345,
+     "foreign": -176751,
+     "institution": 19253,
+     "close": 176630
+    },
+    {
+     "d": "20260707",
+     "individual": 1543670,
+     "foreign": 122535,
+     "institution": -1742008,
+     "close": 158895
+    },
+    {
+     "d": "20260708",
+     "individual": 738971,
+     "foreign": 64612,
+     "institution": -817478,
+     "close": 142500
+    },
+    {
+     "d": "20260709",
+     "individual": 13334,
+     "foreign": 238661,
+     "institution": -254054,
+     "close": 144420
+    },
+    {
+     "d": "20260710",
+     "individual": -1054576,
+     "foreign": -111290,
+     "institution": 1112156,
+     "close": 150695
+    },
+    {
+     "d": "20260713",
+     "individual": 3241371,
+     "foreign": -121056,
+     "institution": -3131696,
+     "close": 121900
+    },
+    {
+     "d": "20260714",
+     "individual": -131496,
+     "foreign": 414053,
+     "institution": -336035,
+     "close": 123580
+    },
+    {
+     "d": "20260715",
+     "individual": -2144467,
+     "foreign": 550463,
+     "institution": 1634556,
+     "close": 139470
+    },
+    {
+     "d": "20260716",
+     "individual": 1629912,
+     "foreign": 567436,
+     "institution": -2227023,
+     "close": 120500
+    },
+    {
+     "d": "20260720",
+     "individual": 989437,
+     "foreign": 185905,
+     "institution": -1260778,
+     "close": 109435
+    },
+    {
+     "d": "20260721",
+     "individual": -732227,
+     "foreign": -9333,
+     "institution": 771602,
+     "close": 118065
+    },
+    {
+     "d": "20260722",
+     "individual": -656243,
+     "foreign": -66561,
+     "institution": 739839,
+     "close": 118480
+    },
+    {
+     "d": "20260723",
+     "individual": -478990,
+     "foreign": -201649,
+     "institution": 701689,
+     "close": 128950
+    },
+    {
+     "d": "20260724",
+     "individual": 2008525,
+     "foreign": 21078,
+     "institution": -2098245,
+     "close": 113390
+    },
+    {
+     "d": "20260727",
+     "individual": 360349,
+     "foreign": 206223,
+     "institution": -573415,
+     "close": 116435
+    },
+    {
+     "d": "20260728",
+     "individual": 3043010,
+     "foreign": -59029,
+     "institution": -3068720,
+     "close": 90130
+    },
+    {
+     "d": "20260729",
+     "individual": 3593565,
+     "foreign": -403670,
+     "institution": -3228778,
+     "close": 79020
+    },
+    {
+     "d": "20260730",
+     "individual": 22258,
+     "foreign": 550167,
+     "institution": -615536,
+     "close": 75595
+    },
+    {
+     "d": "20260731",
+     "individual": -5011958,
+     "foreign": 6380,
+     "institution": 4949750,
+     "close": 110945
+    },
+    {
+     "d": "20260803",
+     "individual": 2767158,
+     "foreign": -383069,
+     "institution": -2387623,
+     "close": 93670
+    }
+   ]
+  },
+  {
+   "code": "0193T0",
+   "name": "KODEX SK하이닉스단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 4191921,
+     "foreign": -901905,
+     "institution": -3328365,
+     "close": 25310
+    },
+    {
+     "d": "20260707",
+     "individual": 10836932,
+     "foreign": -1928375,
+     "institution": -8872647,
+     "close": 22130
+    },
+    {
+     "d": "20260708",
+     "individual": 9046628,
+     "foreign": -1739011,
+     "institution": -5605574,
+     "close": 19635
+    },
+    {
+     "d": "20260709",
+     "individual": -2947331,
+     "foreign": 766731,
+     "institution": 2606517,
+     "close": 21930
+    },
+    {
+     "d": "20260710",
+     "individual": 3379928,
+     "foreign": 1361810,
+     "institution": -4695633,
+     "close": 21760
+    },
+    {
+     "d": "20260713",
+     "individual": 27233972,
+     "foreign": -2051509,
+     "institution": -25996603,
+     "close": 14915
+    },
+    {
+     "d": "20260714",
+     "individual": -5595195,
+     "foreign": 863957,
+     "institution": 4734790,
+     "close": 15970
+    },
+    {
+     "d": "20260715",
+     "individual": -19627812,
+     "foreign": 739871,
+     "institution": 18606932,
+     "close": 18800
+    },
+    {
+     "d": "20260716",
+     "individual": 17829371,
+     "foreign": -2320462,
+     "institution": -15879535,
+     "close": 14585
+    },
+    {
+     "d": "20260720",
+     "individual": 9173980,
+     "foreign": 277014,
+     "institution": -9135572,
+     "close": 13250
+    },
+    {
+     "d": "20260721",
+     "individual": -7575612,
+     "foreign": 2142401,
+     "institution": 5304880,
+     "close": 14405
+    },
+    {
+     "d": "20260722",
+     "individual": -1752079,
+     "foreign": -526809,
+     "institution": 1957876,
+     "close": 14180
+    },
+    {
+     "d": "20260723",
+     "individual": -8888100,
+     "foreign": 426715,
+     "institution": 6975652,
+     "close": 15540
+    },
+    {
+     "d": "20260724",
+     "individual": 18164280,
+     "foreign": -1419162,
+     "institution": -15053188,
+     "close": 13015
+    },
+    {
+     "d": "20260727",
+     "individual": 157316,
+     "foreign": 2172605,
+     "institution": -2891967,
+     "close": 13875
+    },
+    {
+     "d": "20260728",
+     "individual": 39405404,
+     "foreign": -3209034,
+     "institution": -36968986,
+     "close": 9930
+    },
+    {
+     "d": "20260729",
+     "individual": 30888671,
+     "foreign": -3849445,
+     "institution": -26327977,
+     "close": 7925
+    },
+    {
+     "d": "20260730",
+     "individual": 2181909,
+     "foreign": -1113299,
+     "institution": -1575790,
+     "close": 6995
+    },
+    {
+     "d": "20260731",
+     "individual": -58777726,
+     "foreign": 2548572,
+     "institution": 56428156,
+     "close": 11055
+    },
+    {
+     "d": "20260803",
+     "individual": -2476171,
+     "foreign": -19209345,
+     "institution": 21219541,
+     "close": 9270
+    }
+   ]
+  },
+  {
+   "code": "233740",
+   "name": "KODEX 코스닥150레버리지",
+   "kind": "etf",
+   "group": "index_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 7405208,
+     "foreign": 625792,
+     "institution": -8258746,
+     "close": 8465
+    },
+    {
+     "d": "20260707",
+     "individual": 6867766,
+     "foreign": -705302,
+     "institution": -6428218,
+     "close": 8225
+    },
+    {
+     "d": "20260708",
+     "individual": 22775915,
+     "foreign": -139707,
+     "institution": -23143886,
+     "close": 7200
+    },
+    {
+     "d": "20260709",
+     "individual": 2945709,
+     "foreign": -431228,
+     "institution": -3148007,
+     "close": 7345
+    },
+    {
+     "d": "20260710",
+     "individual": -5036159,
+     "foreign": 322616,
+     "institution": 3234765,
+     "close": 7990
+    },
+    {
+     "d": "20260713",
+     "individual": 11312335,
+     "foreign": -701342,
+     "institution": -10171161,
+     "close": 7340
+    },
+    {
+     "d": "20260714",
+     "individual": 14559061,
+     "foreign": 842930,
+     "institution": -15220893,
+     "close": 6930
+    },
+    {
+     "d": "20260715",
+     "individual": -16775985,
+     "foreign": 2615273,
+     "institution": 12811272,
+     "close": 7850
+    },
+    {
+     "d": "20260716",
+     "individual": 10220347,
+     "foreign": -2338756,
+     "institution": -7532773,
+     "close": 6985
+    },
+    {
+     "d": "20260720",
+     "individual": 15813116,
+     "foreign": -988187,
+     "institution": -15440517,
+     "close": 6035
+    },
+    {
+     "d": "20260721",
+     "individual": 8976152,
+     "foreign": -374926,
+     "institution": -9166848,
+     "close": 6060
+    },
+    {
+     "d": "20260722",
+     "individual": -6558456,
+     "foreign": 455949,
+     "institution": 4876085,
+     "close": 5930
+    },
+    {
+     "d": "20260723",
+     "individual": -4904443,
+     "foreign": 196684,
+     "institution": 4654149,
+     "close": 6740
+    },
+    {
+     "d": "20260724",
+     "individual": 14703004,
+     "foreign": -1119886,
+     "institution": -12213367,
+     "close": 5875
+    },
+    {
+     "d": "20260727",
+     "individual": -3464723,
+     "foreign": 1537722,
+     "institution": 1514580,
+     "close": 6260
+    },
+    {
+     "d": "20260728",
+     "individual": 43978505,
+     "foreign": -1434758,
+     "institution": -42455130,
+     "close": 5245
+    },
+    {
+     "d": "20260729",
+     "individual": 45603992,
+     "foreign": -142591,
+     "institution": -46608219,
+     "close": 4605
+    },
+    {
+     "d": "20260730",
+     "individual": 17009302,
+     "foreign": -12985,
+     "institution": -17176425,
+     "close": 4120
+    },
+    {
+     "d": "20260731",
+     "individual": -24955701,
+     "foreign": 6874543,
+     "institution": 16859660,
+     "close": 5220
+    },
+    {
+     "d": "20260803",
+     "individual": -2235679,
+     "foreign": -2532056,
+     "institution": 4868627,
+     "close": 5600
+    }
+   ]
+  },
+  {
+   "code": "0193W0",
+   "name": "KODEX 삼성전자단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 4323969,
+     "foreign": -345205,
+     "institution": -4860566,
+     "close": 21220
+    },
+    {
+     "d": "20260707",
+     "individual": 6645907,
+     "foreign": 198921,
+     "institution": -6424217,
+     "close": 18310
+    },
+    {
+     "d": "20260708",
+     "individual": 2899172,
+     "foreign": -1708,
+     "institution": 725349,
+     "close": 16185
+    },
+    {
+     "d": "20260709",
+     "individual": -4422112,
+     "foreign": 952203,
+     "institution": 3705181,
+     "close": 16235
+    },
+    {
+     "d": "20260710",
+     "individual": -3668041,
+     "foreign": -38683,
+     "institution": 3819270,
+     "close": 17000
+    },
+    {
+     "d": "20260713",
+     "individual": 2227598,
+     "foreign": -512087,
+     "institution": -1788757,
+     "close": 13240
+    },
+    {
+     "d": "20260714",
+     "individual": -2945044,
+     "foreign": -1334865,
+     "institution": 4422186,
+     "close": 14170
+    },
+    {
+     "d": "20260715",
+     "individual": -4690413,
+     "foreign": -353805,
+     "institution": 5099472,
+     "close": 15885
+    },
+    {
+     "d": "20260716",
+     "individual": 2227110,
+     "foreign": -591642,
+     "institution": -1940415,
+     "close": 13300
+    },
+    {
+     "d": "20260720",
+     "individual": 4789489,
+     "foreign": -792730,
+     "institution": -3471017,
+     "close": 12105
+    },
+    {
+     "d": "20260721",
+     "individual": -2173305,
+     "foreign": 681843,
+     "institution": 1415168,
+     "close": 13550
+    },
+    {
+     "d": "20260722",
+     "individual": -4030680,
+     "foreign": -111386,
+     "institution": 2875487,
+     "close": 13620
+    },
+    {
+     "d": "20260723",
+     "individual": -964269,
+     "foreign": -77725,
+     "institution": 772763,
+     "close": 14640
+    },
+    {
+     "d": "20260724",
+     "individual": 6094538,
+     "foreign": -953202,
+     "institution": -4243180,
+     "close": 12430
+    },
+    {
+     "d": "20260727",
+     "individual": 501286,
+     "foreign": 744956,
+     "institution": -1310395,
+     "close": 12880
+    },
+    {
+     "d": "20260728",
+     "individual": 9047237,
+     "foreign": -1230402,
+     "institution": -8179184,
+     "close": 9450
+    },
+    {
+     "d": "20260729",
+     "individual": 3632965,
+     "foreign": -10356973,
+     "institution": 6719366,
+     "close": 8495
+    },
+    {
+     "d": "20260730",
+     "individual": 2959153,
+     "foreign": 2071292,
+     "institution": -6064952,
+     "close": 8345
+    },
+    {
+     "d": "20260731",
+     "individual": -18506861,
+     "foreign": 914107,
+     "institution": 17444115,
+     "close": 12615
+    },
+    {
+     "d": "20260803",
+     "individual": -1240198,
+     "foreign": -2021305,
+     "institution": 3132533,
+     "close": 10515
+    }
+   ]
+  },
+  {
+   "code": "0195S0",
+   "name": "TIGER SK하이닉스단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 299285,
+     "foreign": -2513238,
+     "institution": 2099699,
+     "close": 21415
+    },
+    {
+     "d": "20260707",
+     "individual": 5742660,
+     "foreign": -818332,
+     "institution": -4440010,
+     "close": 18750
+    },
+    {
+     "d": "20260708",
+     "individual": 2410527,
+     "foreign": 410007,
+     "institution": -2567770,
+     "close": 16625
+    },
+    {
+     "d": "20260709",
+     "individual": -452280,
+     "foreign": 851542,
+     "institution": -922573,
+     "close": 18645
+    },
+    {
+     "d": "20260710",
+     "individual": 949601,
+     "foreign": -905480,
+     "institution": 36654,
+     "close": 18450
+    },
+    {
+     "d": "20260713",
+     "individual": 10913745,
+     "foreign": -1278019,
+     "institution": -10373402,
+     "close": 12510
+    },
+    {
+     "d": "20260714",
+     "individual": -5383899,
+     "foreign": 3728038,
+     "institution": 1751222,
+     "close": 13475
+    },
+    {
+     "d": "20260715",
+     "individual": -6463139,
+     "foreign": 5194476,
+     "institution": 1191320,
+     "close": 15955
+    },
+    {
+     "d": "20260716",
+     "individual": 10003640,
+     "foreign": -2897539,
+     "institution": -7313409,
+     "close": 12260
+    },
+    {
+     "d": "20260720",
+     "individual": 1152606,
+     "foreign": 9686193,
+     "institution": -10482550,
+     "close": 11190
+    },
+    {
+     "d": "20260721",
+     "individual": -3743888,
+     "foreign": 3733679,
+     "institution": -191467,
+     "close": 12085
+    },
+    {
+     "d": "20260722",
+     "individual": -394690,
+     "foreign": 692267,
+     "institution": -247715,
+     "close": 11990
+    },
+    {
+     "d": "20260723",
+     "individual": -2891091,
+     "foreign": 197393,
+     "institution": 2690349,
+     "close": 13110
+    },
+    {
+     "d": "20260724",
+     "individual": 7309266,
+     "foreign": -4074865,
+     "institution": -3504618,
+     "close": 10990
+    },
+    {
+     "d": "20260727",
+     "individual": -72147,
+     "foreign": 2433700,
+     "institution": -1773106,
+     "close": 11740
+    },
+    {
+     "d": "20260728",
+     "individual": 17058561,
+     "foreign": -6481389,
+     "institution": -10699841,
+     "close": 8440
+    },
+    {
+     "d": "20260729",
+     "individual": 13183314,
+     "foreign": -10256696,
+     "institution": -3664992,
+     "close": 6655
+    },
+    {
+     "d": "20260730",
+     "individual": 747142,
+     "foreign": 1914461,
+     "institution": -3082353,
+     "close": 5910
+    },
+    {
+     "d": "20260731",
+     "individual": -17911498,
+     "foreign": 6542392,
+     "institution": 11062674,
+     "close": 9445
+    },
+    {
+     "d": "20260803",
+     "individual": -801636,
+     "foreign": 301473,
+     "institution": -304653,
+     "close": 7860
+    }
+   ]
+  },
+  {
+   "code": "0195R0",
+   "name": "TIGER 삼성전자단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 315417,
+     "foreign": -2524909,
+     "institution": 1936625,
+     "close": 19590
+    },
+    {
+     "d": "20260707",
+     "individual": 3436670,
+     "foreign": -497222,
+     "institution": -3019199,
+     "close": 16870
+    },
+    {
+     "d": "20260708",
+     "individual": -430434,
+     "foreign": 1443618,
+     "institution": -281175,
+     "close": 14850
+    },
+    {
+     "d": "20260709",
+     "individual": -1325666,
+     "foreign": 1872360,
+     "institution": -674980,
+     "close": 14925
+    },
+    {
+     "d": "20260710",
+     "individual": -2539133,
+     "foreign": 2258878,
+     "institution": 148178,
+     "close": 15635
+    },
+    {
+     "d": "20260713",
+     "individual": -440862,
+     "foreign": 1420588,
+     "institution": -1269725,
+     "close": 12175
+    },
+    {
+     "d": "20260714",
+     "individual": -2181590,
+     "foreign": 2953558,
+     "institution": -282027,
+     "close": 13070
+    },
+    {
+     "d": "20260715",
+     "individual": -1369722,
+     "foreign": 1224331,
+     "institution": 215417,
+     "close": 14620
+    },
+    {
+     "d": "20260716",
+     "individual": 1285649,
+     "foreign": -973696,
+     "institution": -424657,
+     "close": 12240
+    },
+    {
+     "d": "20260720",
+     "individual": 751993,
+     "foreign": 581420,
+     "institution": -1156440,
+     "close": 11095
+    },
+    {
+     "d": "20260721",
+     "individual": -2211086,
+     "foreign": 2466691,
+     "institution": -694278,
+     "close": 12410
+    },
+    {
+     "d": "20260722",
+     "individual": -1258233,
+     "foreign": -175011,
+     "institution": 1025647,
+     "close": 12520
+    },
+    {
+     "d": "20260723",
+     "individual": -757021,
+     "foreign": 837888,
+     "institution": -40160,
+     "close": 13450
+    },
+    {
+     "d": "20260724",
+     "individual": 1810339,
+     "foreign": -2318641,
+     "institution": 65605,
+     "close": 11380
+    },
+    {
+     "d": "20260727",
+     "individual": 415811,
+     "foreign": 1391401,
+     "institution": -1111458,
+     "close": 11810
+    },
+    {
+     "d": "20260728",
+     "individual": 3899535,
+     "foreign": -2687759,
+     "institution": -1481377,
+     "close": 8660
+    },
+    {
+     "d": "20260729",
+     "individual": 1166862,
+     "foreign": -822305,
+     "institution": -503050,
+     "close": 7840
+    },
+    {
+     "d": "20260730",
+     "individual": 733512,
+     "foreign": 295802,
+     "institution": -1289382,
+     "close": 7640
+    },
+    {
+     "d": "20260731",
+     "individual": -5577400,
+     "foreign": 1593508,
+     "institution": 4002209,
+     "close": 11550
+    },
+    {
+     "d": "20260803",
+     "individual": -287638,
+     "foreign": 151757,
+     "institution": -309196,
+     "close": 9640
+    }
+   ]
+  },
+  {
+   "code": "123320",
+   "name": "TIGER 레버리지",
+   "kind": "etf",
+   "group": "index_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 14094,
+     "foreign": -7939,
+     "institution": -6140,
+     "close": 177125
+    },
+    {
+     "d": "20260707",
+     "individual": 75425,
+     "foreign": 149,
+     "institution": -75557,
+     "close": 159080
+    },
+    {
+     "d": "20260708",
+     "individual": 2137,
+     "foreign": 590,
+     "institution": -529,
+     "close": 141650
+    },
+    {
+     "d": "20260709",
+     "individual": -8560,
+     "foreign": 26468,
+     "institution": -20480,
+     "close": 144005
+    },
+    {
+     "d": "20260710",
+     "individual": -23177,
+     "foreign": 44857,
+     "institution": -34769,
+     "close": 150005
+    },
+    {
+     "d": "20260713",
+     "individual": 39714,
+     "foreign": -49562,
+     "institution": 9631,
+     "close": 120000
+    },
+    {
+     "d": "20260714",
+     "individual": -24622,
+     "foreign": -26956,
+     "institution": 63755,
+     "close": 123755
+    },
+    {
+     "d": "20260715",
+     "individual": -37243,
+     "foreign": -10254,
+     "institution": 35169,
+     "close": 139205
+    },
+    {
+     "d": "20260716",
+     "individual": 30518,
+     "foreign": -1338,
+     "institution": -19345,
+     "close": 120015
+    },
+    {
+     "d": "20260720",
+     "individual": 18187,
+     "foreign": 23241,
+     "institution": -40271,
+     "close": 109495
+    },
+    {
+     "d": "20260721",
+     "individual": -13667,
+     "foreign": 1824,
+     "institution": 11842,
+     "close": 118280
+    },
+    {
+     "d": "20260722",
+     "individual": 2255,
+     "foreign": -5845,
+     "institution": 7263,
+     "close": 118965
+    },
+    {
+     "d": "20260723",
+     "individual": -20565,
+     "foreign": 34292,
+     "institution": -13622,
+     "close": 129215
+    },
+    {
+     "d": "20260724",
+     "individual": 46568,
+     "foreign": -79116,
+     "institution": 31965,
+     "close": 113815
+    },
+    {
+     "d": "20260727",
+     "individual": 7498,
+     "foreign": -2268,
+     "institution": -4006,
+     "close": 116540
+    },
+    {
+     "d": "20260728",
+     "individual": 90380,
+     "foreign": -1125,
+     "institution": -90240,
+     "close": 90815
+    },
+    {
+     "d": "20260729",
+     "individual": 40138,
+     "foreign": 619,
+     "institution": -51807,
+     "close": 79225
+    },
+    {
+     "d": "20260730",
+     "individual": 6574,
+     "foreign": -94857,
+     "institution": 95848,
+     "close": 76215
+    },
+    {
+     "d": "20260731",
+     "individual": -116734,
+     "foreign": 88556,
+     "institution": 32378,
+     "close": 107805
+    },
+    {
+     "d": "20260803",
+     "individual": 47923,
+     "foreign": 6568,
+     "institution": -58072,
+     "close": 93820
+    }
+   ]
+  },
+  {
+   "code": "0197X0",
+   "name": "SOL SK하이닉스선물단일종목인버스2X",
+   "kind": "etf",
+   "group": "single_inv",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": -4842907,
+     "foreign": -53884,
+     "institution": 4862623,
+     "close": 8365
+    },
+    {
+     "d": "20260707",
+     "individual": -2877498,
+     "foreign": 198639,
+     "institution": 2597609,
+     "close": 9355
+    },
+    {
+     "d": "20260708",
+     "individual": -1065689,
+     "foreign": -3117571,
+     "institution": 4131002,
+     "close": 10410
+    },
+    {
+     "d": "20260709",
+     "individual": 4407294,
+     "foreign": 292430,
+     "institution": -4763482,
+     "close": 9075
+    },
+    {
+     "d": "20260710",
+     "individual": -2513042,
+     "foreign": 1022741,
+     "institution": 1362547,
+     "close": 9210
+    },
+    {
+     "d": "20260713",
+     "individual": -4154016,
+     "foreign": -652336,
+     "institution": 4952851,
+     "close": 12135
+    },
+    {
+     "d": "20260714",
+     "individual": 4748544,
+     "foreign": 717746,
+     "institution": -5224846,
+     "close": 11170
+    },
+    {
+     "d": "20260715",
+     "individual": 4433969,
+     "foreign": 806994,
+     "institution": -5333249,
+     "close": 9135
+    },
+    {
+     "d": "20260716",
+     "individual": -8584039,
+     "foreign": -288612,
+     "institution": 8279648,
+     "close": 11205
+    },
+    {
+     "d": "20260720",
+     "individual": -839265,
+     "foreign": -424153,
+     "institution": 1537883,
+     "close": 12370
+    },
+    {
+     "d": "20260721",
+     "individual": 5151668,
+     "foreign": -79616,
+     "institution": -4702060,
+     "close": 11230
+    },
+    {
+     "d": "20260722",
+     "individual": 4346129,
+     "foreign": 325154,
+     "institution": -4807149,
+     "close": 11350
+    },
+    {
+     "d": "20260723",
+     "individual": 1391793,
+     "foreign": 553380,
+     "institution": -1865416,
+     "close": 10305
+    },
+    {
+     "d": "20260724",
+     "individual": -7321657,
+     "foreign": 8661,
+     "institution": 6915280,
+     "close": 11960
+    },
+    {
+     "d": "20260727",
+     "individual": 2877182,
+     "foreign": 967036,
+     "institution": -3442764,
+     "close": 11255
+    },
+    {
+     "d": "20260728",
+     "individual": -2320541,
+     "foreign": -1370153,
+     "institution": 3478819,
+     "close": 14530
+    },
+    {
+     "d": "20260729",
+     "individual": -2296108,
+     "foreign": 876444,
+     "institution": 1449077,
+     "close": 17290
+    },
+    {
+     "d": "20260730",
+     "individual": 1112492,
+     "foreign": -1135820,
+     "institution": 328874,
+     "close": 19215
+    },
+    {
+     "d": "20260731",
+     "individual": -3571965,
+     "foreign": 3089362,
+     "institution": 55348,
+     "close": 7695
+    },
+    {
+     "d": "20260803",
+     "individual": -3282584,
+     "foreign": -270729,
+     "institution": 3654287,
+     "close": 9515
+    }
+   ]
+  },
+  {
+   "code": "233160",
+   "name": "TIGER 코스닥150 레버리지",
+   "kind": "etf",
+   "group": "index_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 364121,
+     "foreign": 19438,
+     "institution": -408958,
+     "close": 9310
+    },
+    {
+     "d": "20260707",
+     "individual": 11898,
+     "foreign": 435588,
+     "institution": -453127,
+     "close": 9030
+    },
+    {
+     "d": "20260708",
+     "individual": 651095,
+     "foreign": -453,
+     "institution": -657934,
+     "close": 7885
+    },
+    {
+     "d": "20260709",
+     "individual": 57998,
+     "foreign": 22750,
+     "institution": -86246,
+     "close": 8050
+    },
+    {
+     "d": "20260710",
+     "individual": -68563,
+     "foreign": -19727,
+     "institution": 39638,
+     "close": 8860
+    },
+    {
+     "d": "20260713",
+     "individual": 377902,
+     "foreign": 188132,
+     "institution": -562434,
+     "close": 8090
+    },
+    {
+     "d": "20260714",
+     "individual": 689014,
+     "foreign": -87575,
+     "institution": -530507,
+     "close": 7655
+    },
+    {
+     "d": "20260715",
+     "individual": -455296,
+     "foreign": 557081,
+     "institution": -102230,
+     "close": 8590
+    },
+    {
+     "d": "20260716",
+     "individual": 463361,
+     "foreign": -127829,
+     "institution": -337613,
+     "close": 7700
+    },
+    {
+     "d": "20260720",
+     "individual": 668223,
+     "foreign": 23557,
+     "institution": -699540,
+     "close": 6675
+    },
+    {
+     "d": "20260721",
+     "individual": 244628,
+     "foreign": 11383,
+     "institution": -260067,
+     "close": 6660
+    },
+    {
+     "d": "20260722",
+     "individual": -154515,
+     "foreign": 1254636,
+     "institution": -1094756,
+     "close": 6530
+    },
+    {
+     "d": "20260723",
+     "individual": -388641,
+     "foreign": 274683,
+     "institution": 96310,
+     "close": 7360
+    },
+    {
+     "d": "20260724",
+     "individual": 606031,
+     "foreign": -442810,
+     "institution": -150769,
+     "close": 6455
+    },
+    {
+     "d": "20260727",
+     "individual": -168959,
+     "foreign": 26382,
+     "institution": 142577,
+     "close": 6840
+    },
+    {
+     "d": "20260728",
+     "individual": 1132364,
+     "foreign": -3766,
+     "institution": -1132762,
+     "close": 5860
+    },
+    {
+     "d": "20260729",
+     "individual": 1297561,
+     "foreign": 5747,
+     "institution": -1306834,
+     "close": 5100
+    },
+    {
+     "d": "20260730",
+     "individual": 525098,
+     "foreign": 2939,
+     "institution": -532117,
+     "close": 4570
+    },
+    {
+     "d": "20260731",
+     "individual": -1007147,
+     "foreign": 811969,
+     "institution": 188163,
+     "close": 5750
+    },
+    {
+     "d": "20260803",
+     "individual": -270561,
+     "foreign": 594164,
+     "institution": -382674,
+     "close": 6175
+    }
+   ]
+  },
+  {
+   "code": "0197W0",
+   "name": "SOL SK하이닉스단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 115393,
+     "foreign": -44348,
+     "institution": -72657,
+     "close": 21105
+    },
+    {
+     "d": "20260707",
+     "individual": 236964,
+     "foreign": 9025,
+     "institution": -251637,
+     "close": 18555
+    },
+    {
+     "d": "20260708",
+     "individual": 81418,
+     "foreign": 80953,
+     "institution": -161369,
+     "close": 16380
+    },
+    {
+     "d": "20260709",
+     "individual": 625991,
+     "foreign": -83370,
+     "institution": -536933,
+     "close": 18305
+    },
+    {
+     "d": "20260710",
+     "individual": 52777,
+     "foreign": 37419,
+     "institution": -90097,
+     "close": 18200
+    },
+    {
+     "d": "20260713",
+     "individual": 1078688,
+     "foreign": -74848,
+     "institution": -1063346,
+     "close": 12465
+    },
+    {
+     "d": "20260714",
+     "individual": -179751,
+     "foreign": 130688,
+     "institution": 51261,
+     "close": 13340
+    },
+    {
+     "d": "20260715",
+     "individual": -1066099,
+     "foreign": 283136,
+     "institution": 798367,
+     "close": 15685
+    },
+    {
+     "d": "20260716",
+     "individual": 603971,
+     "foreign": -303979,
+     "institution": -328317,
+     "close": 12110
+    },
+    {
+     "d": "20260720",
+     "individual": 162703,
+     "foreign": -66787,
+     "institution": -129496,
+     "close": 11020
+    },
+    {
+     "d": "20260721",
+     "individual": -184593,
+     "foreign": 102472,
+     "institution": 79073,
+     "close": 11905
+    },
+    {
+     "d": "20260722",
+     "individual": -74907,
+     "foreign": -95811,
+     "institution": 229258,
+     "close": 11860
+    },
+    {
+     "d": "20260723",
+     "individual": -203488,
+     "foreign": 2715,
+     "institution": 186910,
+     "close": 12965
+    },
+    {
+     "d": "20260724",
+     "individual": 559541,
+     "foreign": -992,
+     "institution": -592350,
+     "close": 10815
+    },
+    {
+     "d": "20260727",
+     "individual": -86648,
+     "foreign": 8389,
+     "institution": 94475,
+     "close": 11540
+    },
+    {
+     "d": "20260728",
+     "individual": 1379140,
+     "foreign": -51430,
+     "institution": -1376173,
+     "close": 8210
+    },
+    {
+     "d": "20260729",
+     "individual": 1336923,
+     "foreign": -32947,
+     "institution": -1390040,
+     "close": 6600
+    },
+    {
+     "d": "20260730",
+     "individual": 28245,
+     "foreign": 36754,
+     "institution": -83436,
+     "close": 5790
+    },
+    {
+     "d": "20260731",
+     "individual": -1807206,
+     "foreign": 351220,
+     "institution": 1639549,
+     "close": 9260
+    },
+    {
+     "d": "20260803",
+     "individual": 8707,
+     "foreign": -2684,
+     "institution": -44399,
+     "close": 7690
+    }
+   ]
+  },
+  {
+   "code": "0194T0",
+   "name": "ACE SK하이닉스단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 109790,
+     "foreign": 6721,
+     "institution": -116085,
+     "close": 21170
+    },
+    {
+     "d": "20260707",
+     "individual": 229610,
+     "foreign": 1640,
+     "institution": -236930,
+     "close": 18605
+    },
+    {
+     "d": "20260708",
+     "individual": 26707,
+     "foreign": 3476,
+     "institution": -55520,
+     "close": 16500
+    },
+    {
+     "d": "20260709",
+     "individual": 10320,
+     "foreign": -7854,
+     "institution": -1872,
+     "close": 18540
+    },
+    {
+     "d": "20260710",
+     "individual": 17218,
+     "foreign": -1521,
+     "institution": -15712,
+     "close": 18435
+    },
+    {
+     "d": "20260713",
+     "individual": 672071,
+     "foreign": -168340,
+     "institution": -577176,
+     "close": 12490
+    },
+    {
+     "d": "20260714",
+     "individual": -227936,
+     "foreign": -1019,
+     "institution": 140444,
+     "close": 13450
+    },
+    {
+     "d": "20260715",
+     "individual": -335416,
+     "foreign": 4309,
+     "institution": 323143,
+     "close": 15935
+    },
+    {
+     "d": "20260716",
+     "individual": 475764,
+     "foreign": -6411,
+     "institution": -460524,
+     "close": 12235
+    },
+    {
+     "d": "20260720",
+     "individual": 159681,
+     "foreign": 17944,
+     "institution": -177919,
+     "close": 11070
+    },
+    {
+     "d": "20260721",
+     "individual": -123124,
+     "foreign": -13194,
+     "institution": 144083,
+     "close": 12080
+    },
+    {
+     "d": "20260722",
+     "individual": -85044,
+     "foreign": 13182,
+     "institution": 28830,
+     "close": 11970
+    },
+    {
+     "d": "20260723",
+     "individual": -72243,
+     "foreign": -13714,
+     "institution": 29458,
+     "close": 13065
+    },
+    {
+     "d": "20260724",
+     "individual": 327884,
+     "foreign": 9624,
+     "institution": -269330,
+     "close": 10955
+    },
+    {
+     "d": "20260727",
+     "individual": -25195,
+     "foreign": 5587,
+     "institution": -10976,
+     "close": 11605
+    },
+    {
+     "d": "20260728",
+     "individual": 756787,
+     "foreign": 16096,
+     "institution": -772459,
+     "close": 8305
+    },
+    {
+     "d": "20260729",
+     "individual": 568432,
+     "foreign": -4746,
+     "institution": -487681,
+     "close": 6765
+    },
+    {
+     "d": "20260730",
+     "individual": 295781,
+     "foreign": -3793,
+     "institution": -310589,
+     "close": 5945
+    },
+    {
+     "d": "20260731",
+     "individual": -915595,
+     "foreign": -10345,
+     "institution": 945521,
+     "close": 9275
+    },
+    {
+     "d": "20260803",
+     "individual": -76203,
+     "foreign": 20069,
+     "institution": 53277,
+     "close": 7810
+    }
+   ]
+  },
+  {
+   "code": "0194M0",
+   "name": "ACE 삼성전자단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 38306,
+     "foreign": 51539,
+     "institution": -111792,
+     "close": 19620
+    },
+    {
+     "d": "20260707",
+     "individual": 275940,
+     "foreign": 57531,
+     "institution": -367741,
+     "close": 16900
+    },
+    {
+     "d": "20260708",
+     "individual": 78373,
+     "foreign": -4876,
+     "institution": -78660,
+     "close": 14805
+    },
+    {
+     "d": "20260709",
+     "individual": -79434,
+     "foreign": -10458,
+     "institution": 86715,
+     "close": 15025
+    },
+    {
+     "d": "20260710",
+     "individual": -184021,
+     "foreign": -17138,
+     "institution": 203148,
+     "close": 15780
+    },
+    {
+     "d": "20260713",
+     "individual": 99189,
+     "foreign": 14639,
+     "institution": -113228,
+     "close": 12055
+    },
+    {
+     "d": "20260714",
+     "individual": -120034,
+     "foreign": 34755,
+     "institution": 88886,
+     "close": 13115
+    },
+    {
+     "d": "20260715",
+     "individual": -76213,
+     "foreign": 79570,
+     "institution": 48293,
+     "close": 14660
+    },
+    {
+     "d": "20260716",
+     "individual": 91196,
+     "foreign": -30175,
+     "institution": -89050,
+     "close": 12210
+    },
+    {
+     "d": "20260720",
+     "individual": 51816,
+     "foreign": -127088,
+     "institution": 59512,
+     "close": 11145
+    },
+    {
+     "d": "20260721",
+     "individual": -62701,
+     "foreign": -109443,
+     "institution": 176255,
+     "close": 12485
+    },
+    {
+     "d": "20260722",
+     "individual": -21676,
+     "foreign": 25703,
+     "institution": -46837,
+     "close": 12575
+    },
+    {
+     "d": "20260723",
+     "individual": -5168,
+     "foreign": -44344,
+     "institution": 36859,
+     "close": 13565
+    },
+    {
+     "d": "20260724",
+     "individual": 162305,
+     "foreign": -73317,
+     "institution": -111200,
+     "close": 11450
+    },
+    {
+     "d": "20260727",
+     "individual": -94858,
+     "foreign": 5016,
+     "institution": 90178,
+     "close": 11760
+    },
+    {
+     "d": "20260728",
+     "individual": 222456,
+     "foreign": -43659,
+     "institution": -207123,
+     "close": 8610
+    },
+    {
+     "d": "20260729",
+     "individual": 137721,
+     "foreign": 8953,
+     "institution": -177246,
+     "close": 7890
+    },
+    {
+     "d": "20260730",
+     "individual": -47591,
+     "foreign": -62531,
+     "institution": 76226,
+     "close": 7705
+    },
+    {
+     "d": "20260731",
+     "individual": -271614,
+     "foreign": 7260,
+     "institution": 313376,
+     "close": 11800
+    },
+    {
+     "d": "20260803",
+     "individual": 8872,
+     "foreign": -21022,
+     "institution": -7850,
+     "close": 9640
+    }
+   ]
+  },
+  {
+   "code": "0192L0",
+   "name": "RISE SK하이닉스단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 52841,
+     "foreign": 71319,
+     "institution": -124284,
+     "close": 21345
+    },
+    {
+     "d": "20260707",
+     "individual": 155275,
+     "foreign": 52623,
+     "institution": -208166,
+     "close": 18625
+    },
+    {
+     "d": "20260708",
+     "individual": 24713,
+     "foreign": -17839,
+     "institution": -42067,
+     "close": 16550
+    },
+    {
+     "d": "20260709",
+     "individual": -50885,
+     "foreign": 6155,
+     "institution": 44529,
+     "close": 18615
+    },
+    {
+     "d": "20260710",
+     "individual": 1571,
+     "foreign": 6419,
+     "institution": -8048,
+     "close": 18395
+    },
+    {
+     "d": "20260713",
+     "individual": 242673,
+     "foreign": -42629,
+     "institution": -220507,
+     "close": 12705
+    },
+    {
+     "d": "20260714",
+     "individual": -134979,
+     "foreign": -21744,
+     "institution": 122547,
+     "close": 13615
+    },
+    {
+     "d": "20260715",
+     "individual": -134746,
+     "foreign": 86226,
+     "institution": 33845,
+     "close": 15985
+    },
+    {
+     "d": "20260716",
+     "individual": 194134,
+     "foreign": 60372,
+     "institution": -254603,
+     "close": 12390
+    },
+    {
+     "d": "20260720",
+     "individual": 86086,
+     "foreign": -122395,
+     "institution": 36289,
+     "close": 11185
+    },
+    {
+     "d": "20260721",
+     "individual": -21758,
+     "foreign": -93199,
+     "institution": 114919,
+     "close": 12210
+    },
+    {
+     "d": "20260722",
+     "individual": -54001,
+     "foreign": -6686,
+     "institution": 60623,
+     "close": 12095
+    },
+    {
+     "d": "20260723",
+     "individual": -45776,
+     "foreign": -4365,
+     "institution": 50141,
+     "close": 13110
+    },
+    {
+     "d": "20260724",
+     "individual": 145807,
+     "foreign": -6984,
+     "institution": -98007,
+     "close": 11090
+    },
+    {
+     "d": "20260727",
+     "individual": 20659,
+     "foreign": -46038,
+     "institution": 24276,
+     "close": 11745
+    },
+    {
+     "d": "20260728",
+     "individual": 275171,
+     "foreign": -43880,
+     "institution": -231899,
+     "close": 8380
+    },
+    {
+     "d": "20260729",
+     "individual": 146528,
+     "foreign": 42090,
+     "institution": -86914,
+     "close": 6810
+    },
+    {
+     "d": "20260730",
+     "individual": 120805,
+     "foreign": 46617,
+     "institution": -168718,
+     "close": 6025
+    },
+    {
+     "d": "20260731",
+     "individual": -292916,
+     "foreign": 71617,
+     "institution": 204001,
+     "close": 9600
+    },
+    {
+     "d": "20260803",
+     "individual": -13216,
+     "foreign": 48703,
+     "institution": -34948,
+     "close": 8000
+    }
+   ]
+  },
+  {
+   "code": "0192M0",
+   "name": "RISE 삼성전자단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 7825,
+     "foreign": -29774,
+     "institution": 21949,
+     "close": 19680
+    },
+    {
+     "d": "20260707",
+     "individual": 105871,
+     "foreign": 24118,
+     "institution": -130423,
+     "close": 16965
+    },
+    {
+     "d": "20260708",
+     "individual": 74581,
+     "foreign": -30752,
+     "institution": -44046,
+     "close": 14900
+    },
+    {
+     "d": "20260709",
+     "individual": -40131,
+     "foreign": -21452,
+     "institution": 62125,
+     "close": 15100
+    },
+    {
+     "d": "20260710",
+     "individual": -65106,
+     "foreign": -10613,
+     "institution": 75730,
+     "close": 15680
+    },
+    {
+     "d": "20260713",
+     "individual": 55895,
+     "foreign": 24703,
+     "institution": -80614,
+     "close": 12235
+    },
+    {
+     "d": "20260714",
+     "individual": -67425,
+     "foreign": -69551,
+     "institution": 136857,
+     "close": 13095
+    },
+    {
+     "d": "20260715",
+     "individual": -31231,
+     "foreign": 19692,
+     "institution": 11552,
+     "close": 14725
+    },
+    {
+     "d": "20260716",
+     "individual": 29147,
+     "foreign": 38950,
+     "institution": -68109,
+     "close": 12345
+    },
+    {
+     "d": "20260720",
+     "individual": 36647,
+     "foreign": -140901,
+     "institution": 104154,
+     "close": 11205
+    },
+    {
+     "d": "20260721",
+     "individual": -3491,
+     "foreign": -24750,
+     "institution": 28238,
+     "close": 12500
+    },
+    {
+     "d": "20260722",
+     "individual": -9001,
+     "foreign": 2935,
+     "institution": 6170,
+     "close": 12675
+    },
+    {
+     "d": "20260723",
+     "individual": -13365,
+     "foreign": -12849,
+     "institution": 26224,
+     "close": 13475
+    },
+    {
+     "d": "20260724",
+     "individual": 22987,
+     "foreign": 7199,
+     "institution": -66959,
+     "close": 11385
+    },
+    {
+     "d": "20260727",
+     "individual": 12965,
+     "foreign": -5033,
+     "institution": -19094,
+     "close": 11845
+    },
+    {
+     "d": "20260728",
+     "individual": 50739,
+     "foreign": -25004,
+     "institution": -27011,
+     "close": 8715
+    },
+    {
+     "d": "20260729",
+     "individual": -2403,
+     "foreign": -10101,
+     "institution": 19223,
+     "close": 7925
+    },
+    {
+     "d": "20260730",
+     "individual": 36012,
+     "foreign": 14172,
+     "institution": -54516,
+     "close": 7790
+    },
+    {
+     "d": "20260731",
+     "individual": -104596,
+     "foreign": -9430,
+     "institution": 111778,
+     "close": 11715
+    },
+    {
+     "d": "20260803",
+     "individual": -30113,
+     "foreign": -9585,
+     "institution": 39683,
+     "close": 9920
+    }
+   ]
+  },
+  {
+   "code": "0198D0",
+   "name": "1Q SK하이닉스선물단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 27605,
+     "foreign": 2307,
+     "institution": -29961,
+     "close": 22330
+    },
+    {
+     "d": "20260707",
+     "individual": 123155,
+     "foreign": 834,
+     "institution": -124009,
+     "close": 19585
+    },
+    {
+     "d": "20260708",
+     "individual": 50241,
+     "foreign": 194,
+     "institution": -50935,
+     "close": 17300
+    },
+    {
+     "d": "20260709",
+     "individual": -27327,
+     "foreign": -3662,
+     "institution": 31389,
+     "close": 19545
+    },
+    {
+     "d": "20260710",
+     "individual": 3378,
+     "foreign": 3451,
+     "institution": -6829,
+     "close": 19450
+    },
+    {
+     "d": "20260713",
+     "individual": 373084,
+     "foreign": -59592,
+     "institution": -329602,
+     "close": 13110
+    },
+    {
+     "d": "20260714",
+     "individual": -51907,
+     "foreign": 99,
+     "institution": 48308,
+     "close": 14175
+    },
+    {
+     "d": "20260715",
+     "individual": -191542,
+     "foreign": 3640,
+     "institution": 187914,
+     "close": 16550
+    },
+    {
+     "d": "20260716",
+     "individual": 254034,
+     "foreign": -11060,
+     "institution": -256474,
+     "close": 12780
+    },
+    {
+     "d": "20260720",
+     "individual": 133588,
+     "foreign": 7777,
+     "institution": -148465,
+     "close": 11610
+    },
+    {
+     "d": "20260721",
+     "individual": -115358,
+     "foreign": -7814,
+     "institution": 114172,
+     "close": 12570
+    },
+    {
+     "d": "20260722",
+     "individual": -48527,
+     "foreign": 12946,
+     "institution": 36081,
+     "close": 12505
+    },
+    {
+     "d": "20260723",
+     "individual": -26046,
+     "foreign": -8634,
+     "institution": 27176,
+     "close": 13590
+    },
+    {
+     "d": "20260724",
+     "individual": 202980,
+     "foreign": 2890,
+     "institution": -225616,
+     "close": 11460
+    },
+    {
+     "d": "20260727",
+     "individual": -4771,
+     "foreign": -1379,
+     "institution": 6150,
+     "close": 12165
+    },
+    {
+     "d": "20260728",
+     "individual": 426934,
+     "foreign": 3972,
+     "institution": -430906,
+     "close": 8625
+    },
+    {
+     "d": "20260729",
+     "individual": 418143,
+     "foreign": 182,
+     "institution": -352135,
+     "close": 6920
+    },
+    {
+     "d": "20260730",
+     "individual": 137023,
+     "foreign": 10320,
+     "institution": -156486,
+     "close": 6185
+    },
+    {
+     "d": "20260731",
+     "individual": -398324,
+     "foreign": -2349,
+     "institution": 400683,
+     "close": 9450
+    },
+    {
+     "d": "20260803",
+     "individual": -31212,
+     "foreign": -4085,
+     "institution": 34918,
+     "close": 8195
+    }
+   ]
+  },
+  {
+   "code": "0193L0",
+   "name": "PLUS 삼성전자선물단일종목인버스2X",
+   "kind": "etf",
+   "group": "single_inv",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 186322,
+     "foreign": -184370,
+     "institution": -16917,
+     "close": 12500
+    },
+    {
+     "d": "20260707",
+     "individual": -545103,
+     "foreign": 165019,
+     "institution": 353538,
+     "close": 14085
+    },
+    {
+     "d": "20260708",
+     "individual": -16865,
+     "foreign": -33370,
+     "institution": 90153,
+     "close": 15785
+    },
+    {
+     "d": "20260709",
+     "individual": -92742,
+     "foreign": -66761,
+     "institution": 73034,
+     "close": 15540
+    },
+    {
+     "d": "20260710",
+     "individual": 281912,
+     "foreign": 126595,
+     "institution": -329758,
+     "close": 14815
+    },
+    {
+     "d": "20260713",
+     "individual": -695323,
+     "foreign": -54507,
+     "institution": 56078,
+     "close": 18185
+    },
+    {
+     "d": "20260714",
+     "individual": 458061,
+     "foreign": -7393,
+     "institution": -447432,
+     "close": 16835
+    },
+    {
+     "d": "20260715",
+     "individual": 171111,
+     "foreign": 177476,
+     "institution": 177639,
+     "close": 14800
+    },
+    {
+     "d": "20260716",
+     "individual": -608069,
+     "foreign": -271389,
+     "institution": 900496,
+     "close": 17125
+    },
+    {
+     "d": "20260720",
+     "individual": -140723,
+     "foreign": -399763,
+     "institution": 622713,
+     "close": 18790
+    },
+    {
+     "d": "20260721",
+     "individual": 1408092,
+     "foreign": 122432,
+     "institution": -1542420,
+     "close": 16415
+    },
+    {
+     "d": "20260722",
+     "individual": -9692,
+     "foreign": -87295,
+     "institution": 137984,
+     "close": 16260
+    },
+    {
+     "d": "20260723",
+     "individual": -90874,
+     "foreign": 3860,
+     "institution": 99200,
+     "close": 15045
+    },
+    {
+     "d": "20260724",
+     "individual": -964177,
+     "foreign": 13982,
+     "institution": 888070,
+     "close": 17340
+    },
+    {
+     "d": "20260727",
+     "individual": 15540,
+     "foreign": -12492,
+     "institution": -13574,
+     "close": 16680
+    },
+    {
+     "d": "20260728",
+     "individual": -541669,
+     "foreign": -2526,
+     "institution": 579429,
+     "close": 21160
+    },
+    {
+     "d": "20260729",
+     "individual": 89839,
+     "foreign": 72171,
+     "institution": -133391,
+     "close": 23000
+    },
+    {
+     "d": "20260730",
+     "individual": 245836,
+     "foreign": 178523,
+     "institution": -422304,
+     "close": 23380
+    },
+    {
+     "d": "20260731",
+     "individual": -255268,
+     "foreign": 92648,
+     "institution": 111196,
+     "close": 11080
+    },
+    {
+     "d": "20260803",
+     "individual": -105805,
+     "foreign": -30644,
+     "institution": 153573,
+     "close": 12485
+    }
+   ]
+  },
+  {
+   "code": "0198B0",
+   "name": "1Q 삼성전자선물단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": -3474,
+     "foreign": 557,
+     "institution": 3018,
+     "close": 20305
+    },
+    {
+     "d": "20260707",
+     "individual": 190796,
+     "foreign": 1096,
+     "institution": -192142,
+     "close": 17600
+    },
+    {
+     "d": "20260708",
+     "individual": 29820,
+     "foreign": 4049,
+     "institution": -33798,
+     "close": 15455
+    },
+    {
+     "d": "20260709",
+     "individual": -40963,
+     "foreign": 81,
+     "institution": 40812,
+     "close": 15545
+    },
+    {
+     "d": "20260710",
+     "individual": -49028,
+     "foreign": -5909,
+     "institution": 54937,
+     "close": 16330
+    },
+    {
+     "d": "20260713",
+     "individual": 19212,
+     "foreign": 211,
+     "institution": -19427,
+     "close": 12540
+    },
+    {
+     "d": "20260714",
+     "individual": -33332,
+     "foreign": -35720,
+     "institution": 68952,
+     "close": 13400
+    },
+    {
+     "d": "20260715",
+     "individual": 25307,
+     "foreign": -20116,
+     "institution": -5191,
+     "close": 15120
+    },
+    {
+     "d": "20260716",
+     "individual": 30729,
+     "foreign": 6326,
+     "institution": -37205,
+     "close": 12625
+    },
+    {
+     "d": "20260720",
+     "individual": -3693,
+     "foreign": 1211,
+     "institution": 2331,
+     "close": 11475
+    },
+    {
+     "d": "20260721",
+     "individual": -23902,
+     "foreign": -7570,
+     "institution": 31372,
+     "close": 12870
+    },
+    {
+     "d": "20260722",
+     "individual": -14841,
+     "foreign": 8670,
+     "institution": 6171,
+     "close": 12950
+    },
+    {
+     "d": "20260723",
+     "individual": 7139,
+     "foreign": -890,
+     "institution": -7747,
+     "close": 13945
+    },
+    {
+     "d": "20260724",
+     "individual": 116139,
+     "foreign": -3191,
+     "institution": -121625,
+     "close": 11835
+    },
+    {
+     "d": "20260727",
+     "individual": -26239,
+     "foreign": 5219,
+     "institution": 21020,
+     "close": 12150
+    },
+    {
+     "d": "20260728",
+     "individual": 59262,
+     "foreign": 229,
+     "institution": -61831,
+     "close": 8960
+    },
+    {
+     "d": "20260729",
+     "individual": -7131,
+     "foreign": -10356,
+     "institution": -12336,
+     "close": 8000
+    },
+    {
+     "d": "20260730",
+     "individual": -25086,
+     "foreign": 15377,
+     "institution": -11233,
+     "close": 7960
+    },
+    {
+     "d": "20260731",
+     "individual": -154230,
+     "foreign": -16358,
+     "institution": 170942,
+     "close": 11830
+    },
+    {
+     "d": "20260803",
+     "individual": -10328,
+     "foreign": -151,
+     "institution": 10479,
+     "close": 9945
+    }
+   ]
+  },
+  {
+   "code": "0193K0",
+   "name": "PLUS 삼성전자단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 26533,
+     "foreign": -4134,
+     "institution": -22398,
+     "close": 21145
+    },
+    {
+     "d": "20260707",
+     "individual": 48607,
+     "foreign": 2354,
+     "institution": -60227,
+     "close": 18500
+    },
+    {
+     "d": "20260708",
+     "individual": 37677,
+     "foreign": 3324,
+     "institution": -29818,
+     "close": 16100
+    },
+    {
+     "d": "20260709",
+     "individual": -23607,
+     "foreign": 1664,
+     "institution": 14014,
+     "close": 16255
+    },
+    {
+     "d": "20260710",
+     "individual": -29822,
+     "foreign": -7225,
+     "institution": 35789,
+     "close": 17130
+    },
+    {
+     "d": "20260713",
+     "individual": 94923,
+     "foreign": -124060,
+     "institution": 16276,
+     "close": 13405
+    },
+    {
+     "d": "20260714",
+     "individual": -11715,
+     "foreign": -28445,
+     "institution": 41606,
+     "close": 14310
+    },
+    {
+     "d": "20260715",
+     "individual": -17861,
+     "foreign": -8005,
+     "institution": 30508,
+     "close": 15950
+    },
+    {
+     "d": "20260716",
+     "individual": 46046,
+     "foreign": -19018,
+     "institution": -24740,
+     "close": 13380
+    },
+    {
+     "d": "20260720",
+     "individual": 22359,
+     "foreign": -68288,
+     "institution": 47865,
+     "close": 12255
+    },
+    {
+     "d": "20260721",
+     "individual": -12074,
+     "foreign": -5210,
+     "institution": 2788,
+     "close": 13470
+    },
+    {
+     "d": "20260722",
+     "individual": -25034,
+     "foreign": 2384,
+     "institution": 17500,
+     "close": 13570
+    },
+    {
+     "d": "20260723",
+     "individual": -1344,
+     "foreign": -1987,
+     "institution": -1183,
+     "close": 14650
+    },
+    {
+     "d": "20260724",
+     "individual": 54102,
+     "foreign": -2402,
+     "institution": -24092,
+     "close": 12650
+    },
+    {
+     "d": "20260727",
+     "individual": -21659,
+     "foreign": 6854,
+     "institution": 10547,
+     "close": 12985
+    },
+    {
+     "d": "20260728",
+     "individual": 149895,
+     "foreign": 2734,
+     "institution": -148371,
+     "close": 9620
+    },
+    {
+     "d": "20260729",
+     "individual": -39406,
+     "foreign": 4936,
+     "institution": 34235,
+     "close": 8675
+    },
+    {
+     "d": "20260730",
+     "individual": -14529,
+     "foreign": -9531,
+     "institution": 18005,
+     "close": 8475
+    },
+    {
+     "d": "20260731",
+     "individual": -91872,
+     "foreign": -6248,
+     "institution": 98120,
+     "close": 12560
+    },
+    {
+     "d": "20260803",
+     "individual": 21961,
+     "foreign": 50215,
+     "institution": -72176,
+     "close": 10735
+    }
+   ]
+  },
+  {
+   "code": "0194R0",
+   "name": "KIWOOM SK하이닉스선물단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 19717,
+     "foreign": 3744,
+     "institution": -23460,
+     "close": 20500
+    },
+    {
+     "d": "20260707",
+     "individual": 63347,
+     "foreign": 459,
+     "institution": -63806,
+     "close": 17855
+    },
+    {
+     "d": "20260708",
+     "individual": 17891,
+     "foreign": 1742,
+     "institution": -19633,
+     "close": 15940
+    },
+    {
+     "d": "20260709",
+     "individual": 1616,
+     "foreign": -4616,
+     "institution": 3000,
+     "close": 17920
+    },
+    {
+     "d": "20260710",
+     "individual": -32091,
+     "foreign": 3907,
+     "institution": 28184,
+     "close": 17765
+    },
+    {
+     "d": "20260713",
+     "individual": 172584,
+     "foreign": 4412,
+     "institution": -176996,
+     "close": 12020
+    },
+    {
+     "d": "20260714",
+     "individual": -7879,
+     "foreign": -46842,
+     "institution": 55082,
+     "close": 13100
+    },
+    {
+     "d": "20260715",
+     "individual": -78510,
+     "foreign": -61242,
+     "institution": 139752,
+     "close": 15350
+    },
+    {
+     "d": "20260716",
+     "individual": 117799,
+     "foreign": -5379,
+     "institution": -112570,
+     "close": 11905
+    },
+    {
+     "d": "20260720",
+     "individual": 67906,
+     "foreign": 7375,
+     "institution": -75281,
+     "close": 10895
+    },
+    {
+     "d": "20260721",
+     "individual": -36507,
+     "foreign": -7825,
+     "institution": 44332,
+     "close": 11755
+    },
+    {
+     "d": "20260722",
+     "individual": -70652,
+     "foreign": 11596,
+     "institution": 59206,
+     "close": 11565
+    },
+    {
+     "d": "20260723",
+     "individual": -21762,
+     "foreign": -5465,
+     "institution": 27227,
+     "close": 12735
+    },
+    {
+     "d": "20260724",
+     "individual": 78837,
+     "foreign": 2987,
+     "institution": -81824,
+     "close": 10635
+    },
+    {
+     "d": "20260727",
+     "individual": 24222,
+     "foreign": 3209,
+     "institution": -27431,
+     "close": 11315
+    },
+    {
+     "d": "20260728",
+     "individual": 238358,
+     "foreign": 3490,
+     "institution": -241848,
+     "close": 8090
+    },
+    {
+     "d": "20260729",
+     "individual": 85332,
+     "foreign": -10860,
+     "institution": -74472,
+     "close": 6445
+    },
+    {
+     "d": "20260730",
+     "individual": 93982,
+     "foreign": -1625,
+     "institution": -92357,
+     "close": 5785
+    },
+    {
+     "d": "20260731",
+     "individual": -323183,
+     "foreign": -3589,
+     "institution": 326772,
+     "close": 9100
+    },
+    {
+     "d": "20260803",
+     "individual": -5294,
+     "foreign": 0,
+     "institution": 5199,
+     "close": 7635
+    }
+   ]
+  },
+  {
+   "code": "0194N0",
+   "name": "KIWOOM 삼성전자선물단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 14033,
+     "foreign": 62,
+     "institution": -14094,
+     "close": 19345
+    },
+    {
+     "d": "20260707",
+     "individual": 63889,
+     "foreign": 6298,
+     "institution": -70217,
+     "close": 16895
+    },
+    {
+     "d": "20260708",
+     "individual": 26845,
+     "foreign": -4317,
+     "institution": -22538,
+     "close": 14615
+    },
+    {
+     "d": "20260709",
+     "individual": -10956,
+     "foreign": 0,
+     "institution": 10956,
+     "close": 14795
+    },
+    {
+     "d": "20260710",
+     "individual": -11861,
+     "foreign": -749,
+     "institution": 12610,
+     "close": 15405
+    },
+    {
+     "d": "20260713",
+     "individual": 13481,
+     "foreign": -6406,
+     "institution": -7095,
+     "close": 11930
+    },
+    {
+     "d": "20260714",
+     "individual": -14690,
+     "foreign": -12152,
+     "institution": 26842,
+     "close": 12885
+    },
+    {
+     "d": "20260715",
+     "individual": -17495,
+     "foreign": -5071,
+     "institution": 22566,
+     "close": 14400
+    },
+    {
+     "d": "20260716",
+     "individual": 33481,
+     "foreign": -28174,
+     "institution": -5307,
+     "close": 12045
+    },
+    {
+     "d": "20260720",
+     "individual": 5977,
+     "foreign": -6747,
+     "institution": 770,
+     "close": 10965
+    },
+    {
+     "d": "20260721",
+     "individual": -12401,
+     "foreign": -134,
+     "institution": 12534,
+     "close": 12300
+    },
+    {
+     "d": "20260722",
+     "individual": -25698,
+     "foreign": -239,
+     "institution": 25937,
+     "close": 12320
+    },
+    {
+     "d": "20260723",
+     "individual": 1105,
+     "foreign": -1002,
+     "institution": -103,
+     "close": 13250
+    },
+    {
+     "d": "20260724",
+     "individual": 38568,
+     "foreign": -23871,
+     "institution": -35044,
+     "close": 11200
+    },
+    {
+     "d": "20260727",
+     "individual": 3721,
+     "foreign": -12976,
+     "institution": 9255,
+     "close": 11740
+    },
+    {
+     "d": "20260728",
+     "individual": 49021,
+     "foreign": -16863,
+     "institution": -32158,
+     "close": 8565
+    },
+    {
+     "d": "20260729",
+     "individual": 12326,
+     "foreign": 259,
+     "institution": -17574,
+     "close": 7700
+    },
+    {
+     "d": "20260730",
+     "individual": -6705,
+     "foreign": 974,
+     "institution": -18711,
+     "close": 7645
+    },
+    {
+     "d": "20260731",
+     "individual": -74737,
+     "foreign": -966,
+     "institution": 74047,
+     "close": 11485
+    },
+    {
+     "d": "20260803",
+     "individual": 5457,
+     "foreign": 0,
+     "institution": -5457,
+     "close": 9675
+    }
+   ]
+  }
+ ]
+}

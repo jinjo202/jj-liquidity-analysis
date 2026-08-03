@@ -129,6 +129,54 @@ const ratioSeries = raw.series
   }));
 const ratioAt = d => ratioSeries.find(r => r.date === d) ?? null;
 
+/* ---------- 투자자별 순매수 — 좌수를 떠받친 건 누구인가 ---------- */
+// 좌수가 늘었다는 사실만으로는 누가 샀는지 모른다. 개인이 팔았는데 기관이 받아 좌수가
+// 그대로일 수도 있다. 항복(자발적 투항) 판정은 이 조각이 있어야 선다(§27).
+// 수량(주) 기준이라 종목 간 절대량 비교는 하지 않는다 — 방향과 자기 기준 강도만 본다.
+const flowPath = path.join(DIR, 'investor-flows.json');
+const flowRaw = fs.existsSync(flowPath) ? JSON.parse(fs.readFileSync(flowPath, 'utf8')) : null;
+
+function analyzeInvestorFlows() {
+  if (!flowRaw?.items?.length) return null;
+  const items = flowRaw.items.map(it => {
+    const s = (it.series ?? []).filter(r => Number.isFinite(r.individual));
+    if (s.length < 5) return null;
+    const sum = k => s.reduce((a, r) => a + (r[k] ?? 0), 0);
+    const tail = n => s.slice(-n);
+    const sumOf = (rows, k) => rows.reduce((a, r) => a + (r[k] ?? 0), 0);
+    const px0 = s.find(r => r.close)?.close ?? null, px1 = [...s].reverse().find(r => r.close)?.close ?? null;
+    return {
+      code: it.code, name: it.name, kind: it.kind, group: it.group ?? null,
+      days: s.length, from: s[0].d, to: s.at(-1).d,
+      individual: sum('individual'), foreign: sum('foreign'), institution: sum('institution'),
+      ind5: sumOf(tail(5), 'individual'),
+      buyDays: s.filter(r => r.individual > 0).length,
+      sellDays: s.filter(r => r.individual < 0).length,
+      retPct: px0 && px1 ? (px1 / px0 - 1) * 100 : null,
+      series: s.map(r => ({ d: r.d, i: r.individual, f: r.foreign, o: r.institution })),
+    };
+  }).filter(Boolean);
+  if (!items.length) return null;
+
+  // 급락 구간에서 개인이 순매수면 항복이 아니다 — 오히려 물타기다.
+  const lev = items.filter(x => x.kind === 'etf' && x.group === 'single_lev');
+  const netBuyers = items.filter(x => x.individual > 0).length;
+  return {
+    asOf: items[0].to, from: items[0].from, days: items[0].days,
+    source: flowRaw.meta,
+    items: items.sort((a, b) => b.individual - a.individual),
+    summary: {
+      total: items.length, netBuyers,
+      levTotalIndividual: lev.reduce((a, x) => a + x.individual, 0),
+      levNetBuyers: lev.filter(x => x.individual > 0).length,
+      levCount: lev.length,
+      // 판정: 가격이 빠지는데 개인이 순매수면 '물타기', 순매도면 '항복'.
+      verdict: netBuyers > items.length / 2 ? 'averaging-down' : 'capitulating',
+    },
+  };
+}
+const investorFlow = analyzeInvestorFlows();
+
 /* ---------- 종목별 대차잔고·외국인 지분율 (PART 2 보조) ---------- */
 // 시장 전체 대차잔고는 "얼마나 더 오를 수 있나" 를 묻는다. 여기서는 그 잔고가 어느 종목에
 // 붙어 있는지를 묻는다 — 코스피 등락의 상당 부분을 두 종목이 설명하기 때문이다(PART 3).
@@ -846,6 +894,7 @@ const out = {
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   divergence,
   stockFlow,
+  investorFlow,
   series: raw.series
     .filter(r => Number.isFinite(r.OS0001))
     .map(r => ({ d: r.date, i: r.OS0001, q: r.OS0002 ?? null, c: r.OS0026 ?? null })),
