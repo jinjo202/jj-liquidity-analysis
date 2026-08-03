@@ -585,6 +585,10 @@ if (co && PJ) {
   const creditDeclinePct = peak26 ? (CH.last.creditJo / peak26.creditJo - 1) * 100 : null;
   const at5000 = PJ.scenarioRemain.find(s => s.idx <= 5000)?.extraJo ?? 0;
   const baseRatioBench = CV?.benches.find(x => x.key === 'baseRatio');
+  const DV = A.divergence && {
+    k: A.divergence.items.find(x => x.market === '유가증권'),
+    q: A.divergence.items.find(x => x.market === '코스닥'),
+  };
 
   // 불릿은 표 셀로 그린다. <ul> 은 메일 클라이언트마다 들여쓰기가 제각각이다.
   const bullets = items => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="table-layout:fixed;">
@@ -602,6 +606,8 @@ if (co && PJ) {
       `신용/시총은 현재 <b>${f(PJ.currentRatio?.ratio, 3)}%</b>로 2023년 저점 ${f(PJ.prevTroughRatio?.ratio, 3)}%보다 이미 낮다.`],
     ['남은 위험은 시간이 아니라 지수 경로다',
       `현재 지수에서 새로 열리는 물량은 없다. 5,000p 밑으로 마감해야 +${f(at5000)}조가 마진콜 구간에 들어온다.`],
+    DV && ['그리고 그 위험은 코스피에만 남았다',
+      `코스닥은 쌓은 것의 <b>${f(DV.q.retracedPctOfBuild, 0)}%</b>를 되돌려 잔고가 시작의 ${f(DV.q.multipleOfStart, 2)}배, 신용/시총도 직전 저점의 ${f(DV.q.ratioVsPrevTrough, 2)}배로 이미 저점 아래다. 코스피는 <b>${f(DV.k.retracedPctOfBuild, 0)}%</b>만 되돌렸고 저점 비율까지 ${f(DV.k.toPrevTroughJo)}조가 더 남았다.`],
     CH && [`사각지대 — 사다리가 안 세는 레버리지 ${f(CH.last.pledgeJo)}조`,
       `예탁증권담보융자는 청산 트리거 미공표. 신용융자만 ${f(creditDeclinePct, 1)}% 풀렸고 총 레버리지는 <b>${f(levDeclinePct, 1)}%</b>만 줄었다.`],
     CH && ['대신 실탄은 2021년보다 두껍다',

@@ -417,6 +417,83 @@ if (ca && co) {
 </section>`;
 }
 
+/* ---------- 시장별 되돌림 진척 ---------- */
+// 합계(PART 1 본문)는 "아직 덜 풀렸다"로 읽힌다. 그런데 쪼개면 두 시장이 정반대라,
+// 합계만 보면 코스닥의 완료와 코스피의 잔여가 서로를 가린다. 그 결론을 여기서 따로 말한다.
+const divergenceSection = !A.divergence ? '' : (() => {
+  const D = A.divergence;
+  const K = D.items.find(x => x.market === '유가증권'), Q = D.items.find(x => x.market === '코스닥');
+  if (!K || !Q) return '';
+  const done = D.doneMarkets.length === 1 ? D.doneMarkets[0] : null;
+  const cols = [K, Q];
+  const row = (label, fn, note = '') => `<tr><td>${label}${note ? ` <span class="mut">${note}</span>` : ''}</td>
+    ${cols.map(c => `<td class="n">${fn(c)}</td>`).join('')}</tr>`;
+
+  return `<section>
+<h2>같은 사이클을 두 시장이 다르게 지나고 있다</h2>
+<p class="lead">위의 청산률은 유가증권+코스닥 <b>합계</b>다. 합계는 두 시장의 정반대 움직임을 평균 내
+  어느 쪽 이야기도 하지 못한다. 나눠 보면 결론이 갈린다 — 코스닥은 이번 사이클에 쌓은 신용을
+  거의 다 토해냈고, 코스피는 대부분 들고 있다.</p>
+
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt"><b>코스닥은 되돌림이 사실상 끝났다</b> — 쌓은 것의 ${f(Q.retracedPctOfBuild, 0)}%를 반납해
+    잔고가 사이클 시작의 ${f(Q.multipleOfStart, 2)}배까지 내려왔고, 신용/시총은 직전 사이클 저점보다도 낮다.
+    <b>코스피는 ${f(K.retracedPctOfBuild, 0)}%만 되돌렸다</b> — 잔고가 아직 시작의 <b>${f(K.multipleOfStart, 2)}배</b>다.
+    남은 하락 위험은 지수 전체가 아니라 <b>유가증권 쪽에 몰려 있다</b>.</div>
+</div>
+
+<div class="tw"><table>
+  <thead><tr><th>${dtFull(D.asOf)} 기준</th>${cols.map(c => `<th class="n">${esc(c.market)}</th>`).join('')}</tr></thead>
+  <tbody>
+    ${row('사이클 시작 잔고(조)', c => f(c.startJo))}
+    ${row('고점 잔고(조)', c => `${f(c.peakJo)} <span class="mut">${dtFull(c.peakDate)}</span>`)}
+    ${row('현재 잔고(조)', c => f(c.lastJo))}
+    ${row('이번 사이클에 쌓은 것(조)', c => f(c.builtJo))}
+    ${row('되돌린 것(조)', c => f(c.retracedJo))}
+    ${row('<b>쌓은 것 대비 되돌림</b>', c => `<b>${f(c.retracedPctOfBuild, 0)}%</b>`)}
+    ${row('현재 잔고 / 시작 잔고', c => `${f(c.multipleOfStart, 2)}배`)}
+    ${row('고점 대비 청산률', c => f(c.unwindPct, 1) + '%')}
+    ${row('직전 사이클 최종 청산률', c => f(c.prevUnwindPct, 1) + '%', '(완주한 값)')}
+    ${row('신용/시총', c => c.now ? f(c.now.ratio, 3) + '%' : '-')}
+    ${row('직전 사이클 저점 비율', c => c.prevTrough ? f(c.prevTrough.ratio, 3) + '%' : '-')}
+    ${row('<b>저점 비율 대비</b>', c => c.ratioVsPrevTrough == null ? '-'
+      : `<b class="${c.ratioVsPrevTrough <= 1 ? 'up' : 'dn'}">${f(c.ratioVsPrevTrough, 2)}배</b>`)}
+    ${row('저점 비율까지 더 풀릴 여지(조)', c => c.toPrevTroughJo == null ? '-'
+      : (c.toPrevTroughJo > 0 ? f(c.toPrevTroughJo) : '<b>0</b>'))}
+  </tbody>
+</table></div>
+
+<div class="tables">
+  <div class="box">
+    <b>코스닥 — 네 지표가 전부 같은 쪽을 가리킨다</b><br>
+    ① 쌓은 ${f(Q.builtJo)}조 중 ${f(Q.retracedJo)}조를 반납해 잔고가 시작 수준(${f(Q.startJo)}조 → ${f(Q.lastJo)}조)이다.
+    ② 고점 대비 청산률 ${f(Q.unwindPct, 1)}%는 <b>직전 사이클이 완주해서 낸 ${f(Q.prevUnwindPct, 1)}%를 이미 넘겼다</b>.
+    ③ 신용/시총 ${f(Q.now.ratio, 3)}%는 직전 저점 ${f(Q.prevTrough.ratio, 3)}%의 ${f(Q.ratioVsPrevTrough, 2)}배로 <b>저점 아래</b>다.
+    ④ 그래서 저점 비율 기준으로 더 풀릴 여지가 남지 않는다.
+    지수가 더 빠지면 새 물량이 열리는 것과는 별개로, <b>이번 사이클에 쌓인 몫은 정리됐다</b>고 읽는다.
+  </div>
+  <div class="box warn">
+    <b>코스피 — 잔여가 여기 있다</b><br>
+    지수는 ${f(K.idxDrawdownPct, 1)}% 빠졌는데 잔고는 ${f(K.startJo)}조 → ${f(K.peakJo)}조 → ${f(K.lastJo)}조로,
+    쌓은 ${f(K.builtJo)}조 중 ${f(K.retracedJo)}조만 나갔다.
+    고점 대비 청산률 ${f(K.unwindPct, 1)}%는 직전 사이클 완주치 ${f(K.prevUnwindPct, 1)}%의
+    ${f(K.unwindPct / K.prevUnwindPct * 100, 0)}% 수준이다.
+    신용/시총으로 봐도 ${f(K.now.ratio, 3)}%로 직전 저점 ${f(K.prevTrough.ratio, 3)}%의 ${f(K.ratioVsPrevTrough, 2)}배라,
+    그 비율까지 내려가려면 <b>${f(K.toPrevTroughJo)}조</b>가 더 풀려야 한다.
+  </div>
+</div>
+
+<div class="box">
+  <b>두 시장의 신용/시총 <i>수준</i>을 직접 비교하면 안 된다</b> — 코스닥은 평시에도 코스피의 서너 배다
+  (직전 저점끼리 ${f(Q.prevTrough.ratio, 3)}% vs ${f(K.prevTrough.ratio, 3)}%). 그래서 위 표는 두 시장을 서로 견주지 않고
+  <b>각자의 과거</b>와 견줬다. 또 비율의 분모인 시가총액이 급락으로 빠르게 줄어 비율이 실제보다 높게 보인다 —
+  코스피가 저점 비율 위에 있다는 판정은 그만큼 <b>보수적</b>이고, 코스닥이 저점 아래라는 판정은 그만큼 <b>더 강하다</b>.
+  ${done ? `잔고 기준일(${dtFull(D.asOf)})은 지수보다 하루 늦다 — 신용융자는 결제일 기준이다.` : ''}
+</div>
+</section>`;
+})();
+
 /* ---------- 월별 지수·거래대금 비교 ---------- */
 
 function monthlyYearBlock(mo) {
@@ -1089,6 +1166,10 @@ if (co && PJ) {
   const baseRatioBench = CV?.benches.find(x => x.key === 'baseRatio');
 
   const li = (head, body) => `<li><b>${head}</b> — ${body}</li>`;
+  const DV = A.divergence && {
+    k: A.divergence.items.find(x => x.market === '유가증권'),
+    q: A.divergence.items.find(x => x.market === '코스닥'),
+  };
 
   const downList = [
     li(`지수는 ${f(b.idxDrawdownPct, 1)}% 빠졌는데 신용은 ${f(b.unwindPct, 1)}%만 청산됐다`,
@@ -1098,6 +1179,11 @@ if (co && PJ) {
        "2022년처럼 풀려야 한다"는 전제 자체가 이 사이클에는 그대로 적용되지 않는다.`),
     li('남은 위험은 시간이 아니라 지수 경로다',
       `마진콜 모델 기준 현재 지수에서 새로 열리는 물량은 없다. 코스피가 5,000p 밑으로 마감해야 +${f(at5000)}조가 새로 마진콜 구간에 들어온다.`),
+    DV ? li('그리고 그 위험은 코스피에만 남았다',
+      `코스닥은 이번 사이클에 쌓은 것의 <b>${f(DV.q.retracedPctOfBuild, 0)}%</b>를 되돌려 잔고가 시작의 ${f(DV.q.multipleOfStart, 2)}배이고,
+       신용/시총도 직전 저점의 ${f(DV.q.ratioVsPrevTrough, 2)}배로 <b>이미 저점 아래</b>다 — 되돌림이 끝났다.
+       코스피는 <b>${f(DV.k.retracedPctOfBuild, 0)}%</b>만 되돌려 잔고가 아직 시작의 ${f(DV.k.multipleOfStart, 2)}배다.
+       합계 청산률 ${f(b.unwindPct, 1)}%는 이 둘을 평균 낸 값이라 어느 쪽도 설명하지 못한다.`) : '',
     CH ? li(`사각지대 — 사다리가 안 세는 레버리지 ${f(CH.last.pledgeJo)}조`,
       `예탁증권담보융자는 청산 트리거가 공표되지 않아 마진콜 모델에서 빠져 있다.
        신용융자만 ${f(creditDeclinePct, 1)}% 풀렸고, 둘을 합친 총 레버리지는 <b>${f(levDeclinePct, 1)}%</b>만 줄었다.`) : '',
@@ -1932,6 +2018,8 @@ ${outlookSection ? '<input type="radio" name="tab" id="tab-next" class="tabin">'
 </figure>
 
 ${compare}
+
+${divergenceSection}
 
 ${monthlySection}
 

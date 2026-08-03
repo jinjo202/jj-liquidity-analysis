@@ -199,6 +199,29 @@ if (fs.existsSync(wfDir)) {
   }
 }
 
+// 시장별 되돌림 진척. 표에 그대로 나가는 숫자라 자기모순이 없어야 한다.
+if (A.meta.hasSplit) {
+  assert.ok(A.divergence, '분리 데이터가 있는데 divergence 가 없다');
+  assert.equal(A.divergence.items.length, 2, 'divergence 는 유가증권·코스닥 둘이어야 한다');
+  for (const it of A.divergence.items) {
+    near(it.builtJo, it.peakJo - it.startJo, 1e-6, `${it.market} builtJo`);
+    near(it.retracedJo, it.peakJo - it.lastJo, 1e-6, `${it.market} retracedJo`);
+    near(it.retracedPctOfBuild, (it.retracedJo / it.builtJo) * 100, 1e-6, `${it.market} 되돌림%`);
+    assert.ok(it.peakJo >= it.lastJo, `${it.market}: 현재 잔고가 고점보다 크다`);
+    for (const k of ['now', 'prevPeak', 'prevTrough']) {
+      const r = it[k];
+      assert.ok(r, `${it.market}.${k} 비율이 비어 있다`);
+      near(r.ratio, (r.creditJo / r.mcapJo) * 100, 1e-6, `${it.market}.${k} 비율`);
+    }
+    assert.ok(it.toPrevTroughJo >= 0, `${it.market}: 남은 여지가 음수다`);
+    // 저점 비율 아래면 더 풀릴 여지가 0, 위면 양수여야 한다 — 판정과 금액이 어긋나면 안 된다.
+    assert.equal(it.ratioVsPrevTrough <= 1, it.toPrevTroughJo === 0,
+      `${it.market}: 저점 대비 ${it.ratioVsPrevTrough}배인데 여지가 ${it.toPrevTroughJo}조다`);
+    assert.equal(A.divergence.doneMarkets.includes(it.market), it.ratioVsPrevTrough <= 1,
+      `${it.market}: 완료 판정이 비율과 어긋난다`);
+  }
+}
+
 // 차트 라벨 배치(lib/labels.mjs). 예탁금 커버리지 차트에서 '26 고점'과 '현재'가 한 달 차이라
 // 라벨이 같은 자리에 겹쳐 찍혔고, 맨 오른쪽 라벨은 절반이 뷰박스 밖으로 잘렸다. 둘 다 여기서 막는다.
 {

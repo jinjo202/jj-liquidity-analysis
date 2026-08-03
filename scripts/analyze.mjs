@@ -129,6 +129,63 @@ const ratioSeries = raw.series
   }));
 const ratioAt = d => ratioSeries.find(r => r.date === d) ?? null;
 
+/* ---------- 시장별 되돌림 진척 ---------- */
+// 합계만 보면 "아직 17%밖에 안 풀렸다"로 읽히는데, 쪼개면 두 시장이 정반대다.
+// 코스닥은 이번 사이클에 쌓은 것을 거의 다 토해냈고 코스피는 거의 그대로 들고 있다.
+// 결론이 합계 뒤에 가려져 있어서 따로 뽑는다. 날짜·잔고는 이미 계산된 headline 을 그대로 쓰고,
+// 여기서 새로 세는 것은 시장별 신용/시총 비율뿐이다(전체 비율은 두 시장이 섞여 이 질문에 답하지 못한다).
+function marketDivergence() {
+  const open = periods.find(p => !p.closed), closed = periods.find(p => p.closed);
+  if (!split || !open || !closed) return null;
+
+  const MCAP = { 유가증권: r => r.OS0008, 코스닥: r => r.OS0009 };
+  const CREDIT = { 유가증권: 'kospi', 코스닥: 'kosdaq' };
+  const creditByDate = new Map(split.series.map(r => [r.date, r]));
+
+  const items = Object.keys(MCAP).map(name => {
+    const h = open.markets[name]?.headline, hPrev = closed.markets[name]?.headline;
+    if (!h || !hPrev) return null;
+
+    // 시총은 억원, 신용융자는 백만원. 억원 x 100 = 백만원.
+    const ratioAtDate = d => {
+      const c = creditByDate.get(d), m = raw.series.find(r => r.date === d);
+      const mcap = m ? MCAP[name](m) : null;
+      if (!c || !Number.isFinite(mcap) || !mcap) return null;
+      return { date: d, creditJo: c[CREDIT[name]] / 1e6, mcapJo: (mcap * 100) / 1e6,
+        ratio: (c[CREDIT[name]] / (mcap * 100)) * 100 };
+    };
+
+    const builtJo = h.creditPeakJo - h.creditStartJo;
+    const retracedJo = h.creditPeakJo - h.creditLastJo;
+    return {
+      market: name,
+      startJo: h.creditStartJo, peakJo: h.creditPeakJo, peakDate: h.creditPeakDate,
+      lastJo: h.creditLastJo, lastDate: h.creditLastDate,
+      builtJo, retracedJo,
+      // 이번 사이클에 쌓은 것 중 몇 %를 되돌렸나. 고점 대비 청산률(unwindPct)과 달리
+      // 사이클 시작 수준을 기준선으로 잡는다 — "원래대로 돌아왔나"가 여기서 답이 나온다.
+      retracedPctOfBuild: builtJo > 0 ? (retracedJo / builtJo) * 100 : null,
+      multipleOfStart: h.creditStartJo > 0 ? h.creditLastJo / h.creditStartJo : null,
+      unwindPct: h.unwindPct, idxDrawdownPct: h.idxDrawdownPct,
+      prevUnwindPct: hPrev.unwindPct,
+      now: ratioAtDate(h.creditLastDate),
+      prevPeak: ratioAtDate(hPrev.creditPeakDate),
+      prevTrough: ratioAtDate(hPrev.creditTroughDate),
+    };
+  }).filter(Boolean);
+
+  if (items.length < 2) return null;
+  for (const it of items) {
+    it.ratioVsPrevTrough = it.now && it.prevTrough ? it.now.ratio / it.prevTrough.ratio : null;
+    // 직전 사이클 저점 비율까지 내려가려면 얼마가 더 풀려야 하나. 이미 밑이면 0.
+    it.toPrevTroughJo = it.now && it.prevTrough
+      ? Math.max(0, it.now.creditJo - (it.prevTrough.ratio / 100) * it.now.mcapJo) : null;
+  }
+  const done = items.filter(x => x.ratioVsPrevTrough != null && x.ratioVsPrevTrough <= 1).map(x => x.market);
+  return { asOf: items[0].lastDate, items, doneMarkets: done };
+}
+const divergence = marketDivergence();
+
 /* ---------- 앞으로 남은 청산 규모 추정 ---------- */
 // 근거가 다른 벤치마크를 여러 개 놓는다. 하나로 수렴하지 않으므로 범위로 본다.
 function projectRemaining() {
@@ -680,6 +737,7 @@ const out = {
   },
   periods, repro, reproMAE, stress, projection, monthly, lending, etf, outlook, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
+  divergence,
   series: raw.series
     .filter(r => Number.isFinite(r.OS0001))
     .map(r => ({ d: r.date, i: r.OS0001, q: r.OS0002 ?? null, c: r.OS0026 ?? null })),
