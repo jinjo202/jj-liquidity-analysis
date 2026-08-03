@@ -375,7 +375,10 @@ if (fs.existsSync(lendingPath)) {
   const lend = JSON.parse(fs.readFileSync(lendingPath, 'utf8'));
   const idxByDate = new Map(raw.series.filter(r => Number.isFinite(r.OS0001)).map(r => [r.date, r.OS0001]));
   const merged = lend.series
-    .map(r => ({ date: r.date, balJo: r.balanceMil / 1e6, idx: idxByDate.get(r.date) }))
+    .map(r => ({
+      date: r.date, balJo: r.balanceMil / 1e6, idx: idxByDate.get(r.date),
+      balShares: Number.isFinite(r.balanceShares) ? r.balanceShares : null,
+    }))
     .filter(r => Number.isFinite(r.idx))
     .sort((a, b) => a.date.localeCompare(b.date));
 
@@ -438,7 +441,40 @@ if (fs.existsSync(lendingPath)) {
   const dailyTurnoverJo = recentTurn.length
     ? recentTurn.reduce((s, v) => s + v, 0) / recentTurn.length : null;
 
-  const coveredJo = cyclePeak.balJo - last.balJo;   // 고점 이후 이미 되갚아진 양
+  const coveredJo = cyclePeak.balJo - last.balJo;   // 고점 이후 이미 되갚아진 '금액'
+
+  // ★ 금액만 보면 안 된다. 잔고금액 = 주수 × 주가라, 지수가 빠지면 한 주도 안 갚아도 금액이 준다.
+  // PART 3 에서 ETF 를 AUM 이 아니라 좌수로 본 것과 같은 함정이다(§16.4).
+  // 실제로 이번 사이클은 금액 고점 이후 금액이 -20% 인데 주수는 오히려 늘었다.
+  const shareRows = cycleWindow.filter(r => Number.isFinite(r.balShares));
+  const shares = shareRows.length < 20 ? null : (() => {
+    const pk = shareRows.reduce((m, r) => (r.balShares > m.balShares ? r : m));
+    const after = shareRows.filter(r => r.date >= pk.date);
+    const trough = after.reduce((m, r) => (r.balShares < m.balShares ? r : m));
+    const now = shareRows.at(-1);
+    const back = n => shareRows[Math.max(0, shareRows.length - 1 - n)];
+    // 금액 변화를 로그로 쪼갠다: Δln금액 = Δln주수 + Δln단가.
+    const atMoneyPeak = shareRows.find(r => r.date === cyclePeak.date) ?? pk;
+    const dMoney = Math.log(now.balJo / atMoneyPeak.balJo);
+    const dShares = Math.log(now.balShares / atMoneyPeak.balShares);
+    return {
+      peakDate: pk.date, peakShares: pk.balShares,
+      troughDate: trough.date, troughShares: trough.balShares,
+      nowDate: now.date, nowShares: now.balShares,
+      fromPeakPct: (now.balShares / pk.balShares - 1) * 100,
+      troughFromPeakPct: (trough.balShares / pk.balShares - 1) * 100,
+      fromTroughPct: (now.balShares / trough.balShares - 1) * 100,
+      d5Pct: (now.balShares / back(5).balShares - 1) * 100,
+      d20Pct: (now.balShares / back(20).balShares - 1) * 100,
+      // 금액 고점 이후 금액 변화 중 가격이 설명하는 몫(%). 100% 면 전부 가격이다.
+      moneyPeakDate: atMoneyPeak.date,
+      moneyDeclinePct: (Math.exp(dMoney) - 1) * 100,
+      sharesSinceMoneyPeakPct: (Math.exp(dShares) - 1) * 100,
+      priceShareOfMoveePct: dMoney !== 0 ? ((dMoney - dShares) / dMoney) * 100 : null,
+      series: shareRows.filter((r, i) => i % 3 === 0 || i === shareRows.length - 1)
+        .map(r => ({ d: r.date, v: r.balShares / 1e8 })),   // 억주
+    };
+  })();
   const benches = [];
   const push = (key, name, targetJo, basis, caveat) => {
     if (!Number.isFinite(targetJo)) return;
@@ -482,6 +518,7 @@ if (fs.existsSync(lendingPath)) {
 
   const remains = benches.map(b => b.remainJo);
   const cover = {
+    shares,
     coveredJo,
     coveredPctOfPeak: (coveredJo / cyclePeak.balJo) * 100,
     dailyTurnoverJo,

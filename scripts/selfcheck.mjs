@@ -199,6 +199,21 @@ if (fs.existsSync(wfDir)) {
   }
 }
 
+// 대차잔고 주수 분해(§16.4.1). 금액만 보고 "되갚아졌다" 고 읽던 실수를 다시 하지 않게,
+// 분해 항등식(Δln금액 = Δln주수 + Δln단가)이 성립하는지 검사한다.
+if (A.lending?.cover?.shares) {
+  const S = A.lending.cover.shares;
+  const dm = Math.log(1 + S.moneyDeclinePct / 100);
+  const ds = Math.log(1 + S.sharesSinceMoneyPeakPct / 100);
+  near(S.priceShareOfMoveePct, ((dm - ds) / dm) * 100, 1e-6, '가격 기여분');
+  assert.ok(S.peakShares >= S.nowShares, '주수 고점이 현재보다 작다');
+  assert.ok(S.troughShares <= S.nowShares, '주수 최저가 현재보다 크다');
+  assert.ok(S.troughDate >= S.peakDate, '주수 최저가 고점보다 앞선다');
+  near(S.fromTroughPct, (S.nowShares / S.troughShares - 1) * 100, 1e-6, '최저 대비 재증가');
+  near(S.fromPeakPct, (S.nowShares / S.peakShares - 1) * 100, 1e-6, '고점 대비');
+  assert.ok(S.series.length > 20, `주수 차트 포인트가 ${S.series.length}개뿐이다`);
+}
+
 // 종목별 대차잔고·외국인 지분율. 원본 잔고금액(백만원)과 주수 × 종가가 어긋나면
 // 소스가 스케일이나 컬럼 의미를 바꾼 것이다 — 그때 조용히 10배 틀린 숫자를 싣지 않게 막는다.
 if (A.stockFlow) {

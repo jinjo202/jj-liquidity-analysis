@@ -992,6 +992,7 @@ const stockFlowSection = !A.stockFlow ? '' : (() => {
 let coverSection = '';
 if (A.lending?.cover) {
   const CV = A.lending.cover, L = A.lending;
+  const SH = CV.shares;                    // 주수 기준. 금액만 보면 가격 효과에 속는다(§16.4).
   const rows = CV.benches.map(b => `<tr>
     <td>${esc(b.name)}</td><td class="n">${f(b.targetJo)}</td>
     <td class="n ${b.remainJo > 0 ? 'ok' : 'warn'}">${b.remainJo > 0 ? f(b.remainJo) : '소진'}</td>
@@ -1012,11 +1013,21 @@ if (A.lending?.cover) {
 여기서는 "얼마나 더 사야 하나"를 본다. 벤치마크는 하나로 수렴하지 않으므로 점 추정이 아니라 범위다.</p>
 
 <div class="cards">
-  <div class="card"><div class="lb">고점 이후 이미 되갚음</div><div class="vl">${f(CV.coveredJo)}<span class="u">조</span></div><div class="nt">고점의 ${f(CV.coveredPctOfPeak, 1)}%</div></div>
-  <div class="card"><div class="lb">= 하루 거래대금의</div><div class="vl">${f(CV.coveredEquivDays, 1)}<span class="u">배</span></div><div class="nt">최근 20일 평균 ${f(CV.dailyTurnoverJo)}조/일</div></div>
-  <div class="card"><div class="lb">현재 잔고/시총</div><div class="vl">${f(CV.nowRatio)}<span class="u">%</span></div><div class="nt">이번 고점 ${f(CV.peakRatio)}%</div></div>
-  <div class="card"><div class="lb">직전 사이클 저점 비율</div><div class="vl">${f(CV.prevTroughRatio)}<span class="u">%</span></div><div class="nt">${dtFull(CV.prevTrough.date)}</div></div>
+  <div class="card"><div class="lb">금액 기준 고점 대비</div><div class="vl">${f(CV.coveredJo)}<span class="u">조</span></div><div class="nt">고점의 ${f(CV.coveredPctOfPeak, 1)}% — <b>되갚음이 아니다</b></div></div>
+  ${SH ? `<div class="card"><div class="lb">주수 기준 고점 대비</div><div class="vl">${f(SH.fromPeakPct, 1)}<span class="u">%</span></div><div class="nt">${f(SH.nowShares / 1e8, 2)}억주 · 최저 ${f(SH.troughFromPeakPct, 1)}%(${dtFull(SH.troughDate)})</div></div>
+  <div class="card"><div class="lb">최저 이후 재증가</div><div class="vl">+${f(SH.fromTroughPct, 1)}<span class="u">%</span></div><div class="nt">주수 기준 · 최근 20일 ${SH.d20Pct >= 0 ? '+' : ''}${f(SH.d20Pct, 1)}%</div></div>`
+    : `<div class="card"><div class="lb">= 하루 거래대금의</div><div class="vl">${f(CV.coveredEquivDays, 1)}<span class="u">배</span></div><div class="nt">최근 20일 평균 ${f(CV.dailyTurnoverJo)}조/일</div></div>`}
+  <div class="card"><div class="lb">현재 잔고/시총</div><div class="vl">${f(CV.nowRatio)}<span class="u">%</span></div><div class="nt">이번 고점 ${f(CV.peakRatio)}% · 직전 저점 ${f(CV.prevTroughRatio)}%</div></div>
 </div>
+
+${SH ? `<div class="box warn">
+  <b>맨 왼쪽 카드를 "이미 ${f(CV.coveredJo)}조가 되갚아졌다"로 읽으면 안 된다.</b>
+  대차잔고는 <b>주수 × 주가</b>라, 지수가 빠지면 한 주도 갚지 않아도 금액이 줄어든다.
+  금액 고점(${dtFull(SH.moneyPeakDate)}) 이후를 로그로 쪼개면 금액 <b>${f(SH.moneyDeclinePct, 1)}%</b> 중
+  주수는 오히려 <b>${SH.sharesSinceMoneyPeakPct >= 0 ? '+' : ''}${f(SH.sharesSinceMoneyPeakPct, 1)}%</b>이고,
+  감소분의 <b>${f(SH.priceShareOfMoveePct, 0)}%가 가격</b>이다. 빌린 주식은 갚아지지 않았다.
+  PART 3 에서 ETF 를 AUM 이 아니라 좌수로 본 것과 <b>정확히 같은 함정</b>이다(§16.4).
+</div>` : ''}
 
 <div class="range">
   <div class="rl">잔여 숏커버 추정 범위</div>
@@ -1032,6 +1043,15 @@ if (A.lending?.cover) {
   </table></div></div>
   <div>${detail}</div>
 </div>
+
+${SH ? `<figure>
+  <h4>대차잔고 — 주수 기준 (억주)</h4>
+  ${trendChart(SH.series, '대차잔고 주수 (억주)', 2, `${dtFull(SH.series[0].d)} 이후`)}
+  <figcaption>같은 기간 금액 곡선은 지수를 따라 출렁이지만 주수는 그렇지 않다.
+    고점 ${dtFull(SH.peakDate)} ${f(SH.peakShares / 1e8, 2)}억주 → 최저 ${dtFull(SH.troughDate)} ${f(SH.troughShares / 1e8, 2)}억주(${f(SH.troughFromPeakPct, 1)}%)
+    → 현재 ${f(SH.nowShares / 1e8, 2)}억주. <b>7월 중순 이후 다시 늘고 있다</b> —
+    1차 되돌림은 ${dtFull(SH.troughDate)}에 멈췄고, 그 뒤로는 되갚기가 아니라 재차 쌓이는 국면이다.</figcaption>
+</figure>` : ''}
 
 <div class="box warn">
   <b>비율로 보면 되돌림은 이미 끝났다</b> — 대차잔고/시총은 현재 ${f(CV.nowRatio)}%로
@@ -1292,8 +1312,16 @@ if (co && PJ) {
   ].filter(Boolean).join('');
 
   const upList = CV ? [
-    li(`이미 ${f(CV.coveredJo)}조가 되갚아졌다`,
-      `대차잔고 고점의 ${f(CV.coveredPctOfPeak, 1)}%. 오늘 하루 거래대금의 ${f(CV.coveredEquivDays, 1)}배에 해당하는 매수가 이미 지나갔다.`),
+    CV.shares ? li('금액은 줄었는데 빌린 주식은 안 줄었다',
+      `대차잔고 금액은 고점 대비 ${f(CV.shares.moneyDeclinePct, 1)}%(${f(CV.coveredJo)}조)지만
+       <b>주수는 ${CV.shares.sharesSinceMoneyPeakPct >= 0 ? '+' : ''}${f(CV.shares.sharesSinceMoneyPeakPct, 1)}%</b>다 —
+       감소분의 ${f(CV.shares.priceShareOfMoveePct, 0)}%가 가격이다. 되갚아진 게 아니라 평가액이 빠진 것이다.`)
+      : li(`이미 ${f(CV.coveredJo)}조가 되갚아졌다`,
+        `대차잔고 고점의 ${f(CV.coveredPctOfPeak, 1)}%. 오늘 하루 거래대금의 ${f(CV.coveredEquivDays, 1)}배에 해당하는 매수가 이미 지나갔다.`),
+    CV.shares ? li('1차 되돌림은 7월 중순에 멈췄다',
+      `주수 기준 고점 대비 ${f(CV.shares.troughFromPeakPct, 1)}%까지 줄었다가(${dtFull(CV.shares.troughDate)})
+       다시 <b>+${f(CV.shares.fromTroughPct, 1)}%</b> 늘어 현재 고점 대비 ${f(CV.shares.fromPeakPct, 1)}%다.
+       지금은 되갚는 국면이 아니라 <b>다시 쌓이는 국면</b>이다.`) : '',
     li('비율로 보면 되돌림은 이미 끝났다',
       `대차잔고/시총 <b>${f(CV.nowRatio)}%</b>는 직전 사이클 저점 <b>${f(CV.prevTroughRatio)}%</b>보다 낮다.
        비율 기준 벤치마크 두 개가 모두 '소진'으로 나온다.`),
