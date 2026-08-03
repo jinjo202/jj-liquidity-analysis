@@ -1,8 +1,29 @@
 # 인수인계서 — 코스피 유동성 분석 프로젝트
 
-최종 갱신 2026-08-03. 계정/PC 를 바꿔 이어서 작업할 때 이 문서 하나로 시작할 수 있게 썼다.
+최종 갱신 2026-08-04. 계정/PC 를 바꿔 이어서 작업할 때 이 문서 하나로 시작할 수 있게 썼다.
 
-## 0. 중단된 작업 — 없다
+## 0. ★ 진행 중 — jinjo202 계정으로 이전 중
+
+2026-08-04 에 저장소를 **`jinjo202/jj-liquidity-analysis`** 로 옮겼다. 소스는 옛 저장소와 동일하고
+워크플로도 그대로 돈다(스케줄 실행·커밋까지 확인). **남은 것은 Vercel 하나다.**
+
+```bash
+npx vercel login          # ← 사람이 직접. CLI 토큰이 아직 devbotsender8282-3212 다
+```
+
+로그인 뒤 할 일 (이 순서로):
+
+```bash
+npx vercel link --yes                       # jinjo202 스코프에 프로젝트 생성/연결
+npx vercel git connect                      # origin(jinjo202) 에 연결 -> push 시 자동 배포
+npx vercel deploy --prod                    # 첫 배포
+gh workflow disable "Update reports" --repo devbotsender8282/jj-liquidity-analysis
+```
+
+**마지막 줄을 새 배포가 뜬 뒤에 실행할 것.** 지금은 옛 저장소가 라이브 사이트를 먹여 살리고 있다.
+두 저장소가 같은 크론을 돌리는 동안 데이터 이력이 갈라지므로, 이전이 끝나면 반드시 한쪽을 끈다.
+
+## 0.1 중단된 작업 — 없다
 
 홍콩 CSOP 좌수 백필은 2026-08-03 에 완주했다(3종목 × 193일, 20251016~20260731).
 리포트의 "7709 좌수 추이" 차트와 표의 "좌수 5일/고점 대비" 컬럼이 이제 실제로 나온다.
@@ -21,7 +42,8 @@
 
 - 웹 리포트: **https://jj-liquidity-analysis.vercel.app**
 - 상태 확인: **https://jj-liquidity-analysis.vercel.app/status.json** ← 뭐가 잘 도는지 여기서 먼저 본다
-- 저장소: **https://github.com/devbotsender8282/jj-liquidity-analysis** (private)
+- 저장소(정본): **https://github.com/jinjo202/jj-liquidity-analysis** (private)
+- 옛 저장소: `devbotsender8282/jj-liquidity-analysis` — 이전 중이며 라이브 Vercel 이 아직 여기 물려 있다(§0)
 - 방법론 전문: [`docs/methodology.md`](docs/methodology.md) §1~24 — 역설계 과정, 가정, 한계, 디버깅 기록 전부
 - 별도 웹앱: [`my-project/`](my-project/HANDOFF.md) — Next.js + Supabase 대시보드(자체 인수인계서 있음)
 
@@ -37,7 +59,7 @@
 ## 2. 새 계정/새 PC에서 시작하기
 
 ```bash
-git clone https://github.com/devbotsender8282/jj-liquidity-analysis.git
+git clone https://github.com/jinjo202/jj-liquidity-analysis.git
 cd jj-liquidity-analysis
 node --version    # 18+ 확인. npm install 불필요 (외부 패키지 0)
 node scripts/analyze.mjs && node scripts/selfcheck.mjs && node scripts/build.mjs
@@ -47,8 +69,8 @@ node scripts/analyze.mjs && node scripts/selfcheck.mjs && node scripts/build.mjs
 
 | 항목 | 지금 상태 | 새 계정에서 할 일 |
 |---|---|---|
-| GitHub | 저장소 소유자는 `devbotsender8282`. `jinjo202` 가 collaborator(write)로 초대 수락됨 | 새 계정을 collaborator 로 초대 → `gh api /user/repository_invitations` 로 초대 id 확인 → `gh api --method PATCH /user/repository_invitations/{id}` 로 수락 |
-| Vercel(리포트) | GitHub 저장소에 연결돼 **push 하면 자동 배포**. 손댈 것 없음 | 없음. 저장소 접근만 되면 배포는 그대로 돈다 |
+| GitHub | 정본은 `jinjo202/jj-liquidity-analysis`. `gh` 가 이미 jinjo202 로 인증됨(`repo`,`workflow` 스코프) | `gh auth status` 로 확인. 다른 계정이면 `gh auth login` |
+| Vercel(리포트) | **이전 미완료.** CLI 가 아직 `devbotsender8282-3212` 스코프다 | §0 의 4줄을 순서대로. 로그인은 사람이 직접 해야 한다 |
 | Vercel(my-project) | Git 연동이 **아니다**. CLI 배포 방식(`npx vercel deploy --prod`) | `npx vercel@latest login` → `link --project my-project --scope devbotsender8282-3212s-projects` |
 | 카카오톡 알림 | 이 PC 의 스케줄 작업 + 홈 디렉터리 상태 파일 | §9 참고. 새 PC 에서 다시 만들어야 한다 |
 
