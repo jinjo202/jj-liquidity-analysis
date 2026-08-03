@@ -296,7 +296,7 @@ if (A.meta.hasSplit) {
     assert.ok(p.y > minY, `라벨이 차트 위로 넘쳤다: ${p.text}`);
   }
   for (const [a, b] of placed.flatMap((x, i) => placed.slice(i + 1).map(y => [x, y]))) {
-    const overlap = Math.abs(a.x - b.x) < (a.w + b.w) / 2 && Math.abs(a.y - b.y) < 10;
+    const overlap = Math.abs(a.x - b.x) < (a.w + b.w) / 2 && Math.abs(a.y - b.y) < 13;   // 실측 글자 높이 12.27
     assert.ok(!overlap, `라벨이 겹친다: "${a.text}" vs "${b.text}"`);
   }
 }

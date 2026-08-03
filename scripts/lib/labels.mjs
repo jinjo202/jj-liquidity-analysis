@@ -22,7 +22,9 @@ export const clampX = (cx, text, W, pad = 2) => {
  * @param minY  이 위로는 올리지 않는다(보통 차트 상단 여백)
  * @returns items 에 {x, y, w} 를 더한 배열
  */
-export function placeLabels(items, { W, minY, lh = 10, pad = 2 }) {
+// lh 기본값 13 은 눈대중이 아니다 — 브라우저에서 잰 9px 한글 라벨의 실제 상자 높이가
+// 12.27 이었다. 10 으로 뒀더니 11.5 간격이 남아 0.77px 씩 겹쳤고, 화면에서는 붙어 보였다.
+export function placeLabels(items, { W, minY, lh = 13, pad = 2 }) {
   const out = [];
   for (const it of items) {
     const w = labelWidth(it.text);
