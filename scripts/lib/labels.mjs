@@ -9,6 +9,13 @@
 export const labelWidth = (s, px = 9) =>
   [...s].reduce((a, c) => a + (c.charCodeAt(0) < 128 ? px * 0.52 : px), 0);
 
+// 축 눈금 전용. 가로로만 뷰박스 안에 밀어 넣는다 — 눈금은 세로로 옮기면 축이 아니게 되므로
+// placeLabels 를 쓰면 안 된다(계열 첫 눈금이 x=M.l 에 붙어 왼쪽으로 잘리던 것이 이 경우다).
+export const clampX = (cx, text, W, pad = 2) => {
+  const w = labelWidth(text);
+  return Math.min(Math.max(cx, w / 2 + pad), W - w / 2 - pad);
+};
+
 /**
  * @param items [{cx, cy, text}] — 점 좌표와 라벨. 배열 순서대로 자리를 잡는다(앞선 것이 우선).
  * @param W     뷰박스 폭

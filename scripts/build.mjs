@@ -3,7 +3,7 @@
 // file:// 로 열어도 그대로 보이고, fetch 로 데이터를 읽지 않으므로 CORS 문제도 없다.
 import fs from 'node:fs';
 import path from 'node:path';
-import { placeLabels } from './lib/labels.mjs';
+import { placeLabels, clampX } from './lib/labels.mjs';
 
 const ROOT = path.join(import.meta.dirname, '..');
 const A = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'analysis.json'), 'utf8'));
@@ -622,7 +622,7 @@ function trendChart(points, unit, dg, spanLabel = '최근 1년') {
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 1년 추세">
   ${ticks(dom[0], dom[1], 3).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
     <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${f(v, dg)}</text>`).join('')}
-  ${ticksX.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
+  ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
   <path class="tarea" d="${area}"/>
   <path class="tline" d="${d}"/>
   ${mark}
@@ -671,7 +671,7 @@ function stackChart(rows, keys, unit, marks = []) {
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
   ${ticks(dom[0], dom[1], 4).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
     <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${f(v, 0)}</text>`).join('')}
-  ${ticksX.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
+  ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
   ${layers.map(l => `<path d="${l.path}" fill="${l.color}" fill-opacity="${l.op ?? 0.85}" stroke="none"/>`).join('')}
   ${marks.map(m => {
     const i = rows.findIndex(r => r.d >= m.d);
