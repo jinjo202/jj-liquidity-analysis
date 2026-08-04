@@ -233,7 +233,25 @@ node scripts/alert-verdict.mjs --dry    # 상태 갱신 없이 확인만 (수동
 `docs/methodology.md` §22 에 "로컬에서 되는데 러너에서 안 될 때 진단하는 순서"가 있다.
 같은 패턴(진단을 `status.json` 에 심어 원격 추적)을 다시 쓰면 된다.
 
-## 부록. Vercel 이 커밋 작성자를 검사한다
+## 부록 A. Vercel 프로젝트가 둘로 갈렸던 건
+
+이전 중에 프로젝트가 두 개가 됐다. 원인은 순서였다 —
+
+1. 저장소를 만들자 Vercel 이 **자동 임포트**(`importSource: import-suggestions`)로
+   `jj-liquidity-analysis` 를 먼저 만들어 이름을 선점했다.
+2. 나중에 원래 프로젝트를 이전해 오니 이름이 겹쳐 **`-z974`** 접미사가 붙었다.
+3. `.vercel.app` 도메인은 **프로젝트 이름을 따라가므로**, 원래 주소를 잃었다.
+
+**해결**: 선점한 쪽을 `jj-liquidity-analysis-old` 로 밀고, 이전해 온 진짜 프로젝트를
+`jj-liquidity-analysis` 로 개명. 이름만 바꾸면 도메인이 바로 안 붙고 **새 배포가 한 번 있어야**
+옮겨 붙는다.
+
+구분법: 진짜는 `prj_xADZiwHIA1k6R7nI6SdURgLwrPIl`(이전해 온 것),
+가짜는 `prj_bw9cAZMnRp3Un1ssOduYWikSSAAe`(자동 임포트, 지금은 `-old`).
+`-old` 는 저장소에 연결된 채로 남아 있어 **푸시할 때마다 같이 배포된다** — 정리하려면 삭제하거나
+Settings → Git 에서 연결을 끊으면 된다.
+
+## 부록 B. Vercel 이 커밋 작성자를 검사한다
 
 `jinjo202-8902` 는 Hobby 플랜이라 **팀 멤버를 추가할 수 없다**(Project Members 는 Enterprise 전용).
 그런데 Vercel 은 배포할 때 **git 커밋 작성자가 프로젝트 접근 권한이 있는지**를 검사한다.
