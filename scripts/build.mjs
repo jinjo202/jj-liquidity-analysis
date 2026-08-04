@@ -1779,11 +1779,77 @@ ${hkChart ? `<figure>
 </section>`;
 })();
 
+/* ---------- 단일종목 레버리지 ETF 거래대금 ---------- */
+// 좌수·AUM 이 "얼마나 쌓였나" 라면 거래대금은 "얼마나 돌리나" 다. 같은 물량이라도
+// 하루에 몇 번 손바뀜하는지가 다르면 성격이 다른 상품이다.
+const turnoverSection = !A.etf?.turnover?.single_lev ? '' : (() => {
+  const T = A.etf.turnover.single_lev, SC = A.etf.turnover.sector_lev;
+  const span = `${dtFull(T.from)} 이후`;
+  const valPts = T.series.filter(r => Number.isFinite(r.valJo)).map(r => ({ d: r.d, v: r.valJo }));
+  const shPts = T.series.filter(r => Number.isFinite(r.marketPct)).map(r => ({ d: r.d, v: r.marketPct }));
+  const trPts = T.series.filter(r => Number.isFinite(r.turnover)).map(r => ({ d: r.d, v: r.turnover }));
+
+  return `<section>
+<h2>얼마나 쌓였나가 아니라 얼마나 돌리나 — 거래대금</h2>
+<p class="lead">여기까지는 좌수와 AUM, 즉 <b>쌓인 양</b>을 봤다. 거래대금은 다른 질문에 답한다 —
+  그 물량이 <b>하루에 몇 번 손바뀜하는가</b>. 같은 1조라도 한 달에 한 번 도는 돈과
+  하루에 한 번 도는 돈은 시장에 주는 충격이 다르다.</p>
+
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">단일종목 레버리지 ${T.series.at(-1).n}종이 <b>시장 전체 거래대금의 최대 ${f(T.sharePeak.marketPct, 1)}%</b>를
+    차지한 날이 있었다(${dtFull(T.sharePeak.d)}). 평균으로도 <b>${f(T.avgSharePct, 1)}%</b>다.
+    회전율은 하루 평균 <b>${f(T.avgTurnover, 2)}회</b> — <b>AUM 전체가 매일 한 번쯤 손바뀜</b>했다는 뜻이다.
+    ${SC ? `같은 레버리지인 섹터 상품은 회전율 ${f(SC.avgTurnover, 2)}회, 시장 대비 ${f(SC.avgSharePct, 1)}%에 그친다 —
+    <b>덩치의 문제가 아니라 성격의 문제다.</b>` : ''}</div>
+</div>
+
+<figure>
+  <h4>단일종목 레버리지 ETF 거래대금</h4>
+  ${trendChart(valPts, '거래대금 (조원)', 1, span)}
+  ${shPts.length ? trendChart(shPts, '시장 전체 거래대금 대비 (%)', 1, span) : ''}
+  ${trPts.length ? trendChart(trPts, '회전율 = 거래대금 ÷ AUM (회)', 2, span) : ''}
+  <figcaption>시장 전체는 코스피+코스닥 거래대금이다. 상장(${dtFull(T.from)}) 이후 ${T.days}거래일.
+    거래가 없던 날(장 시작 전 조회분)은 회전율을 왜곡해서 뺐다.</figcaption>
+</figure>
+
+<div class="tw"><table>
+  <thead><tr><th>${dtFull(T.to)} 기준</th><th class="n">단일종목 레버리지</th>${SC ? '<th class="n">섹터 레버리지</th>' : ''}</tr></thead>
+  <tbody>
+    <tr><td>거래대금(조)</td><td class="n">${f(T.last.valJo)}</td>${SC ? `<td class="n">${f(SC.last.valJo)}</td>` : ''}</tr>
+    <tr><td>AUM(조)</td><td class="n">${f(T.last.aumJo, 1)}</td>${SC ? `<td class="n">${f(SC.last.aumJo, 1)}</td>` : ''}</tr>
+    <tr><td><b>평균 회전율(회/일)</b></td><td class="n"><b>${f(T.avgTurnover, 2)}</b></td>${SC ? `<td class="n">${f(SC.avgTurnover, 2)}</td>` : ''}</tr>
+    <tr><td>최근 20일 회전율</td><td class="n">${f(T.avgTurnover20, 2)}</td>${SC ? `<td class="n">${f(SC.avgTurnover20, 2)}</td>` : ''}</tr>
+    <tr><td>회전율 최고</td><td class="n">${f(T.turnoverPeak.turnover, 2)} <span class="mut">${dtFull(T.turnoverPeak.d)}</span></td>${SC ? `<td class="n">${f(SC.turnoverPeak.turnover, 2)}</td>` : ''}</tr>
+    <tr><td>거래대금 최고(조)</td><td class="n">${f(T.valPeak.valJo)} <span class="mut">${dtFull(T.valPeak.d)}</span></td>${SC ? `<td class="n">${f(SC.valPeak.valJo)}</td>` : ''}</tr>
+    <tr><td><b>시장 대비 최고</b></td><td class="n"><b>${f(T.sharePeak.marketPct, 1)}%</b> <span class="mut">${dtFull(T.sharePeak.d)}</span></td>${SC?.sharePeak ? `<td class="n">${f(SC.sharePeak.marketPct, 1)}%</td>` : ''}</tr>
+    <tr><td>시장 대비 평균</td><td class="n">${f(T.avgSharePct, 1)}%</td>${SC ? `<td class="n">${f(SC.avgSharePct, 1)}%</td>` : ''}</tr>
+  </tbody>
+</table></div>
+
+<div class="box">
+  <b>이 숫자가 PART 3 의 질문에 답한다</b> — "변동성은 어디서 왔나". 시가총액 기준으로는
+  단일종목 레버리지 ETF 의 AUM ${f(T.last.aumJo, 1)}조가 시장에서 큰 비중이 아니다.
+  그런데 <b>거래대금으로는 시장의 5분의 1 안팎을 차지했다.</b>
+  잔고가 아니라 회전이 충격을 만든다 — §23.3 의 리밸런싱 필요액과 별개로,
+  이 상품들이 그날그날 실제로 밀어낸 매매가 이만큼이었다는 뜻이다.
+</div>
+
+<div class="box warn">
+  <b>단서</b> — 거래대금은 <b>매수와 매도를 합친 값</b>이라 순유입이 아니다. 같은 물량이 하루에 여러 번
+  오가면 그만큼 부풀려진다(회전율이 높다는 건 정확히 그 뜻이다). 그리고 ETF 거래대금 전부가
+  기초자산 매매로 이어지지도 않는다 — 유통시장에서 투자자끼리 주고받으면 설정·환매 없이 끝난다.
+  기초자산에 실제로 나가는 매매는 §23.3 의 <b>리밸런싱 필요액</b>이고, 그건 이 표와 다른 계산이다.
+</div>
+</section>`;
+})();
+
 /* ---------- 투자자별 순매수 ---------- */
 // 좌수가 늘었다는 사실만으로는 누가 샀는지 모른다. 항복(자발적 투항)인지 물타기인지는
 // 여기서만 갈린다 — 강제 청산 지표(반대매매·미수금)와 정반대 얘기를 할 수 있다.
 const investorSection = !A.investorFlow ? '' : (() => {
   const V = A.investorFlow, S = V.summary;
+  const LF = V.levFlow;              // 금액 기준 수급. 수량만 보면 매도 전환을 놓친다.
   const M = n => `${n >= 0 ? '+' : ''}${f(n / 1e6, 2)}`;
   const rows = [...V.items]
     .filter(x => x.kind === 'stock' || x.group === 'single_lev' || x.group === 'single_inv')
@@ -1808,14 +1874,33 @@ const investorSection = !A.investorFlow ? '' : (() => {
 
 <div class="verdict">
   <div class="vl">한 줄 판정</div>
-  <div class="vt">${S.verdict === 'averaging-down'
-    ? `<b>개인은 항복하지 않았다 — 물타기했다.</b> ${dtFull(V.from)}~${dtFull(V.asOf)} ${V.days}거래일 동안
-       ${S.total}종목 중 <b>${S.netBuyers}종목</b>에서 개인이 순매수였고, 단일종목 레버리지 ${S.levCount}종만 보면
-       ${S.levNetBuyers}종이 순매수로 합계 <b>${M(S.levTotalIndividual)}백만주</b>다.
-       그 사이 이 상품들은 반토막 났다.`
-    : `<b>개인이 순매도로 돌아섰다.</b> ${S.total}종목 중 순매수는 ${S.netBuyers}종목뿐이다 —
-       항복 국면일 수 있다.`}</div>
+  <div class="vt">${!LF ? '' : LF.last5Eok < 0 && LF.prevEok > 0
+    ? `<b>수량으로는 순매수, 금액으로는 이미 매도 전환이다.</b>
+       ${V.days}거래일 동안 ${S.total}종목 중 ${S.netBuyers}종목이 수량 기준 순매수였지만,
+       단일종목 레버리지 ${S.levCount}종의 <b>금액</b>을 보면 누적 순매수가
+       ${dtFull(LF.cumPeak.d)} ${k0(LF.cumPeak.cumEok)}억에서 <b>${k0(LF.cumEok)}억으로
+       ${f(LF.givenBackPct, 0)}% 반납</b>됐다. ${dtFull(LF.worst.d)} 하루에만 <b>${k0(Math.abs(LF.worst.eok))}억</b>을 던졌다.
+       최근 5일 합계는 ${k0(LF.last5Eok)}억으로, 그 이전 ${LF.totalDays - 5}일의 ${k0(LF.prevEok)}억과 부호가 갈린다.`
+    : `<b>개인은 항복하지 않았다 — 물타기했다.</b> ${V.days}거래일 동안 ${S.total}종목 중
+       <b>${S.netBuyers}종목</b>에서 개인이 순매수였고, 금액으로도 누적 ${k0(LF.cumEok)}억 순매수다.`}</div>
 </div>
+
+${!LF ? '' : `<figure>
+  <h4>단일종목 레버리지 ETF — 개인 순매수 누적 (억원)</h4>
+  ${trendChart(LF.series.map(r => ({ d: r.d, v: r.cumEok })), '개인 순매수 누적 (억원)', 0, `${dtFull(LF.series[0].d)} 이후`)}
+  ${trendChart(LF.series.map(r => ({ d: r.d, v: r.eok })), '개인 순매수 일별 (억원)', 0, `${dtFull(LF.series[0].d)} 이후`)}
+  <figcaption>순매수액 = 순매수 수량 × 종가(근사). <b>수량이 아니라 금액으로 봐야 "얼마나 팔았나"에 답이 된다</b> —
+    1좌 가격이 상품마다 달라 수량은 더할 수도 없다. 순매도일 ${LF.sellDays}/${LF.totalDays}일.</figcaption>
+</figure>
+
+<div class="box warn">
+  <b>좌수로 항복을 판정하면 안 되는 이유 — 3거래일 늦다</b><br>
+  개인이 판다고 좌수가 그날 줄지 않는다. 좌수는 LP/AP 가 설정·환매를 걸어야 움직인다(§27.4).
+  실제로 재 보면 <b>개인 순매수와 좌수 변화의 당일 상관은 −0.04로 사실상 0</b>이고,
+  <b>3거래일 뒤에 상관이 +0.72로 튄다</b>(14종 중 13종이 같은 부호, lag 4에서 감쇠).
+  그래서 ${dtFull(LF.worst.d)}의 ${k0(Math.abs(LF.worst.eok))}억 순매도는 <b>아직 좌수에 안 나타났다</b> —
+  며칠 뒤 좌수가 꺾이는지가 이 판정의 확인 절차다.
+</div>`}
 
 <div class="tw"><table>
   <thead><tr><th>종목 <span class="mut">${dtFull(V.from)}~${dtFull(V.asOf)}</span></th>
@@ -2365,6 +2450,8 @@ ${etfSection ? `<div class="pane p-etf">
 <div class="parthead ph-etf"><i>PART 3</i><b>레버리지 ETF — 변동성은 어디서 왔나</b></div>
 
 ${etfSection}
+
+${turnoverSection}
 
 ${investorSection}
 

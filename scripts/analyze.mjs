@@ -161,17 +161,52 @@ function analyzeInvestorFlows() {
   // 급락 구간에서 개인이 순매수면 항복이 아니다 — 오히려 물타기다.
   const lev = items.filter(x => x.kind === 'etf' && x.group === 'single_lev');
   const netBuyers = items.filter(x => x.individual > 0).length;
+
+  // ★ 수량(주)만 보면 안 된다. 1좌 가격이 제각각이라 14종을 더할 수 없고, 무엇보다
+  // "얼마나 팔았나" 는 금액이라야 답이 된다. 실제로 수량으로는 20일 내내 순매수인데
+  // 금액으로 보면 하루에 1조 넘게 던진 날이 나온다. 순매수액 = 순매수 수량 × 종가 (근사).
+  const wonByDate = new Map();
+  for (const it of lev) {
+    for (const r of it.series) {
+      const px = it.series.find(x => x.d === r.d) && (flowRaw.items.find(x => x.code === it.code)?.series ?? [])
+        .find(x => x.d === r.d)?.close;
+      if (!px) continue;
+      wonByDate.set(r.d, (wonByDate.get(r.d) ?? 0) + (r.i * px) / 1e8);   // 억원
+    }
+  }
+  const dates = [...wonByDate.keys()].sort();
+  let run = 0;
+  const levWon = dates.map(d => { run += wonByDate.get(d); return { d, eok: wonByDate.get(d), cumEok: run }; });
+  const sellDays = levWon.filter(r => r.eok < 0);
+  const tail = n => levWon.slice(-n).reduce((s, r) => s + r.eok, 0);
+  const worst = levWon.length ? levWon.reduce((m, r) => (r.eok < m.eok ? r : m)) : null;
+  const cumPeak = levWon.length ? levWon.reduce((m, r) => (r.cumEok > m.cumEok ? r : m)) : null;
+  const cumLast = levWon.at(-1) ?? null;
+
+  const levFlow = !levWon.length ? null : {
+    series: levWon,
+    cumEok: cumLast.cumEok,
+    cumPeak,
+    // 누적 고점 대비 얼마나 반납했나. 100% 면 그 기간에 쌓은 걸 전부 되판 것이다.
+    givenBackPct: cumPeak.cumEok > 0 ? (1 - cumLast.cumEok / cumPeak.cumEok) * 100 : null,
+    sellDays: sellDays.length, totalDays: levWon.length,
+    worst,
+    last5Eok: tail(5), prevEok: levWon.slice(0, -5).reduce((s, r) => s + r.eok, 0),
+  };
+
   return {
     asOf: items[0].to, from: items[0].from, days: items[0].days,
     source: flowRaw.meta,
     items: items.sort((a, b) => b.individual - a.individual),
+    levFlow,
     summary: {
       total: items.length, netBuyers,
       levTotalIndividual: lev.reduce((a, x) => a + x.individual, 0),
       levNetBuyers: lev.filter(x => x.individual > 0).length,
       levCount: lev.length,
-      // 판정: 가격이 빠지는데 개인이 순매수면 '물타기', 순매도면 '항복'.
+      // 판정: 수량 기준으로는 순매수여도 최근 금액이 크게 순매도면 그쪽이 최신 신호다.
       verdict: netBuyers > items.length / 2 ? 'averaging-down' : 'capitulating',
+      recentTurn: levFlow && levFlow.last5Eok < 0 && levFlow.prevEok > 0,
     },
   };
 }
@@ -628,6 +663,53 @@ if (fs.existsSync(etfPath)) {
   etf = analyzeEtf({ etf: etfData, csop, csopDaily, market, checkpointDates });
   // 같은 날짜에 이름이 겹치면(예: 6월말이 곧 고점) 먼저 붙은 이름을 남긴다.
   if (etf) etf.checkpointLabels = Object.fromEntries([...named].reverse());
+
+  // 단일종목 레버리지 ETF 의 거래대금. AUM·좌수가 "얼마나 쌓였나" 라면 이건 "얼마나 돌리나" 다.
+  //   회전율 = 거래대금 / AUM. 1을 넘으면 그날 하루에 펀드 전체가 한 번 이상 손바뀜한 것이다.
+  //   시장 대비 = 이 상품군 거래대금 / 코스피+코스닥 거래대금. 시장 거래를 얼마나 먹는지.
+  // 거래일이 아닌 날(장 시작 전 조회분)은 거래대금 0 으로 와서 회전율을 왜곡한다 — 버린다.
+  if (etf) {
+    const turnoverOf = groupKey => {
+      const codes = (etfData.universe ?? []).filter(u => u.group === groupKey).map(u => u.code);
+      if (!codes.length) return null;
+      const mktJo = new Map(raw.series
+        .filter(r => Number.isFinite(r.OS0011) || Number.isFinite(r.OS0012))
+        .map(r => [r.date, ((r.OS0011 ?? 0) + (r.OS0012 ?? 0)) / 1e4]));
+      const dates = [...new Set(codes.flatMap(c => (etfData.series[c] ?? []).map(r => r.d)))].sort();
+      const rows = dates.map(d => {
+        let valJo = 0, aumJo = 0, n = 0;
+        for (const c of codes) {
+          const r = (etfData.series[c] ?? []).find(x => x.d === d);
+          if (!r) continue;
+          valJo += (r.valueMil ?? 0) / 1e6;
+          aumJo += (r.units * r.close) / 1e12;
+          n++;
+        }
+        const mkt = mktJo.get(d) ?? null;
+        return {
+          d, valJo, aumJo, n,
+          turnover: aumJo > 0 ? valJo / aumJo : null,
+          marketPct: mkt ? (valJo / mkt) * 100 : null,
+        };
+      }).filter(r => r.valJo > 0);
+      if (rows.length < 5) return null;
+      const last = rows.at(-1);
+      const avg = a => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
+      const withMkt = rows.filter(r => r.marketPct != null);
+      return {
+        from: rows[0].d, to: last.d, days: rows.length,
+        last,
+        valPeak: rows.reduce((m, r) => (r.valJo > m.valJo ? r : m)),
+        sharePeak: withMkt.length ? withMkt.reduce((m, r) => (r.marketPct > m.marketPct ? r : m)) : null,
+        turnoverPeak: rows.reduce((m, r) => ((r.turnover ?? 0) > (m.turnover ?? 0) ? r : m)),
+        avgTurnover: avg(rows.map(r => r.turnover).filter(Number.isFinite)),
+        avgTurnover20: avg(rows.slice(-20).map(r => r.turnover).filter(Number.isFinite)),
+        avgSharePct: avg(withMkt.map(r => r.marketPct)),
+        series: rows,
+      };
+    };
+    etf.turnover = { single_lev: turnoverOf('single_lev'), sector_lev: turnoverOf('sector_lev') };
+  }
 }
 
 /* ---------- 실측 스트레스 지표 ---------- */
