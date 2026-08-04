@@ -232,3 +232,23 @@ node scripts/alert-verdict.mjs --dry    # 상태 갱신 없이 확인만 (수동
 
 `docs/methodology.md` §22 에 "로컬에서 되는데 러너에서 안 될 때 진단하는 순서"가 있다.
 같은 패턴(진단을 `status.json` 에 심어 원격 추적)을 다시 쓰면 된다.
+
+## 부록. Vercel 이 커밋 작성자를 검사한다
+
+`jinjo202-8902` 는 Hobby 플랜이라 **팀 멤버를 추가할 수 없다**(Project Members 는 Enterprise 전용).
+그런데 Vercel 은 배포할 때 **git 커밋 작성자가 프로젝트 접근 권한이 있는지**를 검사한다.
+
+```
+Git author ocarr must have access to the project on Vercel to create deployments.
+```
+
+실제로 갈렸다 — `github-actions[bot]` 커밋은 배포 성공, `ocarr` 커밋은 전부 실패.
+멤버 추가가 막혀 있으니 **커밋 작성자를 계정 소유자(jinjo202)로 맞추는 것**이 해법이다.
+
+```bash
+git config --local user.name  "jinjo202"
+git config --local user.email "285509946+jinjo202@users.noreply.github.com"
+```
+
+`--local` 이라 이 저장소에만 적용되고 다른 프로젝트의 전역 설정(`ocarr`)은 그대로다.
+새 PC 에서 클론하면 **이 설정을 다시 해야 한다** — 안 하면 푸시는 되는데 배포만 조용히 실패한다.
