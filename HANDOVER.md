@@ -2,26 +2,30 @@
 
 최종 갱신 2026-08-04. 계정/PC 를 바꿔 이어서 작업할 때 이 문서 하나로 시작할 수 있게 썼다.
 
-## 0. ★ 진행 중 — jinjo202 계정으로 이전 중
+## 0. 이전 완료 — 정본은 jinjo202
 
-2026-08-04 에 저장소를 **`jinjo202/jj-liquidity-analysis`** 로 옮겼다. 소스는 옛 저장소와 동일하고
-워크플로도 그대로 돈다(스케줄 실행·커밋까지 확인). **남은 것은 Vercel 하나다.**
+- **저장소**: `jinjo202/jj-liquidity-analysis` (private)
+- **Vercel**: 프로젝트를 `jinjo202-8902's projects` 로 이전했고, Git 연결도 이 저장소로 붙였다.
+  URL 은 그대로 `https://jj-liquidity-analysis.vercel.app` 다.
+- **푸시하면 자동 배포**된다. 이제 origin 한 곳에만 푸시하면 된다.
+
+이전하면서 걸렸던 것 세 가지를 기록해 둔다(다음에 또 헤매지 않게).
+
+1. `data.krx.co.kr` 처럼 Vercel 도 **계정이 둘이었다** — CLI 토큰은 `devbotsender8282-3212`,
+   브라우저는 `jinjo202-8902`. `vercel whoami` 는 계정 **이름**이라 GitHub 연결을 바꿔도 안 바뀐다.
+   진짜 확인은 `vercel teams ls` 와 `git connect` 재시도다.
+2. `git connect` 가 계속 거부된 이유는 봇 차단이 아니라 **접근 권한**이었다. devbot 계정의 GitHub
+   신원은 `devbotsender8282` 인데 jinjo202 의 비공개 저장소는 거기에 공유돼 있지 않았다.
+3. 결국 **프로젝트 이전(Transfer)** 이 답이었다. URL·설정·배포 이력이 유지된다.
+   단 이전 직후 **Git 연결이 끊기므로** 새 계정에서 다시 연결해야 하고,
+   연결만으로는 배포가 안 뜬다 — 새 푸시나 Redeploy 가 필요하다.
+
+**남은 정리**: 옛 저장소(`devbotsender8282/jj-liquidity-analysis`) 워크플로를 끈다.
+두 저장소가 같은 크론을 돌리는 동안 데이터 이력이 갈라진다.
 
 ```bash
-npx vercel login          # ← 사람이 직접. CLI 토큰이 아직 devbotsender8282-3212 다
-```
-
-로그인 뒤 할 일 (이 순서로):
-
-```bash
-npx vercel link --yes                       # jinjo202 스코프에 프로젝트 생성/연결
-npx vercel git connect                      # origin(jinjo202) 에 연결 -> push 시 자동 배포
-npx vercel deploy --prod                    # 첫 배포
 gh workflow disable "Update reports" --repo devbotsender8282/jj-liquidity-analysis
 ```
-
-**마지막 줄을 새 배포가 뜬 뒤에 실행할 것.** 지금은 옛 저장소가 라이브 사이트를 먹여 살리고 있다.
-두 저장소가 같은 크론을 돌리는 동안 데이터 이력이 갈라지므로, 이전이 끝나면 반드시 한쪽을 끈다.
 
 ## 0.1 중단된 작업 — 없다
 
