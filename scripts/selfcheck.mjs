@@ -220,6 +220,33 @@ if (A.channels?.creditToDeposit) {
   }
 }
 
+// 마진콜 스트레스와 AUM 분해, 외인 지분율 밴드(§31).
+if (A.marginStress) {
+  const M = A.marginStress;
+  near(M.last.ratio, (M.last.callJo / M.last.recvJo) * 100, 1e-6, '마진콜 비율');
+  assert.ok(M.pct >= 0 && M.pct <= 100, `백분위 범위 밖: ${M.pct}`);
+  assert.ok(M.peak.ma5 >= M.last.ma5 || M.peak.d === M.last.d, '최근 고점이 현재보다 낮다');
+  assert.ok(M.series.length > 100, `마진콜 차트 표본 부족: ${M.series.length}`);
+}
+if (A.etf?.breakdown) {
+  const B = A.etf.breakdown;
+  for (const r of B.series) {
+    // 항등식: AUM = (시작규모 + 누적 유출입) + 가격 기여분
+    near(r.aum, r.flowCum + r.priceCum, 1e-6, `${r.d} AUM 분해 항등식`);
+  }
+  assert.ok(B.peak.aum >= B.last.aum, 'AUM 고점이 현재보다 작다');
+  if (B.priceShareOfDrop != null && B.flowShareOfDrop != null) {
+    near(B.priceShareOfDrop + B.flowShareOfDrop, 100, 1e-6, '가격+자금 기여분 합계');
+  }
+}
+for (const it of A.stockFlow?.items ?? []) {
+  const B = it.foreignBand;
+  if (!B) continue;
+  assert.ok(B.sd > 0, `${it.name}: 표준편차가 0 이하다`);
+  near(B.z, (it.foreign.last.foreignPct - B.mean) / B.sd, 1e-6, `${it.name} z점수`);
+  near(B.hi1 - B.mean, B.sd, 1e-9, `${it.name} +1σ`);
+}
+
 // 투자자별 순매수(§27). 소스가 20거래일 창만 주므로 누적이 끊기지 않았는지,
 // 그리고 합계·판정이 계열과 어긋나지 않는지 본다.
 if (A.investorFlow) {

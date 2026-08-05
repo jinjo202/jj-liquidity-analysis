@@ -129,6 +129,79 @@ const ratioSeries = raw.series
   }));
 const ratioAt = d => ratioSeries.find(r => r.date === d) ?? null;
 
+/* ---------- 마진콜 스트레스 시계열 ---------- */
+// 반대매매 ÷ 위탁매매미수금 = 미수 잔액 중 강제로 처분된 비율. 절대액은 시장 규모에 끌려
+// 다니지만 이 비율은 "미수를 낸 사람들이 실제로 얼마나 털렸나" 를 바로 말한다.
+// 하루치는 튀므로 5일 이동평균으로 본다(§18).
+function marginStress() {
+  const rows = raw.series
+    .filter(r => Number.isFinite(r.OS0024) && Number.isFinite(r.OS0025) && r.OS0024 > 0)
+    .map(r => ({ d: r.date, recvJo: r.OS0024 / 1e6, callJo: r.OS0025 / 1e6 }))
+    .map(r => ({ ...r, ratio: (r.callJo / r.recvJo) * 100 }));
+  if (rows.length < 30) return null;
+  for (let i = 0; i < rows.length; i++) {
+    const w = rows.slice(Math.max(0, i - 4), i + 1);
+    rows[i].ma5 = w.reduce((s2, x) => s2 + x.ratio, 0) / w.length;
+  }
+  const recent = rows.filter(r => r.d >= '20240101');
+  const hist = rows.map(r => r.ma5);
+  const sorted = [...hist].sort((a, b) => a - b);
+  const med = sorted[Math.floor(sorted.length / 2)];
+  const last = rows.at(-1);
+  const peak = recent.reduce((m, r) => (r.ma5 > m.ma5 ? r : m));
+  return {
+    last, med, peak,
+    pct: (sorted.filter(v => v <= last.ma5).length / sorted.length) * 100,
+    // 평시 수준으로 돌아왔나 — 중앙값 대비 배수로 본다.
+    vsMedian: med > 0 ? last.ma5 / med : null,
+    series: rows.filter(r => r.d >= '20240101').map(r => ({ d: r.d, ma5: r.ma5, recvJo: r.recvJo })),
+  };
+}
+const marginStressData = marginStress();
+
+/* ---------- 레버리지 ETF AUM 분해 — 자금이냐 가격이냐 ---------- */
+// AUM 변화는 두 갈래다: 좌수가 늘어 들어온 돈(유출입)과, 들고 있던 물량의 값이 변한 것(가격).
+// 일별로 flow_t = Δ좌수 × 그날 종가 로 잡고 누적한다. 나머지가 가격 기여분이다.
+function aumBreakdown(etfData, groups) {
+  const codes = (etfData.universe ?? []).filter(u => groups.includes(u.group)).map(u => u.code);
+  if (!codes.length) return null;
+  const dates = [...new Set(codes.flatMap(c => (etfData.series[c] ?? []).map(r => r.d)))].sort();
+  const prev = new Map();
+  let cumFlow = 0, base = null;
+  const out = [];
+  for (const d of dates) {
+    let aum = 0, flow = 0, seen = 0;
+    for (const c of codes) {
+      const r = (etfData.series[c] ?? []).find(x => x.d === d);
+      if (!r || !Number.isFinite(r.units) || !Number.isFinite(r.close)) continue;
+      seen++;
+      aum += (r.units * r.close) / 1e12;
+      const p = prev.get(c);
+      if (p) flow += ((r.units - p.units) * r.close) / 1e12;
+      prev.set(c, r);
+    }
+    if (!seen) continue;
+    if (base == null) base = aum;
+    cumFlow += flow;
+    out.push({
+      d, aum,
+      flowCum: base + cumFlow,          // 시작 규모 + 누적 유출입
+      priceCum: aum - (base + cumFlow), // 나머지 = 가격 기여
+    });
+  }
+  if (out.length < 20) return null;
+  const last = out.at(-1), peak = out.reduce((m, r) => (r.aum > m.aum ? r : m));
+  return {
+    base, from: out[0].d, series: out, last, peak,
+    // 고점 이후 감소분 중 가격이 설명하는 몫. 100% 면 자금은 안 빠졌다는 뜻이다.
+    dropFromPeak: peak.aum - last.aum,
+    priceShareOfDrop: peak.aum !== last.aum
+      ? ((peak.priceCum - last.priceCum) / (peak.aum - last.aum)) * 100 : null,
+    flowShareOfDrop: peak.aum !== last.aum
+      ? ((peak.flowCum - last.flowCum) / (peak.aum - last.aum)) * 100 : null,
+  };
+}
+
 /* ---------- 투자자별 순매수 — 좌수를 떠받친 건 누구인가 ---------- */
 // 좌수가 늘었다는 사실만으로는 누가 샀는지 모른다. 개인이 팔았는데 기관이 받아 좌수가
 // 그대로일 수도 있다. 항복(자발적 투항) 판정은 이 조각이 있어야 선다(§27).
@@ -267,6 +340,29 @@ function analyzeStockFlows() {
         fromLowPp: fLast.foreignPct - fLow.foreignPct,
         d20Pp: fLast.foreignPct - (back(20).foreignPct ?? fLast.foreignPct),
       },
+      // 외국인 지분율의 평균·표준편차 밴드. "지금이 역사적으로 어디쯤인가" 를 z점수로 말한다.
+      // 표본이 확보된 구간(수집 시작 이후)만 쓰므로 '장기 평균' 이 아니라 '이 구간 평균' 이다.
+      foreignBand: (() => {
+        const vs = fRows.map(r => r.foreignPct);
+        if (vs.length < 30) return null;
+        const mean = vs.reduce((s2, v) => s2 + v, 0) / vs.length;
+        const sd = Math.sqrt(vs.reduce((s2, v) => s2 + (v - mean) ** 2, 0) / vs.length);
+        const now = vs[vs.length - 1];
+        return { mean, sd, z: sd > 0 ? (now - mean) / sd : null, n: vs.length,
+          lo1: mean - sd, hi1: mean + sd, lo2: mean - 2 * sd, hi2: mean + 2 * sd };
+      })(),
+      // 누적 순유입 대용 — 외국인 보유주식수의 변화를 누적한다. 실제 매매 금액이 아니라
+      // 보유량 변화라, 증자·분할이 있으면 어긋난다(두 종목은 해당 없음).
+      foreignCum: (() => {
+        let cum = 0; const out = [];
+        for (let i = 0; i < rows.length; i++) {
+          if (i > 0 && rows[i].foreignShares != null && rows[i - 1].foreignShares != null) {
+            cum += (rows[i].foreignShares - rows[i - 1].foreignShares) / 1e6;   // 백만주
+          }
+          out.push({ d: rows[i].d, cumM: cum });
+        }
+        return out;
+      })(),
       // 차트용. 385일을 다 실으면 index.html 이 커진다 — 3일에 하나씩 + 마지막 날.
       series: rows.filter((r, i) => i % 3 === 0 || i === rows.length - 1),
     };
@@ -709,6 +805,7 @@ if (fs.existsSync(etfPath)) {
       };
     };
     etf.turnover = { single_lev: turnoverOf('single_lev'), sector_lev: turnoverOf('sector_lev') };
+    etf.breakdown = aumBreakdown(etfData, ['single_lev', 'sector_lev', 'index_lev', 'single_inv', 'index_inv']);
 
     // 국내 + 홍콩 합산 AUM. 홍콩분은 USD 라 환율로 조원에 맞춘다.
     // 홍콩 NAV 는 2026-08-02 수집 시작이라 그 이전은 없다 — 없는 날은 null 로 두고
@@ -1060,6 +1157,7 @@ const out = {
   periods, repro, reproMAE, stress, projection, monthly, lending, etf, outlook, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   divergence,
+  marginStress: marginStressData,
   stockFlow,
   investorFlow,
   series: raw.series

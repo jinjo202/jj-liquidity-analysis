@@ -1086,8 +1086,33 @@ const stockFlowSection = !A.stockFlow ? '' : (() => {
     ${f(a.last.valueJo)}조 vs ${f(b.last.valueJo)}조로 <b>거의 같아 보이는 착시</b>가 생긴다.</figcaption>
 </figure>
 
+${items.map(it => {
+  const B = it.foreignBand;
+  if (!B) return '';
+  const rows = it.series.filter(r => r.foreignPct != null)
+    .map(r => ({ d: r.d, v: r.foreignPct, mean: B.mean, hi: B.hi1, lo: B.lo1 }));
+  if (rows.length < 20) return '';
+  const z = B.z;
+  return `<figure>
+  <h4>${esc(it.name)} 외국인 지분율 — 평균 대비 어디쯤인가</h4>
+  ${levelChart(rows, [
+    { key: 'v', cls: 'ln-idx', name: '지분율' },
+    { key: 'mean', cls: 'ln-cr', name: '평균' },
+    { key: 'hi', cls: 'ln-base', name: '+1σ' },
+    { key: 'lo', cls: 'ln-base', name: '-1σ' },
+  ], `${esc(it.name)} 외국인 지분율 (%)`, { dg: 1, zeroBase: false })}
+  <div class="lg"><span><i class="sw acc"></i>지분율</span><span><i class="sw cr"></i>평균 ${f(B.mean, 2)}%</span><span><i class="sw" style="background:var(--mut)"></i>±1σ (${f(B.lo1, 2)}~${f(B.hi1, 2)}%)</span></div>
+  <figcaption>현재 <b>${f(it.foreign.last.foreignPct, 2)}%</b>는 이 구간 평균 ${f(B.mean, 2)}%에서
+    <b class="${z <= -2 ? 'dn' : ''}">${f(z, 2)} 표준편차</b> 떨어져 있다(표본 ${B.n}일, σ=${f(B.sd, 2)}%p).
+    ${z <= -2 ? '<b>−2σ 아래</b>다 — 외국인 비중이 이 구간에서 가장 낮은 축이라는 뜻이다.'
+      : z <= -1 ? '−1σ 아래로, 평균보다 뚜렷이 낮다.' : '평균 근처다.'}
+    <b>주의</b>: 표본이 ${B.n}일이라 여기서 말하는 '평균' 은 장기 평균이 아니라 <b>이 구간의 평균</b>이다.
+    수집이 쌓일수록 밴드가 넓어질 수 있다.</figcaption>
+</figure>`;
+}).join('')}
+
 <figure>
-  <h4>외국인 지분율</h4>
+  <h4>외국인 지분율 — 두 종목 비교</h4>
   ${levelChart(merge('foreignPct'), lines, '외국인 지분율 (%)', { dg: 1, zeroBase: false })}
   <div class="lg">${legend}</div>
   <figcaption>네이버 금융 일별(외국인 보유주식수 ÷ 상장주식수). 0 기준이 아니라 값 범위에 맞춰 그렸다 —
@@ -1675,6 +1700,32 @@ if (co && PJ) {
 
   // 좌수가 "환매가 있었나" 라면 AUM 은 "시장에 주는 충격이 얼마나 큰가" 다 — 리밸런싱 필요액도,
   // 시장 거래대금에서 차지하는 몫도 AUM 에 비례한다. 좌수만 보면 그 축소를 놓친다.
+  // 마진콜 스트레스 — 반대매매 ÷ 미수금(5일 이동평균). 절대액이 아니라 비율이라
+  // "미수를 낸 사람들이 실제로 얼마나 털렸나" 가 바로 나온다. 평시 중앙값이 기준선이다.
+  const MS = A.marginStress;
+  const stressBox = !MS ? '' : `<div class="watch w-stress">
+  <div class="wl">함께 볼 것 · 마진콜 스트레스</div>
+  <div class="wmain">
+    <div class="wv">${f(MS.last.ma5, 1)}<span class="u">%</span></div>
+    <div class="wtag">평시의 ${f(MS.vsMedian, 2)}배</div>
+  </div>
+  <div class="wnums">
+    <span>평시 중앙값 <b>${f(MS.med, 1)}%</b></span>
+    <span>역대 <b>${f(MS.pct, 0)}백분위</b></span>
+    <span>최근 고점 <b>${f(MS.peak.ma5, 1)}%</b> <span class="mut">(${dtFull(MS.peak.d)})</span></span>
+    <span>미수금 <b>${f(MS.last.recvJo, 2)}조</b></span>
+  </div>
+  <div class="wline">반대매매 ÷ 위탁매매미수금, 5일 이동평균. ${MS.vsMedian <= 1.3
+    ? '<b>평시 수준으로 돌아왔다</b> — 급락기에 터진 강제 청산은 대체로 소화됐다는 뜻이다.'
+    : '<b>아직 평시보다 높다</b> — 강제 청산이 계속 나오고 있다.'}
+    다만 이 비율은 <b>미수거래</b> 기준이라 신용융자 반대매매는 안 센다(§18).</div>
+  <div class="wtrend">${levelChart(MS.series, [
+    { key: 'ma5', cls: 'ln-cr', name: '반대매매/미수금(5MA,%)' },
+    { key: 'recvJo', cls: 'ln-idx', name: '미수금(조)' },
+  ], '마진콜 비율(%) · 미수금(조원)', { dg: 1, zeroBase: true })}</div>
+  <div class="lg"><span><i class="sw cr"></i>반대매매/미수금 5MA(%)</span><span><i class="sw acc"></i>미수금(조)</span></div>
+</div>`;
+
   const AUMT = A.etf?.aumTotal ?? null;
   const TURN = A.etf?.turnover?.single_lev ?? null;
   const impactBox = !AUMT ? '' : `<div class="watch w-aum">
@@ -1718,9 +1769,11 @@ if (co && PJ) {
 <h2>핵심 요약</h2>
 <p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
 
+<div class="wgrid">
 ${watchBox}
-
 ${impactBox}
+${stressBox}
+</div>
 
 ${deltaStrip}
 
@@ -1894,6 +1947,24 @@ ${!s.eras ? '' : `<div class="box"><b>반증 — ETF가 없던 시절과 비교<
 </div>
 
 ${totalBlock}
+
+${!A.etf.breakdown ? '' : (() => {
+  const B = A.etf.breakdown;
+  return `<figure class="wide">
+  <h4>AUM 이 왜 줄었나 — 자금이 빠진 건가, 값이 빠진 건가</h4>
+  ${levelChart(B.series, [
+    { key: 'aum', cls: 'ln-idx', name: 'AUM 합계' },
+    { key: 'flowCum', cls: 'ln-kq', name: '시작규모+누적 유출입' },
+    { key: 'priceCum', cls: 'ln-cr', name: '가격 기여분' },
+  ], '레버리지 ETF AUM 분해 (조원)', { dg: 1, zeroBase: false })}
+  <div class="lg"><span><i class="sw acc"></i>AUM 합계</span><span><i class="sw kq"></i>시작규모 + 누적 유출입</span><span><i class="sw cr"></i>가격 기여분</span></div>
+  <figcaption>일별 유출입 = <b>Δ좌수 × 그날 종가</b>로 잡아 누적했고, AUM 에서 그걸 뺀 나머지가 가격 기여분이다.
+    <b>고점 ${f(B.peak.aum, 1)}조(${dtFull(B.peak.d)}) → 현재 ${f(B.last.aum, 1)}조,
+    ${f(B.dropFromPeak, 1)}조가 줄었는데 그중 가격이 ${f(B.priceShareOfDrop, 0)}%</b>다.
+    자금은 ${B.flowShareOfDrop < 0 ? `오히려 ${f(-B.flowShareOfDrop, 0)}%만큼 <b>들어왔다</b>` : `${f(B.flowShareOfDrop, 0)}% 빠졌다`} —
+    같은 기간 좌수가 늘었다는 §23.2 의 관찰과 같은 이야기다.</figcaption>
+</figure>`;
+})()}
 
 <h3>그룹별 AUM (조원, 상장좌수 × 종가)</h3>
 <div class="tw"><table>
@@ -2449,6 +2520,15 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .watch.w-flat { border-left-color:var(--part); }
   .watch.w-roll { border-left-color:var(--kq); }
   .watch.w-aum { border-left-color:var(--lv); }
+  .watch.w-stress { border-left-color:var(--nx); }
+  .w-stress .wtag { background:var(--nx); }
+  /* 세 지표를 한 줄에 — 좌수(환매)·AUM(충격)·마진콜(스트레스)은 같이 봐야 한다. */
+  .wgrid { display:grid; grid-template-columns:1fr; gap:14px; margin:18px 0 4px; }
+  @media (min-width:1000px) { .wgrid { grid-template-columns:repeat(3,1fr); } }
+  .wgrid .watch { margin:0; }
+  .wgrid .wv { font-size:26px; }
+  .wgrid .wnums { font-size:11px; }
+  .wgrid .wtrend { max-width:none; }
   .w-aum .wtag { background:var(--lv); }
   .wl { font-size:10px; letter-spacing:2px; color:var(--mut); }
   .wmain { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-top:2px; }
