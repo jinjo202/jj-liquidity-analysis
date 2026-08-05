@@ -26,7 +26,7 @@ function ticks(min, max, count = 5) {
 }
 
 /** 신용융자 잔고 + 지수 이중축 시계열. 사이클 적립 구간을 음영으로 표시한다. */
-function timeSeriesChart(series, periods) {
+function timeSeriesChartStatic(series, periods) {
   const W = 660, H = 330, M = { t: 24, r: 64, b: 46, l: 52 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
 
@@ -545,7 +545,7 @@ if (A.monthly?.closed && A.monthly?.open) {
 
 /* ---------- 신용/시총 비율 차트 ---------- */
 
-function ratioChart(rows, marks, unit = '신용융자 / 시가총액 (%)', suf = '%', dg = 3) {
+function ratioChartStatic(rows, marks, unit = '신용융자 / 시가총액 (%)', suf = '%', dg = 3) {
   const W = 660, H = 240, M = { t: 22, r: 16, b: 34, l: 46 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
   const vMax = Math.max(...rows.map(r => r.ratio)) * 1.12;
@@ -583,7 +583,48 @@ function ratioChart(rows, marks, unit = '신용융자 / 시가총액 (%)', suf =
 }
 
 /** 지표 하나의 1년 추세. 핵심 요약에서 지표를 펼치면 나온다. */
-function trendChart(points, unit, dg, spanLabel = '최근 1년') {
+/* ---------- 대화형 차트 등록 ---------- */
+// 런타임은 lib/chart-client.js 를 그대로 인라인한다. 외부 파일을 참조하면 file:// 에서 깨진다.
+function chartRuntime() {
+  const js = fs.readFileSync(path.join(import.meta.dirname, 'lib', 'chart-client.js'), 'utf8');
+  // </script> 가 데이터 안에 들어가면 스크립트가 조기 종료된다.
+  const data = JSON.stringify(CHARTS).replace(/<\//g, '<\\/');
+  return `window.__CHARTS__=${data};
+${js}`;
+}
+
+// 서버가 그린 SVG 는 그대로 두고, 같은 데이터를 window.__CHARTS__ 로 함께 내보낸다.
+// JS 가 살아 있으면 lib/chart-client.js 가 그 자리를 대화형 차트로 바꾼다(호버 값·구간 선택).
+// 스크립트가 없으면 지금까지와 똑같은 정적 SVG 가 보인다 — 인쇄·메일·file:// 이 그대로 동작한다.
+const CHARTS = {};
+let chartSeq = 0;
+// 660px 폭 차트에 4,000점을 실어봐야 화면에서 구분되지 않는다. 그런데 그 데이터는
+// 파일 크기로 그대로 남는다 — 실측으로 241KB 였다. 균등 솎되 처음·끝은 반드시 남긴다
+// (구간 요약의 시작/끝 값이 어긋나면 안 된다).
+const MAX_PTS = 900;
+function thin(spec) {
+  const n = spec.dates.length;
+  if (n <= MAX_PTS) return spec;
+  const keep = [];
+  for (let i = 0; i < n; i += Math.ceil(n / MAX_PTS)) keep.push(i);
+  if (keep[keep.length - 1] !== n - 1) keep.push(n - 1);
+  return {
+    ...spec,
+    dates: keep.map(i => spec.dates[i]),
+    series: spec.series.map(s => ({ ...s, vals: keep.map(i => s.vals[i]) })),
+  };
+}
+function interactive(spec, staticSvg) {
+  // 점이 두 개 미만이면 대화형으로 만들 이유가 없다.
+  if (!spec?.dates?.length || spec.dates.length < 2) return staticSvg;
+  const id = `c${++chartSeq}`;
+  CHARTS[id] = thin(spec);
+  return `<div class="ichart" data-chart="${id}">${staticSvg}</div>`;
+}
+// 색은 CSS 변수 문자열로 넘긴다 — stroke 와 툴팁 색점 양쪽에서 그대로 쓰인다.
+const CL = { acc: 'var(--acc)', cr: 'var(--cr)', kq: 'var(--kq)', lv: 'var(--lv)', nx: 'var(--nx)', mut: 'var(--mut)' };
+
+function trendChartStatic(points, unit, dg, spanLabel = '최근 1년') {
   const W = 640, H = 190, M = { t: 18, r: 52, b: 26, l: 12 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
   const vs = points.map(p => p.v);
@@ -631,11 +672,22 @@ function trendChart(points, unit, dg, spanLabel = '최근 1년') {
 </svg>`;
 }
 
+// 호출부는 그대로 두고 여기서 대화형으로 감싼다 — 이 한 함수가 요약 미니차트부터
+// 좌수·거래대금·개인 순매수까지 전부를 덮는다.
+function trendChart(points, unit, dg, spanLabel = '최근 1년') {
+  const pts = (points ?? []).filter(p => p && p.d && Number.isFinite(p.v));
+  return interactive({
+    unit, dg, h: 200,
+    dates: pts.map(p => p.d),
+    series: [{ name: '', color: CL.acc, vals: pts.map(p => p.v) }],
+  }, trendChartStatic(points, unit, dg, spanLabel));
+}
+
 /**
  * 그룹별 AUM 을 쌓아 올린 면적 차트. 레버리지 ETF 시장 전체가 어떻게 부풀었다 꺼졌는지를
  * 한 장으로 본다. 선 여러 개를 겹치면 합계가 눈에 안 들어와서 누적 면적을 쓴다.
  */
-function stackChart(rows, keys, unit, marks = []) {
+function stackChartStatic(rows, keys, unit, marks = []) {
   const W = 980, H = 300, M = { t: 20, r: 58, b: 34, l: 12 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
   if (rows.length < 2) return '';
@@ -689,7 +741,7 @@ function stackChart(rows, keys, unit, marks = []) {
 /** 같은 단위(조원) 계열 여러 개를 한 축에 겹쳐 그린다. */
 // dg: 축 눈금 소수 자리. zeroBase:false 면 값 범위에 맞춰 하한을 올린다 —
 // 외국인 지분율(46~56%)처럼 0에서 먼 계열은 0 기준으로 그리면 움직임이 안 보인다.
-function levelChart(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
+function levelChartStatic(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
   const W = 660, H = 260, M = { t: 22, r: 16, b: 34, l: 50 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
   const vals = lines.flatMap(L => rows.map(r => r[L.key]).filter(Number.isFinite));
@@ -722,9 +774,65 @@ function levelChart(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
 </svg>`;
 }
 
-/* ---------- 대차잔고(공매도 프록시) 차트 ---------- */
+// 선 클래스 -> 색. 대화형 쪽은 CSS 클래스를 못 쓰는 자리(툴팁 색점)가 있어 값이 필요하다.
+const CLS_COLOR = { 'ln-idx': CL.acc, 'ln-cr': CL.cr, 'ln-kq': CL.kq, 'ln-ratio': CL.acc, 'ln-base': CL.mut };
+function levelChart(rows, lines, unit, opts = {}) {
+  const rs = (rows ?? []).filter(r => r && r.d);
+  return interactive({
+    unit, dg: opts.dg ?? 0, zeroBase: opts.zeroBase !== false, h: 240,
+    dates: rs.map(r => r.d),
+    series: lines.map(L => ({
+      name: L.name ?? '',
+      color: CLS_COLOR[L.cls] ?? CL.acc,
+      vals: rs.map(r => (Number.isFinite(r[L.key]) ? r[L.key] : null)),
+    })),
+  }, levelChartStatic(rows, lines, unit, opts));
+}
+
+// 나머지 시계열 차트 래퍼. 정적 SVG 는 그대로 두고 같은 데이터를 대화형으로 함께 낸다.
+function ratioChart(rows, marks, unit, suf = '%', dg = 3) {
+  const rs = (rows ?? []).filter(r => r && r.date && Number.isFinite(r.ratio));
+  return interactive({
+    unit: unit ?? '신용융자 / 시가총액 (%)', dg, zeroBase: false, h: 240, suffix: suf,
+    dates: rs.map(r => r.date),
+    series: [{ name: '', color: CL.acc, vals: rs.map(r => r.ratio) }],
+  }, ratioChartStatic(rows, marks, unit, suf, dg));
+}
+
+function stackChart(rows, keys, unit, marks = []) {
+  const rs = (rows ?? []).filter(r => r && r.d);
+  const palette = [CL.lv, CL.cr, CL.acc, CL.nx, CL.kq];
+  return interactive({
+    unit, dg: 1, zeroBase: true, h: 250,
+    dates: rs.map(r => r.d),
+    series: keys.map((k, i) => ({
+      name: k.label ?? k.key, color: palette[i % palette.length],
+      vals: rs.map(r => (Number.isFinite(r[k.key]) ? r[k.key] : null)),
+    })),
+  }, stackChartStatic(rows, keys, unit, marks));
+}
 
 function lendingChart(series, cyclePeakDate) {
+  const rs = (series ?? []).filter(r => r && r.d);
+  return interactive({
+    unit: '대차잔고(조원)', dg: 1, zeroBase: false, h: 250,
+    dates: rs.map(r => r.d),
+    series: [{ name: '대차잔고(조)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.bal) ? r.bal : null)) }],
+  }, lendingChartStatic(series, cyclePeakDate));
+}
+
+function timeSeriesChart(series, periods) {
+  const rs = (series ?? []).filter(r => r && r.d);
+  return interactive({
+    unit: '신용융자 합계(조원)', dg: 1, zeroBase: false, h: 260,
+    dates: rs.map(r => r.d),
+    series: [{ name: '신용융자(조)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c : null)) }],
+  }, timeSeriesChartStatic(series, periods));
+}
+
+/* ---------- 대차잔고(공매도 프록시) 차트 ---------- */
+
+function lendingChartStatic(series, cyclePeakDate) {
   const W = 660, H = 330, M = { t: 24, r: 64, b: 34, l: 52 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
   const bDom = [0, Math.max(...series.map(p => p.bal)) * 1.08];
@@ -930,12 +1038,31 @@ const stockFlowSection = !A.stockFlow ? '' : (() => {
     const by = items.map(it => new Map(it.series.map(r => [r.d, r[key]])));
     return dates.map(d => ({ d, ...Object.fromEntries(items.map((it, i) => [it.code, by[i].get(d) ?? null])) }));
   };
-  const lines = items.map((it, i) => ({ key: it.code, cls: cls[i] }));
+  const lines = items.map((it, i) => ({ key: it.code, cls: cls[i], name: it.name }));
   const legend = items.map((it, i) => `<span><i class="sw ${i ? 'cr' : 'acc'}"></i>${esc(it.name)}</span>`).join('');
 
   const row = (label, fn) => `<tr><td>${label}</td>${items.map(it => `<td class="n">${fn(it)}</td>`).join('')}</tr>`;
 
   return `<section>
+<h2>오늘의 현황 — 매일 보는 자리</h2>
+<div class="cards">
+  ${items.map(it => `<div class="card">
+    <div class="lb">${esc(it.name)} 대차잔고</div>
+    <div class="vl">${f(it.last.shares / 1e6, 1)}<span class="u">백만주</span></div>
+    <div class="nt">상장 대비 ${f(it.last.pctListed, 2)}% · 20일 ${it.d20Pct >= 0 ? '+' : ''}${f(it.d20Pct, 1)}%
+      · 고점대비 ${f(it.fromPeakPct, 1)}%</div>
+  </div>`).join('')}
+  ${items.map(it => !it.foreign ? '' : `<div class="card">
+    <div class="lb">${esc(it.name)} 외국인 지분율</div>
+    <div class="vl">${f(it.foreign.last.foreignPct, 2)}<span class="u">%</span></div>
+    <div class="nt">저점 대비 +${f(it.foreign.fromLowPp, 2)}%p · 20일 ${it.foreign.d20Pp >= 0 ? '+' : ''}${f(it.foreign.d20Pp, 2)}%p
+      · 최고 ${f(it.foreign.high.foreignPct, 2)}%</div>
+  </div>`).join('')}
+</div>
+<p class="lead">${dtFull(S.asOf)} 기준. 매일 자동으로 갱신된다 —
+  대차잔고는 FREESIS 종목별 대차거래, 외국인 지분율은 네이버 금융 일별에서 받는다(§26).
+  아래 차트는 커서를 올리면 그날 값이 뜨고, 맨 위 구간 상자로 기간을 좁힐 수 있다.</p>
+
 <h2>그 잔고는 어디에 붙어 있나 — 삼성전자·SK하이닉스</h2>
 <p class="lead">시장 전체 대차잔고(위)가 얼마나 남았는지를 물었다면, 여기서는 <b>어느 종목에</b> 남았는지를 본다.
   코스피 등락의 상당 부분을 두 종목이 설명하므로(PART 3), 지수의 상방 여력을 볼 때 이 둘의 잔고가
@@ -1158,7 +1285,8 @@ if (A.channels) {
 <figure>
   <h4>세 계열의 추이 (조원)</h4>
   ${levelChart(C.series, [
-    { key: 'dep', cls: 'ln-idx' }, { key: 'cr', cls: 'ln-cr' }, { key: 'pl', cls: 'ln-kq' },
+    { key: 'dep', cls: 'ln-idx', name: '예탁금' }, { key: 'cr', cls: 'ln-cr', name: '신용융자' },
+    { key: 'pl', cls: 'ln-kq', name: '담보융자' },
   ], '조원')}
   <div class="lg"><span><i class="sw acc"></i>투자자예탁금</span><span><i class="sw cr"></i>신용융자</span><span><i class="sw kq"></i>예탁증권담보융자</span></div>
   <figcaption>예탁금은 신용융자의 3배 규모로 움직인다. 담보융자는 두 사이클 내내 거의 평평하다 —
@@ -2126,19 +2254,19 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
     --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a;
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
       --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; }
+      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
     --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; }
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
     --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; }
+    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
@@ -2186,6 +2314,40 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .sumcol ul.find li b { color:var(--fg); }
   .c-down { border-top:3px solid var(--cr); }
   .c-up { border-top:3px solid var(--kq); }
+  /* 대화형 차트. JS 가 있을 때만 .ic-on 이 붙고 그때 정적 SVG 를 감춘다 —
+     스크립트가 없으면 지금까지와 똑같이 정적 SVG 가 보인다. */
+  .ichart { position:relative; }
+  .ic-on .ichart > svg:not(.ic-svg) { display:none; }   /* 정적 폴백만 감춘다 */
+  .ichart .ic-svg { width:100%; height:auto; display:block; }
+  .ic-tip { position:absolute; top:6px; pointer-events:none; z-index:5;
+    background:var(--surf); border:1px solid var(--line); border-radius:7px;
+    padding:7px 9px; font-size:11.5px; line-height:1.7; color:var(--fg);
+    box-shadow:0 2px 10px rgba(0,0,0,.13); white-space:nowrap; }
+  .ic-tip b { font-weight:600; }
+  .ic-tip span { display:block; color:var(--mut); }
+  .ic-tip span b { color:var(--fg); }
+  .ic-tip i { display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; }
+  .ic-guide { stroke:var(--mut); stroke-width:1; stroke-dasharray:3 3; }
+  .ic-sum { display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:4px;
+    font-size:11.5px; color:var(--mut); }
+  .ic-sum i { display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; }
+  .ic-sum b { color:var(--fg); }
+  .ic-sum em { font-style:normal; }
+  .ic-sum em.up { color:var(--kq); } .ic-sum em.dn { color:var(--cr); }
+  .ic-sum .ic-range { color:var(--fg); font-weight:600; }
+  .ic-empty { padding:26px 0; text-align:center; color:var(--mut); font-size:12px; }
+  /* 구간 선택 툴바 — 스크롤해도 위에 붙어 있어야 아무 차트에서나 바로 바꾼다. */
+  .ic-bar { position:sticky; top:0; z-index:20; display:flex; flex-wrap:wrap;
+    align-items:center; gap:8px 14px; margin:14px 0 4px; padding:9px 13px;
+    background:var(--surf); border:1px solid var(--line); border-radius:9px; font-size:12.5px; }
+  .ic-bar label { display:flex; align-items:center; gap:6px; color:var(--mut); }
+  .ic-bar input[type=date] { font:inherit; padding:3px 6px; border:1px solid var(--line);
+    border-radius:6px; background:var(--bg); color:var(--fg); }
+  .ic-presets { display:flex; gap:5px; margin-left:auto; }
+  .ic-presets button { font:inherit; font-size:11.5px; padding:4px 10px; cursor:pointer;
+    border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--mut); }
+  .ic-presets button:hover { border-color:var(--mut); color:var(--fg); }
+  @media print { .ic-bar { display:none; } .ic-on .ichart > svg:not(.ic-svg) { display:block; } .ic-svg, .ic-tip, .ic-sum { display:none; } }
   .c-etf { border-top:3px solid var(--lv); }
   .c-next { border-top:3px solid var(--nx); }
   .pill { display:inline-block; font-size:9.5px; letter-spacing:1.5px; padding:2px 6px; border-radius:4px;
@@ -2209,26 +2371,31 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-up:checked ~ .tabs label[for="tab-up"],
   #tab-etf:checked ~ .tabs label[for="tab-etf"],
   #tab-next:checked ~ .tabs label[for="tab-next"],
+  #tab-stock:checked ~ .tabs label[for="tab-stock"],
   #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] b,
   #tab-up:checked ~ .tabs label[for="tab-up"] b,
   #tab-etf:checked ~ .tabs label[for="tab-etf"] b,
   #tab-next:checked ~ .tabs label[for="tab-next"] b,
+  #tab-stock:checked ~ .tabs label[for="tab-stock"] b,
   #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
   #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
   #tab-etf:checked ~ .tabs label[for="tab-etf"] { background:var(--lv); border-color:var(--lv); }
   #tab-next:checked ~ .tabs label[for="tab-next"] { background:var(--nx); border-color:var(--nx); }
+  #tab-stock:checked ~ .tabs label[for="tab-stock"] { background:var(--stk); border-color:var(--stk); }
   #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
   /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
   .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
   .tabs label[for="tab-up"] { border-left:5px solid var(--kq); }
   .tabs label[for="tab-etf"] { border-left:5px solid var(--lv); }
   .tabs label[for="tab-next"] { border-left:5px solid var(--nx); }
+  .tabs label[for="tab-stock"] { border-left:5px solid var(--stk); }
   .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
   #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up, #tab-etf:checked ~ .p-etf,
-  #tab-next:checked ~ .p-next, #tab-all:checked ~ .pane { display:block; }
+  #tab-next:checked ~ .p-next, #tab-stock:checked ~ .p-stock,
+  #tab-all:checked ~ .pane { display:block; }
   tr.dim td { opacity:.55; }
   td.up { color:var(--kq); } td.dn { color:var(--cr); }
   /* 매일 볼 것 — 첫 화면 고정 박스. 판정에 따라 색이 바뀐다. */
@@ -2259,11 +2426,13 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ph-up { background:var(--kq); }
   .ph-etf { background:var(--lv); }
   .ph-next { background:var(--nx); }
+  .ph-stock { background:var(--stk); }
   .pill.pl { background:var(--lv); } .pill.pn { background:var(--nx); }
   #tab-down:focus-visible ~ .tabs label[for="tab-down"],
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
   #tab-etf:focus-visible ~ .tabs label[for="tab-etf"],
   #tab-next:focus-visible ~ .tabs label[for="tab-next"],
+  #tab-stock:focus-visible ~ .tabs label[for="tab-stock"],
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
   @media print { .tabs { display:none; } .pane { display:block !important; } }
 ${cycleCss}
@@ -2363,18 +2532,22 @@ ${cycleCss}
 
 ${splitBox}
 
+<div id="ic-bar" class="ic-bar" hidden></div>
+
 ${summarySection}
 
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">
 ${etfSection ? '<input type="radio" name="tab" id="tab-etf" class="tabin">' : ''}
 ${outlookSection ? '<input type="radio" name="tab" id="tab-next" class="tabin">' : ''}
+${stockFlowSection ? '<input type="radio" name="tab" id="tab-stock" class="tabin">' : ''}
 <input type="radio" name="tab" id="tab-all" class="tabin">
 <nav class="tabs">
   <label for="tab-down"><i>PART 1</i><b>신용잔고</b><span>얼마나 더 하락할 수 있나 — 반대매매 잔여</span></label>
   <label for="tab-up"><i>PART 2</i><b>공매도·숏커버링</b><span>얼마나 더 상승할 수 있나 — 대차 되갚기 잔여</span></label>
   ${etfSection ? '<label for="tab-etf"><i>PART 3</i><b>레버리지 ETF</b><span>변동성은 어디서 왔나 — 매일 나가는 강제 매매</span></label>' : ''}
   ${outlookSection ? '<label for="tab-next"><i>PART 4</i><b>다음 주 수급</b><span>지수가 어디로 가면 무엇이 따라 나오나</span></label>' : ''}
+  ${stockFlowSection ? '<label for="tab-stock"><i>PART 5</i><b>종목 트래킹</b><span>삼성전자·SK하이닉스 — 외국인 지분율과 대차잔고</span></label>' : ''}
   <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>네 파트를 이어서 본다</span></label>
 </nav>
 
@@ -2442,8 +2615,6 @@ ${lendingSection}
 
 ${coverSection}
 
-${stockFlowSection}
-
 </div><!-- /p-up -->
 
 ${etfSection ? `<div class="pane p-etf">
@@ -2463,6 +2634,13 @@ ${outlookSection ? `<div class="pane p-next">
 ${outlookSection}
 
 </div><!-- /p-next -->` : ''}
+
+${stockFlowSection ? `<div class="pane p-stock">
+<div class="parthead ph-stock"><i>PART 5</i><b>종목 트래킹 — 삼성전자·SK하이닉스</b></div>
+
+${stockFlowSection}
+
+</div><!-- /p-stock -->` : ''}
 
 <footer>
   <b>데이터 출처</b>
@@ -2495,6 +2673,7 @@ ${outlookSection}
   </ul>
   <div style="margin-top:10px">생성 <code>node scripts/fetch-kospi.mjs &amp;&amp; node scripts/fetch-kofia.mjs &amp;&amp; node scripts/ingest-split.mjs &amp;&amp; node scripts/ingest-lending.mjs &amp;&amp; node scripts/analyze.mjs &amp;&amp; node scripts/build.mjs &amp;&amp; node scripts/build-email.mjs</code></div>
 </footer>
+<script>${chartRuntime()}</script>
 </div>`;
 
 fs.writeFileSync(path.join(ROOT, 'index.html'), html);
