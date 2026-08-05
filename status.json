@@ -1,7 +1,7 @@
 {
-  "ranOn": "2026-08-04",
+  "ranOn": "2026-08-05",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/30908895118",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/30964757534",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -10,7 +10,7 @@
     "지수·거래대금": "20260804",
     "신용융자·예탁금": "20260803",
     "대차잔고": "20260804",
-    "지수 장중(네이버)": "20260804"
+    "지수 장중(네이버)": "20260805"
   },
   "lastSeriesDate": "20260804",
   "reproMAE": 0.0512,
@@ -19,21 +19,21 @@
     "c2026"
   ],
   "singleStockEtfUnits": {
-    "date": "20260804",
-    "unitsMillion": 843,
+    "date": "20260805",
+    "unitsMillion": 781,
     "verdict": "building",
     "changePct": {
-      "d1": 1,
-      "d5": 17.1,
-      "d10": 18.4
+      "d1": -7.3,
+      "d5": 5.9,
+      "d10": 6.8
     },
     "peak": {
       "date": "20260804",
       "unitsMillion": 843,
-      "fromPeakPct": 0,
-      "tradingDaysSince": 0
+      "fromPeakPct": -7.3,
+      "tradingDaysSince": 1
     },
-    "consecutiveDownDays": 0
+    "consecutiveDownDays": 1
   },
   "note": "자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다. singleStockEtfUnits.verdict 가 rolling 으로 바뀌면 레버리지 ETF 환매가 실제로 시작된 것이다."
 }
