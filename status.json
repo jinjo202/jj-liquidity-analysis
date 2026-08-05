@@ -1,7 +1,7 @@
 {
   "ranOn": "2026-08-05",
-  "ranBy": "local",
-  "runUrl": null,
+  "ranBy": "github-actions",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31020715239",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
