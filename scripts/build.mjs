@@ -1672,11 +1672,40 @@ if (co && PJ) {
 </div>`;
   })();
 
+
+  // 좌수가 "환매가 있었나" 라면 AUM 은 "시장에 주는 충격이 얼마나 큰가" 다 — 리밸런싱 필요액도,
+  // 시장 거래대금에서 차지하는 몫도 AUM 에 비례한다. 좌수만 보면 그 축소를 놓친다.
+  const AUMT = A.etf?.aumTotal ?? null;
+  const TURN = A.etf?.turnover?.single_lev ?? null;
+  const impactBox = !AUMT ? '' : `<div class="watch w-aum">
+  <div class="wl">함께 볼 것 · 레버리지 ETF 규모와 회전</div>
+  <div class="wmain">
+    <div class="wv">${f(AUMT.last.total, 1)}<span class="u">조</span></div>
+    <div class="wtag">고점 대비 ${f(AUMT.fromPeakPct, 1)}%</div>
+  </div>
+  <div class="wnums">
+    <span>전일 <b class="${AUMT.d1 >= 0 ? 'up' : 'dn'}">${AUMT.d1 >= 0 ? '+' : ''}${f(AUMT.d1, 1)}%</b></span>
+    <span>5일 <b class="${AUMT.d5 >= 0 ? 'up' : 'dn'}">${AUMT.d5 >= 0 ? '+' : ''}${f(AUMT.d5, 1)}%</b></span>
+    <span>20일 <b class="${AUMT.d20 >= 0 ? 'up' : 'dn'}">${AUMT.d20 >= 0 ? '+' : ''}${f(AUMT.d20, 1)}%</b></span>
+    <span>고점 <b>${f(AUMT.peak.total, 1)}조</b> <span class="mut">(${dtFull(AUMT.peak.d)})</span></span>
+    ${TURN ? `<span>단일종목 거래대금 <b>${f(TURN.last.valJo)}조</b> <span class="mut">회전율 ${f(TURN.avgTurnover, 2)}회</span></span>` : ''}
+  </div>
+  <div class="wline">좌수가 "환매가 있었나" 를 묻는다면 <b>AUM 은 충격의 크기</b>다 —
+    리밸런싱 필요액도, 시장 거래대금에서 차지하는 몫도 AUM 에 비례한다.
+    좌수는 안 줄었는데 AUM 이 반토막이면 <b>물량은 남았지만 시장에 미치는 힘은 그만큼 줄어든</b> 상태다.</div>
+  <div class="wtrend">${trendChart(A.etf.aumDaily.map(r => ({ d: r.d, v: r.total })),
+    '레버리지 ETF 합계 AUM (조원)', 1, `${dtFull(A.etf.aumDaily[0].d)} 이후`)}</div>
+  ${TURN ? `<div class="wtrend">${trendChart(TURN.series.map(r => ({ d: r.d, v: r.valJo })),
+    '단일종목 레버리지 거래대금 (조원)', 1, `${dtFull(TURN.from)} 이후`)}</div>` : ''}
+</div>`;
+
   summarySection = `<section class="summary">
 <h2>핵심 요약</h2>
 <p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
 
 ${watchBox}
+
+${impactBox}
 
 ${deltaStrip}
 
@@ -2404,6 +2433,8 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .watch.w-build { border-left-color:var(--cr); }
   .watch.w-flat { border-left-color:var(--part); }
   .watch.w-roll { border-left-color:var(--kq); }
+  .watch.w-aum { border-left-color:var(--lv); }
+  .w-aum .wtag { background:var(--lv); }
   .wl { font-size:10px; letter-spacing:2px; color:var(--mut); }
   .wmain { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-top:2px; }
   .wv { font-size:30px; font-weight:700; letter-spacing:-.5px; }
