@@ -1978,6 +1978,54 @@ ${!A.etf.breakdown ? '' : (() => {
         <td class="n dn">${f(B.shareAvg5 - B.sharePeak.valPctMarket, 1)}%p</td></tr>`}
     </tbody>
   </table></div>
+
+${!A.etf.split ? '' : (() => {
+  const SP = A.etf.split;
+  const dom = SP.domSingle.find(g => g.group === 'single_lev') ?? { aumJo: 0, expoJo: 0, n: 0 };
+  const domInv = SP.domSingle.find(g => g.group === 'single_inv') ?? { aumJo: 0, expoJo: 0, n: 0 };
+  const hkBy = u => SP.hk.filter(x => x.underlying === u);
+  const sum = (arr, k) => arr.reduce((s2, x) => s2 + (x[k] ?? 0), 0);
+  const domTot = dom.aumJo + domInv.aumJo, domExpo = dom.expoJo + domInv.expoJo;
+  const grand = domTot + SP.hkTotalAumJo, grandExpo = domExpo + SP.hkTotalExpoJo;
+  return `<h3>단일종목 레버리지는 어디에 있나 — 국내와 홍콩</h3>
+<p class="lead">삼성전자·SK하이닉스에 걸린 단일종목 레버리지는 국내에만 있는 게 아니다.
+  홍콩 CSOP 상품이 같은 두 종목을 기초자산으로 삼는다 — 합쳐야 실제 익스포저가 나온다.</p>
+<div class="tw"><table>
+  <thead><tr><th>${dtFull(SP.asOf)} 기준</th><th class="n">AUM(조)</th><th class="n">익스포저(조)</th><th class="n">비중</th></tr></thead>
+  <tbody>
+    <tr><td><b>국내 상장</b> <span class="mut">단일종목 레버리지 ${dom.n}종</span></td>
+      <td class="n">${f(dom.aumJo)}</td><td class="n">${f(dom.expoJo)}</td>
+      <td class="n">${f(dom.aumJo / grand * 100, 0)}%</td></tr>
+    <tr><td>국내 상장 <span class="mut">단일종목 인버스 ${domInv.n}종</span></td>
+      <td class="n">${f(domInv.aumJo)}</td><td class="n">${f(domInv.expoJo)}</td>
+      <td class="n">${f(domInv.aumJo / grand * 100, 0)}%</td></tr>
+    ${['SK하이닉스', '삼성전자'].map(u => {
+      const ps = hkBy(u);
+      if (!ps.length) return '';
+      return `<tr><td><b>홍콩 CSOP</b> <span class="mut">${esc(u)} ${ps.map(x => x.ticker).join('·')}</span></td>
+        <td class="n">${f(sum(ps, 'aumJo'))}</td><td class="n">${f(sum(ps, 'expoJo'))}</td>
+        <td class="n">${f(sum(ps, 'aumJo') / grand * 100, 0)}%</td></tr>`;
+    }).join('')}
+    <tr style="border-top:2px solid var(--line)"><td><b>합계</b></td>
+      <td class="n"><b>${f(grand)}</b></td><td class="n"><b>${f(grandExpo)}</b></td><td class="n">100%</td></tr>
+  </tbody>
+</table></div>
+<div class="box">
+  <b>홍콩이 국내보다 크다</b> — 국내 단일종목 ${f(domTot)}조 vs 홍콩 CSOP <b>${f(SP.hkTotalAumJo)}조</b>
+  (전체의 ${f(SP.hkTotalAumJo / grand * 100, 0)}%). 특히 <b>SK하이닉스는 홍콩 7709 한 종목이 ${f(sum(hkBy('SK하이닉스'), 'aumJo'))}조</b>로
+  국내 단일종목 레버리지 전체와 맞먹는다. 국내만 보면 이 종목에 걸린 레버리지를 절반쯤 놓친다.
+  <span class="mut">USD→원 환산은 ${SP.fxLast ? k0(SP.fxLast) + '원' : '-'} 기준. 홍콩 익스포저는 CSOP 이 공시하는 명목(ContractValue)이다.</span>
+</div>
+
+${!SP.etfMarket ? '' : `<div class="box">
+  <b>ETF 시장 안에서의 크기</b> — 국내 단일종목 레버리지·인버스의 거래대금은 <b>${f(SP.singleValJo)}조</b>로
+  <b>전체 ETF 거래대금(${f(SP.etfMarket.valJo)}조, ${k0(SP.etfMarket.n)}종)의 ${f(SP.singlePctOfEtfMarket, 1)}%</b>다.
+  AUM 으로는 ETF 시가총액 ${f(SP.etfMarket.capJo, 0)}조의 <b>${f(SP.singleAumPctOfEtfCap, 1)}%</b>에 그친다.
+  <b>덩치는 작은데 거래는 그 ${f(SP.singlePctOfEtfMarket / SP.singleAumPctOfEtfCap, 1)}배로 한다</b> —
+  회전율이 다른 상품군과 자릿수가 다르다는 뜻이고, 시장에 주는 영향이 AUM 비중보다 큰 이유다.
+  <span class="mut">전체 ETF 수치는 ${dtFull(SP.etfMarket.d)} 스냅샷이다 — 과거를 주는 소스가 없어 매일 누적한다(§33.1).</span>
+</div>`}`;
+})()}
   <div class="box">
     <b>회전이 더 크게 줄었다</b> — AUM 은 ${f((B.last.aum / B.peak.aum - 1) * 100, 0)}%,
     익스포저는 ${f((B.last.exposure / B.expoPeak.exposure - 1) * 100, 0)}% 줄었는데

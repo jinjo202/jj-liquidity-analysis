@@ -220,6 +220,27 @@ if (A.channels?.creditToDeposit) {
   }
 }
 
+// 국내/홍콩 분해(§33.1). 단위를 틀리기 쉬운 자리라 범위로 잡아 둔다 —
+// 실제로 marketSum 을 백만원으로 읽어 ETF 시총이 4.5조로 나온 적이 있다(정답은 억원, 445조).
+if (A.etf?.split) {
+  const SP = A.etf.split;
+  for (const g of SP.domSingle) {
+    assert.ok(g.expoJo >= g.aumJo - 1e-9, `${g.group}: 익스포저가 AUM 보다 작다`);
+  }
+  for (const p2 of SP.hk) {
+    assert.ok(p2.aumJo == null || p2.aumJo >= 0, `홍콩 ${p2.ticker}: AUM 이 음수다`);
+    assert.ok(['삼성전자', 'SK하이닉스', '기타'].includes(p2.underlying), `홍콩 ${p2.ticker}: 기초자산 분류 실패`);
+  }
+  if (SP.etfMarket) {
+    assert.ok(SP.etfMarket.capJo > 100 && SP.etfMarket.capJo < 2000,
+      `ETF 시총이 범위 밖이다(${SP.etfMarket.capJo}조) — marketSum 단위(억원) 확인할 것`);
+    assert.ok(SP.etfMarket.valJo > 0 && SP.etfMarket.valJo < 200,
+      `ETF 거래대금이 범위 밖이다(${SP.etfMarket.valJo}조) — amonut 단위(백만원) 확인할 것`);
+    assert.ok(SP.singlePctOfEtfMarket > 0 && SP.singlePctOfEtfMarket < 100,
+      `단일종목 거래대금 비중 범위 밖: ${SP.singlePctOfEtfMarket}`);
+  }
+}
+
 // 마진콜 스트레스와 AUM 분해, 외인 지분율 밴드(§31).
 if (A.marginStress) {
   const M = A.marginStress;

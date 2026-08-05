@@ -1,7 +1,7 @@
 {
   "ranOn": "2026-08-05",
-  "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31022051958",
+  "ranBy": "local",
+  "runUrl": null,
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -19,21 +19,21 @@
     "c2026"
   ],
   "singleStockEtfUnits": {
-    "date": "20260805",
-    "unitsMillion": 781,
+    "date": "20260806",
+    "unitsMillion": 750,
     "verdict": "building",
     "changePct": {
-      "d1": -7.3,
-      "d5": 5.9,
-      "d10": 6.8
+      "d1": -4,
+      "d5": 2,
+      "d10": 1.2
     },
     "peak": {
       "date": "20260804",
       "unitsMillion": 843,
-      "fromPeakPct": -7.3,
-      "tradingDaysSince": 1
+      "fromPeakPct": -11,
+      "tradingDaysSince": 2
     },
-    "consecutiveDownDays": 1
+    "consecutiveDownDays": 2
   },
   "note": "자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다. singleStockEtfUnits.verdict 가 rolling 으로 바뀌면 레버리지 ETF 환매가 실제로 시작된 것이다."
 }

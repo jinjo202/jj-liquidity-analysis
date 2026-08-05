@@ -873,6 +873,51 @@ if (fs.existsSync(etfPath)) {
       };
     };
     etf.turnover = { single_lev: turnoverOf('single_lev'), sector_lev: turnoverOf('sector_lev') };
+    // 표를 쪼개기 위한 조각들 — 국내 단일종목 / 홍콩 CSOP(종목별) / ETF 시장 대비 비중.
+    etf.split = (() => {
+      const lastAum = (etf.aumDaily ?? []).at(-1) ?? null;
+      const levOf = new Map((etfData.universe ?? []).map(u => [u.code, Math.abs(u.lev ?? 1)]));
+      // 국내 단일종목 레버리지·인버스의 익스포저(AUM × 배수)
+      const domSingle = ['single_lev', 'single_inv'].map(g => {
+        const codes = (etfData.universe ?? []).filter(u => u.group === g).map(u => u.code);
+        let aum = 0, expo = 0, val = 0;
+        for (const c of codes) {
+          const rows2 = etfData.series[c] ?? [];
+          const r = rows2.at(-1);
+          if (!r || !Number.isFinite(r.units) || !Number.isFinite(r.close)) continue;
+          const a2 = (r.units * r.close) / 1e12;
+          aum += a2; expo += a2 * (levOf.get(c) ?? 1);
+          // 거래대금은 장 시작 전 조회면 0 이다 — 실제 거래가 있었던 마지막 날을 쓴다.
+          const rv = [...rows2].reverse().find(x => (x.valueMil ?? 0) > 0);
+          val += (rv?.valueMil ?? 0) / 1e6;
+        }
+        return { group: g, n: codes.length, aumJo: aum, expoJo: expo, valJo: val };
+      });
+      // 홍콩 CSOP — 기초자산별로 묶는다(이름으로 판별).
+      const fxLast = (csopDaily?.fx ?? []).at(-1)?.krw ?? null;
+      const hk = (etf.hk?.products ?? []).map(p2 => ({
+        ticker: p2.ticker, name: p2.name, lev: p2.lev,
+        underlying: /Hynix/i.test(p2.name) ? 'SK하이닉스' : /Samsung/i.test(p2.name) ? '삼성전자' : '기타',
+        aumJo: fxLast ? (p2.totalNavUsd * fxLast) / 1e12 : null,
+        expoJo: fxLast ? (Math.abs(p2.notionalUsd) * fxLast) / 1e12 : null,
+      }));
+      // 전체 ETF 시장(누적 수집분)
+      const mkPath = path.join(DIR, 'etf-market.json');
+      const mk = fs.existsSync(mkPath) ? JSON.parse(fs.readFileSync(mkPath, 'utf8')) : null;
+      const mkLast = mk?.series?.at(-1) ?? null;
+      const singleVal = domSingle.reduce((x, g) => x + g.valJo, 0);
+      return {
+        asOf: lastAum?.d ?? null, fxLast,
+        domSingle, hk,
+        hkTotalAumJo: hk.reduce((x, p2) => x + (p2.aumJo ?? 0), 0),
+        hkTotalExpoJo: hk.reduce((x, p2) => x + (p2.expoJo ?? 0), 0),
+        etfMarket: mkLast,
+        singleValJo: singleVal,
+        singlePctOfEtfMarket: mkLast?.valJo ? (singleVal / mkLast.valJo) * 100 : null,
+        singleAumPctOfEtfCap: mkLast?.capJo
+          ? (domSingle.reduce((x, g) => x + g.aumJo, 0) / mkLast.capJo) * 100 : null,
+      };
+    })();
     etf.breakdown = aumBreakdown(etfData, ['single_lev', 'sector_lev', 'index_lev', 'single_inv', 'index_inv'], market);
 
     // 국내 + 홍콩 합산 AUM. 홍콩분은 USD 라 환율로 조원에 맞춘다.

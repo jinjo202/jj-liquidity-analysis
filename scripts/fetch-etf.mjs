@@ -130,3 +130,34 @@ const n = Object.keys(series).length;
 const lastDates = Object.values(series).map(s => s.at(-1).d).sort();
 console.log(`\netf-daily.json 생성: ${n}종목 / 최신 ${lastDates.at(-1)}`);
 if (failed.length) console.log(`실패 ${failed.length}: ${failed.join(', ')}`);
+
+/* ---------- 전체 ETF 시장 거래대금 ---------- */
+// 단일종목 레버리지가 "ETF 시장 안에서" 얼마나 큰지 보려면 분모가 필요하다.
+// 유니버스 구성에 쓰는 그 목록(etfItemList)에 전 종목 거래대금이 이미 들어 있다 — 합치면 된다.
+// 다만 이건 그날의 스냅샷이라 과거를 못 만든다. 매일 받아 누적한다(§33.1).
+try {
+  const res = await fetch('https://finance.naver.com/api/sise/etfItemList.nhn', {
+    headers: { 'User-Agent': UA, Referer: 'https://finance.naver.com/sise/etf.naver' },
+    signal: AbortSignal.timeout(30000),
+  });
+  const rows = JSON.parse(new TextDecoder('euc-kr').decode(await res.arrayBuffer()))?.result?.etfItemList ?? [];
+  const num = v => (Number.isFinite(Number(v)) ? Number(v) : 0);
+  const totalMil = rows.reduce((s, r) => s + num(r.amonut), 0);      // 백만원. 오타가 아니라 원본 필드명이다.
+  const capEok = rows.reduce((s, r) => s + num(r.marketSum), 0);   // marketSum 은 억원(KODEX 200 검산: 242,445억=24.2조)
+  // 거래대금 0 인 날(장 시작 전 조회)은 저장하지 않는다 — 비율이 왜곡된다.
+  if (totalMil > 0 && rows.length > 100) {
+    const p = path.join(DIR, 'etf-market.json');
+    const prev = fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, 'utf8')) : { meta: {
+      source: '네이버 금융 api/sise/etfItemList (전 종목 스냅샷 합계). 과거를 못 주므로 매일 누적한다.',
+      unit: '거래대금 조원, 시가총액 조원',
+    }, series: [] };
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const merged = new Map((prev.series ?? []).map(r => [r.d, r]));
+    merged.set(today, { d: today, n: rows.length, valJo: totalMil / 1e6, capJo: capEok / 1e4 });
+    prev.series = [...merged.values()].sort((a, b) => a.d.localeCompare(b.d));
+    fs.writeFileSync(p, JSON.stringify(prev, null, 1));
+    console.log(`etf-market.json — 전체 ETF ${rows.length}종, 거래대금 ${(totalMil / 1e6).toFixed(2)}조 (${prev.series.length}일 누적)`);
+  }
+} catch (e) {
+  console.log(`전체 ETF 거래대금 수집 실패 — 비율 비교는 건너뛴다: ${e.message}`);
+}
