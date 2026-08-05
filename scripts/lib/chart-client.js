@@ -70,6 +70,18 @@
     cut.series.forEach(function (s) {
       s.vals.forEach(function (v) { if (v != null && isFinite(v)) vals.push(v); });
     });
+    // 쌓아 그리면 눈에 보이는 최댓값은 계열 합이다 — 그걸 안 세면 그래프가 위로 잘린다.
+    if (spec.stack) {
+      for (var si = 0; si < cut.dates.length; si++) {
+        var sum = 0, any = false;
+        cut.series.forEach(function (s) {
+          if (s.line) return;
+          var v = s.vals[si];
+          if (v != null && isFinite(v)) { sum += v; any = true; }
+        });
+        if (any) vals.push(sum);
+      }
+    }
     if (!vals.length) return;
     var hi = Math.max.apply(null, vals), lo = Math.min.apply(null, vals);
     var pad = (hi - lo) * 0.12 || Math.abs(hi) * 0.05 || 1;
@@ -102,14 +114,43 @@
       svg.appendChild(t);
     });
 
+    // stack 모드: line:true 가 아닌 계열을 아래에서부터 쌓아 면적으로 그린다.
+    // 구성비(무엇이 얼마를 차지하나)는 선 여러 개보다 쌓은 면적이 한눈에 들어온다.
+    if (spec.stack) {
+      var base = new Array(n).fill(0);
+      cut.series.forEach(function (s) {
+        if (s.line) return;
+        var top = [], bot = [];
+        for (var i = 0; i < n; i++) {
+          var v = s.vals[i];
+          if (v == null || !isFinite(v)) { top.push(null); bot.push(null); continue; }
+          bot.push(base[i]); base[i] += v; top.push(base[i]);
+        }
+        var dTop = '', dBot = [], pen = false;
+        for (var j = 0; j < n; j++) {
+          if (top[j] == null) { pen = false; continue; }
+          dTop += (pen ? 'L' : 'M') + xAt(j).toFixed(1) + ',' + yAt(top[j]).toFixed(1);
+          dBot.push(xAt(j).toFixed(1) + ',' + yAt(bot[j]).toFixed(1));
+          pen = true;
+        }
+        if (!dTop) return;
+        dBot.reverse();
+        svg.appendChild(el('path', {
+          d: dTop + 'L' + dBot.join('L') + 'Z',
+          fill: s.color, 'fill-opacity': s.opacity == null ? 0.55 : s.opacity, stroke: 'none',
+        }));
+      });
+    }
+
     cut.series.forEach(function (s) {
+      if (spec.stack && !s.line) return;              // 면적으로 이미 그렸다
       var d = '', pen = false;
       s.vals.forEach(function (v, i) {
         if (v == null || !isFinite(v)) { pen = false; return; }
         d += (pen ? 'L' : 'M') + xAt(i).toFixed(1) + ',' + yAt(v).toFixed(1);
         pen = true;
       });
-      if (d) svg.appendChild(el('path', { d: d, fill: 'none', stroke: s.color, 'stroke-width': 1.6 }));
+      if (d) svg.appendChild(el('path', { d: d, fill: 'none', stroke: s.color, 'stroke-width': s.line ? 2 : 1.6 }));
     });
 
     var guide = el('line', { class: 'ic-guide', x1: 0, y1: M.t, x2: 0, y2: M.t + ih, opacity: 0 });

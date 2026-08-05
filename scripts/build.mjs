@@ -780,10 +780,12 @@ function levelChart(rows, lines, unit, opts = {}) {
   const rs = (rows ?? []).filter(r => r && r.d);
   return interactive({
     unit, dg: opts.dg ?? 0, zeroBase: opts.zeroBase !== false, h: 240,
+    stack: !!opts.stack,
     dates: rs.map(r => r.d),
     series: lines.map(L => ({
       name: L.name ?? '',
-      color: CLS_COLOR[L.cls] ?? CL.acc,
+      color: L.color ?? CLS_COLOR[L.cls] ?? CL.acc,
+      line: !!L.line, opacity: L.opacity,
       vals: rs.map(r => (Number.isFinite(r[L.key]) ? r[L.key] : null)),
     })),
   }, levelChartStatic(rows, lines, unit, opts));
@@ -1952,17 +1954,22 @@ ${!A.etf.breakdown ? '' : (() => {
   const B = A.etf.breakdown;
   return `<figure class="wide">
   <h4>AUM 이 왜 줄었나 — 자금이 빠진 건가, 값이 빠진 건가</h4>
+  <p class="lead">레버리지 ETF AUM 은 고점 <b>${f(B.peak.aum, 1)}조</b>에서 <b>${f(B.last.aum, 1)}조</b>로 줄었고,
+    레버리지 익스포저(AUM × 배수)는 <b>${f(B.expoPeak.exposure, 1)}조 → ${f(B.last.exposure, 1)}조</b>로
+    <b>시가총액의 ${f(B.expoPeak.exposurePctMcap, 2)}% → ${f(B.last.exposurePctMcap, 2)}%</b>가 됐다.</p>
   ${levelChart(B.series, [
-    { key: 'aum', cls: 'ln-idx', name: 'AUM 합계' },
-    { key: 'flowCum', cls: 'ln-kq', name: '시작규모+누적 유출입' },
-    { key: 'priceCum', cls: 'ln-cr', name: '가격 기여분' },
-  ], '레버리지 ETF AUM 분해 (조원)', { dg: 1, zeroBase: false })}
-  <div class="lg"><span><i class="sw acc"></i>AUM 합계</span><span><i class="sw kq"></i>시작규모 + 누적 유출입</span><span><i class="sw cr"></i>가격 기여분</span></div>
+    { key: 'flowCum', cls: 'ln-kq', name: '시작규모+누적 유출입', opacity: 0.6 },
+    { key: 'priceCum', cls: 'ln-mut', name: '가격 기여분', color: 'var(--bar)', opacity: 0.45 },
+    { key: 'aum', cls: 'ln-idx', name: 'AUM 합계', line: true },
+  ], '레버리지 ETF AUM 분해 (조원)', { dg: 1, zeroBase: true, stack: true })}
+  <div class="lg"><span><i class="sw kq"></i>누적 유출입(자금)</span><span><i class="sw" style="background:var(--bar)"></i>가격 기여분</span><span><i class="sw acc"></i>AUM 합계</span></div>
   <figcaption>일별 유출입 = <b>Δ좌수 × 그날 종가</b>로 잡아 누적했고, AUM 에서 그걸 뺀 나머지가 가격 기여분이다.
     <b>고점 ${f(B.peak.aum, 1)}조(${dtFull(B.peak.d)}) → 현재 ${f(B.last.aum, 1)}조,
     ${f(B.dropFromPeak, 1)}조가 줄었는데 그중 가격이 ${f(B.priceShareOfDrop, 0)}%</b>다.
     자금은 ${B.flowShareOfDrop < 0 ? `오히려 ${f(-B.flowShareOfDrop, 0)}%만큼 <b>들어왔다</b>` : `${f(B.flowShareOfDrop, 0)}% 빠졌다`} —
-    같은 기간 좌수가 늘었다는 §23.2 의 관찰과 같은 이야기다.</figcaption>
+    같은 기간 좌수가 늘었다는 §23.2 의 관찰과 같은 이야기다.
+    <br><b>시총 대비 익스포저</b>는 자유유통(free float)이 아니라 <b>전체 시가총액</b> 기준이다 —
+    유통주식만으로 나누면 이 비율은 더 커진다. 자유유통 비율은 이 파이프라인에 없다(§31.1).</figcaption>
 </figure>`;
 })()}
 

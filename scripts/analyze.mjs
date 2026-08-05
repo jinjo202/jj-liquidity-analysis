@@ -162,7 +162,7 @@ const marginStressData = marginStress();
 /* ---------- 레버리지 ETF AUM 분해 — 자금이냐 가격이냐 ---------- */
 // AUM 변화는 두 갈래다: 좌수가 늘어 들어온 돈(유출입)과, 들고 있던 물량의 값이 변한 것(가격).
 // 일별로 flow_t = Δ좌수 × 그날 종가 로 잡고 누적한다. 나머지가 가격 기여분이다.
-function aumBreakdown(etfData, groups) {
+function aumBreakdown(etfData, groups, market) {
   const codes = (etfData.universe ?? []).filter(u => groups.includes(u.group)).map(u => u.code);
   if (!codes.length) return null;
   const dates = [...new Set(codes.flatMap(c => (etfData.series[c] ?? []).map(r => r.d)))].sort();
@@ -190,9 +190,27 @@ function aumBreakdown(etfData, groups) {
     });
   }
   if (out.length < 20) return null;
+
+  // 레버리지 익스포저 = Σ(AUM × |배수|). ETF 가 실제로 기초자산에 걸고 있는 명목 규모다.
+  // 시가총액으로 나누면 "이 상품군이 시장의 몇 %를 흔들 수 있나" 가 된다.
+  const levOf = new Map((etfData.universe ?? []).map(u => [u.code, Math.abs(u.lev ?? 1)]));
+  const mcapAt = new Map(market.map(m => [m.date, m.mcapJo]));
+  for (const row of out) {
+    let expo = 0;
+    for (const c of codes) {
+      const r = (etfData.series[c] ?? []).find(x => x.d === row.d);
+      if (!r || !Number.isFinite(r.units) || !Number.isFinite(r.close)) continue;
+      expo += ((r.units * r.close) / 1e12) * (levOf.get(c) ?? 1);
+    }
+    row.exposure = expo;
+    const mc = mcapAt.get(row.d);
+    row.exposurePctMcap = mc ? (expo / mc) * 100 : null;
+  }
+
   const last = out.at(-1), peak = out.reduce((m, r) => (r.aum > m.aum ? r : m));
+  const expoPeak = out.reduce((m, r) => ((r.exposure ?? 0) > (m.exposure ?? 0) ? r : m));
   return {
-    base, from: out[0].d, series: out, last, peak,
+    base, from: out[0].d, series: out, last, peak, expoPeak,
     // 고점 이후 감소분 중 가격이 설명하는 몫. 100% 면 자금은 안 빠졌다는 뜻이다.
     dropFromPeak: peak.aum - last.aum,
     priceShareOfDrop: peak.aum !== last.aum
@@ -805,7 +823,7 @@ if (fs.existsSync(etfPath)) {
       };
     };
     etf.turnover = { single_lev: turnoverOf('single_lev'), sector_lev: turnoverOf('sector_lev') };
-    etf.breakdown = aumBreakdown(etfData, ['single_lev', 'sector_lev', 'index_lev', 'single_inv', 'index_inv']);
+    etf.breakdown = aumBreakdown(etfData, ['single_lev', 'sector_lev', 'index_lev', 'single_inv', 'index_inv'], market);
 
     // 국내 + 홍콩 합산 AUM. 홍콩분은 USD 라 환율로 조원에 맞춘다.
     // 홍콩 NAV 는 2026-08-02 수집 시작이라 그 이전은 없다 — 없는 날은 null 로 두고
