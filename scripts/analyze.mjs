@@ -709,6 +709,37 @@ if (fs.existsSync(etfPath)) {
       };
     };
     etf.turnover = { single_lev: turnoverOf('single_lev'), sector_lev: turnoverOf('sector_lev') };
+
+    // 국내 + 홍콩 합산 AUM. 홍콩분은 USD 라 환율로 조원에 맞춘다.
+    // 홍콩 NAV 는 2026-08-02 수집 시작이라 그 이전은 없다 — 없는 날은 null 로 두고
+    // 차트가 거기서부터 그리게 한다(0 으로 채우면 없던 자금이 빠진 것처럼 보인다).
+    if (csopDaily?.products?.length) {
+      const fx = new Map((csopDaily.fx ?? []).map(r => [r.d, r.krw]));
+      const fxAt = d => {
+        if (fx.has(d)) return fx.get(d);
+        const before = [...fx.keys()].filter(k => k <= d).sort();
+        return before.length ? fx.get(before[before.length - 1]) : null;
+      };
+      const hkByDate = new Map();
+      for (const prod of csopDaily.products) {
+        for (const r of prod.series ?? []) {
+          if (!Number.isFinite(r.totalNavUsd)) continue;
+          hkByDate.set(r.d, (hkByDate.get(r.d) ?? 0) + r.totalNavUsd);
+        }
+      }
+      etf.aumCombined = (etf.aumDaily ?? []).map(r => {
+        const usd = hkByDate.get(r.d) ?? null;
+        const rate = usd != null ? fxAt(r.d) : null;
+        const hkJo = usd != null && rate ? (usd * rate) / 1e12 : null;
+        return { d: r.d, domestic: r.total, hk: hkJo, total: hkJo == null ? null : r.total + hkJo };
+      });
+      const withHk = etf.aumCombined.filter(r => r.hk != null);
+      etf.aumCombinedMeta = {
+        hkFrom: withHk[0]?.d ?? null, hkDays: withHk.length,
+        last: withHk.at(-1) ?? null,
+        fxLast: (csopDaily.fx ?? []).at(-1) ?? null,
+      };
+    }
   }
 }
 

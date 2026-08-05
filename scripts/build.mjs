@@ -1693,8 +1693,23 @@ if (co && PJ) {
   <div class="wline">좌수가 "환매가 있었나" 를 묻는다면 <b>AUM 은 충격의 크기</b>다 —
     리밸런싱 필요액도, 시장 거래대금에서 차지하는 몫도 AUM 에 비례한다.
     좌수는 안 줄었는데 AUM 이 반토막이면 <b>물량은 남았지만 시장에 미치는 힘은 그만큼 줄어든</b> 상태다.</div>
-  <div class="wtrend">${trendChart(A.etf.aumDaily.map(r => ({ d: r.d, v: r.total })),
-    '레버리지 ETF 합계 AUM (조원)', 1, `${dtFull(A.etf.aumDaily[0].d)} 이후`)}</div>
+  ${(() => {
+    // 홍콩분은 NAV 수집 시작(2026-08) 이후만 있다 — 없는 날은 null 로 두고 거기서부터 그린다.
+    const CB = A.etf.aumCombined, CM = A.etf.aumCombinedMeta;
+    if (!CB) return `<div class="wtrend">${trendChart(A.etf.aumDaily.map(r => ({ d: r.d, v: r.total })),
+      '레버리지 ETF 합계 AUM (조원)', 1, `${dtFull(A.etf.aumDaily[0].d)} 이후`)}</div>`;
+    return `<div class="wtrend">${levelChart(CB, [
+      { key: 'domestic', cls: 'ln-cr', name: '국내' },
+      { key: 'hk', cls: 'ln-kq', name: '홍콩 CSOP' },
+      { key: 'total', cls: 'ln-idx', name: '합계' },
+    ], '레버리지 ETF AUM — 국내 + 홍콩 (조원)', { dg: 1, zeroBase: false })}</div>
+  <div class="lg"><span><i class="sw cr"></i>국내</span><span><i class="sw kq"></i>홍콩 CSOP</span><span><i class="sw acc"></i>합계</span></div>
+  <div class="wline mut">홍콩분은 <b>${dtFull(CM.hkFrom)}부터</b> 있다 — CSOP 은 과거 NAV 를 주는 API 가 없어
+    수집을 시작한 날부터만 쌓인다(§23.6). 없는 구간을 0 으로 채우면 없던 자금이 빠진 것처럼 보이므로 비워 뒀다.
+    USD→원 환산은 그날 환율(최신 ${CM.fxLast ? k0(CM.fxLast.krw) : '-'}원)을 쓴다.
+    ${CM.last ? `최신 ${dtFull(CM.last.d)} 기준 국내 ${f(CM.last.domestic, 1)}조 + 홍콩 <b>${f(CM.last.hk, 1)}조</b>
+    = <b>${f(CM.last.total, 1)}조</b> (홍콩이 국내의 ${f(CM.last.hk / CM.last.domestic * 100, 0)}%)` : ''}</div>`;
+  })()}
   ${TURN ? `<div class="wtrend">${trendChart(TURN.series.map(r => ({ d: r.d, v: r.valJo })),
     '단일종목 레버리지 거래대금 (조원)', 1, `${dtFull(TURN.from)} 이후`)}</div>` : ''}
 </div>`;

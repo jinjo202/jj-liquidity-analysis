@@ -141,3 +141,28 @@ for (const r of results) {
 }
 if (failed.length) console.log(`실패: ${failed.join(', ')}`);
 console.log(`csop-daily.json / csop-snapshot.json 갱신 — asOf ${snapshot.asOf}`);
+
+/* ---------- USD/KRW ---------- */
+// 홍콩분 AUM 은 USD 라 국내(조원)와 더하려면 환율이 필요하다. 네이버 모바일 시장지표에서
+// 일별 종가를 받아 csop-daily.json 에 함께 둔다 — 페이지당 최소 10행이라 30행씩 받는다.
+try {
+  const fxRes = await fetch(
+    'https://m.stock.naver.com/front-api/marketIndex/prices?category=exchange&reutersCode=FX_USDKRW&page=1&pageSize=30',
+    { headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) AppleWebKit/605.1.15 Mobile/15E148',
+      Referer: 'https://m.stock.naver.com/' }, signal: AbortSignal.timeout(30000) });
+  const fxJson = await fxRes.json();
+  const fresh = (fxJson.result ?? []).map(r => ({
+    d: String(r.localTradedAt).replace(/-/g, ''),
+    krw: Number(String(r.closePrice).replace(/,/g, '')),
+  })).filter(r => /^\d{8}$/.test(r.d) && Number.isFinite(r.krw));
+
+  const outPath = path.join(DIR, 'csop-daily.json');
+  const cur = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+  const merged = new Map((cur.fx ?? []).map(r => [r.d, r]));
+  for (const r of fresh) merged.set(r.d, r);
+  cur.fx = [...merged.values()].sort((a, b) => a.d.localeCompare(b.d));
+  fs.writeFileSync(outPath, JSON.stringify(cur, null, 1));
+  console.log(`USD/KRW ${cur.fx.length}일 (최신 ${cur.fx.at(-1).d} ${cur.fx.at(-1).krw})`);
+} catch (e) {
+  console.log(`USD/KRW 수집 실패 — 홍콩 AUM 합산은 건너뛴다: ${e.message}`);
+}
