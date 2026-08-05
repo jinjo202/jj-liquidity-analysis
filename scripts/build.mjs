@@ -1954,9 +1954,38 @@ ${!A.etf.breakdown ? '' : (() => {
   const B = A.etf.breakdown;
   return `<figure class="wide">
   <h4>AUM 이 왜 줄었나 — 자금이 빠진 건가, 값이 빠진 건가</h4>
-  <p class="lead">레버리지 ETF AUM 은 고점 <b>${f(B.peak.aum, 1)}조</b>에서 <b>${f(B.last.aum, 1)}조</b>로 줄었고,
-    레버리지 익스포저(AUM × 배수)는 <b>${f(B.expoPeak.exposure, 1)}조 → ${f(B.last.exposure, 1)}조</b>로
-    <b>시가총액의 ${f(B.expoPeak.exposurePctMcap, 2)}% → ${f(B.last.exposurePctMcap, 2)}%</b>가 됐다.</p>
+  <p class="lead">규모도 회전도 같이 줄었다. <b>시장 대비 비율</b>로 보면 얼마나 줄었는지가 분명해진다.</p>
+  <div class="tw"><table>
+    <thead><tr><th>지표</th><th class="n">고점</th><th class="n">현재</th><th class="n">변화</th></tr></thead>
+    <tbody>
+      <tr><td>AUM(조)</td><td class="n">${f(B.peak.aum, 1)} <span class="mut">${dtFull(B.peak.d)}</span></td>
+        <td class="n">${f(B.last.aum, 1)}</td><td class="n dn">${f((B.last.aum / B.peak.aum - 1) * 100, 0)}%</td></tr>
+      <tr><td>AUM / 시가총액</td><td class="n">${f(B.peak.aumPctMcap, 2)}%</td>
+        <td class="n">${f(B.last.aumPctMcap, 2)}%</td><td class="n dn">${f(B.last.aumPctMcap - B.peak.aumPctMcap, 2)}%p</td></tr>
+      <tr><td><b>레버리지 익스포저(조)</b> <span class="mut">AUM × 배수</span></td>
+        <td class="n">${f(B.expoPeak.exposure, 1)} <span class="mut">${dtFull(B.expoPeak.d)}</span></td>
+        <td class="n">${f(B.last.exposure, 1)}</td><td class="n dn">${f((B.last.exposure / B.expoPeak.exposure - 1) * 100, 0)}%</td></tr>
+      <tr><td><b>익스포저 / 시가총액</b></td><td class="n"><b>${f(B.expoPeak.exposurePctMcap, 2)}%</b></td>
+        <td class="n"><b>${f(B.last.exposurePctMcap, 2)}%</b></td>
+        <td class="n dn">${f(B.last.exposurePctMcap - B.expoPeak.exposurePctMcap, 2)}%p</td></tr>
+      ${!B.valPeak ? '' : `<tr><td>거래대금(조/일)</td>
+        <td class="n">${f(B.valPeak.valJo, 1)} <span class="mut">${dtFull(B.valPeak.d)}</span></td>
+        <td class="n">${f(B.valAvg5, 1)} <span class="mut">최근5일평균</span></td>
+        <td class="n dn">${f((B.valAvg5 / B.valPeak.valJo - 1) * 100, 0)}%</td></tr>`}
+      ${!B.sharePeak ? '' : `<tr><td><b>거래대금 / 시장 전체 거래대금</b></td>
+        <td class="n"><b>${f(B.sharePeak.valPctMarket, 1)}%</b> <span class="mut">${dtFull(B.sharePeak.d)}</span></td>
+        <td class="n"><b>${f(B.shareAvg5, 1)}%</b></td>
+        <td class="n dn">${f(B.shareAvg5 - B.sharePeak.valPctMarket, 1)}%p</td></tr>`}
+    </tbody>
+  </table></div>
+  <div class="box">
+    <b>회전이 더 크게 줄었다</b> — AUM 은 ${f((B.last.aum / B.peak.aum - 1) * 100, 0)}%,
+    익스포저는 ${f((B.last.exposure / B.expoPeak.exposure - 1) * 100, 0)}% 줄었는데
+    <b>거래대금은 ${f((B.valAvg5 / B.valPeak.valJo - 1) * 100, 0)}%</b> 줄었다.
+    시장 거래대금에서 차지하던 몫도 <b>${f(B.sharePeak.valPctMarket, 1)}% → ${f(B.shareAvg5, 1)}%</b>다.
+    잔고보다 <b>회전이 먼저, 더 크게 식는다</b> — 변동성을 만들던 건 잔고가 아니라 회전이었다는 뜻이다.
+    <span class="mut">ETF 는 유가증권시장에 상장돼 그 거래대금이 시장 합계에 <b>포함</b>된다 — 별도로 더해지는 몫이 아니라 비중이다.</span>
+  </div>
   ${levelChart(B.series, [
     { key: 'flowCum', cls: 'ln-kq', name: '시작규모+누적 유출입', opacity: 0.6 },
     { key: 'priceCum', cls: 'ln-mut', name: '가격 기여분', color: 'var(--bar)', opacity: 0.45 },
@@ -2143,8 +2172,25 @@ ${!LF ? '' : `<figure>
     1좌 가격이 상품마다 달라 수량은 더할 수도 없다. 순매도일 ${LF.sellDays}/${LF.totalDays}일.</figcaption>
 </figure>
 
+${!A.unitsAgreement ? '' : `<div class="box warn">
+  <b>"좌수가 줄어야 개인이 판 것" 은 아니다</b><br>
+  좌수 변화와 개인 순매수의 <b>부호가 어긋난 날이 ${f(A.unitsAgreement.mismatchPct, 0)}%</b>다
+  (${A.unitsAgreement.total}쌍 중 ${A.unitsAgreement.total - A.unitsAgreement.agree}쌍).
+  ${A.unitsAgreement.examples[0] ? `예를 들어 ${dtFull(A.unitsAgreement.examples[0].d)}
+  ${esc(A.unitsAgreement.examples[0].name)}은 개인이 ${f(Math.abs(A.unitsAgreement.examples[0].indM), 1)}백만주를
+  <b>순매도</b>했는데 좌수는 ${f(Math.abs(A.unitsAgreement.examples[0].duM), 1)}백만주 <b>늘었다</b>.` : ''}
+  <br>이유는 구조에 있다. 좌수는 <b>모든 투자자를 합친 순(net) 결과</b>이고, 그마저 LP/AP 가
+  설정·환매를 걸어야 움직인다.
+  <ul style="margin:6px 0 0 18px">
+    <li><b>필요조건이 아니다</b> — 개인이 팔아도 다른 투자자가 받으면 좌수는 그대로거나 오히려 는다.</li>
+    <li><b>충분조건도 아니다</b> — 기관·외국인이 판 것이 환매로 이어져도 좌수는 준다. 좌수는 <b>누가</b> 팔았는지 말하지 않는다.</li>
+  </ul>
+  그래서 <b>"개인이 팔았나" 는 투자자별 순매수로</b>, <b>"자금이 상품에서 빠졌나" 는 좌수로</b>,
+  <b>"시장에 주는 충격" 은 AUM·익스포저로</b> 각각 봐야 한다. 하나로 셋을 대신할 수 없다.
+</div>
+
 <div class="box warn">
-  <b>좌수로 항복을 판정하면 안 되는 이유 — 3거래일 늦다</b><br>
+  <b>그래도 좌수가 무의미한 건 아니다 — 3거래일 늦을 뿐이다</b><br>`}
   개인이 판다고 좌수가 그날 줄지 않는다. 좌수는 LP/AP 가 설정·환매를 걸어야 움직인다(§27.4).
   실제로 재 보면 <b>개인 순매수와 좌수 변화의 당일 상관은 −0.04로 사실상 0</b>이고,
   <b>3거래일 뒤에 상관이 +0.72로 튄다</b>(14종 중 13종이 같은 부호, lag 4에서 감쇠).

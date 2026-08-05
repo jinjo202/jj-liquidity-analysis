@@ -195,22 +195,41 @@ function aumBreakdown(etfData, groups, market) {
   // 시가총액으로 나누면 "이 상품군이 시장의 몇 %를 흔들 수 있나" 가 된다.
   const levOf = new Map((etfData.universe ?? []).map(u => [u.code, Math.abs(u.lev ?? 1)]));
   const mcapAt = new Map(market.map(m => [m.date, m.mcapJo]));
+  // 시장 전체 거래대금(코스피+코스닥, 억원 -> 조원). ETF 거래대금이 시장에서 차지하는 몫을 낸다.
+  const mktTurn = new Map(raw.series
+    .filter(r => Number.isFinite(r.OS0011) || Number.isFinite(r.OS0012))
+    .map(r => [r.date, ((r.OS0011 ?? 0) + (r.OS0012 ?? 0)) / 1e4]));
   for (const row of out) {
-    let expo = 0;
+    let expo = 0, val = 0;
     for (const c of codes) {
       const r = (etfData.series[c] ?? []).find(x => x.d === row.d);
       if (!r || !Number.isFinite(r.units) || !Number.isFinite(r.close)) continue;
       expo += ((r.units * r.close) / 1e12) * (levOf.get(c) ?? 1);
+      val += (r.valueMil ?? 0) / 1e6;
     }
     row.exposure = expo;
-    const mc = mcapAt.get(row.d);
+    row.valJo = val;
+    const mc = mcapAt.get(row.d), mt = mktTurn.get(row.d);
     row.exposurePctMcap = mc ? (expo / mc) * 100 : null;
+    row.aumPctMcap = mc ? (row.aum / mc) * 100 : null;
+    row.valPctMarket = mt > 0.1 ? (val / mt) * 100 : null;   // 집계 전(0조)인 날은 버린다
   }
 
   const last = out.at(-1), peak = out.reduce((m, r) => (r.aum > m.aum ? r : m));
   const expoPeak = out.reduce((m, r) => ((r.exposure ?? 0) > (m.exposure ?? 0) ? r : m));
+  const valRows = out.filter(r => r.valJo > 0);
+  const valPeak = valRows.length ? valRows.reduce((m, r) => (r.valJo > m.valJo ? r : m)) : null;
+  const shareRows = out.filter(r => r.valPctMarket != null);
+  const sharePeak = shareRows.length ? shareRows.reduce((m, r) => (r.valPctMarket > m.valPctMarket ? r : m)) : null;
+  const valLast = valRows.at(-1) ?? null;
+  // 최근 5일 평균 — 하루치 거래대금은 튀어서 '지금 수준'을 하루로 말하면 안 된다.
+  const tail5 = valRows.slice(-5);
+  const avg = a => (a.length ? a.reduce((x, v) => x + v, 0) / a.length : null);
   return {
     base, from: out[0].d, series: out, last, peak, expoPeak,
+    valPeak, sharePeak, valLast,
+    valAvg5: avg(tail5.map(r => r.valJo)),
+    shareAvg5: avg(tail5.map(r => r.valPctMarket).filter(Number.isFinite)),
     // 고점 이후 감소분 중 가격이 설명하는 몫. 100% 면 자금은 안 빠졌다는 뜻이다.
     dropFromPeak: peak.aum - last.aum,
     priceShareOfDrop: peak.aum !== last.aum
@@ -301,6 +320,37 @@ function analyzeInvestorFlows() {
     },
   };
 }
+// 좌수 변화 부호와 개인 순매수 부호가 같은 날이 얼마나 되나. "좌수가 줄어야 개인이 판 것"
+// 이라는 통념을 검증하는 숫자다 — 당일 기준으로는 거의 무관하다는 것이 §27.4 의 상관과 일치한다.
+function unitsVsIndividualAgreement() {
+  if (!flowRaw?.items?.length) return null;
+  const etfFile = path.join(DIR, 'etf-daily.json');
+  if (!fs.existsSync(etfFile)) return null;
+  const E = JSON.parse(fs.readFileSync(etfFile, 'utf8'));
+  const codes = (E.universe ?? []).filter(u => u.group === 'single_lev').map(u => u.code);
+  let agree = 0, total = 0;
+  const examples = [];
+  for (const code of codes) {
+    const it = flowRaw.items.find(x => x.code === code);
+    if (!it) continue;
+    const inv = new Map(it.series.map(r => [r.d, r.individual]));
+    const px = (E.series[code] ?? []).filter(r => inv.has(r.d));
+    for (let i = 1; i < px.length; i++) {
+      const ind = inv.get(px[i].d), du = px[i].units - px[i - 1].units;
+      if (!ind || !du) continue;
+      total++;
+      if (Math.sign(ind) === Math.sign(du)) agree++;
+      else if (examples.length < 3) {
+        examples.push({ d: px[i].d, name: (E.universe.find(u => u.code === code) ?? {}).name ?? code,
+          indM: ind / 1e6, duM: du / 1e6 });
+      }
+    }
+  }
+  if (total < 30) return null;
+  return { total, agree, mismatchPct: ((total - agree) / total) * 100, examples };
+}
+const unitsAgreement = unitsVsIndividualAgreement();
+
 const investorFlow = analyzeInvestorFlows();
 
 /* ---------- 종목별 대차잔고·외국인 지분율 (PART 2 보조) ---------- */
@@ -1178,6 +1228,7 @@ const out = {
   marginStress: marginStressData,
   stockFlow,
   investorFlow,
+  unitsAgreement,
   series: raw.series
     .filter(r => Number.isFinite(r.OS0001))
     .map(r => ({ d: r.date, i: r.OS0001, q: r.OS0002 ?? null, c: r.OS0026 ?? null })),
