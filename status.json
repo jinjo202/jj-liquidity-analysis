@@ -1,7 +1,7 @@
 {
-  "ranOn": "2026-08-05",
+  "ranOn": "2026-08-06",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31053994744",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31060988721",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -10,7 +10,7 @@
     "지수·거래대금": "20260805",
     "신용융자·예탁금": "20260804",
     "대차잔고": "20260805",
-    "지수 장중(네이버)": "20260805"
+    "지수 장중(네이버)": "20260806"
   },
   "lastSeriesDate": "20260805",
   "reproMAE": 0.0512,
