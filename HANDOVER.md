@@ -248,8 +248,53 @@ node scripts/alert-verdict.mjs --dry    # 상태 갱신 없이 확인만 (수동
 
 구분법: 진짜는 `prj_xADZiwHIA1k6R7nI6SdURgLwrPIl`(이전해 온 것),
 가짜는 `prj_bw9cAZMnRp3Un1ssOduYWikSSAAe`(자동 임포트, 지금은 `-old`).
-`-old` 는 저장소에 연결된 채로 남아 있어 **푸시할 때마다 같이 배포된다** — 정리하려면 삭제하거나
-Settings → Git 에서 연결을 끊으면 된다.
+`-old` 는 저장소에 연결된 채로 남아 있어 **푸시할 때마다 같이 배포됐다**.
+**2026-08-07 에 연결을 끊었다** — 이제 푸시 하나당 배포는 한 번이다(부록 C 참고).
+프로젝트 자체는 남아 있으니 예전 배포 이력이 필요하면 그대로 볼 수 있다.
+
+```bash
+# 연결 해제는 CLI 로 했다. cwd 의 .vercel/project.json 이 가리키는 프로젝트에 적용되므로
+# 잠깐 -old 로 바꿔치기한 뒤 되돌렸다(.vercel 은 gitignore 대상이라 저장소에 영향 없음).
+printf 'y\n' | vercel git disconnect
+```
+
+## 부록 C. 배포가 멈추면 먼저 일일 한도를 의심할 것
+
+2026-08-07, 푸시는 되는데 **Vercel 이 배포를 아예 만들지 않는** 상태가 됐다.
+GitHub 쪽 deployments API 에도 기록이 없어 웹훅이 죽은 것처럼 보였다. 아니었다.
+
+```
+Resource is limited - try again in 24 hours
+(more than 100, code: "api-deployments-free-per-day")
+```
+
+**Hobby 플랜은 계정 전체 하루 100 배포**다. 계정에 프로젝트가 10개 있고 이 저장소는
+프로젝트 둘에 연결돼 있었으니 푸시 한 번에 2개씩 먹었다. 대시보드에서 Redeploy 를 눌러도
+같은 이유로 막히므로 **기다리는 것 말고 할 게 없다** — 창이 열리면 다음 푸시에서 자동 복구된다.
+
+증상만 보면 웹훅 장애와 구분이 안 된다. 구분하는 방법:
+
+```bash
+vercel deploy --prod --archive=tgz --yes   # 한도면 위 에러가 그대로 나온다
+```
+
+**정상 판정 순서** — 이 순서로 보면 5분 안에 원인이 나온다.
+
+1. `git log origin/main -1` — 푸시가 실제로 올라갔는지
+2. `gh api repos/jinjo202/jj-liquidity-analysis/deployments --jq '.[0:3][]|"\(.sha[0:7]) \(.created_at)"'`
+   — Vercel 이 배포를 **만들었는지**. 없으면 Vercel 이 트리거 자체를 안 한 것이다.
+3. `vercel deploy --prod --archive=tgz --yes` — 한도인지 확인(에러 문구가 답을 준다)
+4. `vercel project inspect jj-liquidity-analysis` / `printf 'N\n' | vercel git disconnect`
+   — 후자는 취소하면서 **연결 대상 저장소를 알려준다**. 연결이 살아 있는지 확인하는 비파괴 방법이다.
+
+한도를 다시 안 밟으려면: 하루에 푸시를 여러 번 쌓지 말고(같은 날 리빌드는 커밋을 합치는 편이 낫다),
+프로젝트를 하나만 저장소에 연결해 둔다.
+
+### CLI 는 이미 설치·인증돼 있다
+
+`vercel` 58.4.4, `vercel whoami` → `jinjo202-8902`. 토큰은 CLI 가 들고 있으니
+어디에 적어 둘 필요가 없다. `vercel git disconnect` 같은 명령은 프롬프트가 있어
+`--non-interactive` 로는 취소되므로 `printf 'y\n' |` 로 답을 넣어야 한다.
 
 ## 부록 B. Vercel 이 커밋 작성자를 검사한다
 
