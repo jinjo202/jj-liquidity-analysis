@@ -129,6 +129,55 @@ const ratioSeries = raw.series
   }));
 const ratioAt = d => ratioSeries.find(r => r.date === d) ?? null;
 
+/* ---------- 해외 반도체 공매도 ---------- */
+// 두 계열은 주기가 달라 반드시 나눠 다룬다(§34).
+//   잔고(short interest): 월 2회. "얼마나 깔려 있나"
+//   일별 공매도 거래량: 매일. "오늘 매도 중 공매도 비중이 얼마였나"
+// 거래량 비중은 마켓메이커 헤지가 섞여 절대 수준이 원래 높다 — 같은 종목의 변화로만 읽는다.
+const gsPath = path.join(DIR, 'global-semis.json');
+const gsRaw = fs.existsSync(gsPath) ? JSON.parse(fs.readFileSync(gsPath, 'utf8')) : null;
+
+function globalSemis() {
+  if (!gsRaw?.shortVolume?.length) return null;
+  const meta = new Map((gsRaw.meta?.tickers ?? []).map(t => [t.s, t]));
+  const vol = gsRaw.shortVolume;
+  const si = gsRaw.shortInterest ?? [];
+  const siLast = si.at(-1) ?? null;
+  const siPrev = si.length > 1 ? si.at(-2) : null;
+
+  const symbols = [...new Set(vol.flatMap(r => Object.keys(r).filter(k => k !== 'd')))];
+  const items = symbols.map(sym => {
+    const rows = vol.filter(r => r[sym]).map(r => ({ d: r.d, pct: r[sym].shortPct, vol: r[sym].totalVol }));
+    if (rows.length < 5) return null;
+    const avg = arr => (arr.length ? arr.reduce((x, v) => x + v, 0) / arr.length : null);
+    const pcts = rows.map(r => r.pct);
+    const mean = avg(pcts);
+    const sd = Math.sqrt(pcts.reduce((x, v) => x + (v - mean) ** 2, 0) / pcts.length);
+    const last = rows.at(-1);
+    const siNow = siLast?.items.find(x => x.s === sym) ?? null;
+    const siBefore = siPrev?.items.find(x => x.s === sym) ?? null;
+    return {
+      s: sym, name: meta.get(sym)?.name ?? sym, kind: meta.get(sym)?.kind ?? 'stock',
+      lev: meta.get(sym)?.lev ?? null, note: meta.get(sym)?.note ?? null,
+      last, mean, sd, z: sd > 0 ? (last.pct - mean) / sd : null,
+      avg5: avg(rows.slice(-5).map(r => r.pct)),
+      avg20: avg(rows.slice(-20).map(r => r.pct)),
+      shortQty: siNow?.shortQty ?? null,
+      daysToCover: siNow?.daysToCover ?? null,
+      siChangePct: siNow?.changePct ?? null,
+      siPrevQty: siBefore?.shortQty ?? null,
+      series: rows,
+    };
+  }).filter(Boolean).sort((a2, b2) => b2.last.pct - a2.last.pct);
+
+  return {
+    from: vol[0].d, to: vol.at(-1).d, days: vol.length,
+    siDate: siLast?.settlementDate ?? null, siPrevDate: siPrev?.settlementDate ?? null,
+    items,
+  };
+}
+const globalSemisData = globalSemis();
+
 /* ---------- 마진콜 스트레스 시계열 ---------- */
 // 반대매매 ÷ 위탁매매미수금 = 미수 잔액 중 강제로 처분된 비율. 절대액은 시장 규모에 끌려
 // 다니지만 이 비율은 "미수를 낸 사람들이 실제로 얼마나 털렸나" 를 바로 말한다.
@@ -1271,6 +1320,7 @@ const out = {
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   divergence,
   marginStress: marginStressData,
+  globalSemis: globalSemisData,
   stockFlow,
   investorFlow,
   unitsAgreement,

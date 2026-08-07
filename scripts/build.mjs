@@ -1026,6 +1026,80 @@ FREESIS 대차거래추이(일별, 시장 전체)에서 받았다.</p>
 
 /* ---------- 숏커버 여력 (상승 압력) ---------- */
 
+/* ---------- 해외 반도체 공매도 ---------- */
+// 국내 대차잔고와 같은 질문을 미국 반도체에 묻는다. 두 계열의 주기가 달라 표를 나눈다.
+const globalSemisSection = !A.globalSemis ? '' : (() => {
+  const G = A.globalSemis;
+  const dram = G.items.find(x => x.s === 'MU');
+  const hot = [...G.items].filter(x => x.z != null).sort((a, b) => b.z - a.z)[0];
+  const cold = [...G.items].filter(x => x.z != null).sort((a, b) => a.z - b.z)[0];
+  const row = it => `<tr>
+    <td>${esc(it.s)} <span class="mut">${esc(it.name)}${it.note ? ` · ${esc(it.note)}` : ''}</span></td>
+    <td class="n">${f(it.last.pct, 1)}%</td>
+    <td class="n">${f(it.avg20, 1)}%</td>
+    <td class="n ${it.z >= 1 ? 'dn' : it.z <= -1 ? 'up' : ''}">${it.z == null ? '-' : `${it.z >= 0 ? '+' : ''}${f(it.z, 2)}`}</td>
+    <td class="n">${it.shortQty == null ? '-' : f(it.shortQty / 1e6, 1)}</td>
+    <td class="n">${it.daysToCover ?? '-'}</td>
+    <td class="n ${(it.siChangePct ?? 0) >= 0 ? 'dn' : 'up'}">${it.siChangePct == null ? '-' : `${it.siChangePct >= 0 ? '+' : ''}${f(it.siChangePct, 1)}%`}</td>
+  </tr>`;
+  return `<section>
+<h2>해외 반도체 공매도 — 같은 질문을 미국에 묻는다</h2>
+<p class="lead">국내는 대차잔고를 공매도 프록시로 쓴다(§16). 미국은 <b>공매도 잔고가 직접 공표</b>되므로
+  프록시가 필요 없다. 대신 <b>주기가 다른 두 계열</b>을 섞지 않는 게 중요하다.</p>
+
+<div class="verdict">
+  <div class="vl">한 줄 판정</div>
+  <div class="vt">${dram && dram.z != null ? `<b>DRAM 쪽에 공매도가 몰린다.</b>
+    마이크론(MU)은 공매도 거래 비중이 ${f(dram.last.pct, 1)}%로 20일 평균 ${f(dram.avg20, 1)}%보다 높고
+    <b>z ${dram.z >= 0 ? '+' : ''}${f(dram.z, 2)}</b>다. 잔고도 직전 정산 대비 <b>${dram.siChangePct >= 0 ? '+' : ''}${f(dram.siChangePct, 1)}%</b>
+    (${f(dram.shortQty / 1e6, 1)}백만주).` : ''}
+    ${hot && cold ? ` 전체에서는 <b>${esc(hot.s)}</b>가 가장 공매도가 몰렸고(z ${f(hot.z, 2)}),
+    <b>${esc(cold.s)}</b>가 가장 빠졌다(z ${f(cold.z, 2)}).` : ''}</div>
+</div>
+
+<div class="tw"><table>
+  <thead><tr><th>종목</th><th class="n">공매도 거래비중<br><span class="mut">${dtFull(G.to)}</span></th>
+    <th class="n">20일 평균</th><th class="n">z</th>
+    <th class="n">공매도 잔고<br><span class="mut">백만주</span></th><th class="n">DTC</th>
+    <th class="n">잔고 변화<br><span class="mut">${G.siPrevDate ? `vs ${G.siPrevDate}` : ''}</span></th></tr></thead>
+  <tbody>${G.items.map(row).join('')}</tbody>
+</table></div>
+
+<figure>
+  <h4>공매도 거래 비중 추이 — DRAM·레버리지 ETF</h4>
+  ${(() => {
+    const pick = ['MU', 'NVDA', 'SOXL'].map(sym => G.items.find(x => x.s === sym)).filter(Boolean);
+    if (pick.length < 2) return '';
+    const dates = [...new Set(pick.flatMap(p => p.series.map(r => r.d)))].sort();
+    const rows = dates.map(d => {
+      const o = { d };
+      for (const p of pick) o[p.s] = p.series.find(r => r.d === d)?.pct ?? null;
+      return o;
+    });
+    const cls = ['ln-cr', 'ln-idx', 'ln-kq'];
+    return `${levelChart(rows, pick.map((p, i) => ({ key: p.s, cls: cls[i], name: p.s })),
+      '공매도 거래량 / 총 거래량 (%)', { dg: 1, zeroBase: false })}
+    <div class="lg">${pick.map((p, i) => `<span><i class="sw ${['cr', 'acc', 'kq'][i]}"></i>${esc(p.s)}</span>`).join('')}</div>`;
+  })()}
+  <figcaption>${dtFull(G.from)}~${dtFull(G.to)}, ${G.days}거래일. FINRA Reg SHO 일별 파일에서 받는다.</figcaption>
+</figure>
+
+<div class="box warn">
+  <b>이 표를 읽는 법 — 두 계열의 주기가 다르다</b>
+  <ul style="margin:6px 0 0 18px">
+    <li><b>공매도 거래비중은 매일</b> 갱신된다. 그날 매도 중 공매도가 차지한 몫이다.</li>
+    <li><b>공매도 잔고는 월 2회</b>(15일·말일 정산)만 나오고 8영업일가량 지연된다.
+      최신이 <b>${G.siDate}</b>인 이유다 — <b>매일 갱신할 수 없는 계열</b>이다.</li>
+  </ul>
+  그리고 <b>거래비중의 절대 수준을 "공매도가 심하다" 로 읽으면 안 된다.</b> 마켓메이커의 헤지성 매도가
+  섞여 미국 대형주는 평시에도 40~50%가 흔하다. 그래서 표에 <b>z점수</b>(같은 종목의 ${G.days}일 평균 대비)를
+  같이 뒀다 — 절대 수준이 아니라 <b>그 종목 기준으로 평소보다 높은가</b>를 봐야 한다.
+  <br><b>DRAM 전용 ETF 는 미국에 없다.</b> DRAM 노출은 순수주인 <b>MU(마이크론)</b>로 보고,
+  반도체 전반은 SMH·SOXX, 레버리지 수요는 SOXL·SOXS(3배)로 나눠 담았다.
+</div>
+</section>`;
+})();
+
 /* ---------- 종목별 대차잔고·외국인 지분율 ---------- */
 // 시장 전체 잔고는 "얼마나 더 오를 수 있나" 를 묻는다. 여기서는 그 잔고가 어디에 붙어 있는지를 묻는다.
 const stockFlowSection = !A.stockFlow ? '' : (() => {
@@ -2866,6 +2940,8 @@ ${stockFlowSection ? `<div class="pane p-stock">
 <div class="parthead ph-stock"><i>PART 5</i><b>종목 트래킹 — 삼성전자·SK하이닉스</b></div>
 
 ${stockFlowSection}
+
+${globalSemisSection}
 
 </div><!-- /p-stock -->` : ''}
 

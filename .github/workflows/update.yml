@@ -59,6 +59,8 @@ jobs:
           node scripts/fetch-stock-flows.mjs || ERR="$ERR stockflows"
           # 투자자별 순매수. 소스가 20거래일 창만 줘서 매일 받아야 히스토리가 이어진다(§27).
           node scripts/fetch-investor-flows.mjs || ERR="$ERR investorflows"
+          # 해외 반도체 공매도. 거래량은 일별, 잔고는 월 2회다(§34).
+          node scripts/fetch-global-semis.mjs 10 || ERR="$ERR globalsemis"
           echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
           echo "실패한 소스: ${ERR:-없음}"
 

@@ -220,6 +220,23 @@ if (A.channels?.creditToDeposit) {
   }
 }
 
+// 해외 반도체 공매도(§34). 거래량 비중과 잔고를 섞지 않았는지, 값이 범위 안인지 본다.
+if (A.globalSemis) {
+  const G = A.globalSemis;
+  assert.ok(G.items.length >= 5, `해외 반도체 종목이 ${G.items.length}개뿐이다`);
+  for (const it of G.items) {
+    assert.ok(it.last.pct > 0 && it.last.pct <= 100, `${it.s}: 공매도 비중 범위 밖 ${it.last.pct}`);
+    assert.ok(it.avg20 == null || (it.avg20 > 0 && it.avg20 <= 100), `${it.s}: 20일 평균 범위 밖`);
+    if (it.z != null && it.sd > 0) near(it.z, (it.last.pct - it.mean) / it.sd, 1e-6, `${it.s} z점수`);
+    // 잔고는 월 2회라 없을 수 있다 — 있으면 양수여야 한다.
+    assert.ok(it.shortQty == null || it.shortQty > 0, `${it.s}: 공매도 잔고가 0 이하다`);
+  }
+  // 잔고 정산일이 일별 최신일보다 뒤일 수는 없다.
+  if (G.siDate) {
+    assert.ok(G.siDate.replace(/-/g, '') <= G.to, `잔고 정산일(${G.siDate})이 일별 최신일(${G.to})보다 늦다`);
+  }
+}
+
 // 국내/홍콩 분해(§33.1). 단위를 틀리기 쉬운 자리라 범위로 잡아 둔다 —
 // 실제로 marketSum 을 백만원으로 읽어 ETF 시총이 4.5조로 나온 적이 있다(정답은 억원, 445조).
 if (A.etf?.split) {
