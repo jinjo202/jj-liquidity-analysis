@@ -1031,6 +1031,7 @@ FREESIS 대차거래추이(일별, 시장 전체)에서 받았다.</p>
 const globalSemisSection = !A.globalSemis ? '' : (() => {
   const G = A.globalSemis;
   const dram = G.items.find(x => x.s === 'MU');
+  const M = G.memory;
   const hot = [...G.items].filter(x => x.z != null).sort((a, b) => b.z - a.z)[0];
   const cold = [...G.items].filter(x => x.z != null).sort((a, b) => a.z - b.z)[0];
   const row = it => `<tr>
@@ -1049,13 +1050,39 @@ const globalSemisSection = !A.globalSemis ? '' : (() => {
 
 <div class="verdict">
   <div class="vl">한 줄 판정</div>
-  <div class="vt">${dram && dram.z != null ? `<b>DRAM 쪽에 공매도가 몰린다.</b>
-    마이크론(MU)은 공매도 거래 비중이 ${f(dram.last.pct, 1)}%로 20일 평균 ${f(dram.avg20, 1)}%보다 높고
-    <b>z ${dram.z >= 0 ? '+' : ''}${f(dram.z, 2)}</b>다. 잔고도 직전 정산 대비 <b>${dram.siChangePct >= 0 ? '+' : ''}${f(dram.siChangePct, 1)}%</b>
-    (${f(dram.shortQty / 1e6, 1)}백만주).` : ''}
-    ${hot && cold ? ` 전체에서는 <b>${esc(hot.s)}</b>가 가장 공매도가 몰렸고(z ${f(hot.z, 2)}),
-    <b>${esc(cold.s)}</b>가 가장 빠졌다(z ${f(cold.z, 2)}).` : ''}</div>
+  <div class="vt">${!M ? '' : `<b>공매도가 메모리 쪽에 쏠려 있다</b> — 메모리 계열 평균 z <b>${f(M.avgZ, 2)}</b> vs
+    비메모리 ${f(M.nonMemoryAvgZ, 2)}.
+    ${M.etf ? `메모리 순수 테마인 <b>DRAM ETF 는 공매도 잔고가 직전 정산 대비 ${M.etf.siChangePct >= 0 ? '+' : ''}${f(M.etf.siChangePct, 1)}%</b>
+    (${f(M.etf.shortQty / 1e6, 1)}백만주)로 급증했는데, 일별 거래 비중은 ${f(M.etf.last.pct, 1)}%로 평소(${f(M.etf.avg20, 1)}%)와 같다 —
+    <b>매일 격하게 팔리는 게 아니라 잔고가 쌓인 것</b>이다.` : ''}
+    ${dram ? ` 개별주에서는 마이크론(MU)이 z <b>${f(dram.z, 2)}</b>로 가장 높다.` : ''}`}</div>
 </div>
+
+${!M ? '' : `<h3>메모리(DRAM) 계열</h3>
+<div class="tw"><table>
+  <thead><tr><th>종목</th><th class="n">공매도 거래비중<br><span class="mut">${dtFull(G.to)}</span></th>
+    <th class="n">20일 평균</th><th class="n">z</th>
+    <th class="n">공매도 잔고<br><span class="mut">백만주 · ${G.siDate ?? '-'}</span></th>
+    <th class="n">잔고 변화</th></tr></thead>
+  <tbody>${M.items.map(it => `<tr>
+    <td>${esc(it.s)} <span class="mut">${esc(it.name)}${it.note ? ` · ${esc(it.note)}` : ''}</span></td>
+    <td class="n">${f(it.last.pct, 1)}%</td>
+    <td class="n">${f(it.avg20, 1)}%</td>
+    <td class="n ${it.z >= 1 ? 'dn' : it.z <= -1 ? 'up' : ''}">${it.z == null ? '-' : `${it.z >= 0 ? '+' : ''}${f(it.z, 2)}`}</td>
+    <td class="n">${it.shortQty == null ? '-' : f(it.shortQty / 1e6, 1)}</td>
+    <td class="n ${(it.siChangePct ?? 0) >= 0 ? 'dn' : 'up'}">${it.siChangePct == null ? '-' : `${it.siChangePct >= 0 ? '+' : ''}${f(it.siChangePct, 1)}%`}</td>
+  </tr>`).join('')}</tbody>
+</table></div>
+<div class="box">
+  <b>DRAM ETF 는 국내 단일종목 레버리지와 같은 구조다</b> — Roundhill Memory ETF(<code>DRAM</code>)는
+  2026-04-02 상장한 세계 최초의 메모리 순수 테마 ETF 로, DRAM·HBM·NAND·SSD 를 담는다.
+  ${M.lev.length ? `2배 레버리지도 <b>${M.lev.map(x => esc(x.s)).join('·')}</b> 로 나와 있다(${M.lev.map(x => `${esc(x.s)} ${f(x.last.pct, 1)}%`).join(', ')}).` : ''}
+  국내 삼성·하이닉스 단일종목 레버리지(§33.1)와 <b>같은 기초자산에 같은 방식으로 걸린 돈</b>이라,
+  국내만 보면 메모리에 걸린 레버리지·공매도를 절반만 보는 셈이다.
+  <span class="mut">RAML 은 2026-07-23 상장이라 ${G.siDate} 정산 잔고에는 아직 없다.</span>
+</div>`}
+
+<h3>반도체 전체</h3>
 
 <div class="tw"><table>
   <thead><tr><th>종목</th><th class="n">공매도 거래비중<br><span class="mut">${dtFull(G.to)}</span></th>
@@ -1094,8 +1121,8 @@ const globalSemisSection = !A.globalSemis ? '' : (() => {
   그리고 <b>거래비중의 절대 수준을 "공매도가 심하다" 로 읽으면 안 된다.</b> 마켓메이커의 헤지성 매도가
   섞여 미국 대형주는 평시에도 40~50%가 흔하다. 그래서 표에 <b>z점수</b>(같은 종목의 ${G.days}일 평균 대비)를
   같이 뒀다 — 절대 수준이 아니라 <b>그 종목 기준으로 평소보다 높은가</b>를 봐야 한다.
-  <br><b>DRAM 전용 ETF 는 미국에 없다.</b> DRAM 노출은 순수주인 <b>MU(마이크론)</b>로 보고,
-  반도체 전반은 SMH·SOXX, 레버리지 수요는 SOXL·SOXS(3배)로 나눠 담았다.
+  <br><b>대상</b>: 메모리 순수 테마 ETF(DRAM)와 그 2배 레버리지(RAML·RAM), 메모리 개별주(MU·SNDK·WDC·STX),
+  반도체 대형주, 반도체 ETF(SMH·SOXX), 반도체 3배 레버리지(SOXL·SOXS).
 </div>
 </section>`;
 })();

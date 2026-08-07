@@ -170,10 +170,22 @@ function globalSemis() {
     };
   }).filter(Boolean).sort((a2, b2) => b2.last.pct - a2.last.pct);
 
+  // 메모리(DRAM) 계열만 따로 묶는다 — 국내 반도체 서사와 직접 연결되는 부분이다.
+  const MEMORY = new Set(['DRAM', 'RAML', 'RAM', 'MU', 'SNDK', 'WDC', 'STX']);
+  const memory = items.filter(x => MEMORY.has(x.s));
+  const avgOf = arr => (arr.length ? arr.reduce((x, v) => x + v, 0) / arr.length : null);
   return {
     from: vol[0].d, to: vol.at(-1).d, days: vol.length,
     siDate: siLast?.settlementDate ?? null, siPrevDate: siPrev?.settlementDate ?? null,
     items,
+    memory: {
+      items: memory,
+      etf: items.find(x => x.s === 'DRAM') ?? null,
+      lev: items.filter(x => ['RAML', 'RAM'].includes(x.s)),
+      avgZ: avgOf(memory.map(x => x.z).filter(Number.isFinite)),
+      // 메모리 대 비메모리 — 공매도가 메모리 쪽에 쏠렸는지 한 숫자로 본다.
+      nonMemoryAvgZ: avgOf(items.filter(x => !MEMORY.has(x.s)).map(x => x.z).filter(Number.isFinite)),
+    },
   };
 }
 const globalSemisData = globalSemis();

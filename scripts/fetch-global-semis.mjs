@@ -13,8 +13,13 @@
 //      방향성 베팅보다 높게 나온다(미국 대형주는 평시에도 40~50%가 흔하다).
 //      절대 수준보다 **같은 종목의 시계열 변화**로 읽어야 한다.
 //
-// 대상: 반도체 대형주 + 반도체 ETF. DRAM 전용 ETF 는 미국에 없어서 순수주인 MU(마이크론)를 넣었다.
-// SOXL/SOXS(3배 레버리지 반도체)는 국내 단일종목 레버리지와 같은 성격이라 함께 본다.
+// 대상: 메모리 계열 + 반도체 대형주 + ETF.
+//   ★ DRAM 전용 ETF 가 실재한다 — Roundhill Memory ETF(티커 DRAM), 2026-04-02 Cboe 상장.
+//     세계 최초의 메모리 순수 테마 ETF 로 DRAM·HBM·NAND·SSD 를 담는다. 상장 25거래일 만에 AUM 50억 달러.
+//     2배 레버리지도 둘 있다 — RAML(Leverage Shares, 2026-07-23), RAM(T-REX/Roundhill).
+//     이건 국내 단일종목 레버리지(§33.1)와 정확히 같은 성격이라 특히 중요하다.
+//   메모리 개별주는 MU(마이크론)와 스토리지 3사(SNDK·WDC·STX)를 담는다.
+//   SOXL/SOXS(3배 레버리지 반도체)는 반도체 전반의 레버리지 수요를 본다.
 //
 // 사용법: node scripts/fetch-global-semis.mjs [백필일수]
 import fs from 'node:fs';
@@ -27,9 +32,17 @@ const BACKFILL = Number(process.argv[2] ?? 45);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const TICKERS = [
+  // --- 메모리(DRAM) 계열 ---
+  { s: 'DRAM', name: 'Roundhill Memory ETF', kind: 'etf', note: '메모리 순수 테마' },
+  { s: 'RAML', name: '2X Long Memory (Leverage Shares)', kind: 'etf', lev: 2, note: 'DRAM 2배' },
+  { s: 'RAM', name: '2X DRAM (T-REX)', kind: 'etf', lev: 2, note: 'DRAM 2배' },
+  { s: 'MU', name: '마이크론', kind: 'stock', note: 'DRAM 순수주' },
+  { s: 'SNDK', name: '샌디스크', kind: 'stock', note: 'NAND' },
+  { s: 'WDC', name: 'WD', kind: 'stock', note: '스토리지' },
+  { s: 'STX', name: '시게이트', kind: 'stock', note: '스토리지' },
+  // --- 반도체 대형주 ---
   { s: 'NVDA', name: '엔비디아', kind: 'stock' },
   { s: 'AMD', name: 'AMD', kind: 'stock' },
-  { s: 'MU', name: '마이크론', kind: 'stock', note: 'DRAM 순수주' },
   { s: 'INTC', name: '인텔', kind: 'stock' },
   { s: 'TSM', name: 'TSMC', kind: 'stock' },
   { s: 'ASML', name: 'ASML', kind: 'stock' },
