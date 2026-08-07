@@ -1,7 +1,7 @@
 {
   "ranOn": "2026-08-07",
-  "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31184826286",
+  "ranBy": "local",
+  "runUrl": null,
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -34,6 +34,35 @@
       "tradingDaysSince": 3
     },
     "consecutiveDownDays": 3
+  },
+  "verdict": {
+    "asOf": "20260807",
+    "stance": "clearing",
+    "stanceLabel": "정리 우위",
+    "score": 7,
+    "signals": 12,
+    "headline": "아래쪽에 아직 1개가 걸려 있다 — 시장별 되돌림 진행도. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 대신 위쪽 연료도 없다 — 대차 주수가 저점 대비 +5.2% 늘어 새 숏이 들어오는 국면이고, 대차/시총은 이미 직전 저점 아래다.",
+    "axes": {
+      "down": {
+        "ok": 4,
+        "alert": 1,
+        "n": 5
+      },
+      "up": {
+        "ok": 1,
+        "alert": 1,
+        "n": 3
+      },
+      "crowd": {
+        "ok": 4,
+        "alert": 0,
+        "n": 4
+      }
+    },
+    "alerts": [
+      "시장별 되돌림 진행도 코스피 17% / 코스닥 95%",
+      "대차잔고 주수 +5.2%"
+    ]
   },
   "note": "자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다. singleStockEtfUnits.verdict 가 rolling 으로 바뀌면 레버리지 ETF 환매가 실제로 시작된 것이다."
 }

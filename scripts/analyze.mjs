@@ -1322,12 +1322,201 @@ const outlook = buildOutlook({
 });
 if (outlook && anchors) outlook.anchors = anchors;
 
+/* ---------- 오늘의 종합 판정 (§35) ---------- */
+// 리포트 맨 위에 올라가는 결론. 데이터가 매일 갱신되므로 판정도 매일 다시 계산한다 —
+// 손으로 쓴 문장을 박아 두면 하루 이틀 만에 본문과 어긋난다.
+//
+// 방법: 서로 다른 출처에서 오는 지표 12개를 각각 셋 중 하나로 판정한다.
+//   ok(부담이 정상 이하) / watch(중립) / alert(부담이 남아 있다)
+// 판정 기준선은 전부 **직전 사이클의 같은 지표**다. "지금 28조는 많은가" 같은
+// 절대 수준 감(感)을 배제하려는 것이다. 그 다음 세 축으로 묶어 평균 점수를 낸다.
+//
+// 한계: 가중치는 전부 1이다. 지표 간 중요도 차이를 데이터로 정할 근거가 없어
+// 임의 가중을 두지 않았다. 그래서 이 점수는 순위가 아니라 **몇 개가 어느 쪽이냐**의 집계다.
+function dailyVerdict() {
+  const S = [];
+  const dd = s => (s ? `${s.slice(0, 4)}.${s.slice(4, 6)}.${s.slice(6, 8)}` : '-');
+  const n2 = (x, d = 1) => (Number.isFinite(x) ? x.toFixed(d) : '-');
+  const sg = (x, d = 1) => (Number.isFinite(x) ? `${x >= 0 ? '+' : ''}${x.toFixed(d)}%` : '-');
+  const kk = x => Math.round(x).toLocaleString();
+  const add = (axis, key, label, state, value, why) => S.push({ axis, key, label, state, value, why });
+
+  /* --- 축 1: 하방 — 신용·마진콜이 강제 매도를 더 낼 수 있나 --- */
+  const PJ = projection;
+  if (PJ?.currentRatio && PJ?.prevTroughRatio) {
+    const cur = PJ.currentRatio.ratio, tr = PJ.prevTroughRatio.ratio;
+    add('down', 'creditRatio', '신용융자 / 시가총액',
+      cur < tr ? 'ok' : cur < tr * 1.25 ? 'watch' : 'alert', `${n2(cur, 3)}%`,
+      `직전 사이클 저점 ${n2(tr, 3)}%(${dd(PJ.prevTroughRatio.date)})의 ${n2(cur / tr, 2)}배. `
+      + `이번 사이클 고점도 ${n2(PJ.peakRatio.ratio, 3)}%로 2021년 고점 ${n2(PJ.prevPeakRatio.ratio, 3)}%의 절반이었다. `
+      + `"2022년처럼 풀려야 한다"는 전제가 이 사이클에는 성립하지 않는다.`);
+  }
+  const CD = channels?.creditToDeposit;
+  if (CD) {
+    const r = CD.last.ratio, nm = CD.normal.y3;
+    add('down', 'creditDeposit', '예탁금 대비 신용융자',
+      r < nm ? 'ok' : r < nm * 1.1 ? 'watch' : 'alert', `${n2(r)}%`,
+      `최근 3년 평균 ${n2(nm)}%, 역대 ${n2(CD.pct, 0)}백분위. `
+      + `신용 고점일(${dd(CD.atCreditPeak.date)})조차 ${n2(CD.atCreditPeak.ratio)}%였다 — 비율로 보면 5~6월도 과열이 아니었고, 지금은 그보다 낮다.`);
+  }
+  const FT = outlook?.firstTrigger;
+  if (FT) {
+    const gap = Math.abs(FT.gapPct);
+    add('down', 'marginBuffer', '마진콜 첫 문턱까지',
+      gap >= 5 ? 'ok' : gap >= 2 ? 'watch' : 'alert', `${n2(gap)}%`,
+      `코스피가 ${kk(FT.threshold)}p 밑으로 마감해야 +${n2(FT.incrementalJo, 2)}조가 새로 열린다`
+      + `(그날 거래대금의 ${n2(FT.pctOfDay)}%). 지금 지수에서 기계적으로 나올 신용 매물은 없다.`);
+  }
+  const MS = marginStressData;
+  if (MS) {
+    add('down', 'marginStress', '반대매매 / 미수금',
+      MS.pct < 33 ? 'ok' : MS.pct < 67 ? 'watch' : 'alert', `${n2(MS.last.ratio)}%`,
+      `역대 ${n2(MS.pct, 0)}백분위, 중앙값 ${n2(MS.med)}%의 ${n2(MS.vsMedian, 2)}배. `
+      + `이번 사이클 고점은 ${n2(MS.peak.ratio)}%였다(${dd(MS.peak.d)}). `
+      + `미수금이 실제 강제청산으로 넘어가는 비율이라, 잔고가 아니라 **지금 이 순간의 체감 압력**을 재는 지표다.`);
+  }
+  const K = divergence?.items.find(x => x.market === '유가증권');
+  const Q = divergence?.items.find(x => x.market === '코스닥');
+  if (K && Q) {
+    add('down', 'divergence', '시장별 되돌림 진행도',
+      K.retracedPctOfBuild >= 60 ? 'ok' : K.retracedPctOfBuild >= 30 ? 'watch' : 'alert',
+      `코스피 ${n2(K.retracedPctOfBuild, 0)}% / 코스닥 ${n2(Q.retracedPctOfBuild, 0)}%`,
+      `코스닥은 이번에 쌓은 것의 ${n2(Q.retracedPctOfBuild, 0)}%를 되돌려 신용/시총이 직전 저점의 ${n2(Q.ratioVsPrevTrough, 2)}배 — 끝났다. `
+      + `코스피는 ${n2(K.retracedPctOfBuild, 0)}%만 되돌려 잔고가 아직 시작의 ${n2(K.multipleOfStart, 2)}배이고, `
+      + `직전 저점까지 ${n2(K.toPrevTroughJo)}조 남았다. 합계 청산률은 이 둘의 평균이라 어느 쪽도 설명하지 못한다.`);
+  }
+
+  /* --- 축 2: 상방 — 되갚아야 할 공매도가 남았나 --- */
+  const CV = lending?.cover, CS = CV?.shares;
+  if (CS) {
+    add('up', 'shortShares', '대차잔고 주수',
+      CS.fromTroughPct >= 3 ? 'alert' : CS.fromTroughPct >= 0.5 ? 'watch' : 'ok', sg(CS.fromTroughPct),
+      `저점(${dd(CS.troughDate)}) 대비. 고점 대비로는 ${sg(CS.fromPeakPct)}이지만 방향이 돌아섰다. `
+      + `금액은 고점 대비 ${sg(CS.moneyDeclinePct)}인데 감소분의 ${n2(CS.priceShareOfMoveePct, 0)}%가 가격이다 — `
+      + `되갚아진 게 아니라 평가액이 빠진 것이고, 지금은 **새로 짜는 국면**이다.`);
+  }
+  if (CV) {
+    add('up', 'shortRatio', '대차잔고 / 시가총액',
+      CV.nowRatio < CV.prevTroughRatio ? 'ok' : CV.nowRatio < CV.prevTroughRatio * 1.15 ? 'watch' : 'alert',
+      `${n2(CV.nowRatio, 2)}%`,
+      `직전 사이클 저점 ${n2(CV.prevTroughRatio, 2)}%보다 낮다. 잔고 부담이 소진됐다는 뜻이지만, `
+      + `뒤집으면 **숏커버로 나올 매수 연료도 그만큼 없다**는 뜻이다. 현실적 잔여 커버 여력은 ${n2(CV.benches.find(b => b.key === 'baseRatio')?.remainJo ?? NaN)}조 — 하루 거래대금의 ${n2(CV.benches.find(b => b.key === 'baseRatio')?.equivDays ?? NaN, 2)}배.`);
+  }
+  const GM = globalSemisData?.memory;
+  if (GM?.etf) {
+    add('up', 'globalMemory', '해외 메모리 공매도',
+      GM.avgZ >= 0.5 ? 'alert' : GM.avgZ >= 0 ? 'watch' : 'ok', `z ${GM.avgZ >= 0 ? '+' : ''}${n2(GM.avgZ, 2)}`,
+      `메모리 계열 평균 z ${n2(GM.avgZ, 2)} vs 비메모리 ${n2(GM.nonMemoryAvgZ, 2)} — 공매도가 메모리로 쏠려 있다. `
+      + `DRAM ETF 공매도 잔고는 ${n2(GM.etf.shortQty / 1e6)}백만주로 직전 정산 대비 ${sg(GM.etf.siChangePct, 0)}인데, `
+      + `일별 공매도 비중은 ${n2(GM.etf.last.pct)}%로 20일 평균 ${n2(GM.etf.avg20)}%와 같다 — `
+      + `매일 격하게 파는 게 아니라 **포지션이 조용히 쌓였다**. 삼성·하이닉스에 같은 방향으로 걸린 돈이다.`);
+  }
+
+  /* --- 축 3: 군중 — 개인의 레버리지 물량이 실제로 빠졌나 --- */
+  const U = etf?.unitsTrend?.single;
+  if (U) {
+    add('crowd', 'etfUnits', '단일종목 레버리지 좌수',
+      U.verdict === 'rolling' ? 'ok' : U.verdict === 'flat' ? 'watch' : 'alert', `${n2(U.last.unitsM, 0)}백만좌`,
+      `고점 ${n2(U.peak.unitsM, 0)}백만좌(${dd(U.peak.d)}) 대비 ${sg(U.fromPeakPct)}, 5일 ${sg(U.d5)}, 연속 감소 ${U.downStreak}일. `
+      + `좌수는 LP 가 설정·환매를 해야만 움직여서 투자자 매도보다 3거래일 늦다(§27.4) — `
+      + `**뒤늦게 확정되는 도장**이지 선행 신호가 아니다.`);
+  }
+  const TA = etf?.aumTotal, BD = etf?.breakdown;
+  if (TA && BD) {
+    add('crowd', 'etfAum', '레버리지 ETF AUM·익스포저',
+      TA.fromPeakPct <= -40 ? 'ok' : TA.fromPeakPct <= -20 ? 'watch' : 'alert', `${n2(TA.last.total)}조`,
+      `고점 ${n2(TA.peak.total)}조(${dd(TA.peak.d)}) 대비 ${sg(TA.fromPeakPct)}. `
+      + `시총 대비 익스포저는 ${n2(BD.peak.exposurePctMcap, 2)}% → **${n2(BD.last.exposurePctMcap, 2)}%**로 줄었다. `
+      + `이게 좌수보다 중요하다 — 같은 하락률이라도 시장에 떨어지는 매도 절대액이 그만큼 작아졌다.`);
+  }
+  if (BD?.sharePeak) {
+    add('crowd', 'etfTurnover', 'ETF 시장 내 거래대금 비중',
+      BD.shareAvg5 < BD.sharePeak.valPctMarket * 0.5 ? 'ok'
+        : BD.shareAvg5 < BD.sharePeak.valPctMarket * 0.75 ? 'watch' : 'alert', `${n2(BD.shareAvg5, 0)}%`,
+      `전체 ETF 거래대금 중 레버리지 계열 비중. 고점 ${n2(BD.sharePeak.valPctMarket, 0)}%(${dd(BD.sharePeak.d)}) → 최근 5일 평균. `
+      + `거래대금 자체도 ${n2(BD.valPeak.valJo)}조(${dd(BD.valPeak.d)}) → ${n2(BD.valAvg5)}조다. `
+      + `잔고보다 **회전이 먼저 식는다** — 판이 깨질 때 늘 이 순서다.`);
+  }
+  const LF = investorFlow?.levFlow;
+  if (LF?.cumPeak) {
+    add('crowd', 'individualFlow', '개인 순매수 (레버리지 ETF)',
+      LF.givenBackPct >= 50 ? 'ok' : LF.givenBackPct >= 20 ? 'watch' : 'alert', `누적 ${n2(LF.cumEok / 1e4, 2)}조`,
+      `${dd(investorFlow.from)} 이후 누적. 고점 ${n2(LF.cumPeak.cumEok / 1e4, 2)}조(${dd(LF.cumPeak.d)}) 대비 **${n2(LF.givenBackPct, 0)}% 반납**, `
+      + `${LF.totalDays}일 중 ${LF.sellDays}일이 순매도. 최근 5일 ${n2(LF.last5Eok / 1e4, 2)}조. `
+      + `좌수와 달리 이건 **투자자가 실제로 낸 주문**이라 하루도 늦지 않는다.`);
+  }
+
+  if (!S.length) return null;
+
+  /* --- 집계 --- */
+  const sc = s => (s.state === 'ok' ? 1 : s.state === 'watch' ? 0 : -1);
+  const AXIS = {
+    down: { label: '하방 — 신용발 강제 매도', q: '지수가 여기서 더 빠지면 기계적으로 나올 물량이 있나' },
+    up: { label: '상방 — 숏커버 연료', q: '되갚아야 할 공매도가 얼마나 남았나' },
+    crowd: { label: '군중 — 레버리지 물량 정리', q: '개인이 실제로 팔고 나갔나' },
+  };
+  const axes = Object.entries(AXIS).map(([axis, m]) => {
+    const list = S.filter(x => x.axis === axis);
+    return {
+      axis, ...m, n: list.length,
+      score: list.reduce((t, x) => t + sc(x), 0),
+      ok: list.filter(x => x.state === 'ok').length,
+      alert: list.filter(x => x.state === 'alert').length,
+    };
+  }).filter(a => a.n);
+
+  const total = S.reduce((t, x) => t + sc(x), 0);
+  const norm = total / S.length;
+  const stance = norm >= 0.5 ? { key: 'clearing', label: '정리 우위' }
+    : norm >= 0.15 ? { key: 'easing', label: '완만한 정리' }
+      : norm > -0.15 ? { key: 'mixed', label: '혼조' }
+        : { key: 'stressed', label: '경계 우위' };
+
+  /* --- 오늘의 한 줄. 축별 결과를 조합해 문장을 만든다(고정 문구가 아니다). --- */
+  const dn = axes.find(a => a.axis === 'down'), up = axes.find(a => a.axis === 'up'), cw = axes.find(a => a.axis === 'crowd');
+  const parts = [];
+  if (dn) {
+    parts.push(dn.alert === 0
+      ? `**아래쪽은 지수 문제만 남았다** — 신용 관련 지표 ${dn.n}개 중 경계가 하나도 없다. `
+        + `지수가 지금 수준을 지키는 한 신용발 강제 매도는 기계적으로 나오지 않는다.`
+      : `**아래쪽에 아직 ${dn.alert}개가 걸려 있다** — ${S.filter(x => x.axis === 'down' && x.state === 'alert').map(x => x.label).join('·')}.`);
+  }
+  if (cw) {
+    parts.push(cw.alert === 0
+      ? `**레버리지 물량은 실제로 빠지고 있다** — 좌수·AUM·거래대금·개인 순매수 ${cw.n}개가 모두 같은 방향이다.`
+      : `**정리는 아직 균일하지 않다** — ${S.filter(x => x.axis === 'crowd' && x.state !== 'ok').map(x => x.label).join('·')}가 아직 안 꺾였다.`);
+  }
+  if (up) {
+    const ss = S.find(x => x.key === 'shortShares');
+    parts.push(ss?.state === 'alert'
+      ? `**대신 위쪽 연료도 없다** — 대차 주수가 저점 대비 ${ss.value} 늘어 새 숏이 들어오는 국면이고, 대차/시총은 이미 직전 저점 아래다.`
+      : `**위쪽은 되돌림이 대체로 끝났다** — 대차/시총이 직전 사이클 저점 부근이다.`);
+  }
+
+  /* --- 오늘 움직인 것. 전일 대비 변화 중 큰 것만 --- */
+  const moves = (daily?.items ?? [])
+    .filter(x => Number.isFinite(x.pct) && Math.abs(x.pct) >= 0.3)
+    .sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct))
+    .slice(0, 4)
+    .map(x => ({ label: x.label, date: x.date, value: x.value, unit: x.unit, pct: x.pct, delta: x.delta }));
+
+  return {
+    asOf: [etf?.asOf, lending?.last.date, channels?.last.date].filter(Boolean).sort().at(-1) ?? null,
+    stance, norm, total, n: S.length, axes, signals: S, moves,
+    headline: parts.join(' '),
+    caveat: '지표별 가중치는 전부 1이다. 중요도 차이를 데이터로 정할 근거가 없어 임의 가중을 두지 않았다 — '
+      + '이 점수는 방향의 우열이 아니라 **몇 개가 어느 쪽인지**의 집계다. 판정 기준선은 전부 직전 사이클의 같은 지표다(§35).',
+  };
+}
+const verdict = dailyVerdict();
+
 const out = {
   meta: {
     maintenance: MAINTENANCE, loanRatio: LOAN_RATIO, marginFactor: factorOf(),
     hasSplit: !!split, markets: Object.keys(inputs), crossCheckRows,
     source: raw.meta, splitSource: split?.meta ?? null,
   },
+  verdict,
   periods, repro, reproMAE, stress, projection, monthly, lending, etf, outlook, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   divergence,
@@ -1627,6 +1816,24 @@ if (daily) {
       + `  ${sign}${f(it.delta)}${it.unit} (${sign}${f(it.pct, 2)}%)  ${it.prevDate}->${it.date}`);
   }
   console.log('\n  데이터 최신일: ' + daily.freshness.map(x => `${x.label} ${x.date}${x.live ? '(장중 가능)' : ''}`).join(' / '));
+}
+
+if (verdict) {
+  const V = verdict;
+  const MARK = { ok: '완화', watch: '중립', alert: '경계' };
+  console.log(`\n${'#'.repeat(66)}\n# 오늘의 종합 판정 (${V.asOf})  —  ${V.stance.label} (${f(V.norm, 2)}, ${V.n}개 지표)`);
+  console.log('  ' + V.headline.replace(/\*\*/g, ''));
+  for (const a of V.axes) {
+    console.log(`\n  [${a.label}]  완화 ${a.ok} / 경계 ${a.alert} / ${a.n}개   ${a.q}?`);
+    for (const s of V.signals.filter(x => x.axis === a.axis)) {
+      console.log(`    ${MARK[s.state]}  ${s.label.padEnd(22)} ${String(s.value).padStart(14)}`);
+      console.log(`          ${s.why.replace(/\*\*/g, '')}`);
+    }
+  }
+  if (V.moves.length) {
+    console.log('\n  오늘 움직인 것: ' + V.moves
+      .map(m => `${m.label} ${f(m.value)}${m.unit}(${m.pct >= 0 ? '+' : ''}${f(m.pct, 2)}%)`).join('  '));
+  }
 }
 
 console.log(`\n원 자료 재현 (전체, 2026 연초 대비, 7.27 기준) 평균 절대오차 ${f(reproMAE, 3)}조`);

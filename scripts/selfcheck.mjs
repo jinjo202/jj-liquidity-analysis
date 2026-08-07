@@ -387,6 +387,50 @@ if (A.meta.hasSplit) {
   }
 }
 
+// 오늘의 종합 판정(§35). 이건 페이지 맨 위에 결론으로 나가는 값이라 본문 숫자와
+// 어긋나면 리포트 전체의 신뢰가 무너진다. 그래서 값이 아니라 **본문 필드와의 일치**를 검사한다.
+if (A.verdict) {
+  const V = A.verdict;
+  const by = k => V.signals.find(s => s.key === k);
+  assert.ok(V.signals.length >= 8, `판정 지표가 ${V.signals.length}개뿐이다 — 소스가 빠졌다`);
+  assert.equal(new Set(V.signals.map(s => s.key)).size, V.signals.length, '판정 지표 key 가 중복된다');
+  for (const s of V.signals) {
+    assert.ok(['ok', 'watch', 'alert'].includes(s.state), `알 수 없는 판정 상태: ${s.state}`);
+    assert.ok(s.why && s.why.length > 30, `${s.key}: 근거가 비어 있다 — 판정만 있고 근거가 없으면 안 된다`);
+    assert.ok(!/undefined|NaN|null/.test(`${s.value}${s.why}`), `${s.key}: 문장에 미계산 값이 들어갔다 — ${s.value} / ${s.why}`);
+  }
+  assert.ok(!/undefined|NaN/.test(V.headline), `한 줄 판정에 미계산 값이 있다: ${V.headline}`);
+
+  // 점수는 상태의 집계여야 한다 — 손으로 쓴 숫자가 아니다.
+  const sc = V.signals.reduce((t, s) => t + (s.state === 'ok' ? 1 : s.state === 'alert' ? -1 : 0), 0);
+  assert.equal(V.total, sc, '판정 총점이 지표 상태 합과 다르다');
+  near(V.norm, V.total / V.signals.length, 1e-9, '판정 정규화 점수');
+  assert.equal(V.axes.reduce((t, a) => t + a.n, 0), V.signals.length, '축별 지표 수 합이 전체와 다르다');
+
+  // 각 판정이 본문의 같은 필드에서 나왔는지. 여기가 어긋나면 요약과 본문이 서로 다른 말을 한다.
+  const cr = by('creditRatio');
+  if (cr) assert.equal(cr.state === 'ok', A.projection.currentRatio.ratio < A.projection.prevTroughRatio.ratio,
+    '신용/시총 판정이 projection 값과 어긋난다');
+  const cd = by('creditDeposit');
+  if (cd) assert.equal(cd.state === 'ok', A.channels.creditToDeposit.last.ratio < A.channels.creditToDeposit.normal.y3,
+    '예탁금 대비 신용융자 판정이 channels 값과 어긋난다');
+  const sr = by('shortRatio');
+  if (sr) assert.equal(sr.state === 'ok', A.lending.cover.nowRatio < A.lending.cover.prevTroughRatio,
+    '대차/시총 판정이 lending 값과 어긋난다');
+  const eu = by('etfUnits');
+  if (eu) assert.equal(eu.state === 'ok', A.etf.unitsTrend.single.verdict === 'rolling',
+    '좌수 판정이 §23.7 판정과 어긋난다');
+  const dv = by('divergence');
+  if (dv) assert.ok(dv.value.includes(String(Math.round(A.divergence.items.find(x => x.market === '유가증권').retracedPctOfBuild))),
+    '시장별 되돌림 판정 값이 divergence 와 어긋난다');
+
+  // '오늘 움직인 것'은 전일 대비에서만 나와야 한다 — 임의로 고른 숫자를 올리지 않는다.
+  for (const m of V.moves) {
+    assert.ok((A.daily?.items ?? []).some(d => d.label === m.label && d.value === m.value),
+      `오늘 움직인 것에 daily 에 없는 항목이 있다: ${m.label}`);
+  }
+}
+
 console.log(`selfcheck OK — ${A.series.length}행, 재현 MAE ${A.reproMAE.toFixed(3)}조, `
   + `사이클 ${A.periods.length}개, 채널 ${A.channels ? 'O' : 'X'}, 미수금 ${A.unpaid ? 'O' : 'X'}, `
   + `ETF ${A.etf ? `O(${A.etf.perFund.length}종)` : 'X'}`);

@@ -1613,6 +1613,48 @@ if (PJ) {
 </section>`;
 }
 
+/* ---------- 오늘의 종합 판정 (§35) ---------- */
+// 페이지 최상단. 여기 있는 문장·판정·점수는 전부 analyze.mjs 의 dailyVerdict() 가
+// 매일 다시 계산한다 — 이 파일에는 고정된 결론 문구가 하나도 없어야 한다.
+const verdictSection = !A.verdict ? '' : (() => {
+  const V = A.verdict;
+  const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  const MARK = { ok: '완화', watch: '중립', alert: '경계' };
+
+  const axisBlock = a => `<div class="vax vax-${a.axis}">
+    <div class="vaxh"><b>${esc(a.label)}</b><span class="mut">${esc(a.q)}?</span></div>
+    <div class="vaxs"><i class="vc ok"></i>${a.ok}<i class="vc watch"></i>${a.n - a.ok - a.alert}<i class="vc alert"></i>${a.alert}</div>
+    ${V.signals.filter(s => s.axis === a.axis).map(s => `<div class="vsig">
+      <div class="vsh"><span class="vst s-${s.state}">${MARK[s.state]}</span>
+        <span class="vsl">${esc(s.label)}</span><span class="vsv">${esc(s.value)}</span></div>
+      <div class="vsw">${md(s.why)}</div>
+    </div>`).join('')}
+  </div>`;
+
+  return `<section class="today">
+<div class="tdh">
+  <div>
+    <div class="kicker">오늘의 종합 판정</div>
+    <h2>${V.asOf ? dtFull(V.asOf) : ''} 기준 — ${esc(V.stance.label)}</h2>
+  </div>
+  <div class="tdscore s-${V.stance.key}">
+    <b>${V.total >= 0 ? '+' : ''}${V.total}</b>
+    <span>${V.n}개 지표 중<br>완화 ${V.signals.filter(s => s.state === 'ok').length} · 경계 ${V.signals.filter(s => s.state === 'alert').length}</span>
+  </div>
+</div>
+
+<p class="tdlead">${md(V.headline)}</p>
+
+${V.moves.length ? `<div class="tdmoves"><span class="mut">오늘 움직인 것</span>${V.moves.map(m => `<span class="tdm">
+  ${esc(m.label)} <b>${f(m.value)}${esc(m.unit)}</b>
+  <i class="${m.pct >= 0 ? 'up' : 'dn'}">${m.pct >= 0 ? '+' : ''}${f(m.pct, 2)}%</i></span>`).join('')}</div>` : ''}
+
+<div class="vaxes">${V.axes.map(axisBlock).join('')}</div>
+
+<p class="tdfoot">${md(V.caveat)} 각 판정의 계산은 아래 <b>핵심 요약</b>과 PART 1~5 에 그대로 이어진다.</p>
+</section>`;
+})();
+
 /* ---------- 핵심 요약 (implications) ---------- */
 // 리포트 맨 위. 차트를 하나도 안 보고도 결론을 가져갈 수 있어야 한다.
 // 숫자는 전부 analysis.json 에서 끌어온다 — 본문과 어긋날 여지를 두지 않는다.
@@ -1882,9 +1924,10 @@ ${deltaStrip}
 
 <div class="verdict">
   <div class="vl">한 줄 판정</div>
-  <div class="vt">양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
-    신용/시총도, 대차잔고/시총도 직전 사이클 저점보다 낮다.
-    남은 하락 위험과 남은 상승 여력 둘 다 "시간이 지나면 나올 물량"이 아니라 <b>지수가 어디로 가느냐</b>에 달려 있다.</div>
+  <div class="vt">${A.verdict
+    ? esc(A.verdict.headline).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    : `양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
+       남은 하락 위험과 남은 상승 여력 둘 다 <b>지수가 어디로 가느냐</b>에 달려 있다.`}</div>
 </div>
 
 <div class="tables">
@@ -2592,6 +2635,46 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .kicker { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--mut); }
   h1 { font-size:24px; margin:6px 0 4px; letter-spacing:-.4px; }
   .sub { color:var(--mut); font-size:13px; }
+  /* 오늘의 종합 판정 — 페이지 최상단 */
+  .today { border:1px solid var(--line); border-top:3px solid var(--acc); border-radius:3px 3px 9px 9px;
+    background:var(--surf); padding:16px 18px 14px; margin:18px 0 6px; }
+  .tdh { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .tdh h2 { font-size:20px; margin:3px 0 0; letter-spacing:-.4px; border:none; padding:0; }
+  .tdscore { display:flex; align-items:center; gap:9px; border:1px solid var(--line); border-radius:8px;
+    background:var(--bg); padding:7px 12px; }
+  .tdscore b { font-size:25px; font-variant-numeric:tabular-nums; letter-spacing:-1px; }
+  .tdscore span { font-size:10.5px; color:var(--mut); line-height:1.35; }
+  .tdscore.s-clearing b, .tdscore.s-easing b { color:var(--kq); }
+  .tdscore.s-mixed b { color:var(--part); }
+  .tdscore.s-stressed b { color:var(--cr); }
+  .tdlead { font-size:14.5px; line-height:1.72; margin:11px 0 0; }
+  .tdmoves { display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; margin:11px 0 2px;
+    padding:8px 0 0; border-top:1px solid var(--line); font-size:11.5px; }
+  .tdm { font-variant-numeric:tabular-nums; }
+  .tdm i { font-style:normal; margin-left:3px; }
+  .tdm i.up { color:var(--cr); } .tdm i.dn { color:var(--acc); }
+  .vaxes { display:grid; grid-template-columns:1fr; gap:12px; margin:14px 0 0; }
+  @media (min-width:1000px) { .vaxes { grid-template-columns:repeat(3,1fr); } }
+  /* grid 자식은 min-width:auto 라 콘텐츠(특히 svg{min-width:430px})의 최소폭만큼 트랙을 밀어낸다.
+     그러면 페이지 전체에 가로 스크롤이 생긴다. 0 으로 눌러 figure 안쪽에서만 스크롤되게 한다. */
+  .vaxes > *, .wgrid > *, .tables > * { min-width:0; }
+  .vax { border:1px solid var(--line); border-radius:8px; background:var(--bg); padding:11px 13px 4px; }
+  .vaxh b { display:block; font-size:13px; }
+  .vaxh .mut { display:block; font-size:11px; color:var(--mut); }
+  .vaxs { display:flex; align-items:center; gap:3px; margin:6px 0 9px; font-size:11px;
+    color:var(--mut); font-variant-numeric:tabular-nums; }
+  .vaxs .vc { width:8px; height:8px; border-radius:2px; display:inline-block; margin-left:9px; }
+  .vaxs .vc:first-child { margin-left:0; }
+  .vc.ok { background:var(--kq); } .vc.watch { background:var(--bar); } .vc.alert { background:var(--cr); }
+  .vsig { border-top:1px solid var(--line); padding:8px 0; }
+  .vsh { display:flex; align-items:baseline; gap:7px; }
+  .vst { font-size:10px; padding:1px 6px; border-radius:3px; color:#fff; flex:none; }
+  .vst.s-ok { background:var(--kq); } .vst.s-watch { background:var(--bar); } .vst.s-alert { background:var(--cr); }
+  .vsl { font-size:12.5px; font-weight:700; }
+  .vsv { margin-left:auto; font-size:13px; font-variant-numeric:tabular-nums; letter-spacing:-.3px; }
+  .vsw { font-size:11.5px; line-height:1.6; color:var(--mut); margin-top:3px; }
+  .vsw b { color:var(--fg); }
+  .tdfoot { font-size:11px; color:var(--mut); margin:12px 0 0; }
   /* 핵심 요약 */
   .summary { margin-top:20px; border-top:none; }
   .deltas { display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:8px; margin:12px 0 8px; }
@@ -2785,6 +2868,9 @@ ${cycleCss}
   figure { margin:14px 0 0; border:1px solid var(--line); border-radius:8px; padding:14px 14px 10px; overflow-x:auto; }
   figcaption { font-size:11.5px; color:var(--mut); margin-top:6px; }
   svg { width:100%; height:auto; display:block; min-width:430px; }
+  /* min-width 는 figure(가로 스크롤 있음) 안의 본문 차트용이다. 요약칸의 미니 차트는
+     폭 170~360px 칸에 들어가므로 그대로 두면 칸을 뚫고 나가 페이지에 가로 스크롤이 생긴다. */
+  .trend svg, .wtrend svg { min-width:0; }
   .grid { stroke:var(--line); stroke-width:1; }
   /* 누적 면적 차트의 사건 표시선(단일종목 상장일 등) */
   line.mk { stroke:var(--fg); stroke-width:1; stroke-dasharray:3 3; opacity:.45; }
@@ -2861,6 +2947,8 @@ ${cycleCss}
 ${splitBox}
 
 <div id="ic-bar" class="ic-bar" hidden></div>
+
+${verdictSection}
 
 ${summarySection}
 

@@ -48,6 +48,21 @@ const status = {
       consecutiveDownDays: u.downStreak,
     };
   })(),
+  // 리포트 최상단의 종합 판정(§35). 사이트를 안 열고도 오늘의 결론을 가져갈 수 있게 넣는다.
+  verdict: (() => {
+    const V = A.verdict;
+    if (!V) return null;
+    return {
+      asOf: V.asOf,
+      stance: V.stance.key,
+      stanceLabel: V.stance.label,
+      score: V.total,
+      signals: V.n,
+      headline: V.headline.replace(/\*\*/g, ''),
+      axes: Object.fromEntries(V.axes.map(a => [a.axis, { ok: a.ok, alert: a.alert, n: a.n }])),
+      alerts: V.signals.filter(s => s.state === 'alert').map(s => `${s.label} ${s.value}`),
+    };
+  })(),
   note: '자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다.'
     + ' singleStockEtfUnits.verdict 가 rolling 으로 바뀌면 레버리지 ETF 환매가 실제로 시작된 것이다.',
 };

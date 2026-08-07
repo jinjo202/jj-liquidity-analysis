@@ -724,10 +724,10 @@ ${freshLine}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-left:4px solid ${C.acc};border-radius:0 8px 8px 0;margin:8px 0 14px;">
   <tr><td bgcolor="${C.band}" style="padding:12px 15px;">
     <div style="${FONT}font-size:10.5px;letter-spacing:1.5px;color:${C.mut};">한 줄 판정</div>
-    <div style="${FONT}font-size:13.5px;color:${C.fg};line-height:1.6;margin-top:3px;">
-      양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
-      신용/시총도, 대차잔고/시총도 직전 사이클 저점보다 낮다.
-      남은 하락 위험과 남은 상승 여력 둘 다 "시간이 지나면 나올 물량"이 아니라 <b>지수가 어디로 가느냐</b>에 달려 있다.</div>
+    <div style="${FONT}font-size:13.5px;color:${C.fg};line-height:1.6;margin-top:3px;">${A.verdict
+      ? esc(A.verdict.headline).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+      : `양방향 모두 <b>직전 사이클 기준으로는 정상화가 이미 상당히 진행</b>됐다.
+         남은 하락 위험과 남은 상승 여력 둘 다 <b>지수가 어디로 가느냐</b>에 달려 있다.`}</div>
   </td></tr>
 </table>
 ${subTitle('PART 1 — 얼마나 더 하락할 수 있나 (신용잔고)')}
@@ -737,6 +737,51 @@ ${etfBullets ? `${subTitle('PART 3 — 변동성은 어디서 왔나 (레버리�
 ${nextBullets ? `${subTitle('PART 4 — 지수가 어디로 가면 뭐가 따라 나오나 (다음 주 수급)')}\n${nextBullets}` : ''}
 `;
 }
+
+/* ---------- 오늘의 종합 판정 (§35) ---------- */
+// 웹 리포트 최상단과 같은 내용. 문구는 analyze.mjs 가 매일 다시 만든 것을 그대로 쓴다.
+const verdictHtml = !A.verdict ? '' : (() => {
+  const V = A.verdict;
+  const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  const TONE = { ok: C.kq, watch: C.bar, alert: C.cr };
+  const MARK = { ok: '완화', watch: '중립', alert: '경계' };
+
+  const sigRow = s => `<tr><td style="padding:7px 0;border-top:1px solid ${C.line};">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+      <td width="34" valign="top"><span style="${FONT}font-size:9.5px;color:#fff;background:${TONE[s.state]};padding:1px 5px;border-radius:3px;">${MARK[s.state]}</span></td>
+      <td valign="top" style="${FONT}font-size:12px;font-weight:bold;color:${C.fg};">${esc(s.label)}</td>
+      <td valign="top" align="right" style="${FONT}font-size:12px;color:${C.fg};${nAlign}">${esc(s.value)}</td>
+    </tr></table>
+    <div style="${FONT}font-size:11px;line-height:1.55;color:${C.mut};margin-top:2px;">${md(s.why)}</div>
+  </td></tr>`;
+
+  const axisTable = a => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-radius:7px;margin:0 0 10px;">
+  <tr><td style="padding:9px 12px 3px;">
+    <div style="${FONT}font-size:12.5px;font-weight:bold;color:${C.fg};">${esc(a.label)}
+      <span style="font-weight:normal;color:${C.mut};font-size:11px;">— 완화 ${a.ok} / 경계 ${a.alert} / ${a.n}개</span></div>
+    <div style="${FONT}font-size:11px;color:${C.mut};">${esc(a.q)}?</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:5px;">
+      ${V.signals.filter(s => s.axis === a.axis).map(sigRow).join('')}
+    </table>
+  </td></tr></table>`;
+
+  return `
+${sectionTitle(`오늘의 종합 판정 — ${V.asOf ? dtFull(V.asOf) : ''}`)}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${C.line};border-top:3px solid ${C.acc};border-radius:3px 3px 8px 8px;margin:6px 0 12px;">
+  <tr><td style="padding:13px 15px;">
+    <div style="${FONT}font-size:17px;font-weight:bold;color:${C.fg};">${esc(V.stance.label)}
+      <span style="font-size:13px;color:${C.mut};font-weight:normal;">
+        · ${V.n}개 지표 중 완화 ${V.signals.filter(s => s.state === 'ok').length} · 경계 ${V.signals.filter(s => s.state === 'alert').length}
+        (점수 ${V.total >= 0 ? '+' : ''}${V.total})</span></div>
+    <div style="${FONT}font-size:13px;line-height:1.65;color:${C.fg};margin-top:6px;">${md(V.headline)}</div>
+    ${V.moves.length ? `<div style="${FONT}font-size:11px;color:${C.mut};margin-top:8px;padding-top:7px;border-top:1px solid ${C.line};">
+      오늘 움직인 것 · ${V.moves.map(m => `${esc(m.label)} <b style="color:${C.fg};">${f(m.value)}${esc(m.unit)}</b>
+      <span style="color:${m.pct >= 0 ? C.cr : C.acc};">${m.pct >= 0 ? '+' : ''}${f(m.pct, 2)}%</span>`).join(' &nbsp;·&nbsp; ')}</div>` : ''}
+  </td></tr>
+</table>
+${V.axes.map(axisTable).join('')}
+<div style="${FONT}font-size:10.5px;color:${C.mut};line-height:1.55;margin:0 0 6px;">${md(V.caveat)}</div>`;
+})();
 
 /* ---------- 문서 조립 ---------- */
 
@@ -769,6 +814,7 @@ const body = `
 
   ${spotNote}
   ${splitNote}
+  ${verdictHtml}
   ${summaryHtml}
 
   ${partTitle(1, '신용잔고', '얼마나 더 하락할 수 있나 — 반대매매 잔여', C.cr)}
