@@ -1198,6 +1198,16 @@
      "closeHkd": 38.94,
      "notionalUsd": 10100276114.64,
      "deemedNavUsd": 5044202146.64
+    },
+    {
+     "d": "20260806",
+     "units": 980000000,
+     "totalNavUsd": 3977362915.22,
+     "navPerUnitUsd": 4.0585,
+     "navPerUnitHkd": 31.8335,
+     "closeHkd": 31.5,
+     "notionalUsd": 7929156583.92,
+     "deemedNavUsd": 3960029231.25
     }
    ]
   },
@@ -2399,6 +2409,16 @@
      "closeHkd": 69.94,
      "notionalUsd": 1900703676.55,
      "deemedNavUsd": 949272100.91
+    },
+    {
+     "d": "20260806",
+     "units": 105000000,
+     "totalNavUsd": 829765210.66,
+     "navPerUnitUsd": 7.9025,
+     "navPerUnitHkd": 61.9844,
+     "closeHkd": 62.08,
+     "notionalUsd": 1658264892.53,
+     "deemedNavUsd": 832053093.75
     }
    ]
   },
@@ -3600,11 +3620,21 @@
      "closeHkd": 0.93,
      "notionalUsd": -46204811.96,
      "deemedNavUsd": 23080798.57
+    },
+    {
+     "d": "20260806",
+     "units": 198500000,
+     "totalNavUsd": 25987248.22,
+     "navPerUnitUsd": 0.1309,
+     "navPerUnitHkd": 1.0267,
+     "closeHkd": 1.016,
+     "notionalUsd": -51799260.19,
+     "deemedNavUsd": 25958728.59
     }
    ]
   }
  ],
- "updatedAt": "2026-08-06",
+ "updatedAt": "2026-08-07",
  "source": "website-api.csopasset.com/cmsApi/NAV/product (POST {productName})",
  "note": "기준일(HstDateFormat)별 1행. 과거 API 가 없어 20260802 수집 시작 이후만 존재한다(§23.6).",
  "fx": [
@@ -3730,7 +3760,11 @@
   },
   {
    "d": "20260806",
-   "krw": 1423.1
+   "krw": 1424.5
+  },
+  {
+   "d": "20260807",
+   "krw": 1418.6
   }
  ]
 }

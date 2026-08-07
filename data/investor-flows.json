@@ -2,7 +2,7 @@
  "meta": {
   "source": "네이버 모바일 m.stock.naver.com/api/stock/{code}/trend (individualPureBuyQuant). 최근 20거래일만 오므로 매일 받아 누적한다(§27).",
   "unit": "순매수 수량(주). 금액이 아니라서 종목 간 직접 비교는 할 수 없다.",
-  "fetchedAt": "2026-08-06"
+  "fetchedAt": "2026-08-07"
  },
  "items": [
   {
@@ -1863,175 +1863,6 @@
    ]
   },
   {
-   "code": "0197W0",
-   "name": "SOL SK하이닉스단일종목레버리지",
-   "kind": "etf",
-   "group": "single_lev",
-   "series": [
-    {
-     "d": "20260706",
-     "individual": 115393,
-     "foreign": -44348,
-     "institution": -72657,
-     "close": 21105
-    },
-    {
-     "d": "20260707",
-     "individual": 236964,
-     "foreign": 9025,
-     "institution": -251637,
-     "close": 18555
-    },
-    {
-     "d": "20260708",
-     "individual": 81418,
-     "foreign": 80953,
-     "institution": -161369,
-     "close": 16380
-    },
-    {
-     "d": "20260709",
-     "individual": 625991,
-     "foreign": -83370,
-     "institution": -536933,
-     "close": 18305
-    },
-    {
-     "d": "20260710",
-     "individual": 52777,
-     "foreign": 37419,
-     "institution": -90097,
-     "close": 18200
-    },
-    {
-     "d": "20260713",
-     "individual": 1078688,
-     "foreign": -74848,
-     "institution": -1063346,
-     "close": 12465
-    },
-    {
-     "d": "20260714",
-     "individual": -179751,
-     "foreign": 130688,
-     "institution": 51261,
-     "close": 13340
-    },
-    {
-     "d": "20260715",
-     "individual": -1066099,
-     "foreign": 283136,
-     "institution": 798367,
-     "close": 15685
-    },
-    {
-     "d": "20260716",
-     "individual": 603971,
-     "foreign": -303979,
-     "institution": -328317,
-     "close": 12110
-    },
-    {
-     "d": "20260720",
-     "individual": 162703,
-     "foreign": -66787,
-     "institution": -129496,
-     "close": 11020
-    },
-    {
-     "d": "20260721",
-     "individual": -184593,
-     "foreign": 102472,
-     "institution": 79073,
-     "close": 11905
-    },
-    {
-     "d": "20260722",
-     "individual": -74907,
-     "foreign": -95811,
-     "institution": 229258,
-     "close": 11860
-    },
-    {
-     "d": "20260723",
-     "individual": -203488,
-     "foreign": 2715,
-     "institution": 186910,
-     "close": 12965
-    },
-    {
-     "d": "20260724",
-     "individual": 559541,
-     "foreign": -992,
-     "institution": -592350,
-     "close": 10815
-    },
-    {
-     "d": "20260727",
-     "individual": -86648,
-     "foreign": 8389,
-     "institution": 94475,
-     "close": 11540
-    },
-    {
-     "d": "20260728",
-     "individual": 1379140,
-     "foreign": -51430,
-     "institution": -1376173,
-     "close": 8210
-    },
-    {
-     "d": "20260729",
-     "individual": 1336923,
-     "foreign": -32947,
-     "institution": -1390040,
-     "close": 6600
-    },
-    {
-     "d": "20260730",
-     "individual": 28245,
-     "foreign": 36754,
-     "institution": -83436,
-     "close": 5790
-    },
-    {
-     "d": "20260731",
-     "individual": -1807206,
-     "foreign": 351220,
-     "institution": 1639549,
-     "close": 9260
-    },
-    {
-     "d": "20260803",
-     "individual": 8707,
-     "foreign": -2684,
-     "institution": -44399,
-     "close": 7690
-    },
-    {
-     "d": "20260804",
-     "individual": -16757,
-     "foreign": -13182,
-     "institution": -2728,
-     "close": 7865
-    },
-    {
-     "d": "20260805",
-     "individual": -110572,
-     "foreign": -43975,
-     "institution": 171917,
-     "close": 8660
-    },
-    {
-     "d": "20260806",
-     "individual": 166989,
-     "foreign": -69464,
-     "institution": -138185,
-     "close": 6910
-    }
-   ]
-  },
-  {
    "code": "0194T0",
    "name": "ACE SK하이닉스단일종목레버리지",
    "kind": "etf",
@@ -2197,6 +2028,175 @@
      "foreign": 13221,
      "institution": -159911,
      "close": 7060
+    }
+   ]
+  },
+  {
+   "code": "0197W0",
+   "name": "SOL SK하이닉스단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 115393,
+     "foreign": -44348,
+     "institution": -72657,
+     "close": 21105
+    },
+    {
+     "d": "20260707",
+     "individual": 236964,
+     "foreign": 9025,
+     "institution": -251637,
+     "close": 18555
+    },
+    {
+     "d": "20260708",
+     "individual": 81418,
+     "foreign": 80953,
+     "institution": -161369,
+     "close": 16380
+    },
+    {
+     "d": "20260709",
+     "individual": 625991,
+     "foreign": -83370,
+     "institution": -536933,
+     "close": 18305
+    },
+    {
+     "d": "20260710",
+     "individual": 52777,
+     "foreign": 37419,
+     "institution": -90097,
+     "close": 18200
+    },
+    {
+     "d": "20260713",
+     "individual": 1078688,
+     "foreign": -74848,
+     "institution": -1063346,
+     "close": 12465
+    },
+    {
+     "d": "20260714",
+     "individual": -179751,
+     "foreign": 130688,
+     "institution": 51261,
+     "close": 13340
+    },
+    {
+     "d": "20260715",
+     "individual": -1066099,
+     "foreign": 283136,
+     "institution": 798367,
+     "close": 15685
+    },
+    {
+     "d": "20260716",
+     "individual": 603971,
+     "foreign": -303979,
+     "institution": -328317,
+     "close": 12110
+    },
+    {
+     "d": "20260720",
+     "individual": 162703,
+     "foreign": -66787,
+     "institution": -129496,
+     "close": 11020
+    },
+    {
+     "d": "20260721",
+     "individual": -184593,
+     "foreign": 102472,
+     "institution": 79073,
+     "close": 11905
+    },
+    {
+     "d": "20260722",
+     "individual": -74907,
+     "foreign": -95811,
+     "institution": 229258,
+     "close": 11860
+    },
+    {
+     "d": "20260723",
+     "individual": -203488,
+     "foreign": 2715,
+     "institution": 186910,
+     "close": 12965
+    },
+    {
+     "d": "20260724",
+     "individual": 559541,
+     "foreign": -992,
+     "institution": -592350,
+     "close": 10815
+    },
+    {
+     "d": "20260727",
+     "individual": -86648,
+     "foreign": 8389,
+     "institution": 94475,
+     "close": 11540
+    },
+    {
+     "d": "20260728",
+     "individual": 1379140,
+     "foreign": -51430,
+     "institution": -1376173,
+     "close": 8210
+    },
+    {
+     "d": "20260729",
+     "individual": 1336923,
+     "foreign": -32947,
+     "institution": -1390040,
+     "close": 6600
+    },
+    {
+     "d": "20260730",
+     "individual": 28245,
+     "foreign": 36754,
+     "institution": -83436,
+     "close": 5790
+    },
+    {
+     "d": "20260731",
+     "individual": -1807206,
+     "foreign": 351220,
+     "institution": 1639549,
+     "close": 9260
+    },
+    {
+     "d": "20260803",
+     "individual": 8707,
+     "foreign": -2684,
+     "institution": -44399,
+     "close": 7690
+    },
+    {
+     "d": "20260804",
+     "individual": -16757,
+     "foreign": -13182,
+     "institution": -2728,
+     "close": 7865
+    },
+    {
+     "d": "20260805",
+     "individual": -110572,
+     "foreign": -43975,
+     "institution": 171917,
+     "close": 8660
+    },
+    {
+     "d": "20260806",
+     "individual": 166989,
+     "foreign": -69464,
+     "institution": -138185,
+     "close": 6910
     }
    ]
   },
