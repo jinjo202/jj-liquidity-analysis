@@ -16,7 +16,9 @@
 
   var fmt = function (v, d) {
     if (v == null || !isFinite(v)) return '-';
-    return v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d });
+    // 0 에 아주 가까운 음수는 '-0' 으로 찍힌다. 눈금에 마이너스 0 은 없다.
+    return v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d })
+      .replace(/^-(0(?:[.,]0+)?)$/, '$1');
   };
   var dLabel = function (s) { return s.slice(0, 4) + '.' + s.slice(4, 6) + '.' + s.slice(6, 8); };
   var el = function (tag, attrs, kids) {
@@ -94,12 +96,37 @@
 
     var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'ic-svg', role: 'img' });
 
-    ticks(vMin, vMax, 4).forEach(function (v) {
+    // 눈금 자리수는 **눈금끼리 구분되는 최소값**으로 정한다. spec.dg 를 그대로 쓰면
+    // 5,632.398 처럼 읽히지 않는 수가 축에 박힌다(build.mjs 의 tickFmt 와 같은 규칙).
+    var tv = ticks(vMin, vMax, 4);
+    var td = 0;
+    for (; td < (spec.dg || 0); td++) {
+      var seen = {}, dup = false;
+      for (var ti = 0; ti < tv.length; ti++) {
+        var key = tv[ti].toFixed(td);
+        if (seen[key]) { dup = true; break; }
+        seen[key] = 1;
+      }
+      if (!dup) break;
+    }
+    tv.forEach(function (v) {
       svg.appendChild(el('line', { class: 'grid', x1: M.l, y1: yAt(v).toFixed(1), x2: M.l + iw, y2: yAt(v).toFixed(1) }));
       var t = el('text', { class: 'ax', x: M.l - 8, y: (yAt(v) + 3.5).toFixed(1), 'text-anchor': 'end' });
-      t.textContent = fmt(v, spec.dg || 0);
+      t.textContent = fmt(v, td);
       svg.appendChild(t);
     });
+
+    // 축 단위. 정적 SVG 를 걷어내고 다시 그리기 때문에, 여기서 안 찍으면 대화형 차트에는
+    // 단위가 아예 없다 — 눈금 숫자만 남아 무엇을 재는 그림인지 알 수 없게 된다.
+    //
+    // 눈금 열에 우측 정렬하면 '% / 조원' 처럼 긴 단위가 뷰박스 왼쪽으로 잘린다. 그래서
+    // 왼쪽 끝에 붙인다. 제목은 안 찍는다 — 차트마다 바깥 HTML(h4·범례·설명)이 이미 이름을
+    // 달고 있고, 기간과 점 개수는 아래 구간 요약(ic-sum)이 보여준다.
+    if (spec.axis) {
+      var au = el('text', { class: 'axu', x: 2, y: M.t - 6 });
+      au.textContent = spec.axis;
+      svg.appendChild(au);
+    }
 
     // x 눈금: 분기 시작. 라벨 폭보다 좁으면 건너뛴다(연말·연초가 붙는 경우).
     var lastQ = null, lastX = -99;
@@ -209,7 +236,7 @@
         if (f == null || l == null) return '';
         var chg = f !== 0 ? ((l / f - 1) * 100) : null;
         return '<span><i style="background:' + s.color + '"></i>' + (s.name ? s.name + ' ' : '')
-          + fmt(f, spec.dg || 0) + ' → <b>' + fmt(l, spec.dg || 0) + '</b>'
+          + fmt(f, spec.dg || 0) + ' → <b>' + fmt(l, spec.dg || 0) + (spec.suffix || '') + '</b>'
           + (chg == null ? '' : ' <em class="' + (chg >= 0 ? 'up' : 'dn') + '">'
             + (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%</em>') + '</span>';
       }).join('');

@@ -3,7 +3,7 @@
 // file:// 로 열어도 그대로 보이고, fetch 로 데이터를 읽지 않으므로 CORS 문제도 없다.
 import fs from 'node:fs';
 import path from 'node:path';
-import { placeLabels, clampX } from './lib/labels.mjs';
+import { placeLabels, clampX, labelWidth } from './lib/labels.mjs';
 
 const ROOT = path.join(import.meta.dirname, '..');
 const A = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'analysis.json'), 'utf8'));
@@ -23,6 +23,62 @@ function ticks(min, max, count = 5) {
   const out = [];
   for (let t = Math.ceil(min / step) * step; t <= max + 1e-9; t += step) out.push(t);
   return out;
+}
+
+/* ---------- 축 단위 ---------- */
+// 차트 제목에 '(조원)' 처럼 섞여 있던 단위를 떼어내 **축 옆에 따로 찍는다**.
+// 대화형 차트는 정적 SVG 를 걷어내고 다시 그리는데, 거기엔 제목줄이 없어서
+// 단위가 화면에서 아예 사라져 있었다 — 눈금 숫자만 남아 뭘 재는지 알 수 없었다.
+//
+// 표기도 통일한다. 같은 값을 어떤 차트는 '조', 어떤 차트는 '조원' 으로 쓰고 있었다.
+const UNIT_ALIAS = { 조: '조원', 억: '억원', 배수: '배' };
+const KNOWN_UNITS = new Set([
+  '조원', '억원', '백만원', '만원', '천원', '원',
+  '%', '%p', 'p', '배', '회',
+  '억주', '백만주', '만주', '천주', '주',
+  '억좌', '백만좌', '만좌', '좌',
+]);
+const normUnit = u => UNIT_ALIAS[u] ?? u;
+
+/** '대차잔고 공매도 프록시 (백만주)' -> { title: '대차잔고 — 공매도 프록시', axis: '백만주' } */
+function splitUnit(s) {
+  const raw = String(s ?? '').trim();
+  if (!raw) return { title: '', axis: '' };
+  if (KNOWN_UNITS.has(normUnit(raw))) return { title: '', axis: normUnit(raw) };
+  const found = [];
+  const title = raw
+    // 괄호 안 첫 토큰이 알려진 단위일 때만 떼어낸다. '(조원, 상장좌수 × 종가)' 는 '조원'만 취한다.
+    .replace(/[(（]\s*([^()（）]+?)\s*[)）]/g, (all, inner) => {
+      const u = normUnit(inner.split(/[,·]/)[0].trim());
+      if (!KNOWN_UNITS.has(u)) return all;
+      if (!found.includes(u)) found.push(u);
+      return '';
+    })
+    .replace(/\s{2,}/g, ' ').replace(/^[\s—·,]+|[\s—·,]+$/g, '').trim();
+  // 한 축에 단위가 둘이면(마진콜 비율 % + 미수금 조원) 둘 다 찍는다 — 숨기면 오히려 오해한다.
+  return { title: title || raw, axis: found.join(' / ') };
+}
+
+/**
+ * 눈금 라벨. 자리수 구분 쉼표를 넣고, **눈금끼리 구분되는 최소 소수점**만 쓴다.
+ * dg 를 그대로 쓰면 5,632.398 처럼 읽을 수 없는 숫자가 축에 박힌다.
+ */
+/**
+ * 축 단위 라벨의 x. 눈금 열 위에 붙이되 **뷰박스를 벗어나지 않게** 민다.
+ * '% / 조원' 처럼 긴 단위를 왼쪽 눈금 열(x=38)에 우측 정렬했더니 x=-2 로 잘려 나갔다.
+ * 항상 anchor=start 로 그리고 위치만 여기서 정한다.
+ */
+function axuX(x, text, W, anchorEnd = false) {
+  const w = labelWidth(text, 10.5);
+  return Math.min(Math.max(anchorEnd ? x - w : x, 2), W - w - 2);
+}
+
+function tickFmt(vals, dg = 3) {
+  let d = 0;
+  for (; d < dg; d++) if (new Set(vals.map(v => v.toFixed(d))).size === vals.length) break;
+  return v => v.toLocaleString('ko-KR', { minimumFractionDigits: d, maximumFractionDigits: d })
+    // 0 에 아주 가까운 음수(-1e-13)가 '-0' 으로 찍힌다. 눈금에 마이너스 0 은 없다.
+    .replace(/^-(0(?:[.,]0+)?)$/, '$1');
 }
 
 /** 신용융자 잔고 + 지수 이중축 시계열. 사이클 적립 구간을 음영으로 표시한다. */
@@ -572,13 +628,17 @@ function ratioChartStatic(rows, marks, unit = '신용융자 / 시가총액 (%)',
   ).map(p => `<circle class="rdot" cx="${p.cx.toFixed(1)}" cy="${p.dotY.toFixed(1)}" r="3.2"/>
       <text class="ax sm" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle">${esc(p.text)}</text>`).join('');
 
+  const tv = ticks(0, vMax), tf = tickFmt(tv, dg);
+  const { title, axis } = splitUnit(unit);
+
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="신용융자 대 시가총액 비율">
-  ${ticks(0, vMax).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${f(v, 2)}</text>`).join('')}
+  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${tf(v)}</text>`).join('')}
+  ${axis ? `<text class="axu" x="${axuX(M.l - 8, axis, W, true).toFixed(1)}" y="${M.t - 5}">${esc(axis)}</text>` : ''}
   ${yearTicks.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${t.label}</text>`).join('')}
   <path class="ln-ratio" d="${rows.map((r, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(r.ratio).toFixed(1)}`).join('')}"/>
   ${mk}
-  <text class="unit" x="${M.l}" y="13">${esc(unit)}</text>
+  ${title ? `<text class="unit" x="${M.l}" y="13">${esc(title)}</text>` : ''}
 </svg>`;
 }
 
@@ -586,6 +646,14 @@ function ratioChartStatic(rows, marks, unit = '신용융자 / 시가총액 (%)',
 /* ---------- 대화형 차트 등록 ---------- */
 // 런타임은 lib/chart-client.js 를 그대로 인라인한다. 외부 파일을 참조하면 file:// 에서 깨진다.
 function chartRuntime() {
+  // 축 단위가 비어 있으면 대화형 차트는 눈금 숫자만 남는다 — 무엇을 재는 그림인지 알 수 없다.
+  // 원인은 늘 하나다: 단위 문자열이 KNOWN_UNITS 에 없어서 splitUnit 이 못 떼어냈다.
+  // 조용히 넘어가면 알아채는 데 며칠이 걸리므로 빌드를 세운다('만원' 을 빼먹어 실제로 겪었다).
+  const noAxis = Object.entries(CHARTS).filter(([, c]) => !c.axis).map(([id, c]) => `${id}(${c.unit})`);
+  if (noAxis.length) {
+    throw new Error(`축 단위를 못 읽은 차트 ${noAxis.length}개: ${noAxis.join(', ')}`
+      + ' — 단위를 KNOWN_UNITS 에 넣거나 제목의 괄호 표기를 맞춰라');
+  }
   const js = fs.readFileSync(path.join(import.meta.dirname, 'lib', 'chart-client.js'), 'utf8');
   // </script> 가 데이터 안에 들어가면 스크립트가 조기 종료된다.
   const data = JSON.stringify(CHARTS).replace(/<\//g, '<\\/');
@@ -618,7 +686,13 @@ function interactive(spec, staticSvg) {
   // 점이 두 개 미만이면 대화형으로 만들 이유가 없다.
   if (!spec?.dates?.length || spec.dates.length < 2) return staticSvg;
   const id = `c${++chartSeq}`;
-  CHARTS[id] = thin(spec);
+  // 제목/단위 분리는 여기서 한 번만 한다 — 래퍼 여섯 개에 같은 코드를 흩뿌리지 않는다.
+  const { title, axis } = splitUnit(spec.unit);
+  CHARTS[id] = thin({
+    ...spec, title, axis,
+    // 툴팁 접미사는 단위가 하나일 때만 붙인다. '% / 조원' 처럼 둘이면 붙이는 게 오히려 틀린다.
+    suffix: spec.suffix ?? (axis && !axis.includes('/') ? axis : ''),
+  });
   return `<div class="ichart" data-chart="${id}">${staticSvg}</div>`;
 }
 // 색은 CSS 변수 문자열로 넘긴다 — stroke 와 툴팁 색점 양쪽에서 그대로 쓰인다.
@@ -660,15 +734,19 @@ function trendChartStatic(points, unit, dg, spanLabel = '최근 1년') {
   const d = points.map((p, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(p.v).toFixed(1)}`).join('');
   const area = `${d}L${xAt(points.length - 1).toFixed(1)},${(M.t + ih).toFixed(1)}L${xAt(0).toFixed(1)},${(M.t + ih).toFixed(1)}Z`;
 
+  const tv = ticks(dom[0], dom[1], 3), tf = tickFmt(tv, dg);
+  const { title, axis } = splitUnit(unit);
+
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 1년 추세">
-  ${ticks(dom[0], dom[1], 3).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${f(v, dg)}</text>`).join('')}
+  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${tf(v)}</text>`).join('')}
+  ${axis ? `<text class="axu" x="${axuX(M.l + iw + 6, axis, W).toFixed(1)}" y="${M.t - 5}">${esc(axis)}</text>` : ''}
   ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
   <path class="tarea" d="${area}"/>
   <path class="tline" d="${d}"/>
   ${mark}
   <circle class="tdot now" cx="${xAt(points.length - 1).toFixed(1)}" cy="${yAt(vs.at(-1)).toFixed(1)}" r="3.4"/>
-  <text class="unit" x="${M.l}" y="12">${esc(unit)} · ${esc(spanLabel)} (${points.length}영업일)</text>
+  <text class="unit" x="${M.l}" y="12">${esc(title || unit)} · ${esc(spanLabel)} (${points.length}영업일)</text>
 </svg>`;
 }
 
@@ -720,9 +798,13 @@ function stackChartStatic(rows, keys, unit, marks = []) {
   const totals = rows.map(r => keys.reduce((s, k) => s + (r[k.key] ?? 0), 0));
   const iPeak = totals.indexOf(Math.max(...totals));
 
+  const tvS = ticks(dom[0], dom[1], 4), tfS = tickFmt(tvS, 1);
+  const su = splitUnit(unit);
+
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
-  ${ticks(dom[0], dom[1], 4).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${f(v, 0)}</text>`).join('')}
+  ${tvS.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${tfS(v)}</text>`).join('')}
+  ${su.axis ? `<text class="axu" x="${axuX(M.l + iw + 6, su.axis, W).toFixed(1)}" y="${M.t - 5}">${esc(su.axis)}</text>` : ''}
   ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
   ${layers.map(l => `<path d="${l.path}" fill="${l.color}" fill-opacity="${l.op ?? 0.85}" stroke="none"/>`).join('')}
   ${marks.map(m => {
@@ -734,7 +816,7 @@ function stackChartStatic(rows, keys, unit, marks = []) {
   <circle class="tdot hi" cx="${xAt(iPeak).toFixed(1)}" cy="${yAt(totals[iPeak]).toFixed(1)}" r="3"/>
   <text class="ax sm" x="${xAt(iPeak).toFixed(1)}" y="${(yAt(totals[iPeak]) - 7).toFixed(1)}" text-anchor="middle">고점 ${f(totals[iPeak], 1)}조</text>
   <circle class="tdot now" cx="${xAt(rows.length - 1).toFixed(1)}" cy="${yAt(totals.at(-1)).toFixed(1)}" r="3.4"/>
-  <text class="unit" x="${M.l}" y="12">${esc(unit)}</text>
+  <text class="unit" x="${M.l}" y="12">${esc(su.title || unit)}</text>
 </svg>`;
 }
 
@@ -765,12 +847,16 @@ function levelChartStatic(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
     return `<path class="${L.cls}" d="M${pts.join(' L')}"/>`;
   }).join('');
 
+  const tv = ticks(vMin, vMax), tf = tickFmt(tv, dg);
+  const { title, axis } = splitUnit(unit);
+
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
-  ${ticks(vMin, vMax).map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${f(v, dg)}</text>`).join('')}
+  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${tf(v)}</text>`).join('')}
+  ${axis ? `<text class="axu" x="${axuX(M.l - 8, axis, W, true).toFixed(1)}" y="${M.t - 5}">${esc(axis)}</text>` : ''}
   ${yearTicks.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${t.label}</text>`).join('')}
   ${paths}
-  <text class="unit" x="${M.l}" y="13">${esc(unit)}</text>
+  ${title ? `<text class="unit" x="${M.l}" y="13">${esc(title)}</text>` : ''}
 </svg>`;
 }
 
@@ -817,18 +903,18 @@ function stackChart(rows, keys, unit, marks = []) {
 function lendingChart(series, cyclePeakDate) {
   const rs = (series ?? []).filter(r => r && r.d);
   return interactive({
-    unit: '대차잔고(조원)', dg: 1, zeroBase: false, h: 250,
+    unit: '대차잔고 (조원)', dg: 1, zeroBase: false, h: 250,
     dates: rs.map(r => r.d),
-    series: [{ name: '대차잔고(조)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.bal) ? r.bal : null)) }],
+    series: [{ name: '대차잔고 (조원)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.bal) ? r.bal : null)) }],
   }, lendingChartStatic(series, cyclePeakDate));
 }
 
 function timeSeriesChart(series, periods) {
   const rs = (series ?? []).filter(r => r && r.d);
   return interactive({
-    unit: '신용융자 합계(조원)', dg: 1, zeroBase: false, h: 260,
+    unit: '신용융자 합계 (조원)', dg: 1, zeroBase: false, h: 260,
     dates: rs.map(r => r.d),
-    series: [{ name: '신용융자(조)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c : null)) }],
+    series: [{ name: '신용융자 (조원)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c : null)) }],
   }, timeSeriesChartStatic(series, periods));
 }
 
@@ -1234,8 +1320,8 @@ ${items.map(it => {
   // 지수화(=100)해도 주가가 나머지를 눌러 평평하게 만든다. x축만 맞춘 3단으로 쌓는다.
   return `<figure>
   <h4>${esc(it.name)} — 주가 · 대차잔고 · 외국인 지분율</h4>
-  ${trendChart(s.map(r => ({ d: r.d, v: r.close })), `${esc(it.name)} 주가 (원)`, 0, span)}
-  ${trendChart(s.map(r => ({ d: r.d, v: r.shares / 1e6 })), '대차잔고 (백만주) — 공매도 프록시', 0, span)}
+  ${trendChart(s.map(r => ({ d: r.d, v: r.close / 1e4 })), `${esc(it.name)} 주가 (만원)`, 1, span)}
+  ${trendChart(s.map(r => ({ d: r.d, v: r.shares / 1e6 })), '대차잔고 공매도 프록시 (백만주)', 0, span)}
   ${trendChart(s.map(r => ({ d: r.d, v: r.foreignPct })), '외국인 지분율 (%)', 1, span)}
   <figcaption>같은 기간 주가 <b>${pxPct >= 0 ? '+' : ''}${f(pxPct, 0)}%</b>,
     대차잔고 주수 <b>${shPct >= 0 ? '+' : ''}${f(shPct, 1)}%</b>,
@@ -1865,9 +1951,9 @@ if (co && PJ) {
     : '<b>아직 평시보다 높다</b> — 강제 청산이 계속 나오고 있다.'}
     다만 이 비율은 <b>미수거래</b> 기준이라 신용융자 반대매매는 안 센다(§18).</div>
   <div class="wtrend">${levelChart(MS.series, [
-    { key: 'ma5', cls: 'ln-cr', name: '반대매매/미수금(5MA,%)' },
-    { key: 'recvJo', cls: 'ln-idx', name: '미수금(조)' },
-  ], '마진콜 비율(%) · 미수금(조원)', { dg: 1, zeroBase: true })}</div>
+    { key: 'ma5', cls: 'ln-cr', name: '반대매매/미수금 5MA (%)' },
+    { key: 'recvJo', cls: 'ln-idx', name: '미수금 (조원)' },
+  ], '마진콜 비율 (%) · 미수금 (조원)', { dg: 1, zeroBase: true })}</div>
   <div class="lg"><span><i class="sw cr"></i>반대매매/미수금 5MA(%)</span><span><i class="sw acc"></i>미수금(조)</span></div>
 </div>`;
 
@@ -2070,7 +2156,7 @@ ${!s.eras ? '' : `<div class="box"><b>반증 — ETF가 없던 시절과 비교<
   const totalBlock = !T ? '' : `
 <figure class="wide">
   <h4>레버리지 ETF 합계 AUM — 전체 추이</h4>
-  ${stackChart(E.aumDaily, stackKeys, '국내 상장 레버리지·인버스 ETF 합계 순자산 (조원, 상장좌수 × 종가)',
+  ${stackChart(E.aumDaily, stackKeys, '국내 상장 레버리지·인버스 ETF 합계 순자산 (조원)',
     [firstSingle ? { d: firstSingle, label: '단일종목 상장' } : null].filter(Boolean))}
   <div class="lg">${stackKeys.map(k => `<span><i class="sw" style="background:${k.color}"></i>${esc(k.label)}</span>`).join('')}</div>
   <figcaption>
@@ -2358,8 +2444,8 @@ const investorSection = !A.investorFlow ? '' : (() => {
 
 ${!LF ? '' : `<figure>
   <h4>단일종목 레버리지 ETF — 개인 순매수 누적 (억원)</h4>
-  ${trendChart(LF.series.map(r => ({ d: r.d, v: r.cumEok })), '개인 순매수 누적 (억원)', 0, `${dtFull(LF.series[0].d)} 이후`)}
-  ${trendChart(LF.series.map(r => ({ d: r.d, v: r.eok })), '개인 순매수 일별 (억원)', 0, `${dtFull(LF.series[0].d)} 이후`)}
+  ${trendChart(LF.series.map(r => ({ d: r.d, v: r.cumEok / 1e4 })), '개인 순매수 누적 (조원)', 2, `${dtFull(LF.series[0].d)} 이후`)}
+  ${trendChart(LF.series.map(r => ({ d: r.d, v: r.eok / 1e4 })), '개인 순매수 일별 (조원)', 2, `${dtFull(LF.series[0].d)} 이후`)}
   <figcaption>순매수액 = 순매수 수량 × 종가(근사). <b>수량이 아니라 금액으로 봐야 "얼마나 팔았나"에 답이 된다</b> —
     1좌 가격이 상품마다 달라 수량은 더할 수도 없다. 순매도일 ${LF.sellDays}/${LF.totalDays}일.</figcaption>
 </figure>
@@ -2757,7 +2843,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   /* 탭: 라디오 + 형제 선택자만 쓴다. JS 없이 file:// 에서도 그대로 동작한다. */
   /* 선택된 탭은 색으로 꽉 채운다. 테두리만으로 구분하면 흰 배경에서 거의 안 보였다. */
   .tabin { position:absolute; opacity:0; pointer-events:none; }
-  .tabs { display:flex; gap:10px; margin:20px 0 0; flex-wrap:wrap; align-items:stretch; }
+  .tabs { display:flex; gap:10px; margin:16px 0 4px; flex-wrap:wrap; align-items:stretch; }
   .tabs label { flex:1 1 260px; cursor:pointer; padding:11px 16px; line-height:1.35;
     border:1.5px solid var(--line); border-radius:10px; background:var(--surf);
     color:var(--mut); position:relative; }
@@ -2877,6 +2963,8 @@ ${cycleCss}
   figure.wide .lg .sw { height:10px; border-radius:2px; }
   .ax { font-size:10px; fill:var(--mut); } .ax.sm { font-size:9px; }
   .unit { font-size:10px; fill:var(--mut); }
+  /* 축 단위. 눈금 숫자보다 진하고 굵게 — 무엇을 재는 그림인지가 제목이 아니라 축에서 읽혀야 한다. */
+  .axu { font-size:10.5px; font-weight:700; fill:var(--fg); opacity:.75; }
   .val { font-size:9px; fill:var(--fg); font-variant-numeric:tabular-nums; }
   .note { font-size:10px; fill:var(--cr); }
   .cyclab { font-size:9.5px; fill:var(--mut); }
@@ -2948,10 +3036,8 @@ ${splitBox}
 
 <div id="ic-bar" class="ic-bar" hidden></div>
 
-${verdictSection}
-
-${summarySection}
-
+<!-- 라디오는 .tabs 와 .pane 보다 앞에 있어야 한다(형제 선택자 ~ 로 둘 다 제어한다).
+     탭 자체는 결론 위로 올린다 — 요약 아래에 두면 스크롤해야 보여서 파트 이동을 못 찾는다. -->
 <input type="radio" name="tab" id="tab-down" class="tabin" checked>
 <input type="radio" name="tab" id="tab-up" class="tabin">
 ${etfSection ? '<input type="radio" name="tab" id="tab-etf" class="tabin">' : ''}
@@ -2964,8 +3050,12 @@ ${stockFlowSection ? '<input type="radio" name="tab" id="tab-stock" class="tabin
   ${etfSection ? '<label for="tab-etf"><i>PART 3</i><b>레버리지 ETF</b><span>변동성은 어디서 왔나 — 매일 나가는 강제 매매</span></label>' : ''}
   ${outlookSection ? '<label for="tab-next"><i>PART 4</i><b>다음 주 수급</b><span>지수가 어디로 가면 무엇이 따라 나오나</span></label>' : ''}
   ${stockFlowSection ? '<label for="tab-stock"><i>PART 5</i><b>종목 트래킹</b><span>삼성전자·SK하이닉스 — 외국인 지분율과 대차잔고</span></label>' : ''}
-  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>네 파트를 이어서 본다</span></label>
+  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>다섯 파트를 이어서 본다</span></label>
 </nav>
+
+${verdictSection}
+
+${summarySection}
 
 <div class="pane p-down">
 <div class="parthead ph-down"><i>PART 1</i><b>신용잔고 — 얼마나 더 하락할 수 있나</b></div>
