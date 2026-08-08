@@ -1,7 +1,7 @@
 {
-  "ranOn": "2026-08-07",
+  "ranOn": "2026-08-08",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31194141368",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31250120738",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -39,7 +39,7 @@
     "asOf": "20260807",
     "stance": "clearing",
     "stanceLabel": "정리 우위",
-    "score": 7,
+    "score": 8,
     "signals": 12,
     "headline": "아래쪽에 아직 1개가 걸려 있다 — 시장별 되돌림 진행도. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 대신 위쪽 연료도 없다 — 대차 주수가 저점 대비 +5.2% 늘어 새 숏이 들어오는 국면이고, 대차/시총은 이미 직전 저점 아래다.",
     "axes": {
@@ -49,7 +49,7 @@
         "n": 5
       },
       "up": {
-        "ok": 1,
+        "ok": 2,
         "alert": 1,
         "n": 3
       },
