@@ -6,7 +6,11 @@
 
 - **저장소**: `jinjo202/jj-liquidity-analysis` (private)
 - **Vercel**: 프로젝트를 `jinjo202-8902's projects` 로 이전했고, Git 연결도 이 저장소로 붙였다.
-  URL 은 그대로 `https://jj-liquidity-analysis.vercel.app` 다.
+  URL 은 **`https://jj-liquidity.vercel.app`** 다(2026-08-07 부터).
+  옛 주소 `jj-liquidity-analysis.vercel.app` 은 **되찾지 못했다** — 접근 불가한 옛 계정
+  `devbotsender8282-3212` 에 붙어 있어 이 계정에서 `vercel alias set` 이 `already in use` 로 거절된다.
+  그래서 비어 있던 `jj-liquidity.vercel.app` 을 프로젝트 도메인으로 붙였다.
+  `jj-liquidity-analysis-z974.vercel.app` 도 여전히 같은 곳을 가리킨다(옛 링크 보존용).
 - **푸시하면 자동 배포**된다. 이제 origin 한 곳에만 푸시하면 된다.
 
 이전하면서 걸렸던 것 세 가지를 기록해 둔다(다음에 또 헤매지 않게).
@@ -44,10 +48,11 @@ gh workflow disable "Update reports" --repo devbotsender8282/jj-liquidity-analys
 증권사 유료 단말(Quantiwise) 기반 리서치를 공개 데이터만으로 재현하고, 반대 방향(숏커버)과
 레버리지 ETF 수급까지 확장한 뒤, **완전 자동으로 매일 갱신·배포**되게 만든 프로젝트.
 
-- 웹 리포트: **https://jj-liquidity-analysis.vercel.app**
-- 상태 확인: **https://jj-liquidity-analysis.vercel.app/status.json** ← 뭐가 잘 도는지 여기서 먼저 본다
+- 웹 리포트: **https://jj-liquidity.vercel.app**
+- 상태 확인: **https://jj-liquidity.vercel.app/status.json** ← 뭐가 잘 도는지 여기서 먼저 본다
 - 저장소(정본): **https://github.com/jinjo202/jj-liquidity-analysis** (private)
-- 옛 저장소: `devbotsender8282/jj-liquidity-analysis` — 이전 중이며 라이브 Vercel 이 아직 여기 물려 있다(§0)
+- 옛 저장소: `devbotsender8282/jj-liquidity-analysis` — 워크플로는 껐다. 옛 Vercel 계정이 아직
+  `jj-liquidity-analysis.vercel.app` 주소를 붙들고 있어 08-03 빌드가 그대로 떠 있다(§0)
 - 방법론 전문: [`docs/methodology.md`](docs/methodology.md) §1~24 — 역설계 과정, 가정, 한계, 디버깅 기록 전부
 - 별도 웹앱: [`my-project/`](my-project/HANDOFF.md) — Next.js + Supabase 대시보드(자체 인수인계서 있음)
 

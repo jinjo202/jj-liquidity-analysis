@@ -107,7 +107,7 @@ Actions 탭에서 `Run workflow` 로 수동 실행도 된다.
 저장소가 private 이라 Actions 로그를 URL 로 열 수 없다. 대신 배포된 사이트에 상태를 내보낸다.
 
 ```
-https://jj-liquidity-analysis.vercel.app/status.json
+https://jj-liquidity.vercel.app/status.json
 ```
 
 `ranOn` 이 며칠째 그대로면 워크플로가 멈춘 것이다. `dataThrough` 로 계열별 반영 날짜를,

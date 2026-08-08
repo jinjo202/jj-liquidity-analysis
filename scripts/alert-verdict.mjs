@@ -12,7 +12,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const URL = 'https://jj-liquidity-analysis.vercel.app/status.json';
+const URL = 'https://jj-liquidity.vercel.app/status.json';
 const STATE = path.join(os.homedir(), '.jj-liquidity-verdict.json');
 const LOCAL = path.join(import.meta.dirname, '..', 'status.json');
 const dry = process.argv.includes('--dry');
@@ -53,7 +53,7 @@ const body = [
   `[레버리지ETF] ${LABEL[prev?.verdict] ?? '?'} → ${LABEL[u.verdict]}`,
   `${u.date} 좌수 ${u.unitsMillion}백만좌 (5일 ${u.changePct.d5 >= 0 ? '+' : ''}${u.changePct.d5}%, 연속감소 ${u.consecutiveDownDays}일)`,
   `고점 ${u.peak.unitsMillion}백만좌 대비 ${u.peak.fromPeakPct}%`,
-  'jj-liquidity-analysis.vercel.app',
+  'jj-liquidity.vercel.app',
 ].join('\n');
 
 if (!dry) {
