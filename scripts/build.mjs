@@ -654,6 +654,25 @@ function chartRuntime() {
     throw new Error(`축 단위를 못 읽은 차트 ${noAxis.length}개: ${noAxis.join(', ')}`
       + ' — 단위를 KNOWN_UNITS 에 넣거나 제목의 괄호 표기를 맞춰라');
   }
+  // 단위와 값의 자릿수가 맞는지. 정적 SVG 는 원자료를 나눠 그리는데 대화형 래퍼가 안 나눠서
+  // 신용융자 축이 '40,000,000 조원' 으로 찍힌 적이 있다 — 백만원을 조원이라 label 한 것이다.
+  // 배수 오류(1e6)만 잡으면 되므로 상한은 느슨하게 둔다. 여기서 걸리면 래퍼의 스케일을 봐라.
+  const SANE = {
+    조원: 1e4, 억원: 1e6, 백만원: 1e8, 만원: 1e5, 천원: 1e6, 원: 1e8,
+    '%': 1e4, '%p': 1e4, p: 1e5, 배: 1e3, 회: 1e3,
+    억주: 1e4, 백만주: 1e5, 만주: 1e7, 천주: 1e8, 주: 1e12,
+    억좌: 1e4, 백만좌: 1e5, 만좌: 1e7, 좌: 1e12,
+  };
+  const insane = Object.entries(CHARTS).map(([id, c]) => {
+    const cap = SANE[c.axis];
+    if (!cap) return null;                      // 이중 단위('% / 조원') 는 건너뛴다
+    const mx = Math.max(0, ...c.series.flatMap(s => s.vals.filter(Number.isFinite).map(Math.abs)));
+    return mx > cap ? `${id} ${c.axis} 최대 ${mx.toLocaleString()} (상한 ${cap.toLocaleString()})` : null;
+  }).filter(Boolean);
+  if (insane.length) {
+    throw new Error(`단위와 값의 자릿수가 안 맞는 차트 ${insane.length}개:\n  ${insane.join('\n  ')}`
+      + '\n  — 대화형 래퍼가 원자료를 나누지 않았을 가능성이 크다(정적 SVG 쪽 스케일과 맞춰라)');
+  }
   const js = fs.readFileSync(path.join(import.meta.dirname, 'lib', 'chart-client.js'), 'utf8');
   // </script> 가 데이터 안에 들어가면 스크립트가 조기 종료된다.
   const data = JSON.stringify(CHARTS).replace(/<\//g, '<\\/');
@@ -914,7 +933,9 @@ function timeSeriesChart(series, periods) {
   return interactive({
     unit: '신용융자 합계 (조원)', dg: 1, zeroBase: false, h: 260,
     dates: rs.map(r => r.d),
-    series: [{ name: '신용융자 (조원)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c : null)) }],
+    // A.series 의 c 는 원자료 단위 그대로 **백만원**이다(§1). 정적 SVG 는 /1e6 해서
+    // 조원으로 그리는데 여기서 안 나눠서, 대화형 차트만 축이 40,000,000 조원으로 찍혔다.
+    series: [{ name: '신용융자', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c / 1e6 : null)) }],
   }, timeSeriesChartStatic(series, periods));
 }
 
@@ -1717,7 +1738,7 @@ const verdictSection = !A.verdict ? '' : (() => {
     </div>`).join('')}
   </div>`;
 
-  return `<section class="today">
+  return `<section class="today" id="top-verdict">
 <div class="tdh">
   <div>
     <div class="kicker">오늘의 종합 판정</div>
@@ -1996,7 +2017,7 @@ if (co && PJ) {
     '단일종목 레버리지 거래대금 (조원)', 1, `${dtFull(TURN.from)} 이후`)}</div>` : ''}
 </div>`;
 
-  summarySection = `<section class="summary">
+  summarySection = `<section class="summary" id="top-summary">
 <h2>핵심 요약</h2>
 <p class="lead">차트를 하나도 보지 않고도 가져갈 수 있는 결론만 모았다. 숫자는 본문과 같은 계산에서 나온다.</p>
 
@@ -2823,7 +2844,8 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ic-sum .ic-range { color:var(--fg); font-weight:600; }
   .ic-empty { padding:26px 0; text-align:center; color:var(--mut); font-size:12px; }
   /* 구간 선택 툴바 — 스크롤해도 위에 붙어 있어야 아무 차트에서나 바로 바꾼다. */
-  .ic-bar { position:sticky; top:0; z-index:20; display:flex; flex-wrap:wrap;
+  /* 메뉴(.tabs, top:0, 높이 ~41px)와 겹치지 않게 그 아래에 붙인다. */
+  .ic-bar { position:sticky; top:41px; z-index:20; display:flex; flex-wrap:wrap;
     align-items:center; gap:8px 14px; margin:14px 0 4px; padding:9px 13px;
     background:var(--surf); border:1px solid var(--line); border-radius:9px; font-size:12.5px; }
   .ic-bar label { display:flex; align-items:center; gap:6px; color:var(--mut); }
@@ -2843,15 +2865,24 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   /* 탭: 라디오 + 형제 선택자만 쓴다. JS 없이 file:// 에서도 그대로 동작한다. */
   /* 선택된 탭은 색으로 꽉 채운다. 테두리만으로 구분하면 흰 배경에서 거의 안 보였다. */
   .tabin { position:absolute; opacity:0; pointer-events:none; }
-  .tabs { display:flex; gap:10px; margin:16px 0 4px; flex-wrap:wrap; align-items:stretch; }
-  .tabs label { flex:1 1 260px; cursor:pointer; padding:11px 16px; line-height:1.35;
-    border:1.5px solid var(--line); border-radius:10px; background:var(--surf);
-    color:var(--mut); position:relative; }
-  .tabs label i { display:block; font-size:9.5px; letter-spacing:2.5px; font-style:normal; opacity:.75; }
-  .tabs label b { display:block; font-size:15.5px; letter-spacing:-.2px; color:var(--fg); }
-  .tabs label span { display:block; font-size:11.5px; }
-  .tabs label:hover { border-color:var(--mut); }
-  .tabs label.t-all { flex:0 1 190px; }
+  /* 화면에 붙는 메뉴. .wrap 의 좌우 패딩을 음수 마진으로 상쇄해 화면 끝까지 깔린다. */
+  .tabs { position:sticky; top:0; z-index:30; display:flex; gap:6px; flex-wrap:wrap; align-items:center;
+    margin:10px -26px 8px; padding:8px 26px; background:var(--bg);
+    border-bottom:1px solid var(--line); box-shadow:0 6px 14px -12px rgba(0,0,0,.5); }
+  .tabs label, .tabs a.tj { flex:0 0 auto; cursor:pointer; padding:6px 12px; line-height:1.3;
+    border:1.5px solid var(--line); border-radius:8px; background:var(--surf);
+    color:var(--mut); text-decoration:none; white-space:nowrap; }
+  .tabs label i { font-size:9.5px; letter-spacing:1px; font-style:normal; opacity:.7; margin-right:5px; }
+  .tabs label b, .tabs a.tj { font-size:13px; letter-spacing:-.2px; color:var(--fg); font-weight:700; }
+  .tabs label:hover, .tabs a.tj:hover { border-color:var(--mut); }
+  /* 요약·판정으로 돌아가는 링크는 파트 탭과 성격이 달라 점선으로 구분한다. */
+  .tabs a.tj { border-style:dashed; background:transparent; }
+  @media (max-width:700px) {
+    .tabs { flex-wrap:nowrap; overflow-x:auto; scrollbar-width:none; }
+    .tabs::-webkit-scrollbar { display:none; }
+  }
+  /* 앵커로 이동할 때 sticky 메뉴가 제목을 덮지 않게 한다. */
+  .today, .summary, .pane h2 { scroll-margin-top:60px; }
   /* 선택 상태 — 배경을 파트 색으로 채우고 글자를 흰색으로 뒤집는다. */
   #tab-down:checked ~ .tabs label[for="tab-down"],
   #tab-up:checked ~ .tabs label[for="tab-up"],
@@ -2916,7 +2947,15 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .wsub span { margin-left:5px; }
   .pane > section:first-child { border-top:none; }
   /* 파트 머리말. 전체 보기에서 두 파트의 경계를 만든다. */
-  .parthead { margin:22px 0 4px; padding:11px 14px; border-radius:7px; color:#fff; }
+  /* 파트 안쪽 목차. 한 파트가 화면 열 장을 넘어가서 위 메뉴만으로는 안쪽을 못 찾는다. */
+  .secnav { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0 0 6px;
+    padding:9px 12px; border:1px solid var(--line); border-top:none; border-radius:0 0 8px 8px; }
+  .secnav b { font-size:10.5px; letter-spacing:1.5px; color:var(--mut); margin-right:4px; }
+  .secnav a { font-size:12px; color:var(--acc); text-decoration:none; padding:3px 9px;
+    border:1px solid var(--line); border-radius:20px; max-width:23em; overflow:hidden;
+    text-overflow:ellipsis; white-space:nowrap; }
+  .secnav a:hover { background:var(--surf); border-color:var(--acc); }
+  .parthead { margin:22px 0 0; padding:11px 14px; border-radius:7px 7px 0 0; color:#fff; }
   .parthead i { display:block; font-size:10px; letter-spacing:2px; font-style:normal; opacity:.85; }
   .parthead b { font-size:16px; }
   .ph-down { background:var(--cr); }
@@ -2931,7 +2970,8 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-next:focus-visible ~ .tabs label[for="tab-next"],
   #tab-stock:focus-visible ~ .tabs label[for="tab-stock"],
   #tab-all:focus-visible ~ .tabs label[for="tab-all"] { outline:2px solid var(--acc); outline-offset:2px; }
-  @media print { .tabs { display:none; } .pane { display:block !important; } }
+  @media print { .tabs, .secnav { display:none; } .pane { display:block !important; }
+    .parthead { border-radius:7px; margin-top:22px; } }
 ${cycleCss}
 
   section { margin-top:32px; padding-top:8px; border-top:1px solid var(--line); }
@@ -3044,13 +3084,17 @@ ${etfSection ? '<input type="radio" name="tab" id="tab-etf" class="tabin">' : ''
 ${outlookSection ? '<input type="radio" name="tab" id="tab-next" class="tabin">' : ''}
 ${stockFlowSection ? '<input type="radio" name="tab" id="tab-stock" class="tabin">' : ''}
 <input type="radio" name="tab" id="tab-all" class="tabin">
+<!-- 화면에 늘 붙어 있는 메뉴. 파트 설명은 각 파트 머리(.parthead)가 이미 달고 있으니
+     여기서는 한 줄로 줄인다 — 세 줄짜리 카드를 sticky 로 붙이면 화면을 너무 먹는다. -->
 <nav class="tabs">
-  <label for="tab-down"><i>PART 1</i><b>신용잔고</b><span>얼마나 더 하락할 수 있나 — 반대매매 잔여</span></label>
-  <label for="tab-up"><i>PART 2</i><b>공매도·숏커버링</b><span>얼마나 더 상승할 수 있나 — 대차 되갚기 잔여</span></label>
-  ${etfSection ? '<label for="tab-etf"><i>PART 3</i><b>레버리지 ETF</b><span>변동성은 어디서 왔나 — 매일 나가는 강제 매매</span></label>' : ''}
-  ${outlookSection ? '<label for="tab-next"><i>PART 4</i><b>다음 주 수급</b><span>지수가 어디로 가면 무엇이 따라 나오나</span></label>' : ''}
-  ${stockFlowSection ? '<label for="tab-stock"><i>PART 5</i><b>종목 트래킹</b><span>삼성전자·SK하이닉스 — 외국인 지분율과 대차잔고</span></label>' : ''}
-  <label for="tab-all" class="t-all"><i>ALL</i><b>전체</b><span>다섯 파트를 이어서 본다</span></label>
+  <a class="tj" href="#top-verdict">판정</a>
+  <a class="tj" href="#top-summary">요약</a>
+  <label for="tab-down"><i>1</i><b>신용잔고</b></label>
+  <label for="tab-up"><i>2</i><b>공매도·숏커버</b></label>
+  ${etfSection ? '<label for="tab-etf"><i>3</i><b>레버리지 ETF</b></label>' : ''}
+  ${outlookSection ? '<label for="tab-next"><i>4</i><b>다음 주 수급</b></label>' : ''}
+  ${stockFlowSection ? '<label for="tab-stock"><i>5</i><b>종목 트래킹</b></label>' : ''}
+  <label for="tab-all" class="t-all"><b>전체</b></label>
 </nav>
 
 ${verdictSection}
@@ -3184,7 +3228,38 @@ ${globalSemisSection}
 <script>${chartRuntime()}</script>
 </div>`;
 
-fs.writeFileSync(path.join(ROOT, 'index.html'), html);
-console.log(`index.html 생성 (${(html.length / 1024).toFixed(0)} KB)`);
+/**
+ * 파트 안쪽 목차. 한 파트가 화면 열 장을 넘어가서, 파트에 들어와도 무엇이 어디 있는지
+ * 알 수 없었다 — 위 메뉴는 파트 사이만 옮겨 준다.
+ *
+ * h2 서른 개에 손으로 id 를 달지 않는다. 조립이 끝난 HTML 에서 한 번에 처리한다 —
+ * 각 파트 끝에 `<!-- /p-키 -->` 주석이 있어 경계를 정확히 잡을 수 있다.
+ */
+function addPaneIndexes(doc) {
+  let made = 0;
+  const out = doc.replace(/(<div class="pane p-([a-z]+)">)([\s\S]*?)(<!-- \/p-\2 -->)/g,
+    (all, open, key, body, close) => {
+      let n = 0;
+      const items = [];
+      const withIds = body.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/g, (m, attrs, inner) => {
+        if (/\bid=/.test(attrs)) return m;
+        const id = `s-${key}-${++n}`;
+        items.push({ id, text: inner.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim() });
+        return `<h2 id="${id}"${attrs}>${inner}</h2>`;
+      });
+      if (items.length < 2) return all;         // 섹션이 하나면 목차가 의미 없다
+      made++;
+      const idx = `<nav class="secnav"><b>이 파트 안에서</b>${
+        items.map(i => `<a href="#${i.id}">${esc(i.text)}</a>`).join('')}</nav>`;
+      // 파트 머리 바로 뒤에 끼운다.
+      return open + withIds.replace(/(<div class="parthead[^>]*>[\s\S]*?<\/div>)/, `$1\n${idx}`) + close;
+    });
+  if (!made) throw new Error('파트 목차를 하나도 못 만들었다 — pane 마커나 h2 구조가 바뀌었다');
+  return out;
+}
+
+const doc = addPaneIndexes(html);
+fs.writeFileSync(path.join(ROOT, 'index.html'), doc);
+console.log(`index.html 생성 (${(doc.length / 1024).toFixed(0)} KB)`);
 console.log(`  사이클 ${A.periods.map(p => p.name).join(' / ')}`);
 console.log(`  시장 ${A.meta.markets.join(', ')} · 재현 MAE ${f(A.reproMAE, 3)}조 · 분리적용 ${A.meta.hasSplit ? 'O' : 'X'}`);
