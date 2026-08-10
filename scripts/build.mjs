@@ -34,7 +34,7 @@ function ticks(min, max, count = 5) {
 const UNIT_ALIAS = { 조: '조원', 억: '억원', 배수: '배' };
 const KNOWN_UNITS = new Set([
   '조원', '억원', '백만원', '만원', '천원', '원',
-  '십억달러', '억달러', '백만달러', '달러',
+  '십억달러', '억달러', '백만달러', '달러', '지수',
   '%', '%p', 'p', '배', '회',
   '억주', '백만주', '만주', '천주', '주',
   '억좌', '백만좌', '만좌', '좌',
@@ -83,6 +83,242 @@ function tickFmt(vals, dg = 3) {
 }
 
 /** 신용융자 잔고 + 지수 이중축 시계열. 사이클 적립 구간을 음영으로 표시한다. */
+const CHARTS = {};
+let chartSeq = 0;
+// 660px 폭 차트에 4,000점을 실어봐야 화면에서 구분되지 않는다. 그런데 그 데이터는
+// 파일 크기로 그대로 남는다 — 실측으로 241KB 였다. 균등 솎되 처음·끝은 반드시 남긴다
+// (구간 요약의 시작/끝 값이 어긋나면 안 된다).
+const MAX_PTS = 900;
+function thin(spec) {
+  const n = spec.dates.length;
+  if (n <= MAX_PTS) return spec;
+  const keep = [];
+  for (let i = 0; i < n; i += Math.ceil(n / MAX_PTS)) keep.push(i);
+  if (keep[keep.length - 1] !== n - 1) keep.push(n - 1);
+  return {
+    ...spec,
+    dates: keep.map(i => spec.dates[i]),
+    series: spec.series.map(s => ({ ...s, vals: keep.map(i => s.vals[i]) })),
+  };
+}
+// 방금 만든 차트의 id. 계열 토글 체크박스처럼 차트 밖에서 같은 id를 참조해야 하는
+// 마크업을 만들 때 쓴다 — levelChart() 등은 문자열만 돌려주므로 이렇게 옆으로 흘려둔다.
+let lastChartId = null;
+function interactive(spec, staticSvg) {
+  // 점이 두 개 미만이면 대화형으로 만들 이유가 없다.
+  if (!spec?.dates?.length || spec.dates.length < 2) { lastChartId = null; return staticSvg; }
+  const id = `c${++chartSeq}`;
+  // 제목/단위 분리는 여기서 한 번만 한다 — 래퍼 여섯 개에 같은 코드를 흩뿌리지 않는다.
+  const { title, axis } = splitUnit(spec.unit);
+  CHARTS[id] = thin({
+    ...spec, title, axis,
+    // 툴팁 접미사는 단위가 하나일 때만 붙인다. '% / 조원' 처럼 둘이면 붙이는 게 오히려 틀린다.
+    suffix: spec.suffix ?? (axis && !axis.includes('/') ? axis : ''),
+  });
+  lastChartId = id;
+  return `<div class="ichart" data-chart="${id}">${staticSvg}</div>`;
+}
+
+/**
+ * 계열 켜기/끄기 체크박스. levelChart() 등으로 차트를 그린 바로 뒤에 호출해
+ * lastChartId 를 참조한다 — 두 계열짜리 범례를 세 계열 토글로 바꿀 때 이 함수만 쓰면 된다.
+ * JS 없으면 `hidden` 속성 그대로 안 보인다(정적 SVG 는 항상 전부 겹쳐 보이므로 토글이 필요 없다).
+ */
+function seriesToggle(lines, colors) {
+  const id = lastChartId;
+  if (!id) return '';
+  return `<div class="ictoggle" data-for="${id}" hidden>${lines.map((l, i) => `<label>
+    <input type="checkbox" checked data-idx="${i}"><i style="background:${colors[i]}"></i><span>${esc(l)}</span>
+  </label>`).join('')}</div>`;
+}
+
+/**
+ * 범주형(막대) 차트를 대화형으로 감싼다. 지수대·월·국가처럼 날짜가 아닌 축이라
+ * interactive() 의 구간 선택·thin() 는 적용하지 않는다 — chart-client.js 의 drawBars() 가
+ * 별도 경로로 그린다. spec 의 unit 만 title/axis 로 쪼개고 나머지는 그대로 넘긴다.
+ */
+function interactiveBars(spec, staticSvg) {
+  if (!spec?.categories?.length) { lastChartId = null; return staticSvg; }
+  const id = `c${++chartSeq}`;
+  const { title, axis } = splitUnit(spec.unit);
+  const norm = s => (s ? { ...s, suffix: s.suffix ?? (axis && !axis.includes('/') ? axis : '') } : s);
+  CHARTS[id] = { ...spec, kind: 'cat', title, axis, suffix: spec.suffix ?? (axis && !axis.includes('/') ? axis : ''), line: norm(spec.line) };
+  lastChartId = id;
+  return `<div class="ichart" data-chart="${id}">${staticSvg}</div>`;
+}
+// 색은 CSS 변수 문자열로 넘긴다 — stroke 와 툴팁 색점 양쪽에서 그대로 쓰인다.
+const CL = {
+  acc: 'var(--acc)', cr: 'var(--cr)', kq: 'var(--kq)', lv: 'var(--lv)', nx: 'var(--nx)', mut: 'var(--mut)',
+  bar: 'var(--bar)', hit: 'var(--hit)', part: 'var(--part)',
+};
+
+
+function trendChartStatic(points, unit, dg, spanLabel = '최근 1년') {
+  const W = 640, H = 190, M = { t: 18, r: 52, b: 26, l: 12 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  const vs = points.map(p => p.v);
+  const lo = Math.min(...vs), hi = Math.max(...vs);
+  const pad = (hi - lo) * 0.12 || Math.abs(hi) * 0.05 || 1;
+  const dom = [lo - pad, hi + pad];
+  const xAt = i => scale(i, [0, points.length - 1], [M.l, M.l + iw]);
+  const yAt = v => scale(v, dom, [M.t + ih, M.t]);
+
+  // 분기 시작만 눈금으로 찍는다. 1년치에 월 12개를 다 찍으면 글자가 겹친다.
+  const ticksX = [];
+  let lastQ = null;
+  points.forEach((p, i) => {
+    const q = `${p.d.slice(0, 4)}Q${Math.floor((Number(p.d.slice(4, 6)) - 1) / 3)}`;
+    if (q === lastQ) return;
+    lastQ = q;
+    // 계열이 연말에서 시작하면 첫 눈금(24.12)과 다음 분기 눈금(25.01)이 하루 차이로 붙어
+    // 라벨이 포개진다. 'YY.MM' 은 26px 안팎이라 그보다 좁으면 그 분기는 건너뛴다.
+    if (ticksX.length && xAt(i) - xAt(ticksX.at(-1).i) < 34) return;
+    ticksX.push({ i, label: `${p.d.slice(2, 4)}.${p.d.slice(4, 6)}` });
+  });
+
+  const iMax = vs.indexOf(hi), iMin = vs.indexOf(lo);
+  // 최고·최저가 계열 끝에 있으면 가운데 정렬 라벨의 절반이 밖으로 잘렸다('저 200' 실측).
+  // 오른쪽은 눈금 숫자가 있는 자리라, 플롯 폭(M.l+iw) 안으로만 민다.
+  const short = d => `${d.slice(2, 4)}.${d.slice(4, 6)}.${d.slice(6, 8)}`;
+  const mark = placeLabels([
+    { cx: xAt(iMax), cy: yAt(hi) - 7, dotY: yAt(hi), cls: 'hi', text: `고 ${f(hi, dg)} ${short(points[iMax].d)}` },
+    { cx: xAt(iMin), cy: yAt(lo) + 13, dotY: yAt(lo), cls: 'lo', text: `저 ${f(lo, dg)} ${short(points[iMin].d)}` },
+  ], { W: M.l + iw, minY: M.t })
+    .map(p => `<circle class="tdot ${p.cls}" cx="${p.cx.toFixed(1)}" cy="${p.dotY.toFixed(1)}" r="2.8"/>
+    <text class="ax sm" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle">${esc(p.text)}</text>`).join('');
+
+  const d = points.map((p, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(p.v).toFixed(1)}`).join('');
+  const area = `${d}L${xAt(points.length - 1).toFixed(1)},${(M.t + ih).toFixed(1)}L${xAt(0).toFixed(1)},${(M.t + ih).toFixed(1)}Z`;
+
+  const tv = ticks(dom[0], dom[1], 3), tf = tickFmt(tv, dg);
+  const { title, axis } = splitUnit(unit);
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 1년 추세">
+  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${tf(v)}</text>`).join('')}
+  ${axis ? `<text class="axu" x="${axuX(M.l + iw + 6, axis, W).toFixed(1)}" y="${M.t - 5}">${esc(axis)}</text>` : ''}
+  ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
+  <path class="tarea" d="${area}"/>
+  <path class="tline" d="${d}"/>
+  ${mark}
+  <circle class="tdot now" cx="${xAt(points.length - 1).toFixed(1)}" cy="${yAt(vs.at(-1)).toFixed(1)}" r="3.4"/>
+  <text class="unit" x="${M.l}" y="12">${esc(title || unit)} · ${esc(spanLabel)} (${points.length}영업일)</text>
+</svg>`;
+}
+
+// 호출부는 그대로 두고 여기서 대화형으로 감싼다 — 이 한 함수가 요약 미니차트부터
+// 좌수·거래대금·개인 순매수까지 전부를 덮는다.
+function trendChart(points, unit, dg, spanLabel = '최근 1년') {
+  const pts = (points ?? []).filter(p => p && p.d && Number.isFinite(p.v));
+  return interactive({
+    unit, dg, h: 200,
+    dates: pts.map(p => p.d),
+    series: [{ name: '', color: CL.acc, vals: pts.map(p => p.v) }],
+  }, trendChartStatic(points, unit, dg, spanLabel));
+}
+
+/**
+ * 그룹별 AUM 을 쌓아 올린 면적 차트. 레버리지 ETF 시장 전체가 어떻게 부풀었다 꺼졌는지를
+ * 한 장으로 본다. 선 여러 개를 겹치면 합계가 눈에 안 들어와서 누적 면적을 쓴다.
+ */
+function stackChartStatic(rows, keys, unit, marks = []) {
+  const W = 980, H = 300, M = { t: 20, r: 58, b: 34, l: 12 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  if (rows.length < 2) return '';
+  const hi = Math.max(...rows.map(r => keys.reduce((s, k) => s + (r[k.key] ?? 0), 0)));
+  const dom = [0, hi * 1.08];
+  const xAt = i => scale(i, [0, rows.length - 1], [M.l, M.l + iw]);
+  const yAt = v => scale(v, dom, [M.t + ih, M.t]);
+
+  // 아래에서부터 쌓는다. 각 층의 윗선 = 자기 값 + 아래 층 누적.
+  let below = rows.map(() => 0);
+  const layers = keys.map(k => {
+    const top = rows.map((r, i) => below[i] + (r[k.key] ?? 0));
+    const path = `M${top.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join('L')}`
+      + `L${[...below].reverse().map((v, j) => {
+        const i = rows.length - 1 - j;
+        return `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`;
+      }).join('L')}Z`;
+    below = top;
+    return { ...k, path };
+  });
+
+  // x 눈금은 분기 시작만. 하루씩 다 찍으면 글자가 겹친다.
+  const ticksX = [];
+  let lastQ = null;
+  rows.forEach((r, i) => {
+    const q = `${r.d.slice(0, 4)}Q${Math.floor((Number(r.d.slice(4, 6)) - 1) / 3)}`;
+    if (q !== lastQ) { ticksX.push({ i, label: `${r.d.slice(2, 4)}.${r.d.slice(4, 6)}` }); lastQ = q; }
+  });
+
+  const totals = rows.map(r => keys.reduce((s, k) => s + (r[k.key] ?? 0), 0));
+  const iPeak = totals.indexOf(Math.max(...totals));
+
+  const tvS = ticks(dom[0], dom[1], 4), tfS = tickFmt(tvS, 1);
+  const su = splitUnit(unit);
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
+  ${tvS.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${tfS(v)}</text>`).join('')}
+  ${su.axis ? `<text class="axu" x="${axuX(M.l + iw + 6, su.axis, W).toFixed(1)}" y="${M.t - 5}">${esc(su.axis)}</text>` : ''}
+  ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
+  ${layers.map(l => `<path d="${l.path}" fill="${l.color}" fill-opacity="${l.op ?? 0.85}" stroke="none"/>`).join('')}
+  ${marks.map(m => {
+    const i = rows.findIndex(r => r.d >= m.d);
+    if (i < 0) return '';
+    return `<line class="mk" x1="${xAt(i).toFixed(1)}" y1="${M.t}" x2="${xAt(i).toFixed(1)}" y2="${M.t + ih}"/>
+      <text class="ax sm" x="${xAt(i).toFixed(1)}" y="${M.t - 5}" text-anchor="middle">${esc(m.label)}</text>`;
+  }).join('')}
+  <circle class="tdot hi" cx="${xAt(iPeak).toFixed(1)}" cy="${yAt(totals[iPeak]).toFixed(1)}" r="3"/>
+  <text class="ax sm" x="${xAt(iPeak).toFixed(1)}" y="${(yAt(totals[iPeak]) - 7).toFixed(1)}" text-anchor="middle">고점 ${f(totals[iPeak], 1)}조</text>
+  <circle class="tdot now" cx="${xAt(rows.length - 1).toFixed(1)}" cy="${yAt(totals.at(-1)).toFixed(1)}" r="3.4"/>
+  <text class="unit" x="${M.l}" y="12">${esc(su.title || unit)}</text>
+</svg>`;
+}
+
+/** 같은 단위(조원) 계열 여러 개를 한 축에 겹쳐 그린다. */
+// dg: 축 눈금 소수 자리. zeroBase:false 면 값 범위에 맞춰 하한을 올린다 —
+// 외국인 지분율(46~56%)처럼 0에서 먼 계열은 0 기준으로 그리면 움직임이 안 보인다.
+function levelChartStatic(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
+  const W = 660, H = 260, M = { t: 22, r: 16, b: 34, l: 50 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  const vals = lines.flatMap(L => rows.map(r => r[L.key]).filter(Number.isFinite));
+  const hi = Math.max(...vals), lo = Math.min(...vals);
+  const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.05 || 1;
+  const vMin = zeroBase ? 0 : lo - pad;
+  const vMax = zeroBase ? hi * 1.1 : hi + pad;
+  const xAt = i => scale(i, [0, rows.length - 1], [M.l, M.l + iw]);
+  const yAt = v => scale(v, [vMin, vMax], [M.t + ih, M.t]);
+
+  const yearTicks = [];
+  let lastY = null;
+  rows.forEach((r, i) => {
+    const y = r.d.slice(0, 4);
+    if (y !== lastY) { yearTicks.push({ i, label: `'${y.slice(2)}` }); lastY = y; }
+  });
+
+  const paths = lines.map(L => {
+    const pts = rows.map((r, i) => (Number.isFinite(r[L.key]) ? `${xAt(i).toFixed(1)},${yAt(r[L.key]).toFixed(1)}` : null))
+      .filter(Boolean);
+    return `<path class="${L.cls}" d="M${pts.join(' L')}"/>`;
+  }).join('');
+
+  const tv = ticks(vMin, vMax), tf = tickFmt(tv, dg);
+  const { title, axis } = splitUnit(unit);
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
+  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${tf(v)}</text>`).join('')}
+  ${axis ? `<text class="axu" x="${axuX(M.l - 8, axis, W, true).toFixed(1)}" y="${M.t - 5}">${esc(axis)}</text>` : ''}
+  ${yearTicks.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${t.label}</text>`).join('')}
+  ${paths}
+  ${title ? `<text class="unit" x="${M.l}" y="13">${esc(title)}</text>` : ''}
+</svg>`;
+}
+
+// 선 클래스 -> 색. 대화형 쪽은 CSS 클래스를 못 쓰는 자리(툴팁 색점)가 있어 값이 필요하다.
+const CLS_COLOR = { 'ln-idx': CL.acc, 'ln-cr': CL.cr, 'ln-kq': CL.kq, 'ln-ratio': CL.acc, 'ln-base': CL.mut };
+
 function timeSeriesChartStatic(series, periods) {
   const W = 660, H = 330, M = { t: 24, r: 64, b: 46, l: 52 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
@@ -136,6 +372,24 @@ function timeSeriesChartStatic(series, periods) {
 function bucketChart(m) {
   const buckets = m.scaledBuckets.filter(b => b.jo >= 0.005);
   if (!buckets.length) return '<div class="empty">표시할 버킷이 없다.</div>';
+  return interactiveBars({
+    unit: '신용융자 누적(보정) (조원)', dg: 1, rotate: buckets.length > 12,
+    axis2Unit: '마진콜 지수(p)', dg2: 0,
+    // 막대마다 항상 값이 찍혀 있어 최고/최저 라벨을 더 얹으면 중복이다.
+    markExtent: false,
+    categories: buckets.map(b => k0(b.low)),
+    bars: [{
+      name: '누적(보정)', color: CL.bar,
+      colors: buckets.map(b => (b.fullyTriggered ? CL.hit : b.triggered ? CL.part : CL.bar)),
+      vals: buckets.map(b => b.jo),
+    }],
+    line: { name: '마진콜 레벨(p)', color: CL.acc, axis2: true, vals: buckets.map(b => b.marginHigh) },
+  }, bucketChartStatic(m));
+}
+
+function bucketChartStatic(m) {
+  const buckets = m.scaledBuckets.filter(b => b.jo >= 0.005);
+  if (!buckets.length) return '<div class="empty">표시할 버킷이 없다.</div>';
 
   const W = 660, H = 330, M = { t: 26, r: 62, b: 52, l: 46 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
@@ -183,6 +437,26 @@ function bucketChart(m) {
 
 /** 적립(보정) vs 실제 청산을 같은 지수대 축에 나란히 놓는다. */
 function flowChart(m) {
+  const acc = new Map(m.scaledBuckets.map(b => [b.low, b.jo]));
+  const out = new Map(m.unwind.buckets.map(b => [b.low, b.jo]));
+  const lows = [...new Set([...acc.keys(), ...out.keys()])]
+    .filter(l => (acc.get(l) ?? 0) >= 0.005 || (out.get(l) ?? 0) >= 0.005)
+    .sort((a, b) => a - b);
+  if (!lows.length) return '<div class="empty">표시할 구간이 없다.</div>';
+  return interactiveBars({
+    unit: '조원', dg: 1, rotate: lows.length > 12,
+    // 적립·청산은 서로 다른 두 계열이라 둘을 더한 '카테고리 합계'가 의미가 없다 —
+    // 가중평균매수/청산 마커(정적 전용, 아래)와 겹치는 대신 여기선 끈다.
+    markExtent: false,
+    categories: lows.map(l => k0(l)),
+    bars: [
+      { name: '적립(보정)', color: CL.bar, vals: lows.map(l => acc.get(l) ?? 0) },
+      { name: '청산', color: CL.cr, vals: lows.map(l => out.get(l) ?? 0) },
+    ],
+  }, flowChartStatic(m));
+}
+
+function flowChartStatic(m) {
   const width = m.width;
   const acc = new Map(m.scaledBuckets.map(b => [b.low, b.jo]));
   const out = new Map(m.unwind.buckets.map(b => [b.low, b.jo]));
@@ -234,7 +508,28 @@ function flowChart(m) {
  * 원 지수로 겹치면 코스닥이 눌리므로, 축을 하나로 맞추려고 각자 1월 대비 지수화한다.
  * 두 축을 쓰는 대신(왜곡의 원인) 지수화로 한 축에 놓는 표준적인 해법이다.
  */
+// 월을 날짜처럼 다뤄(각 월 1일) 기존 시계열 엔진(interactive)에 그대로 태운다 —
+// 새 렌더러를 만들지 않고도 호버·고점/저점을 공짜로 얻는다. 폴백은 전용 정적 SVG를
+// 그대로 쓴다(월별 x축 라벨·기준선 100 은 범용 levelChartStatic 으론 못 그린다 —
+// levelChartStatic 의 x축은 '연도가 바뀔 때'만 찍어서, 한 해 12개월엔 라벨이 하나뿐이다).
 function monthlyIndexChart(mo) {
+  const rows = mo.months.map((m, i) => ({
+    d: `${m.ym.replace('-', '')}01`, k: mo.kIdxIdx[i], q: mo.qIdxIdx[i],
+  }));
+  // 이 차트는 2열 그리드의 좁은 칸에 들어간다(옆에 거래대금 막대차트가 나란히 붙는다).
+  // 대화형 엔진의 뷰박스 너비는 660 으로 고정이라, 좁은 칸에서도 원래 정적 차트의 비율
+  // (320:210 ≈ 1.5:1)에 가깝게 보이도록 h 를 올려 뷰박스 자체를 세로로 늘였다.
+  return interactive({
+    unit: '코스피·코스닥 1월=100 지수화 (지수)', dg: 1, zeroBase: false, h: 320,
+    dates: rows.map(r => r.d),
+    series: [
+      { name: '코스피', color: CL.acc, vals: rows.map(r => r.k ?? null) },
+      { name: '코스닥', color: CL.kq, vals: rows.map(r => r.q ?? null) },
+    ],
+  }, monthlyIndexChartStatic(mo));
+}
+
+function monthlyIndexChartStatic(mo) {
   const n = mo.months.length;
   const W = 320, H = 210, M = { t: 18, r: 14, b: 28, l: 34 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
@@ -261,6 +556,17 @@ function monthlyIndexChart(mo) {
 
 /** 월별 평균 거래대금(조원). 코스피/코스닥 그룹 막대, 한 축. */
 function monthlyTurnoverChart(mo) {
+  return interactiveBars({
+    unit: '조원', dg: 1,
+    categories: mo.months.map(m => m.ym.slice(5)),
+    bars: [
+      { name: '코스피', color: CL.acc, vals: mo.months.map(m => m.kToJo ?? null) },
+      { name: '코스닥', color: CL.kq, vals: mo.months.map(m => m.qToJo ?? null) },
+    ],
+  }, monthlyTurnoverChartStatic(mo));
+}
+
+function monthlyTurnoverChartStatic(mo) {
   const n = mo.months.length;
   const W = 320, H = 210, M = { t: 18, r: 14, b: 28, l: 34 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
@@ -660,15 +966,20 @@ function chartRuntime() {
   // 배수 오류(1e6)만 잡으면 되므로 상한은 느슨하게 둔다. 여기서 걸리면 래퍼의 스케일을 봐라.
   const SANE = {
     조원: 1e4, 억원: 1e6, 백만원: 1e8, 만원: 1e5, 천원: 1e6, 원: 1e8,
-    십억달러: 1e4, 억달러: 1e5, 백만달러: 1e7, 달러: 1e9,
+    십억달러: 1e4, 억달러: 1e5, 백만달러: 1e7, 달러: 1e9, 지수: 1e4,
     '%': 1e4, '%p': 1e4, p: 1e5, 배: 1e3, 회: 1e3,
     억주: 1e4, 백만주: 1e5, 만주: 1e7, 천주: 1e8, 주: 1e12,
     억좌: 1e4, 백만좌: 1e5, 만좌: 1e7, 좌: 1e12,
   };
+  // 범주형(kind:'cat')은 .series 가 아니라 .bars/.line/.net 에 값이 있다 — 같은 검사를
+  // 그 모양에 맞게 한다.
+  const valsOf = c => (c.kind === 'cat'
+    ? [...(c.bars ?? []).flatMap(b => b.vals), ...(c.line ? c.line.vals : []), ...(c.net ? c.net.vals : [])]
+    : c.series.flatMap(s => s.vals));
   const insane = Object.entries(CHARTS).map(([id, c]) => {
     const cap = SANE[c.axis];
     if (!cap) return null;                      // 이중 단위('% / 조원') 는 건너뛴다
-    const mx = Math.max(0, ...c.series.flatMap(s => s.vals.filter(Number.isFinite).map(Math.abs)));
+    const mx = Math.max(0, ...valsOf(c).filter(Number.isFinite).map(Math.abs));
     return mx > cap ? `${id} ${c.axis} 최대 ${mx.toLocaleString()} (상한 ${cap.toLocaleString()})` : null;
   }).filter(Boolean);
   if (insane.length) {
@@ -685,222 +996,6 @@ ${js}`;
 // 서버가 그린 SVG 는 그대로 두고, 같은 데이터를 window.__CHARTS__ 로 함께 내보낸다.
 // JS 가 살아 있으면 lib/chart-client.js 가 그 자리를 대화형 차트로 바꾼다(호버 값·구간 선택).
 // 스크립트가 없으면 지금까지와 똑같은 정적 SVG 가 보인다 — 인쇄·메일·file:// 이 그대로 동작한다.
-const CHARTS = {};
-let chartSeq = 0;
-// 660px 폭 차트에 4,000점을 실어봐야 화면에서 구분되지 않는다. 그런데 그 데이터는
-// 파일 크기로 그대로 남는다 — 실측으로 241KB 였다. 균등 솎되 처음·끝은 반드시 남긴다
-// (구간 요약의 시작/끝 값이 어긋나면 안 된다).
-const MAX_PTS = 900;
-function thin(spec) {
-  const n = spec.dates.length;
-  if (n <= MAX_PTS) return spec;
-  const keep = [];
-  for (let i = 0; i < n; i += Math.ceil(n / MAX_PTS)) keep.push(i);
-  if (keep[keep.length - 1] !== n - 1) keep.push(n - 1);
-  return {
-    ...spec,
-    dates: keep.map(i => spec.dates[i]),
-    series: spec.series.map(s => ({ ...s, vals: keep.map(i => s.vals[i]) })),
-  };
-}
-// 방금 만든 차트의 id. 계열 토글 체크박스처럼 차트 밖에서 같은 id를 참조해야 하는
-// 마크업을 만들 때 쓴다 — levelChart() 등은 문자열만 돌려주므로 이렇게 옆으로 흘려둔다.
-let lastChartId = null;
-function interactive(spec, staticSvg) {
-  // 점이 두 개 미만이면 대화형으로 만들 이유가 없다.
-  if (!spec?.dates?.length || spec.dates.length < 2) { lastChartId = null; return staticSvg; }
-  const id = `c${++chartSeq}`;
-  // 제목/단위 분리는 여기서 한 번만 한다 — 래퍼 여섯 개에 같은 코드를 흩뿌리지 않는다.
-  const { title, axis } = splitUnit(spec.unit);
-  CHARTS[id] = thin({
-    ...spec, title, axis,
-    // 툴팁 접미사는 단위가 하나일 때만 붙인다. '% / 조원' 처럼 둘이면 붙이는 게 오히려 틀린다.
-    suffix: spec.suffix ?? (axis && !axis.includes('/') ? axis : ''),
-  });
-  lastChartId = id;
-  return `<div class="ichart" data-chart="${id}">${staticSvg}</div>`;
-}
-
-/**
- * 계열 켜기/끄기 체크박스. levelChart() 등으로 차트를 그린 바로 뒤에 호출해
- * lastChartId 를 참조한다 — 두 계열짜리 범례를 세 계열 토글로 바꿀 때 이 함수만 쓰면 된다.
- * JS 없으면 `hidden` 속성 그대로 안 보인다(정적 SVG 는 항상 전부 겹쳐 보이므로 토글이 필요 없다).
- */
-function seriesToggle(lines, colors) {
-  const id = lastChartId;
-  if (!id) return '';
-  return `<div class="ictoggle" data-for="${id}" hidden>${lines.map((l, i) => `<label>
-    <input type="checkbox" checked data-idx="${i}"><i style="background:${colors[i]}"></i><span>${esc(l)}</span>
-  </label>`).join('')}</div>`;
-}
-// 색은 CSS 변수 문자열로 넘긴다 — stroke 와 툴팁 색점 양쪽에서 그대로 쓰인다.
-const CL = { acc: 'var(--acc)', cr: 'var(--cr)', kq: 'var(--kq)', lv: 'var(--lv)', nx: 'var(--nx)', mut: 'var(--mut)' };
-
-
-function trendChartStatic(points, unit, dg, spanLabel = '최근 1년') {
-  const W = 640, H = 190, M = { t: 18, r: 52, b: 26, l: 12 };
-  const iw = W - M.l - M.r, ih = H - M.t - M.b;
-  const vs = points.map(p => p.v);
-  const lo = Math.min(...vs), hi = Math.max(...vs);
-  const pad = (hi - lo) * 0.12 || Math.abs(hi) * 0.05 || 1;
-  const dom = [lo - pad, hi + pad];
-  const xAt = i => scale(i, [0, points.length - 1], [M.l, M.l + iw]);
-  const yAt = v => scale(v, dom, [M.t + ih, M.t]);
-
-  // 분기 시작만 눈금으로 찍는다. 1년치에 월 12개를 다 찍으면 글자가 겹친다.
-  const ticksX = [];
-  let lastQ = null;
-  points.forEach((p, i) => {
-    const q = `${p.d.slice(0, 4)}Q${Math.floor((Number(p.d.slice(4, 6)) - 1) / 3)}`;
-    if (q === lastQ) return;
-    lastQ = q;
-    // 계열이 연말에서 시작하면 첫 눈금(24.12)과 다음 분기 눈금(25.01)이 하루 차이로 붙어
-    // 라벨이 포개진다. 'YY.MM' 은 26px 안팎이라 그보다 좁으면 그 분기는 건너뛴다.
-    if (ticksX.length && xAt(i) - xAt(ticksX.at(-1).i) < 34) return;
-    ticksX.push({ i, label: `${p.d.slice(2, 4)}.${p.d.slice(4, 6)}` });
-  });
-
-  const iMax = vs.indexOf(hi), iMin = vs.indexOf(lo);
-  // 최고·최저가 계열 끝에 있으면 가운데 정렬 라벨의 절반이 밖으로 잘렸다('저 200' 실측).
-  // 오른쪽은 눈금 숫자가 있는 자리라, 플롯 폭(M.l+iw) 안으로만 민다.
-  const mark = placeLabels([
-    { cx: xAt(iMax), cy: yAt(hi) - 7, dotY: yAt(hi), cls: 'hi', text: `고 ${f(hi, dg)}` },
-    { cx: xAt(iMin), cy: yAt(lo) + 13, dotY: yAt(lo), cls: 'lo', text: `저 ${f(lo, dg)}` },
-  ], { W: M.l + iw, minY: M.t })
-    .map(p => `<circle class="tdot ${p.cls}" cx="${p.cx.toFixed(1)}" cy="${p.dotY.toFixed(1)}" r="2.8"/>
-    <text class="ax sm" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle">${esc(p.text)}</text>`).join('');
-
-  const d = points.map((p, i) => `${i ? 'L' : 'M'}${xAt(i).toFixed(1)},${yAt(p.v).toFixed(1)}`).join('');
-  const area = `${d}L${xAt(points.length - 1).toFixed(1)},${(M.t + ih).toFixed(1)}L${xAt(0).toFixed(1)},${(M.t + ih).toFixed(1)}Z`;
-
-  const tv = ticks(dom[0], dom[1], 3), tf = tickFmt(tv, dg);
-  const { title, axis } = splitUnit(unit);
-
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="최근 1년 추세">
-  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${tf(v)}</text>`).join('')}
-  ${axis ? `<text class="axu" x="${axuX(M.l + iw + 6, axis, W).toFixed(1)}" y="${M.t - 5}">${esc(axis)}</text>` : ''}
-  ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
-  <path class="tarea" d="${area}"/>
-  <path class="tline" d="${d}"/>
-  ${mark}
-  <circle class="tdot now" cx="${xAt(points.length - 1).toFixed(1)}" cy="${yAt(vs.at(-1)).toFixed(1)}" r="3.4"/>
-  <text class="unit" x="${M.l}" y="12">${esc(title || unit)} · ${esc(spanLabel)} (${points.length}영업일)</text>
-</svg>`;
-}
-
-// 호출부는 그대로 두고 여기서 대화형으로 감싼다 — 이 한 함수가 요약 미니차트부터
-// 좌수·거래대금·개인 순매수까지 전부를 덮는다.
-function trendChart(points, unit, dg, spanLabel = '최근 1년') {
-  const pts = (points ?? []).filter(p => p && p.d && Number.isFinite(p.v));
-  return interactive({
-    unit, dg, h: 200,
-    dates: pts.map(p => p.d),
-    series: [{ name: '', color: CL.acc, vals: pts.map(p => p.v) }],
-  }, trendChartStatic(points, unit, dg, spanLabel));
-}
-
-/**
- * 그룹별 AUM 을 쌓아 올린 면적 차트. 레버리지 ETF 시장 전체가 어떻게 부풀었다 꺼졌는지를
- * 한 장으로 본다. 선 여러 개를 겹치면 합계가 눈에 안 들어와서 누적 면적을 쓴다.
- */
-function stackChartStatic(rows, keys, unit, marks = []) {
-  const W = 980, H = 300, M = { t: 20, r: 58, b: 34, l: 12 };
-  const iw = W - M.l - M.r, ih = H - M.t - M.b;
-  if (rows.length < 2) return '';
-  const hi = Math.max(...rows.map(r => keys.reduce((s, k) => s + (r[k.key] ?? 0), 0)));
-  const dom = [0, hi * 1.08];
-  const xAt = i => scale(i, [0, rows.length - 1], [M.l, M.l + iw]);
-  const yAt = v => scale(v, dom, [M.t + ih, M.t]);
-
-  // 아래에서부터 쌓는다. 각 층의 윗선 = 자기 값 + 아래 층 누적.
-  let below = rows.map(() => 0);
-  const layers = keys.map(k => {
-    const top = rows.map((r, i) => below[i] + (r[k.key] ?? 0));
-    const path = `M${top.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`).join('L')}`
-      + `L${[...below].reverse().map((v, j) => {
-        const i = rows.length - 1 - j;
-        return `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`;
-      }).join('L')}Z`;
-    below = top;
-    return { ...k, path };
-  });
-
-  // x 눈금은 분기 시작만. 하루씩 다 찍으면 글자가 겹친다.
-  const ticksX = [];
-  let lastQ = null;
-  rows.forEach((r, i) => {
-    const q = `${r.d.slice(0, 4)}Q${Math.floor((Number(r.d.slice(4, 6)) - 1) / 3)}`;
-    if (q !== lastQ) { ticksX.push({ i, label: `${r.d.slice(2, 4)}.${r.d.slice(4, 6)}` }); lastQ = q; }
-  });
-
-  const totals = rows.map(r => keys.reduce((s, k) => s + (r[k.key] ?? 0), 0));
-  const iPeak = totals.indexOf(Math.max(...totals));
-
-  const tvS = ticks(dom[0], dom[1], 4), tfS = tickFmt(tvS, 1);
-  const su = splitUnit(unit);
-
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
-  ${tvS.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l + iw + 6}" y="${(yAt(v) + 3.5).toFixed(1)}">${tfS(v)}</text>`).join('')}
-  ${su.axis ? `<text class="axu" x="${axuX(M.l + iw + 6, su.axis, W).toFixed(1)}" y="${M.t - 5}">${esc(su.axis)}</text>` : ''}
-  ${ticksX.map(t => `<text class="ax" x="${clampX(xAt(t.i), t.label, W).toFixed(1)}" y="${M.t + ih + 15}" text-anchor="middle">${t.label}</text>`).join('')}
-  ${layers.map(l => `<path d="${l.path}" fill="${l.color}" fill-opacity="${l.op ?? 0.85}" stroke="none"/>`).join('')}
-  ${marks.map(m => {
-    const i = rows.findIndex(r => r.d >= m.d);
-    if (i < 0) return '';
-    return `<line class="mk" x1="${xAt(i).toFixed(1)}" y1="${M.t}" x2="${xAt(i).toFixed(1)}" y2="${M.t + ih}"/>
-      <text class="ax sm" x="${xAt(i).toFixed(1)}" y="${M.t - 5}" text-anchor="middle">${esc(m.label)}</text>`;
-  }).join('')}
-  <circle class="tdot hi" cx="${xAt(iPeak).toFixed(1)}" cy="${yAt(totals[iPeak]).toFixed(1)}" r="3"/>
-  <text class="ax sm" x="${xAt(iPeak).toFixed(1)}" y="${(yAt(totals[iPeak]) - 7).toFixed(1)}" text-anchor="middle">고점 ${f(totals[iPeak], 1)}조</text>
-  <circle class="tdot now" cx="${xAt(rows.length - 1).toFixed(1)}" cy="${yAt(totals.at(-1)).toFixed(1)}" r="3.4"/>
-  <text class="unit" x="${M.l}" y="12">${esc(su.title || unit)}</text>
-</svg>`;
-}
-
-/** 같은 단위(조원) 계열 여러 개를 한 축에 겹쳐 그린다. */
-// dg: 축 눈금 소수 자리. zeroBase:false 면 값 범위에 맞춰 하한을 올린다 —
-// 외국인 지분율(46~56%)처럼 0에서 먼 계열은 0 기준으로 그리면 움직임이 안 보인다.
-function levelChartStatic(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
-  const W = 660, H = 260, M = { t: 22, r: 16, b: 34, l: 50 };
-  const iw = W - M.l - M.r, ih = H - M.t - M.b;
-  const vals = lines.flatMap(L => rows.map(r => r[L.key]).filter(Number.isFinite));
-  const hi = Math.max(...vals), lo = Math.min(...vals);
-  const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.05 || 1;
-  const vMin = zeroBase ? 0 : lo - pad;
-  const vMax = zeroBase ? hi * 1.1 : hi + pad;
-  const xAt = i => scale(i, [0, rows.length - 1], [M.l, M.l + iw]);
-  const yAt = v => scale(v, [vMin, vMax], [M.t + ih, M.t]);
-
-  const yearTicks = [];
-  let lastY = null;
-  rows.forEach((r, i) => {
-    const y = r.d.slice(0, 4);
-    if (y !== lastY) { yearTicks.push({ i, label: `'${y.slice(2)}` }); lastY = y; }
-  });
-
-  const paths = lines.map(L => {
-    const pts = rows.map((r, i) => (Number.isFinite(r[L.key]) ? `${xAt(i).toFixed(1)},${yAt(r[L.key]).toFixed(1)}` : null))
-      .filter(Boolean);
-    return `<path class="${L.cls}" d="M${pts.join(' L')}"/>`;
-  }).join('');
-
-  const tv = ticks(vMin, vMax), tf = tickFmt(tv, dg);
-  const { title, axis } = splitUnit(unit);
-
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(unit)}">
-  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
-    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${tf(v)}</text>`).join('')}
-  ${axis ? `<text class="axu" x="${axuX(M.l - 8, axis, W, true).toFixed(1)}" y="${M.t - 5}">${esc(axis)}</text>` : ''}
-  ${yearTicks.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${t.label}</text>`).join('')}
-  ${paths}
-  ${title ? `<text class="unit" x="${M.l}" y="13">${esc(title)}</text>` : ''}
-</svg>`;
-}
-
-// 선 클래스 -> 색. 대화형 쪽은 CSS 클래스를 못 쓰는 자리(툴팁 색점)가 있어 값이 필요하다.
-const CLS_COLOR = { 'ln-idx': CL.acc, 'ln-cr': CL.cr, 'ln-kq': CL.kq, 'ln-ratio': CL.acc, 'ln-base': CL.mut };
 
 /* ---------- 신용융자 시장별 겹쳐보기 ---------- */
 // 위 시계열은 신용융자 합계에 지수를 겹쳐 맥락만 보여준다 — 코스피·코스닥 신용융자
@@ -971,8 +1066,16 @@ function lendingChart(series, cyclePeakDate) {
   const rs = (series ?? []).filter(r => r && r.d);
   return interactive({
     unit: '대차잔고 (조원)', dg: 1, zeroBase: false, h: 250,
+    axis2Unit: '코스피(p)', dg2: 0,
     dates: rs.map(r => r.d),
-    series: [{ name: '대차잔고 (조원)', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.bal) ? r.bal : null)) }],
+    series: [
+      { name: '대차잔고', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.bal) ? r.bal : null)) },
+      // 코스피는 눈금이 있는 보조축에 정확히 태운다. 정적 SVG 의 코스닥 선은 애초에
+      // "자체 스케일"(숫자 눈금 없는 형태만 참고용)이라 정밀 판독 대상이 아니었다 —
+      // 보조축 하나로는 코스피·코스닥을 동시에 정확히 태울 수 없어(코스닥만 뭉개진다)
+      // 정밀 판독이 필요 없던 코스닥은 대화형에서 생략한다(정적 폴백엔 그대로 남는다).
+      { name: '코스피', color: CL.acc, axis2: true, vals: rs.map(r => (Number.isFinite(r.idx) ? r.idx : null)) },
+    ],
   }, lendingChartStatic(series, cyclePeakDate));
 }
 
@@ -980,10 +1083,15 @@ function timeSeriesChart(series, periods) {
   const rs = (series ?? []).filter(r => r && r.d);
   return interactive({
     unit: '신용융자 합계 (조원)', dg: 1, zeroBase: false, h: 260,
+    axis2Unit: '코스피(p)', dg2: 0,
     dates: rs.map(r => r.d),
-    // A.series 의 c 는 원자료 단위 그대로 **백만원**이다(§1). 정적 SVG 는 /1e6 해서
-    // 조원으로 그리는데 여기서 안 나눠서, 대화형 차트만 축이 40,000,000 조원으로 찍혔다.
-    series: [{ name: '신용융자', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c / 1e6 : null)) }],
+    series: [
+      // A.series 의 c 는 원자료 단위 그대로 **백만원**이다(§1). 정적 SVG 는 /1e6 해서
+      // 조원으로 그리는데 여기서 안 나눠서, 대화형 차트만 축이 40,000,000 조원으로 찍혔다.
+      { name: '신용융자', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c / 1e6 : null)) },
+      // 코스닥은 lendingChart 와 같은 이유로 생략한다(정적 SVG 에서도 눈금 없는 참고용이었다).
+      { name: '코스피', color: CL.acc, axis2: true, vals: rs.map(r => r.i ?? null) },
+    ],
   }, timeSeriesChartStatic(series, periods));
 }
 
@@ -993,9 +1101,30 @@ function timeSeriesChart(series, periods) {
  * 국가별 포지셔닝 막대 (PART 6). 0 을 기준으로 매수는 위, 매도는 아래로 쌓고
  * 순합계를 마름모로 찍는다 — 씨티 'Weekly Futures Activity' 와 같은 읽기다.
  *
- * 시계열이 아니라 **범주형**이라 대화형 런타임(시간축 전제)에 못 태운다. 정적 SVG 로 둔다.
+ * 시계열이 아니라 범주형(국가)이라 drawBars() 의 divergeStack 모드를 쓴다.
  */
 function countryBarChart(items, unit = '정산 구간 포지션 변화 (백만달러)') {
+  if (!items?.length) return '';
+  return interactiveBars({
+    unit, dg: 0,
+    categories: items.map(it => it.country),
+    // 씨티 대응 지수명은 x축에 두 줄째로 늘 보이던 것 — 호버 헤더로 옮긴다(아래 표에도 있다).
+    subLabels: items.map(it => it.citi || null),
+    divergeStack: true,
+    zeroBase: false,
+    // 매 막대 아래 Net 이 이미 항상 보인다 — 별도 최고/최저 라벨은 중복이라 끈다.
+    markExtent: false,
+    bars: [
+      { name: '숏 커버', color: CL.part, opacity: 0.55, vals: items.map(it => it.coverShorts) },
+      { name: '신규 롱', color: CL.acc, vals: items.map(it => it.newLongs ?? 0) },
+      { name: '신규 숏', color: CL.cr, vals: items.map(it => it.newShorts) },
+      { name: '롱 청산', color: CL.bar, opacity: 0.75, vals: items.map(it => it.coverLongs ?? 0) },
+    ],
+    net: { name: 'Net', color: '#f2c744', vals: items.map(it => it.net) },
+  }, countryBarChartStatic(items, unit));
+}
+
+function countryBarChartStatic(items, unit = '정산 구간 포지션 변화 (백만달러)') {
   if (!items?.length) return '';
   const W = 980, H = 340, M = { t: 26, r: 16, b: 74, l: 58 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
@@ -3046,6 +3175,11 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ic-tip span b { color:var(--fg); }
   .ic-tip i { display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; }
   .ic-guide { stroke:var(--mut); stroke-width:1; stroke-dasharray:3 3; }
+  /* 대화형 차트의 고점/저점 라벨. 눈금 글자보다 살짝 진하게 — 그냥 축이 아니라
+     "이 지점을 보라"는 표시라는 걸 구분한다. */
+  .mk-lab { font-weight:700; fill:var(--fg); }
+  /* 범주형(막대) 차트. 시계열 svg 와 같은 축(.ax/.axu/.grid/.zero) 스타일을 그대로 쓴다. */
+  .catbar { cursor:default; }
   .ic-sum { display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:4px;
     font-size:11.5px; color:var(--mut); }
   .ic-sum i { display:inline-block; width:8px; height:8px; border-radius:2px; margin-right:5px; }
