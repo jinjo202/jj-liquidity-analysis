@@ -433,6 +433,28 @@ if (A.verdict) {
 
 // 국가별 포지셔닝(§36). 네 갈래는 잔고 변화의 부호에서 나온 것이라, 부호와 합계가
 // 어긋나면 계산이 아니라 해석이 무너진다.
+// 신용융자 시장별 겹쳐보기(§1 그래프 확장). 전체는 OS0026, 코스피·코스닥은 별도 xlsx(§8) —
+// 다른 파일 두 개를 겹쳐 그리는 차트라 항등식이 깨지면 그래프가 서로 다른 이야기를 한다.
+if (A.creditByMarket) {
+  const CM = A.creditByMarket;
+  assert.ok(CM.series.length > 0, '신용융자 시장별 계열이 비어 있다');
+  let checked = 0;
+  for (const r of CM.series) {
+    if (r.kospi == null || r.kosdaq == null) continue;    // 분리 파일이 아직 안 올라온 날
+    checked++;
+    // xlsx 반올림으로 최대 ±1백만원(=1e-6조) 차이가 난다(실측). 그보다 크면 소스가 어긋난 것이다.
+    near(r.total, r.kospi + r.kosdaq, 2e-6, `${r.d} 전체 vs 코스피+코스닥`);
+  }
+  assert.ok(checked > 0, '코스피/코스닥 분리값이 하나도 없다 — credit-split.json 을 못 읽었다');
+  // 전체 계열은 본문 시계열(A.series.c)과 같은 소스다 — 값이 어긋나면 두 차트가 다른 숫자를 보여준다.
+  const byDate = new Map(A.series.map(r => [r.d, r.c]));
+  for (const r of CM.series) {
+    const c = byDate.get(r.d);
+    if (c == null || r.total == null) continue;
+    near(r.total, c / 1e6, 1e-9, `${r.d} 신용융자 시장별 '전체' vs 본문 시계열`);
+  }
+}
+
 if (A.countryFlow) {
   const C = A.countryFlow;
   assert.ok(C.items.length >= 4, `국가가 ${C.items.length}개뿐이다`);

@@ -43,6 +43,26 @@ const split = fs.existsSync(splitPath)
   ? JSON.parse(fs.readFileSync(splitPath, 'utf8'))
   : null;
 
+// 신용융자 시장별 겹쳐보기(전체·코스피·코스닥, §1 그래프). 전체는 OS0026(오늘까지 나온다),
+// 코스피·코스닥은 credit-split.json(§8, 수동 xlsx 갱신이라 1~2주 늦다) — 겹치는 날짜에서
+// 값이 정확히 같은 소스라는 것을 확인했으므로(전체 vs kospi+kosdaq, 오차 ±1백만원 = xlsx 반올림)
+// 늦게 확정되는 두 계열을 억지로 오늘까지 늘리지 않고, 없는 날은 그냥 null 로 둔다.
+const creditByMarket = !split ? null : (() => {
+  const byDate = new Map(split.series.map(r => [r.date, r]));
+  const series = raw.series
+    .filter(r => Number.isFinite(r.OS0001) && r.date >= '20200101')
+    .map(r => {
+      const s = byDate.get(r.date);
+      return {
+        d: r.date,
+        total: Number.isFinite(r.OS0026) ? r.OS0026 / 1e6 : null,
+        kospi: s ? s.kospi / 1e6 : null,
+        kosdaq: s ? s.kosdaq / 1e6 : null,
+      };
+    });
+  return { series, splitThrough: split.series.at(-1).date };
+})();
+
 function buildInput(market) {
   const ik = idxKey[market];
   const idxRows = raw.series
@@ -1637,6 +1657,7 @@ const out = {
     source: raw.meta, splitSource: split?.meta ?? null,
   },
   verdict,
+  creditByMarket,
   periods, repro, reproMAE, stress, projection, monthly, lending, etf, outlook, channels, unpaid, spot, daily,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   divergence,

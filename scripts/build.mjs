@@ -703,9 +703,12 @@ function thin(spec) {
     series: spec.series.map(s => ({ ...s, vals: keep.map(i => s.vals[i]) })),
   };
 }
+// 방금 만든 차트의 id. 계열 토글 체크박스처럼 차트 밖에서 같은 id를 참조해야 하는
+// 마크업을 만들 때 쓴다 — levelChart() 등은 문자열만 돌려주므로 이렇게 옆으로 흘려둔다.
+let lastChartId = null;
 function interactive(spec, staticSvg) {
   // 점이 두 개 미만이면 대화형으로 만들 이유가 없다.
-  if (!spec?.dates?.length || spec.dates.length < 2) return staticSvg;
+  if (!spec?.dates?.length || spec.dates.length < 2) { lastChartId = null; return staticSvg; }
   const id = `c${++chartSeq}`;
   // 제목/단위 분리는 여기서 한 번만 한다 — 래퍼 여섯 개에 같은 코드를 흩뿌리지 않는다.
   const { title, axis } = splitUnit(spec.unit);
@@ -714,10 +717,25 @@ function interactive(spec, staticSvg) {
     // 툴팁 접미사는 단위가 하나일 때만 붙인다. '% / 조원' 처럼 둘이면 붙이는 게 오히려 틀린다.
     suffix: spec.suffix ?? (axis && !axis.includes('/') ? axis : ''),
   });
+  lastChartId = id;
   return `<div class="ichart" data-chart="${id}">${staticSvg}</div>`;
+}
+
+/**
+ * 계열 켜기/끄기 체크박스. levelChart() 등으로 차트를 그린 바로 뒤에 호출해
+ * lastChartId 를 참조한다 — 두 계열짜리 범례를 세 계열 토글로 바꿀 때 이 함수만 쓰면 된다.
+ * JS 없으면 `hidden` 속성 그대로 안 보인다(정적 SVG 는 항상 전부 겹쳐 보이므로 토글이 필요 없다).
+ */
+function seriesToggle(lines, colors) {
+  const id = lastChartId;
+  if (!id) return '';
+  return `<div class="ictoggle" data-for="${id}" hidden>${lines.map((l, i) => `<label>
+    <input type="checkbox" checked data-idx="${i}"><i style="background:${colors[i]}"></i><span>${esc(l)}</span>
+  </label>`).join('')}</div>`;
 }
 // 색은 CSS 변수 문자열로 넘긴다 — stroke 와 툴팁 색점 양쪽에서 그대로 쓰인다.
 const CL = { acc: 'var(--acc)', cr: 'var(--cr)', kq: 'var(--kq)', lv: 'var(--lv)', nx: 'var(--nx)', mut: 'var(--mut)' };
+
 
 function trendChartStatic(points, unit, dg, spanLabel = '최근 1년') {
   const W = 640, H = 190, M = { t: 18, r: 52, b: 26, l: 12 };
@@ -883,6 +901,34 @@ function levelChartStatic(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
 
 // 선 클래스 -> 색. 대화형 쪽은 CSS 클래스를 못 쓰는 자리(툴팁 색점)가 있어 값이 필요하다.
 const CLS_COLOR = { 'ln-idx': CL.acc, 'ln-cr': CL.cr, 'ln-kq': CL.kq, 'ln-ratio': CL.acc, 'ln-base': CL.mut };
+
+/* ---------- 신용융자 시장별 겹쳐보기 ---------- */
+// 위 시계열은 신용융자 합계에 지수를 겹쳐 맥락만 보여준다 — 코스피·코스닥 신용융자
+// 자체를 비교하는 차트는 따로 없었다. 여기서 셋을 같은 축(조원)에 올리고 체크박스로
+// 켜고 끄게 한다. 기본은 셋 다 켜짐 — 겹쳐 보는 게 목적이라 하나만 남기고 시작하지 않는다.
+const creditMarketSection = !A.creditByMarket ? '' : (() => {
+  const CM = A.creditByMarket;
+  const LINES = [
+    { key: 'total', cls: 'ln-cr', name: '전체' },
+    { key: 'kospi', cls: 'ln-idx', name: '코스피' },
+    { key: 'kosdaq', cls: 'ln-kq', name: '코스닥' },
+  ];
+  const chart = levelChart(CM.series, LINES, '신용융자 (조원)', { dg: 1, zeroBase: true });
+  const toggle = seriesToggle(LINES.map(l => l.name), [CL.cr, CL.acc, CL.kq]);
+  const lastTotal = [...CM.series].reverse().find(r => r.total != null);
+  const lastSplit = [...CM.series].reverse().find(r => r.kospi != null);
+
+  return `<figure>
+  <h4>신용융자 — 시장별 겹쳐보기</h4>
+  ${toggle}
+  ${chart}
+  <div class="lg"><span><i class="sw cr"></i>전체</span><span><i class="sw acc"></i>코스피</span><span><i class="sw kq"></i>코스닥</span></div>
+  <figcaption>체크박스로 계열을 하나씩, 또는 원하는 조합으로 켜고 끌 수 있다(전체 켜짐이 기본).
+    전체는 ${dtFull(lastTotal.d)}까지 나오지만 코스피·코스닥은 수동으로 올리는 분리 파일(§8) 기준이라
+    <b>${dtFull(lastSplit.d)}까지</b>만 있다 — 오른쪽 끝의 빈 구간은 누락이 아니라 그 지연이다.</figcaption>
+</figure>`;
+})();
+
 function levelChart(rows, lines, unit, opts = {}) {
   const rs = (rows ?? []).filter(r => r && r.d);
   return interactive({
@@ -3008,6 +3054,14 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ic-sum em.up { color:var(--kq); } .ic-sum em.dn { color:var(--cr); }
   .ic-sum .ic-range { color:var(--fg); font-weight:600; }
   .ic-empty { padding:26px 0; text-align:center; color:var(--mut); font-size:12px; }
+  /* 계열 토글. JS 없으면 hidden 속성 그대로 안 보인다 — 정적 SVG 는 항상 전부 겹쳐
+     보이므로 켜고 끌 필요가 없다(범례 .lg 로 충분). boot() 가 hidden 을 지운다. */
+  .ictoggle { display:flex; flex-wrap:wrap; gap:6px 14px; margin:2px 0 8px; font-size:12px; }
+  .ictoggle label { display:flex; align-items:center; gap:6px; cursor:pointer;
+    color:var(--fg); user-select:none; }
+  .ictoggle input[type=checkbox] { width:14px; height:14px; cursor:pointer; accent-color:var(--acc); margin:0; }
+  .ictoggle i { display:inline-block; width:16px; height:3px; border-radius:2px; }
+  .ictoggle input:not(:checked) ~ i, .ictoggle input:not(:checked) ~ span { opacity:.35; }
   /* 구간 선택 툴바 — 스크롤해도 위에 붙어 있어야 아무 차트에서나 바로 바꾼다. */
   /* 메뉴(.tabs, top:0, 높이 ~41px)와 겹치지 않게 그 아래에 붙인다. */
   .ic-bar { position:sticky; top:41px; z-index:20; display:flex; flex-wrap:wrap;
@@ -3020,7 +3074,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ic-presets button { font:inherit; font-size:11.5px; padding:4px 10px; cursor:pointer;
     border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--mut); }
   .ic-presets button:hover { border-color:var(--mut); color:var(--fg); }
-  @media print { .ic-bar { display:none; } .ic-on .ichart > svg:not(.ic-svg) { display:block; } .ic-svg, .ic-tip, .ic-sum { display:none; } }
+  @media print { .ic-bar, .ictoggle { display:none; } .ic-on .ichart > svg:not(.ic-svg) { display:block; } .ic-svg, .ic-tip, .ic-sum { display:none; } }
   .c-etf { border-top:3px solid var(--lv); }
   .c-next { border-top:3px solid var(--nx); }
   .pill { display:inline-block; font-size:9.5px; letter-spacing:1.5px; padding:2px 6px; border-radius:4px;
@@ -3289,6 +3343,8 @@ ${summarySection}
   <div class="lg"><span><i class="sw cr"></i>신용융자 합계(좌, 조원)</span><span><i class="sw acc"></i>코스피(우, p)</span><span><i class="sw kq"></i>코스닥(우, 자체 스케일)</span></div>
   <figcaption>음영은 각 사이클의 적립 구간. 신용융자는 결제일 기준이라 지수보다 1~2일 늦게 확정된다.</figcaption>
 </figure>
+
+${creditMarketSection}
 
 ${compare}
 

@@ -13,6 +13,7 @@
   'use strict';
   var DATA = window.__CHARTS__ || {};
   var state = { from: null, to: null };          // 전역 구간. null 이면 전체.
+  var hidden = {};                               // { chartId: { seriesIdx: true } } — 계열 토글.
 
   var fmt = function (v, d) {
     if (v == null || !isFinite(v)) return '-';
@@ -56,7 +57,7 @@
     };
   }
 
-  function draw(box, spec) {
+  function draw(box, spec, id) {
     var cut = sliceByRange(spec);
     box.innerHTML = '';
     if (!cut) {
@@ -65,6 +66,14 @@
       warn.textContent = '이 구간에는 데이터가 없다.';
       box.appendChild(warn);
       return;
+    }
+    // 계열 토글로 꺼진 것은 그리기 전에 걷어낸다 — 그러면 아래 눈금 범위 계산·선 그리기·
+    // 툴팁·구간요약이 전부 자연히 켜진 계열만으로 동작한다(따로 손댈 곳이 없다).
+    if (id && hidden[id]) {
+      cut = {
+        dates: cut.dates,
+        series: cut.series.filter(function (_, i) { return !hidden[id][i]; }),
+      };
     }
     var W = 660, H = spec.h || 230, M = { t: 22, r: 14, b: 30, l: 56 };
     var iw = W - M.l - M.r, ih = H - M.t - M.b;
@@ -246,7 +255,30 @@
   function renderAll() {
     Object.keys(DATA).forEach(function (id) {
       var box = document.querySelector('[data-chart="' + id + '"]');
-      if (box) draw(box, DATA[id]);
+      if (box) draw(box, DATA[id], id);
+    });
+  }
+
+  // 체크박스로 계열을 켜고 끈다. 마크업은 build.mjs 의 seriesToggle() 이 만든다 —
+  // <div class="ictoggle" data-for="차트id"><input data-idx="N">... 순서다.
+  function wireToggles() {
+    document.querySelectorAll('.ictoggle[data-for]').forEach(function (box) {
+      box.hidden = false;                        // 정적 폴백 전용 hidden — JS 가 돌면 보여준다.
+      var id = box.getAttribute('data-for');
+      var checks = box.querySelectorAll('input[type=checkbox]');
+      checks.forEach(function (cb) {
+        cb.addEventListener('change', function () {
+          // 마지막 하나까지 끄면 빈 차트가 된다 — 최소 하나는 남긴다.
+          var anyChecked = false;
+          checks.forEach(function (c) { if (c.checked) anyChecked = true; });
+          if (!anyChecked) { cb.checked = true; return; }
+          var idx = +cb.getAttribute('data-idx');
+          var set = hidden[id] || (hidden[id] = {});
+          if (cb.checked) delete set[idx]; else set[idx] = true;
+          var target = document.querySelector('[data-chart="' + id + '"]');
+          if (target) draw(target, DATA[id], id);
+        });
+      });
     });
   }
 
@@ -294,6 +326,7 @@
         });
       });
     }
+    wireToggles();
     renderAll();
   }
 
