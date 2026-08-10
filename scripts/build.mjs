@@ -1084,6 +1084,9 @@ function timeSeriesChart(series, periods) {
   return interactive({
     unit: '신용융자 합계 (조원)', dg: 1, zeroBase: false, h: 260,
     axis2Unit: '코스피(p)', dg2: 0,
+    // 사이클 적립 구간 음영. 대화형으로 바뀌며 조용히 빠졌던 것 중 하나 — 정적 SVG 는
+    // 늘 그렸는데 여기 series 만 넘기고 밴드를 안 넘겼었다.
+    bands: periods.map((p, n) => ({ from: p.accBase, to: p.accEnd, label: `${p.name} 적립`, cls: `c${n}` })),
     dates: rs.map(r => r.d),
     series: [
       // A.series 의 c 는 원자료 단위 그대로 **백만원**이다(§1). 정적 SVG 는 /1e6 해서

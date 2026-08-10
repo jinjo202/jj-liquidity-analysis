@@ -61,12 +61,26 @@
     return td;
   }
 
+  // lib/labels.mjs 의 빌드타임 추정과 같은 공식(글자당 상수) — getBBox 가 못 잴 때만 쓴다.
+  function estWidth(s, px) {
+    var w = 0;
+    for (var i = 0; i < s.length; i++) w += (s.charCodeAt(i) < 128 ? px * 0.52 : px);
+    return w;
+  }
+
   /**
-   * 값 라벨을 실제 DOM 에 넣고 getBBox 로 재서 겹치면 위로 밀어낸다. 빌드타임 추정
+   * 값 라벨을 실제 DOM 에 넣고 getBBox 로 재서 겹치면 밀어낸다. 빌드타임 추정
    * (lib/labels.mjs) 과 같은 문제를 풀지만, 브라우저에서는 실제 텍스트 폭을 잴 수 있어
-   * 더 정확하다. svg 가 이미 box 에 붙어(attach) 있어야 getBBox 가 실측값을 준다.
+   * 더 정확하다 — 단, **숨은 탭(display:none) 안에서는 getBBox 가 0을 준다**(실측 확인).
+   * 처음엔 기본 탭이 아닌 파트가 전부 숨겨진 채로 그려지므로, 0 이 나오면 같은 글자당
+   * 상수 추정으로 떨어진다 — 안 그러면 라벨이 전부 같은 자리에 찍혀 겹친다(실측 버그).
+   *
+   * 밀어내는 방향은 위(고점 라벨의 기본 방향)로 고정하지 않는다 — 여러 계열이 같은 날
+   * 같이 고점을 찍으면(흔하다) 첫 라벨이 이미 차트 맨 위 여백을 다 써버려, 위로만 밀면
+   * 더 밀 자리가 없어 겹친 채로 멈춘다(실측 버그: 두 '고' 라벨이 정확히 같은 줄에 찍혔다).
+   * 위가 막히면 아래로, 아래도 막히면 다시 위로 — 막힌 쪽은 건너뛰고 열린 쪽으로 민다.
    */
-  function placeMarks(svg, marks, W, minY) {
+  function placeMarks(svg, marks, W, minY, maxY) {
     var placed = [];
     marks.forEach(function (m) {
       if (m.dotColor != null) {
@@ -78,13 +92,18 @@
       var t = el('text', { class: 'ax sm mk-lab', x: m.cx.toFixed(1), y: m.cy.toFixed(1), 'text-anchor': 'middle' });
       t.textContent = m.text;
       svg.appendChild(t);
-      var w = 40;
-      try { w = t.getBBox().width; } catch (e) { /* 감춰진 탭 등에서는 0/실패 — 추정폭으로 둔다 */ }
+      var w = 0;
+      try { w = t.getBBox().width; } catch (e) { /* 실패 — 아래에서 추정으로 대체 */ }
+      if (!w) w = estWidth(m.text, 9);
       var x = Math.min(Math.max(m.cx, w / 2 + 2), W - w / 2 - 2);
       var y = m.cy;
       var hits = function (p) { return Math.abs(p.x - x) < (p.w + w) / 2 + 3 && Math.abs(p.y - y) < 11; };
-      var guard = 0;
-      while (placed.some(hits) && y - 11 > minY && guard++ < 20) y -= 11;
+      var dir = -11, guard = 0;
+      while (placed.some(hits) && guard++ < 24) {
+        var ny = y + dir;
+        if (ny < minY || ny > maxY) { dir = -dir; ny = y + dir; if (ny < minY || ny > maxY) break; }
+        y = ny;
+      }
       t.setAttribute('x', x.toFixed(1));
       t.setAttribute('y', y.toFixed(1));
       placed.push({ x: x, y: y, w: w });
@@ -140,7 +159,10 @@
       };
     }
     var hasAxis2 = cut.series.some(function (s) { return s.axis2; });
-    var W = 660, H = spec.h || 230, M = { t: 22, r: hasAxis2 ? 42 : 14, b: 30, l: 56 };
+    // 사이클 대(帶) 라벨은 x축 날짜 라벨(y=ih+15) 아래 한 줄 더(y=ih+32) 그린다 —
+    // 아래 여백이 30px 뿐이면 그 라벨이 뷰박스 밖으로 잘린다.
+    var W = 660, H = spec.h || 230;
+    var M = { t: 22, r: hasAxis2 ? 42 : 14, b: (spec.bands && spec.bands.length) ? 46 : 30, l: 56 };
     var iw = W - M.l - M.r, ih = H - M.t - M.b;
     var vals = [], vals2 = [];
     cut.series.forEach(function (s) {
@@ -183,6 +205,26 @@
     var yFor = function (s) { return s.axis2 ? yAt2 : yAt; };
 
     var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'ic-svg', role: 'img' });
+
+    // 사이클 적립 구간 음영(정적 SVG 가 늘 그리던 것) — 그리드·선보다 먼저 그려서 뒤에 깔린다.
+    // 구간 선택으로 좁혀 보면 대(帶)가 화면 밖으로 나갈 수도 있는데, 인덱스를 0..n-1 로
+    // 자동 clamp 하는 idxOfDate 특성상 자연히 가장자리에 얇게 남거나 사라진다 — 문제없다.
+    if (spec.bands && spec.bands.length) {
+      var idxOfDate = function (d) {
+        for (var bi = 0; bi < cut.dates.length; bi++) if (cut.dates[bi] >= d) return bi;
+        return cut.dates.length - 1;
+      };
+      spec.bands.forEach(function (bd) {
+        var x0 = xAt(idxOfDate(bd.from)), x1 = xAt(idxOfDate(bd.to));
+        svg.appendChild(el('rect', {
+          class: 'cyc ' + (bd.cls || ''), x: x0.toFixed(1), y: M.t,
+          width: Math.max(1, x1 - x0).toFixed(1), height: ih,
+        }));
+        var lab = el('text', { class: 'cyclab', x: ((x0 + x1) / 2).toFixed(1), y: M.t + ih + 32, 'text-anchor': 'middle' });
+        lab.textContent = bd.label || '';
+        svg.appendChild(lab);
+      });
+    }
 
     var tv = ticks(dom[0], dom[1], 4);
     var td = tickDigits(tv, spec.dg);
@@ -296,7 +338,9 @@
     } else {
       cut.series.forEach(function (s) {
         var ext = seriesExtent(s.vals);
-        if (!ext) return;
+        // 평균·±1σ 같은 참조선은 값이 완전히 평평하다(모든 점이 같은 수) — "고점"이
+        // 첫 점일 뿐 아무 의미가 없고, 그 자리에 라벨 여러 개가 겹쳐 찍힌다(실측).
+        if (!ext || ext.hi === ext.lo) return;
         var yFn = yFor(s);
         // 보조축 계열은 단위가 다르다(예: 조원 축 옆의 코스피 p) — 주축 접미사를
         // 그대로 붙이면 '코스피 9,114조원' 처럼 틀린 라벨이 나온다.
@@ -310,7 +354,7 @@
         }
       });
     }
-    placeMarks(svg, marks, W, M.t + 2);
+    placeMarks(svg, marks, W, M.t + 2, M.t + ih - 4);
 
     var tip = document.createElement('div');
     tip.className = 'ic-tip'; tip.hidden = true;
@@ -536,7 +580,7 @@
             text: '최고 ' + fmt(ext.hi, spec.dg || 0) + (spec.suffix || '') + ' (' + cats[ext.hiI] + ')' },
           { cx: cx(ext.loI), cy: yAt(ext.lo) + 13, dotY: yAt(ext.lo), dotColor: 'var(--fg)',
             text: '최저 ' + fmt(ext.lo, spec.dg || 0) + (spec.suffix || '') + ' (' + cats[ext.loI] + ')' },
-        ], W, M.t + 2);
+        ], W, M.t + 2, M.t + ih - 4);
       }
     }
 
