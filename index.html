@@ -5427,8 +5427,12 @@ DTC(days to cover)는 평균 거래량으로 잔고를 되갚는 데 걸리는 �
       if (!w) w = estWidth(m.text, 9);
       var x = Math.min(Math.max(m.cx, w / 2 + 2), W - w / 2 - 2);
       var y = m.cy;
-      var hits = function (p) { return Math.abs(p.x - x) < (p.w + w) / 2 + 3 && Math.abs(p.y - y) < 11; };
-      var dir = -11, guard = 0;
+      // 세로 간격 13 은 눈대중이 아니다 — lib/labels.mjs 가 이미 실측해 둔 값이다: 이
+      // 라벨과 같은 9px 한글 텍스트의 실제 상자 높이가 12.27 이다. 11 로 뒀다가(이번에
+      // 새로 만들면서 반복한 실수) 0.7~1px 씩 겹친 채로 "충돌 아님" 판정이 났었다.
+      var LH = 13;
+      var hits = function (p) { return Math.abs(p.x - x) < (p.w + w) / 2 + 3 && Math.abs(p.y - y) < LH; };
+      var dir = -LH, guard = 0;
       while (placed.some(hits) && guard++ < 24) {
         var ny = y + dir;
         if (ny < minY || ny > maxY) { dir = -dir; ny = y + dir; if (ny < minY || ny > maxY) break; }
@@ -5684,7 +5688,12 @@ DTC(days to cover)는 평균 거래량으로 잔고를 되갚는 데 걸리는 �
         }
       });
     }
-    placeMarks(svg, marks, W, M.t + 2, M.t + ih - 4);
+    // maxY 는 플롯 바닥(M.t+ih)보다 조금 더 내려가도 된다 — zeroBase 차트의 '저' 라벨은
+    // 원래도 그 점보다 13px 아래(dotY+13)에서 시작해 플롯 경계를 살짝 넘어간다. 여기를
+    // 플롯 안쪽으로만 제한했더니(M.t+ih-4) 그 시작점 자체가 이미 상한을 넘어 있어
+    // 위로도 아래로도 못 밀고 그 자리에 여러 개가 그대로 겹쳐 쌓였다(실측 버그) — 아래쪽은
+    // x축 날짜 라벨(M.t+ih+15) 바로 위까지만 열어 준다.
+    placeMarks(svg, marks, W, M.t + 2, M.t + ih + 11);
 
     var tip = document.createElement('div');
     tip.className = 'ic-tip'; tip.hidden = true;
@@ -5910,7 +5919,7 @@ DTC(days to cover)는 평균 거래량으로 잔고를 되갚는 데 걸리는 �
             text: '최고 ' + fmt(ext.hi, spec.dg || 0) + (spec.suffix || '') + ' (' + cats[ext.hiI] + ')' },
           { cx: cx(ext.loI), cy: yAt(ext.lo) + 13, dotY: yAt(ext.lo), dotColor: 'var(--fg)',
             text: '최저 ' + fmt(ext.lo, spec.dg || 0) + (spec.suffix || '') + ' (' + cats[ext.loI] + ')' },
-        ], W, M.t + 2, M.t + ih - 4);
+        ], W, M.t + 2, M.t + ih + 11);
       }
     }
 
