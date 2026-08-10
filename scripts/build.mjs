@@ -34,6 +34,7 @@ function ticks(min, max, count = 5) {
 const UNIT_ALIAS = { 조: '조원', 억: '억원', 배수: '배' };
 const KNOWN_UNITS = new Set([
   '조원', '억원', '백만원', '만원', '천원', '원',
+  '십억달러', '억달러', '백만달러', '달러',
   '%', '%p', 'p', '배', '회',
   '억주', '백만주', '만주', '천주', '주',
   '억좌', '백만좌', '만좌', '좌',
@@ -659,6 +660,7 @@ function chartRuntime() {
   // 배수 오류(1e6)만 잡으면 되므로 상한은 느슨하게 둔다. 여기서 걸리면 래퍼의 스케일을 봐라.
   const SANE = {
     조원: 1e4, 억원: 1e6, 백만원: 1e8, 만원: 1e5, 천원: 1e6, 원: 1e8,
+    십억달러: 1e4, 억달러: 1e5, 백만달러: 1e7, 달러: 1e9,
     '%': 1e4, '%p': 1e4, p: 1e5, 배: 1e3, 회: 1e3,
     억주: 1e4, 백만주: 1e5, 만주: 1e7, 천주: 1e8, 주: 1e12,
     억좌: 1e4, 백만좌: 1e5, 만좌: 1e7, 좌: 1e12,
@@ -941,6 +943,71 @@ function timeSeriesChart(series, periods) {
 
 /* ---------- 대차잔고(공매도 프록시) 차트 ---------- */
 
+/**
+ * 국가별 포지셔닝 막대 (PART 6). 0 을 기준으로 매수는 위, 매도는 아래로 쌓고
+ * 순합계를 마름모로 찍는다 — 씨티 'Weekly Futures Activity' 와 같은 읽기다.
+ *
+ * 시계열이 아니라 **범주형**이라 대화형 런타임(시간축 전제)에 못 태운다. 정적 SVG 로 둔다.
+ */
+function countryBarChart(items, unit = '정산 구간 포지션 변화 (백만달러)') {
+  if (!items?.length) return '';
+  const W = 980, H = 340, M = { t: 26, r: 16, b: 74, l: 58 };
+  const iw = W - M.l - M.r, ih = H - M.t - M.b;
+  const n = items.length;
+  const band = iw / n, bw = Math.min(46, band * 0.5);
+
+  const up = it => (it.newLongs ?? 0) + it.coverShorts;         // 0 위로 쌓이는 것(매수)
+  const dn = it => (it.coverLongs ?? 0) + it.newShorts;         // 0 아래로 쌓이는 것(매도)
+  const vals = items.flatMap(it => [up(it), dn(it), it.net]);
+  const hi = Math.max(0, ...vals), lo = Math.min(0, ...vals);
+  const pad = (hi - lo) * 0.12 || 1;
+  const dom = [lo - pad, hi + pad];
+  const xAt = i => M.l + band * (i + 0.5);
+  const yAt = v => scale(v, dom, [M.t + ih, M.t]);
+
+  const tv = ticks(dom[0], dom[1], 5), tf = tickFmt(tv, 0);
+  const { title, axis } = splitUnit(unit);
+
+  // 층을 하나씩 쌓는다. null(롱 사이드 미수집)은 건너뛴다 — 0 으로 그리면 '없었다'는 거짓이다.
+  const bars = items.map((it, i) => {
+    const x = xAt(i) - bw / 2;
+    const layers = [];
+    let acc = 0;
+    for (const [v, cls] of [[it.coverShorts, 'b-cs'], [it.newLongs ?? 0, 'b-nl']]) {
+      if (!v) continue;
+      layers.push(`<rect class="${cls}" x="${x.toFixed(1)}" y="${yAt(acc + v).toFixed(1)}"
+        width="${bw.toFixed(1)}" height="${Math.abs(yAt(acc + v) - yAt(acc)).toFixed(1)}"/>`);
+      acc += v;
+    }
+    acc = 0;
+    for (const [v, cls] of [[it.newShorts, 'b-ns'], [it.coverLongs ?? 0, 'b-cl']]) {
+      if (!v) continue;
+      layers.push(`<rect class="${cls}" x="${x.toFixed(1)}" y="${yAt(acc).toFixed(1)}"
+        width="${bw.toFixed(1)}" height="${Math.abs(yAt(acc + v) - yAt(acc)).toFixed(1)}"/>`);
+      acc += v;
+    }
+    const ny = yAt(it.net);
+    layers.push(`<path class="b-net" d="M${xAt(i).toFixed(1)},${(ny - 5.5).toFixed(1)}
+      L${(xAt(i) + 5.5).toFixed(1)},${ny.toFixed(1)} L${xAt(i).toFixed(1)},${(ny + 5.5).toFixed(1)}
+      L${(xAt(i) - 5.5).toFixed(1)},${ny.toFixed(1)}Z"/>`);
+    return layers.join('');
+  }).join('');
+
+  const labels = items.map((it, i) => `<text class="ax" x="${xAt(i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${esc(it.country)}</text>
+    ${it.citi ? `<text class="ax sm" x="${xAt(i).toFixed(1)}" y="${M.t + ih + 29}" text-anchor="middle">${esc(it.citi)}</text>` : ''}
+    <text class="ax sm" x="${xAt(i).toFixed(1)}" y="${M.t + ih + 44}" text-anchor="middle">${it.net >= 0 ? '+' : ''}${k0(it.net)}</text>`).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="국가별 포지션 변화">
+  ${tv.map(v => `<line class="grid" x1="${M.l}" y1="${yAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(v).toFixed(1)}"/>
+    <text class="ax" x="${M.l - 8}" y="${(yAt(v) + 3.5).toFixed(1)}" text-anchor="end">${tf(v)}</text>`).join('')}
+  ${axis ? `<text class="axu" x="${axuX(M.l - 8, axis, W, true).toFixed(1)}" y="${M.t - 6}">${esc(axis)}</text>` : ''}
+  <line class="zero" x1="${M.l}" y1="${yAt(0).toFixed(1)}" x2="${M.l + iw}" y2="${yAt(0).toFixed(1)}"/>
+  ${bars}
+  ${labels}
+  ${title ? `<text class="unit" x="${M.l}" y="13">${esc(title)}</text>` : ''}
+</svg>`;
+}
+
 function lendingChartStatic(series, cyclePeakDate) {
   const W = 660, H = 330, M = { t: 24, r: 64, b: 34, l: 52 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
@@ -1135,6 +1202,104 @@ FREESIS 대차거래추이(일별, 시장 전체)에서 받았다.</p>
 
 /* ---------- 해외 반도체 공매도 ---------- */
 // 국내 대차잔고와 같은 질문을 미국 반도체에 묻는다. 두 계열의 주기가 달라 표를 나눈다.
+/* ---------- PART 6 국가별 포지셔닝 (§36) ---------- */
+const countrySection = !A.countryFlow ? '' : (() => {
+  const C = A.countryFlow;
+  const sgn = (n, d = 0) => (Number.isFinite(n) ? `${n >= 0 ? '+' : ''}${n.toFixed(d)}` : '-');
+  const sell = C.items.filter(x => x.net < 0);
+  const buy = C.items.filter(x => x.net > 0);
+  const worst = C.items[0];
+  const kr = C.items.find(x => x.s === 'EWY');
+
+  const rows = C.items.map(it => `<tr${it.s === 'EWY' ? ' class="r-base"' : ''}>
+    <td>${esc(it.country)} <span class="mut">${esc(it.s)}</span></td>
+    <td class="mut">${it.citi ? esc(it.citi) : '-'}</td>
+    <td class="n">${k0(it.siQty / 1e6)}</td>
+    <td class="n ${it.changePct >= 0 ? 'dn' : 'up'}">${sgn(it.changePct, 1)}%</td>
+    <td class="n">${sgn(it.z, 2)}</td>
+    <td class="n">${it.newShorts ? k0(it.newShorts) : '-'}</td>
+    <td class="n">${it.coverShorts ? '+' + k0(it.coverShorts) : '-'}</td>
+    <td class="n">${it.hasLong ? sgn(it.newLongs + it.coverLongs) : '<span class="mut">수집중</span>'}</td>
+    <td class="n"><b>${sgn(it.net)}</b></td>
+    <td class="n ${it.retPct >= 0 ? 'up' : 'dn'}">${sgn(it.retPct, 1)}%</td>
+    <td class="n">${f(it.svLast, 1)}%</td>
+    <td class="n">${f(it.daysToCover, 2)}</td>
+  </tr>`).join('');
+
+  // 정산일별 Net 추이 — 이번 창이 유별난지 아니면 원래 그런지 본다.
+  const dates = C.items[0].history.map(h => h.d.replace(/-/g, ''));
+  const netRows = dates.map((d, i) => {
+    const r = { d };
+    for (const it of C.items) r[it.s] = it.history[i]?.net ?? null;
+    return r;
+  });
+  const LINE = ['ln-cr', 'ln-idx', 'ln-kq', 'ln-base', 'ln-base', 'ln-base', 'ln-base', 'ln-base'];
+  const focus = ['EWY', 'EWJ', 'EWH', 'FXI'];
+
+  return `<section>
+<h2>국가별 포지셔닝 — 돈이 어느 나라에서 빠지고 어디로 도는가</h2>
+<p class="lead">공매도 잔고와 상장좌수의 <b>변화 부호</b>를 네 갈래로 쪼갠다. 늘면 신규 진입, 줄면 청산이다.
+매수(숏 커버·신규 롱)는 0 위로, 매도(신규 숏·롱 청산)는 0 아래로 쌓고 순합계를 마름모로 찍는다.</p>
+
+<figure>
+  <h4>${dtFull(C.windowFrom.replace(/-/g, ''))} → ${dtFull(C.windowTo.replace(/-/g, ''))} 정산 구간</h4>
+  ${countryBarChart(C.items)}
+  <div class="lg"><span><i class="sw acc"></i>신규 롱</span><span><i class="sw cr"></i>신규 숏</span><span><i class="sw bar"></i>롱 청산</span><span><i class="sw part"></i>숏 커버</span><span><i class="sw net"></i>Net</span></div>
+  <figcaption>막대 아래 숫자가 Net(백만달러). ${C.withLong === 0
+    ? `<b>신규 롱·롱 청산은 아직 비어 있다</b> — 좌수(순자산÷NAV)는 과거를 주는 API 가 없어
+       ${dtFull(C.longSideFrom)}부터 쌓기 시작했고 지금 ${C.longSideDays}일치다. 다음 정산일부터 채워진다.
+       0 으로 그리면 "설정·환매가 없었다" 는 거짓이 되므로 비워 뒀다.`
+    : `롱 사이드는 ${dtFull(C.longSideFrom)} 이후 수집분(${C.longSideDays}일)으로 계산한 ${C.withLong}종목만 나온다.`}
+  </figcaption>
+</figure>
+
+<div class="box${kr && kr.net < 0 ? ' warn' : ''}">
+  <b>${sell.length ? `${sell.map(x => x.country).join('·')}에 매도, ${buy.map(x => x.country).join('·')}에 매수` : '전 지역 매수 우위'}</b> —
+  ${kr ? `한국은 <b>${k0(kr.net)}백만달러</b>로 ${worst.s === 'EWY' ? '이 구간 최대 매도' : `${worst.country} 다음`}다.
+  공매도 잔고가 ${sgn(kr.changePct, 1)}% 늘어 이 종목 과거 정산 구간 대비 <b>${sgn(kr.z, 2)}σ</b>,
+  같은 구간 주가는 <b>${sgn(kr.retPct, 1)}%</b>였다.
+  ${kr.changePct > 0 && kr.retPct < 0
+    ? '<b>빠지는 와중에 숏이 새로 붙었다</b> — 차익실현이 아니라 방향성 베팅이다.'
+    : kr.changePct > 0 ? '오르는데도 숏이 붙었다 — 반등에 맞선 포지션이다.'
+      : '잔고가 줄어 되갚기 국면이다.'}` : ''}
+</div>
+
+<div class="tw"><table>
+  <thead><tr><th>국가</th><th>씨티 대응</th><th class="n">공매도잔고(백만주)</th><th class="n">변화</th>
+    <th class="n">z</th><th class="n">신규 숏</th><th class="n">숏 커버</th><th class="n">롱 사이드</th>
+    <th class="n">Net</th><th class="n">구간 수익률</th><th class="n">일별 공매도비중</th><th class="n">DTC</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table></div>
+<p class="lead">금액은 전부 <b>백만달러</b>. z 는 이 종목의 과거 ${C.settlements}개 정산 구간 대비 잔고 변화폭이다.
+DTC(days to cover)는 평균 거래량으로 잔고를 되갚는 데 걸리는 날 수 — 낮을수록 숏이 쉽게 빠져나간다.</p>
+
+<figure>
+  <h4>정산 구간별 Net 추이 — 이번이 유별난가</h4>
+  ${levelChart(netRows, C.items.filter(x => focus.includes(x.s)).map((x, i) => ({
+    key: x.s, cls: LINE[i], name: x.country,
+  })), '국가별 Net 포지션 변화 (백만달러)', { dg: 0, zeroBase: false })}
+  <div class="lg">${C.items.filter(x => focus.includes(x.s)).map((x, i) =>
+    `<span><i class="sw ${['cr', 'acc', 'kq', 'mut'][i]}"></i>${esc(x.country)}</span>`).join('')}</div>
+  <figcaption>정산일 ${C.settlements}개. 0 아래면 그 구간에 그 나라에서 돈이 빠졌다는 뜻이다.</figcaption>
+</figure>
+
+<div class="box">
+  <b>이건 선물이 아니라 ETF 다</b> — 원 차트는 지수 선물 미결제약정을 쓴다. 그런데 선물 미결제약정은
+  거래소마다 따로 공표하고 익명으로는 안 준다(KRX·SGX·HKEX·JPX·CME 전부 확인). 그래서 같은 질문을
+  <b>미국 상장 국가 ETF</b> 에 물었다. 선물은 헤지·차익 수요가 크고 ETF 는 자산배분 수요가 커서
+  <b>같은 수가 나오지는 않는다</b>. 다만 외국인이 나라를 통째로 사고파는 주된 통로가 국가 ETF 라
+  방향과 상대 순위는 비교할 만하다. 실제로 이 구간 한국 Net(${k0(kr?.net ?? 0)}백만달러)은
+  씨티가 코스피200 선물에서 집계한 −23억달러와 부호·크기 모두 가깝다.
+</div>
+
+<div class="box">
+  <b>주간이 아니라 정산 구간이다</b> — 씨티는 주간으로 끊지만 FINRA 공매도 잔고는 <b>월 2회</b>(15일·말일)
+  정산이라 주간으로 만들 수 없다. 없는 주기를 보간해 지어내지 않고 정산 구간 그대로 쓴다.
+  구간 사이의 온도는 표의 <b>일별 공매도비중</b>(Reg SHO, 매일)이 대신 보여준다.
+</div>
+</section>`;
+})();
+
 const globalSemisSection = !A.globalSemis ? '' : (() => {
   const G = A.globalSemis;
   const dram = G.items.find(x => x.s === 'MU');
@@ -2721,19 +2886,19 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
     --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c;
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
       --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; }
+      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
     --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; }
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b; }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
     --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; }
+    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
@@ -2889,18 +3054,21 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-etf:checked ~ .tabs label[for="tab-etf"],
   #tab-next:checked ~ .tabs label[for="tab-next"],
   #tab-stock:checked ~ .tabs label[for="tab-stock"],
+  #tab-ctry:checked ~ .tabs label[for="tab-ctry"],
   #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] b,
   #tab-up:checked ~ .tabs label[for="tab-up"] b,
   #tab-etf:checked ~ .tabs label[for="tab-etf"] b,
   #tab-next:checked ~ .tabs label[for="tab-next"] b,
   #tab-stock:checked ~ .tabs label[for="tab-stock"] b,
+  #tab-ctry:checked ~ .tabs label[for="tab-ctry"] b,
   #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
   #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
   #tab-etf:checked ~ .tabs label[for="tab-etf"] { background:var(--lv); border-color:var(--lv); }
   #tab-next:checked ~ .tabs label[for="tab-next"] { background:var(--nx); border-color:var(--nx); }
   #tab-stock:checked ~ .tabs label[for="tab-stock"] { background:var(--stk); border-color:var(--stk); }
+  #tab-ctry:checked ~ .tabs label[for="tab-ctry"] { background:var(--ctry); border-color:var(--ctry); }
   #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
   /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
   .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
@@ -2908,10 +3076,11 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .tabs label[for="tab-etf"] { border-left:5px solid var(--lv); }
   .tabs label[for="tab-next"] { border-left:5px solid var(--nx); }
   .tabs label[for="tab-stock"] { border-left:5px solid var(--stk); }
+  .tabs label[for="tab-ctry"] { border-left:5px solid var(--ctry); }
   .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
   #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up, #tab-etf:checked ~ .p-etf,
-  #tab-next:checked ~ .p-next, #tab-stock:checked ~ .p-stock,
+  #tab-next:checked ~ .p-next, #tab-stock:checked ~ .p-stock, #tab-ctry:checked ~ .p-ctry,
   #tab-all:checked ~ .pane { display:block; }
   tr.dim td { opacity:.55; }
   td.up { color:var(--kq); } td.dn { color:var(--cr); }
@@ -2963,6 +3132,14 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ph-etf { background:var(--lv); }
   .ph-next { background:var(--nx); }
   .ph-stock { background:var(--stk); }
+  .ph-ctry { background:var(--ctry); }
+  /* 국가별 포지션 막대 — 씨티 차트 색을 그대로 따른다(파랑 신규롱 / 빨강 신규숏 /
+     연파랑 롱청산 / 분홍 숏커버 / 노란 마름모 Net). 색이 곧 범례라 임의로 바꾸지 않는다. */
+  .b-nl { fill:var(--acc); } .b-ns { fill:var(--cr); }
+  .b-cl { fill:var(--bar); opacity:.75; } .b-cs { fill:var(--part); opacity:.55; }
+  .b-net { fill:#f2c744; stroke:var(--fg); stroke-width:1; }
+  .zero { stroke:var(--fg); stroke-width:1.2; }
+  .sw.net { background:#f2c744; height:9px; width:9px; transform:rotate(45deg); border:1px solid var(--fg); }
   .pill.pl { background:var(--lv); } .pill.pn { background:var(--nx); }
   #tab-down:focus-visible ~ .tabs label[for="tab-down"],
   #tab-up:focus-visible ~ .tabs label[for="tab-up"],
@@ -3083,6 +3260,7 @@ ${splitBox}
 ${etfSection ? '<input type="radio" name="tab" id="tab-etf" class="tabin">' : ''}
 ${outlookSection ? '<input type="radio" name="tab" id="tab-next" class="tabin">' : ''}
 ${stockFlowSection ? '<input type="radio" name="tab" id="tab-stock" class="tabin">' : ''}
+${countrySection ? '<input type="radio" name="tab" id="tab-ctry" class="tabin">' : ''}
 <input type="radio" name="tab" id="tab-all" class="tabin">
 <!-- 화면에 늘 붙어 있는 메뉴. 파트 설명은 각 파트 머리(.parthead)가 이미 달고 있으니
      여기서는 한 줄로 줄인다 — 세 줄짜리 카드를 sticky 로 붙이면 화면을 너무 먹는다. -->
@@ -3094,6 +3272,7 @@ ${stockFlowSection ? '<input type="radio" name="tab" id="tab-stock" class="tabin
   ${etfSection ? '<label for="tab-etf"><i>3</i><b>레버리지 ETF</b></label>' : ''}
   ${outlookSection ? '<label for="tab-next"><i>4</i><b>다음 주 수급</b></label>' : ''}
   ${stockFlowSection ? '<label for="tab-stock"><i>5</i><b>종목 트래킹</b></label>' : ''}
+  ${countrySection ? '<label for="tab-ctry"><i>6</i><b>국가별 포지션</b></label>' : ''}
   <label for="tab-all" class="t-all"><b>전체</b></label>
 </nav>
 
@@ -3184,6 +3363,13 @@ ${outlookSection ? `<div class="pane p-next">
 ${outlookSection}
 
 </div><!-- /p-next -->` : ''}
+
+${countrySection ? `<div class="pane p-ctry">
+<div class="parthead ph-ctry"><i>PART 6</i><b>국가별 포지션 — 돈이 어느 나라에서 빠지나</b></div>
+
+${countrySection}
+
+</div><!-- /p-ctry -->` : ''}
 
 ${stockFlowSection ? `<div class="pane p-stock">
 <div class="parthead ph-stock"><i>PART 5</i><b>종목 트래킹 — 삼성전자·SK하이닉스</b></div>

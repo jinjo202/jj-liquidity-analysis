@@ -431,6 +431,41 @@ if (A.verdict) {
   }
 }
 
+// 국가별 포지셔닝(§36). 네 갈래는 잔고 변화의 부호에서 나온 것이라, 부호와 합계가
+// 어긋나면 계산이 아니라 해석이 무너진다.
+if (A.countryFlow) {
+  const C = A.countryFlow;
+  assert.ok(C.items.length >= 4, `국가가 ${C.items.length}개뿐이다`);
+  for (const it of C.items) {
+    // 방향: 매수는 0 이상, 매도는 0 이하. 하나라도 뒤집히면 막대가 반대편에 그려진다.
+    assert.ok(it.coverShorts >= 0, `${it.country}: 숏 커버가 음수다 (${it.coverShorts})`);
+    assert.ok(it.newShorts <= 0, `${it.country}: 신규 숏이 양수다 (${it.newShorts})`);
+    assert.ok(!(it.newShorts < 0 && it.coverShorts > 0),
+      `${it.country}: 한 구간에 신규 숏과 숏 커버가 동시에 있다 — 잔고는 늘거나 줄거나 하나다`);
+    // 부호가 잔고 변화와 맞는가
+    if (Number.isFinite(it.dSI)) {
+      assert.equal(it.dSI > 0, it.newShorts < 0, `${it.country}: 잔고 증가인데 신규 숏이 안 잡혔다`);
+      assert.equal(it.dSI < 0, it.coverShorts > 0, `${it.country}: 잔고 감소인데 숏 커버가 안 잡혔다`);
+      near(it.newShorts + it.coverShorts, -(it.dSI * it.px) / 1e6, 1e-6, `${it.country} 숏 사이드 금액`);
+    }
+    // Net 항등식
+    near(it.net, (it.newLongs ?? 0) + (it.coverLongs ?? 0) + it.newShorts + it.coverShorts,
+      1e-9, `${it.country} Net`);
+    // 롱 사이드는 있거나 통째로 없거나다. 반쪽이면 막대가 한쪽만 그려져 오해를 만든다.
+    assert.equal(it.newLongs == null, it.coverLongs == null, `${it.country}: 롱 사이드가 반쪽이다`);
+    if (it.hasLong) {
+      assert.ok(it.newLongs >= 0 && it.coverLongs <= 0, `${it.country}: 롱 사이드 부호가 뒤집혔다`);
+      near(it.newLongs + it.coverLongs, (it.dShares * it.px) / 1e6, 1e-6, `${it.country} 롱 사이드 금액`);
+    }
+    assert.ok(it.history.length >= 2, `${it.country}: 정산 구간이 ${it.history.length}개뿐이다`);
+  }
+  // 정렬은 매도 우위부터 — 표와 차트가 같은 순서여야 읽힌다.
+  for (let i = 1; i < C.items.length; i++) {
+    assert.ok(C.items[i - 1].net <= C.items[i].net, 'Net 정렬이 깨졌다');
+  }
+  assert.ok(C.windowFrom < C.windowTo, '정산 구간의 앞뒤가 바뀌었다');
+}
+
 console.log(`selfcheck OK — ${A.series.length}행, 재현 MAE ${A.reproMAE.toFixed(3)}조, `
   + `사이클 ${A.periods.length}개, 채널 ${A.channels ? 'O' : 'X'}, 미수금 ${A.unpaid ? 'O' : 'X'}, `
   + `ETF ${A.etf ? `O(${A.etf.perFund.length}종)` : 'X'}`);

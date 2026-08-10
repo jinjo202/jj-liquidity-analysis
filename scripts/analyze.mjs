@@ -190,6 +190,126 @@ function globalSemis() {
 }
 const globalSemisData = globalSemis();
 
+/* ---------- 국가별 포지셔닝 (PART 6, §36) ---------- */
+// 씨티 'Weekly Futures Activity' 를 미국 상장 국가 ETF 로 재현한다. 네 갈래의 정체는
+// **잔고 변화의 부호**다 — 늘면 신규 진입, 줄면 청산. 롱·숏은 계열을 나눠 본다.
+//
+//   신규 롱   = 좌수 증가(설정)        -> 매수, 양수 막대
+//   롱 청산   = 좌수 감소(환매)        -> 매도, 음수 막대
+//   신규 숏   = 공매도 잔고 증가        -> 매도, 음수 막대
+//   숏 커버   = 공매도 잔고 감소        -> 매수, 양수 막대
+//   Net       = 넷을 다 더한 것 = (좌수변화 - 공매도잔고변화) x 가격
+//
+// 창(window)은 공매도 잔고 정산일 사이다. 씨티는 주간이지만 FINRA 는 월 2회라
+// **주간으로 만들 수 없다** — 없는 주기를 지어내지 않고 정산 구간 그대로 쓴다.
+function countryFlows() {
+  const p = path.join(DIR, 'country-flows.json');
+  if (!fs.existsSync(p)) return null;
+  const raw = JSON.parse(fs.readFileSync(p, 'utf8'));
+  const si = raw.shortInterest ?? [];
+  if (si.length < 2) return null;
+
+  const ymd = s => s.replace(/-/g, '');
+  // 정산일 종가. 그날이 휴장이면 직전 거래일로 내려간다.
+  const pxAt = (sym, dateYmd) => {
+    const rows = raw.px?.[sym] ?? [];
+    let hit = null;
+    for (const r of rows) { if (r.d <= dateYmd) hit = r.c; else break; }
+    return hit;
+  };
+  const aum = raw.aum ?? [];
+  const sharesAt = (sym, dateYmd) => {
+    let hit = null;
+    for (const r of aum) { if (r.d <= dateYmd && r[sym]) hit = r[sym].shares; else if (r.d > dateYmd) break; }
+    return hit;
+  };
+  // 일별 공매도 거래 비중 — 정산 사이의 '강도'. 잔고와 다른 계열이라 섞지 않는다(§34).
+  const svSeries = sym => (raw.shortVolume ?? [])
+    .map(r => (r[sym] ? { d: r.d, pct: r[sym].shortPct } : null)).filter(Boolean);
+
+  const items = (raw.meta?.funds ?? []).map(f => {
+    // 정산일별 흐름. FINRA 가 prevQty 를 직접 주므로 창 변화는 그걸 쓴다.
+    const hist = si.map(w => {
+      const it = w.items.find(x => x.s === f.s);
+      if (!it || !Number.isFinite(it.shortQty)) return null;
+      const dEnd = ymd(w.settlementDate);
+      const px = pxAt(f.s, dEnd);
+      if (!Number.isFinite(px)) return null;
+      const dSI = Number.isFinite(it.prevQty) ? it.shortQty - it.prevQty : null;
+      const M = 1e6;                                   // 백만달러
+      const newShorts = dSI > 0 ? -(dSI * px) / M : 0;   // 매도 → 음수
+      const coverShorts = dSI < 0 ? -(dSI * px) / M : 0; // 매수 → 양수
+      return {
+        d: w.settlementDate, px,
+        siQty: it.shortQty, prevQty: it.prevQty, dSI, changePct: it.changePct,
+        daysToCover: it.daysToCover, avgDailyVol: it.avgDailyVol,
+        newShorts, coverShorts,
+      };
+    }).filter(Boolean);
+    if (!hist.length) return null;
+
+    // 롱 사이드는 좌수를 수집한 구간에서만 나온다. 없으면 0 이 아니라 null 로 둔다 —
+    // 0 으로 채우면 '설정·환매가 없었다' 는 거짓말이 된다(§23.6 과 같은 이유).
+    for (let i = 0; i < hist.length; i++) {
+      const cur = sharesAt(f.s, ymd(hist[i].d));
+      const prevD = i ? ymd(hist[i - 1].d) : null;
+      const prv = prevD ? sharesAt(f.s, prevD) : null;
+      const M = 1e6;
+      if (f.issuer === 'ishares' && Number.isFinite(cur) && Number.isFinite(prv) && cur !== prv) {
+        const dSh = cur - prv;
+        hist[i].dShares = dSh;
+        hist[i].newLongs = dSh > 0 ? (dSh * hist[i].px) / M : 0;
+        hist[i].coverLongs = dSh < 0 ? (dSh * hist[i].px) / M : 0;
+      } else {
+        hist[i].dShares = null; hist[i].newLongs = null; hist[i].coverLongs = null;
+      }
+      hist[i].net = (hist[i].newLongs ?? 0) + (hist[i].coverLongs ?? 0)
+        + hist[i].newShorts + hist[i].coverShorts;
+      hist[i].hasLong = hist[i].newLongs != null;
+    }
+
+    const last = hist.at(-1);
+    // 창 수익률 — 숏이 약세에 붙었는지 반등에 맞섰는지 가른다.
+    const prevW = hist.length > 1 ? hist.at(-2) : null;
+    const retPct = prevW && prevW.px ? (last.px / prevW.px - 1) * 100 : null;
+    // 잔고 변화가 이 종목 기준으로 얼마나 큰 사건인가(과거 창들의 표준편차 대비).
+    const ds = hist.map(h => h.dSI).filter(Number.isFinite);
+    const mean = ds.reduce((a, b) => a + b, 0) / (ds.length || 1);
+    const sd = Math.sqrt(ds.reduce((a, b) => a + (b - mean) ** 2, 0) / (ds.length || 1));
+    const z = sd > 0 && Number.isFinite(last.dSI) ? (last.dSI - mean) / sd : null;
+
+    const sv = svSeries(f.s);
+    const svLast = sv.at(-1)?.pct ?? null;
+    const svAvg = sv.length ? sv.reduce((a, b) => a + b.pct, 0) / sv.length : null;
+
+    return {
+      ...f, ...last, retPct, z, svLast, svAvg, svDays: sv.length,
+      siPctOfShares: (() => {
+        const sh = sharesAt(f.s, ymd(last.d)) ?? sharesAt(f.s, aum.at(-1)?.d ?? '');
+        return Number.isFinite(sh) && sh > 0 ? (last.siQty / sh) * 100 : null;
+      })(),
+      history: hist,
+    };
+  }).filter(Boolean);
+
+  if (!items.length) return null;
+  items.sort((a, b) => a.net - b.net);          // 매도 우위부터 — 씨티 차트 읽는 순서다
+
+  const withLong = items.filter(x => x.hasLong).length;
+  return {
+    asOf: si.at(-1).settlementDate,
+    windowFrom: si.at(-2).settlementDate,
+    windowTo: si.at(-1).settlementDate,
+    settlements: si.length,
+    longSideFrom: aum[0]?.d ?? null,
+    longSideDays: aum.length,
+    withLong,
+    items,
+    meta: raw.meta,
+  };
+}
+const countryFlow = countryFlows();
+
 /* ---------- 마진콜 스트레스 시계열 ---------- */
 // 반대매매 ÷ 위탁매매미수금 = 미수 잔액 중 강제로 처분된 비율. 절대액은 시장 규모에 끌려
 // 다니지만 이 비율은 "미수를 낸 사람들이 실제로 얼마나 털렸나" 를 바로 말한다.
@@ -1522,6 +1642,7 @@ const out = {
   divergence,
   marginStress: marginStressData,
   globalSemis: globalSemisData,
+  countryFlow,
   stockFlow,
   investorFlow,
   unitsAgreement,
