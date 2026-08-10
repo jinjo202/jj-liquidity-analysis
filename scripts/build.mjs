@@ -319,26 +319,35 @@ function levelChartStatic(rows, lines, unit, { dg = 0, zeroBase = true } = {}) {
 // 선 클래스 -> 색. 대화형 쪽은 CSS 클래스를 못 쓰는 자리(툴팁 색점)가 있어 값이 필요하다.
 const CLS_COLOR = { 'ln-idx': CL.acc, 'ln-cr': CL.cr, 'ln-kq': CL.kq, 'ln-ratio': CL.acc, 'ln-base': CL.mut };
 
-function timeSeriesChartStatic(series, periods) {
+/**
+ * PART 1 첫 차트. 신용융자를 전체·코스피·코스닥으로 나눠 같은 축(조원)에 겹치고,
+ * 코스피 지수를 보조축(점선)으로 곁들인다. 예전엔 이 차트(지수 겹치기)와 별도로
+ * "신용융자 시장별 겹쳐보기" 차트가 하나 더 있었는데, 코스피·코스닥 신용융자 자체를
+ * 비교하는 게 핵심이라 둘을 합쳤다 — 지수는 참고용 점선 하나로 충분하다.
+ *
+ * rows 는 A.creditByMarket.series: {d, total, kospi, kosdaq, idx}(조원·조원·조원·p).
+ */
+function timeSeriesChartStatic(rows, periods) {
   const W = 660, H = 330, M = { t: 24, r: 64, b: 46, l: 52 };
   const iw = W - M.l - M.r, ih = H - M.t - M.b;
 
-  const cDom = [0, Math.max(...series.filter(p => p.c != null).map(p => p.c / 1e6)) * 1.08];
-  const iDom = [0, Math.max(...series.map(p => p.i)) * 1.08];
-  const qDom = [0, Math.max(...series.map(p => p.q ?? 0)) * 1.08];
+  const cVals = rows.flatMap(r => [r.total, r.kospi, r.kosdaq]).filter(Number.isFinite);
+  const cDom = [0, Math.max(...cVals) * 1.08];
+  const iDom = [0, Math.max(...rows.map(r => r.idx ?? 0)) * 1.08];
 
-  const xAt = i => scale(i, [0, series.length - 1], [M.l, M.l + iw]);
+  const xAt = i => scale(i, [0, rows.length - 1], [M.l, M.l + iw]);
   const cAt = v => scale(v, cDom, [M.t + ih, M.t]);
   const iAt = v => scale(v, iDom, [M.t + ih, M.t]);
-  const qAt = v => scale(v, qDom, [M.t + ih, M.t]);
 
-  const line = (get, yFn) => series
-    .map((p, i) => (get(p) == null ? null : `${xAt(i).toFixed(1)},${yFn(get(p)).toFixed(1)}`))
+  // 코스피·코스닥은 최근 1~2주가 null(§8, 수동 갱신 지연) 이다. 점을 건너뛰고 있는
+  // 점만 이어 그린다 — 이 프로젝트의 다계열 정적 SVG 가 늘 하던 방식이다.
+  const line = (get, yFn) => rows
+    .map((r, i) => (get(r) == null ? null : `${xAt(i).toFixed(1)},${yFn(get(r)).toFixed(1)}`))
     .filter(Boolean).map((s, i) => `${i ? 'L' : 'M'}${s}`).join('');
 
   const idxOfDate = d => {
-    const i = series.findIndex(p => p.d >= d);
-    return i < 0 ? series.length - 1 : i;
+    const i = rows.findIndex(r => r.d >= d);
+    return i < 0 ? rows.length - 1 : i;
   };
 
   const bands = periods.map((p, n) => {
@@ -349,22 +358,23 @@ function timeSeriesChartStatic(series, periods) {
 
   const yearTicks = [];
   let lastY = null;
-  series.forEach((p, i) => {
-    const y = p.d.slice(0, 4);
+  rows.forEach((r, i) => {
+    const y = r.d.slice(0, 4);
     if (y !== lastY) { yearTicks.push({ i, label: `'${y.slice(2)}` }); lastY = y; }
   });
 
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="신용융자 잔고와 지수 추이">
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="신용융자 시장별 잔고와 코스피 지수 추이">
   ${bands}
   ${ticks(0, cDom[1]).map(v => `<line class="grid" x1="${M.l}" y1="${cAt(v).toFixed(1)}" x2="${M.l + iw}" y2="${cAt(v).toFixed(1)}"/>
     <text class="ax" x="${M.l - 8}" y="${(cAt(v) + 3.5).toFixed(1)}" text-anchor="end">${f(v, 0)}</text>`).join('')}
   ${ticks(0, iDom[1]).map(v => `<text class="ax" x="${M.l + iw + 8}" y="${(iAt(v) + 3.5).toFixed(1)}">${k0(v)}</text>`).join('')}
   ${yearTicks.map(t => `<text class="ax" x="${xAt(t.i).toFixed(1)}" y="${M.t + ih + 16}" text-anchor="middle">${t.label}</text>`).join('')}
-  <path class="ln-idx" d="${line(p => p.i, iAt)}"/>
-  <path class="ln-kq" d="${line(p => p.q, qAt)}"/>
-  <path class="ln-cr" d="${line(p => (p.c == null ? null : p.c / 1e6), cAt)}"/>
+  <path d="${line(r => r.idx, iAt)}" fill="none" stroke="${CL.mut}" stroke-width="1" stroke-dasharray="4 3"/>
+  <path d="${line(r => r.kosdaq, cAt)}" fill="none" stroke="${CL.kq}" stroke-width="1.4"/>
+  <path d="${line(r => r.kospi, cAt)}" fill="none" stroke="${CL.acc}" stroke-width="1.4"/>
+  <path d="${line(r => r.total, cAt)}" fill="none" stroke="${CL.cr}" stroke-width="1.8"/>
   <text class="unit" x="${M.l}" y="14">조원</text>
-  <text class="unit" x="${M.l + iw}" y="14" text-anchor="end">지수(p)</text>
+  <text class="unit" x="${M.l + iw}" y="14" text-anchor="end">코스피 지수(p, 점선)</text>
 </svg>`;
 }
 
@@ -997,32 +1007,9 @@ ${js}`;
 // JS 가 살아 있으면 lib/chart-client.js 가 그 자리를 대화형 차트로 바꾼다(호버 값·구간 선택).
 // 스크립트가 없으면 지금까지와 똑같은 정적 SVG 가 보인다 — 인쇄·메일·file:// 이 그대로 동작한다.
 
-/* ---------- 신용융자 시장별 겹쳐보기 ---------- */
-// 위 시계열은 신용융자 합계에 지수를 겹쳐 맥락만 보여준다 — 코스피·코스닥 신용융자
-// 자체를 비교하는 차트는 따로 없었다. 여기서 셋을 같은 축(조원)에 올리고 체크박스로
-// 켜고 끄게 한다. 기본은 셋 다 켜짐 — 겹쳐 보는 게 목적이라 하나만 남기고 시작하지 않는다.
-const creditMarketSection = !A.creditByMarket ? '' : (() => {
-  const CM = A.creditByMarket;
-  const LINES = [
-    { key: 'total', cls: 'ln-cr', name: '전체' },
-    { key: 'kospi', cls: 'ln-idx', name: '코스피' },
-    { key: 'kosdaq', cls: 'ln-kq', name: '코스닥' },
-  ];
-  const chart = levelChart(CM.series, LINES, '신용융자 (조원)', { dg: 1, zeroBase: true });
-  const toggle = seriesToggle(LINES.map(l => l.name), [CL.cr, CL.acc, CL.kq]);
-  const lastTotal = [...CM.series].reverse().find(r => r.total != null);
-  const lastSplit = [...CM.series].reverse().find(r => r.kospi != null);
-
-  return `<figure>
-  <h4>신용융자 — 시장별 겹쳐보기</h4>
-  ${toggle}
-  ${chart}
-  <div class="lg"><span><i class="sw cr"></i>전체</span><span><i class="sw acc"></i>코스피</span><span><i class="sw kq"></i>코스닥</span></div>
-  <figcaption>체크박스로 계열을 하나씩, 또는 원하는 조합으로 켜고 끌 수 있다(전체 켜짐이 기본).
-    전체는 ${dtFull(lastTotal.d)}까지 나오지만 코스피·코스닥은 수동으로 올리는 분리 파일(§8) 기준이라
-    <b>${dtFull(lastSplit.d)}까지</b>만 있다 — 오른쪽 끝의 빈 구간은 누락이 아니라 그 지연이다.</figcaption>
-</figure>`;
-})();
+// 예전엔 여기(신용융자 시장별 겹쳐보기)에 별도 차트가 하나 더 있었다. PART 1 첫 차트가
+// 전체·코스피·코스닥을 토글로 다 보여주게 되면서(§40) 완전히 중복이라 지웠다 —
+// 코스닥이 빠진 채였던 그 차트와 이 차트를 나란히 둘 이유가 없었다.
 
 function levelChart(rows, lines, unit, opts = {}) {
   const rs = (rows ?? []).filter(r => r && r.d);
@@ -1079,23 +1066,25 @@ function lendingChart(series, cyclePeakDate) {
   }, lendingChartStatic(series, cyclePeakDate));
 }
 
-function timeSeriesChart(series, periods) {
-  const rs = (series ?? []).filter(r => r && r.d);
-  return interactive({
-    unit: '신용융자 합계 (조원)', dg: 1, zeroBase: false, h: 260,
-    axis2Unit: '코스피(p)', dg2: 0,
+function timeSeriesChart(rows, periods) {
+  const rs = (rows ?? []).filter(r => r && r.d);
+  const html = interactive({
+    unit: '신용융자 (조원)', dg: 1, zeroBase: true, h: 280,
+    axis2Unit: '코스피 지수(p)', dg2: 0,
     // 사이클 적립 구간 음영. 대화형으로 바뀌며 조용히 빠졌던 것 중 하나 — 정적 SVG 는
-    // 늘 그렸는데 여기 series 만 넘기고 밴드를 안 넘겼었다.
+    // 늘 그렸는데 여기 series 만 넘기고 밴드를 안 넘겼었다(§39.1).
     bands: periods.map((p, n) => ({ from: p.accBase, to: p.accEnd, label: `${p.name} 적립`, cls: `c${n}` })),
     dates: rs.map(r => r.d),
+    // 처음 세 계열만 토글 대상이다(아래 seriesToggle 이 딱 이 순서·개수로 체크박스를 만든다).
+    // 코스피 지수는 늘 켜져 있는 참고선이라 토글에서 뺐다 — axis2 라 단위도 다르다.
     series: [
-      // A.series 의 c 는 원자료 단위 그대로 **백만원**이다(§1). 정적 SVG 는 /1e6 해서
-      // 조원으로 그리는데 여기서 안 나눠서, 대화형 차트만 축이 40,000,000 조원으로 찍혔다.
-      { name: '신용융자', color: CL.cr, vals: rs.map(r => (Number.isFinite(r.c) ? r.c / 1e6 : null)) },
-      // 코스닥은 lendingChart 와 같은 이유로 생략한다(정적 SVG 에서도 눈금 없는 참고용이었다).
-      { name: '코스피', color: CL.acc, axis2: true, vals: rs.map(r => r.i ?? null) },
+      { name: '전체', color: CL.cr, vals: rs.map(r => r.total ?? null) },
+      { name: '코스피', color: CL.acc, vals: rs.map(r => r.kospi ?? null) },
+      { name: '코스닥', color: CL.kq, vals: rs.map(r => r.kosdaq ?? null) },
+      { name: '코스피 지수', color: CL.mut, axis2: true, vals: rs.map(r => r.idx ?? null) },
     ],
-  }, timeSeriesChartStatic(series, periods));
+  }, timeSeriesChartStatic(rows, periods));
+  return seriesToggle(['전체', '코스피', '코스닥'], [CL.cr, CL.acc, CL.kq]) + html;
 }
 
 /* ---------- 대차잔고(공매도 프록시) 차트 ---------- */
@@ -3475,13 +3464,15 @@ ${summarySection}
 <div class="parthead ph-down"><i>PART 1</i><b>신용잔고 — 얼마나 더 하락할 수 있나</b></div>
 
 <figure>
-  <h4>신용융자 잔고와 지수 추이 — 두 사이클</h4>
-  ${timeSeriesChart(A.series.filter(p => p.d >= '20200101'), A.periods)}
-  <div class="lg"><span><i class="sw cr"></i>신용융자 합계(좌, 조원)</span><span><i class="sw acc"></i>코스피(우, p)</span><span><i class="sw kq"></i>코스닥(우, 자체 스케일)</span></div>
-  <figcaption>음영은 각 사이클의 적립 구간. 신용융자는 결제일 기준이라 지수보다 1~2일 늦게 확정된다.</figcaption>
+  <h4>신용융자 — 시장별 잔고와 코스피 지수 (두 사이클)</h4>
+  ${A.creditByMarket ? timeSeriesChart(A.creditByMarket.series, A.periods)
+    : timeSeriesChart(A.series.filter(p => p.d >= '20200101').map(p => ({ d: p.d, total: p.c != null ? p.c / 1e6 : null, idx: p.i })), A.periods)}
+  <div class="lg"><span><i class="sw cr"></i>전체</span><span><i class="sw acc"></i>코스피</span><span><i class="sw kq"></i>코스닥</span><span><i class="sw" style="background:var(--mut)"></i>코스피 지수(우, 점선)</span></div>
+  <figcaption>체크박스로 전체·코스피·코스닥을 하나씩, 또는 원하는 조합으로 겹쳐 볼 수 있다(기본 전체 켜짐).
+    음영은 각 사이클의 적립 구간. 전체는 결제일 기준이라 지수보다 1~2일 늦게 확정되고, 코스피·코스닥
+    분리분은 수동으로 올리는 분리 파일(§8) 기준이라 <b>그보다 1~2주 더 늦다</b> — 오른쪽 끝의 빈 구간은
+    누락이 아니라 그 지연이다.</figcaption>
 </figure>
-
-${creditMarketSection}
 
 ${compare}
 

@@ -58,6 +58,9 @@ const creditByMarket = !split ? null : (() => {
         total: Number.isFinite(r.OS0026) ? r.OS0026 / 1e6 : null,
         kospi: s ? s.kospi / 1e6 : null,
         kosdaq: s ? s.kosdaq / 1e6 : null,
+        // 코스피 지수. 신용융자·지수 관계를 같은 차트에서 보려면 필요하다 — PART 1
+        // 첫 차트가 이 배열 하나로 시장별 신용융자 + 지수 추이를 다 그린다.
+        idx: r.OS0001 ?? null,
       };
     });
   return { series, splitThrough: split.series.at(-1).date };
