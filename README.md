@@ -104,7 +104,8 @@ Actions 탭에서 `Run workflow` 로 수동 실행도 된다.
 
 ### 잘 돌고 있는지 확인
 
-저장소가 private 이라 Actions 로그를 URL 로 열 수 없다. 대신 배포된 사이트에 상태를 내보낸다.
+저장소가 public 이라 Actions 로그도 직접 볼 수 있지만(§0.2), 매번 Actions 탭을 여는 것보다
+빠르다 — 배포된 사이트에 상태를 그대로 내보낸다.
 
 ```
 https://jj-liquidity.vercel.app/status.json
@@ -144,9 +145,9 @@ node scripts/analyze.mjs && node scripts/selfcheck.mjs && node scripts/build.mjs
 
 `package.json` 이 없으므로 Vercel 은 빌드를 시도하지 않고 정적 파일만 배포한다.
 
-**`.vercelignore` 를 반드시 유지할 것.** 저장소는 private 이어도 **배포된 사이트는 공개**다.
-아무것도 막지 않으면 `https://<사이트>/data/kofia-daily.json` 으로 원본 데이터가 그대로 노출된다.
-현재 설정은 `index.html` / `email.html` 만 올린다.
+**`.vercelignore` 를 반드시 유지할 것.** 저장소가 public 이라 `data/`·`scripts/` 는 어차피
+GitHub 에서도 보인다 — 다만 배포에까지 올리면 `https://<사이트>/data/kofia-daily.json` 처럼
+정리 안 된 원본 JSON 이 API 처럼 직접 노출된다. 현재 설정은 `index.html` / `email.html` 만 올린다.
 
 `.vercel/` 은 `.gitignore` 에 들어 있다 — PC마다 다시 link 하면 되고, 커밋하면 다른 PC에서
 엉뚱한 Vercel 프로젝트에 연결될 수 있다.

@@ -4,7 +4,7 @@
 
 ## 0. 이전 완료 — 정본은 jinjo202
 
-- **저장소**: `jinjo202/jj-liquidity-analysis` (private)
+- **저장소**: `jinjo202/jj-liquidity-analysis` (**public**, 2026-08-11 부터 — 아래 §0.2)
 - **Vercel**: 프로젝트를 `jinjo202-8902's projects` 로 이전했고, Git 연결도 이 저장소로 붙였다.
   URL 은 **`https://jj-liquidity.vercel.app`** 다(2026-08-07 부터).
   옛 주소 `jj-liquidity-analysis.vercel.app` 은 **되찾지 못했다** — 접근 불가한 옛 계정
@@ -43,6 +43,31 @@ gh workflow disable "Update reports" --repo devbotsender8282/jj-liquidity-analys
 백필로 확인된 것: **7347(삼성 인버스) 좌수 5M(2025-11) → 1,038M(2026-05-29) → 127M(현재)**.
 5월 말까지 인버스가 200배 폭증했다가 붕괴했다.
 
+## 0.2 저장소를 public 으로 돌렸다 (2026-08-11)
+
+**원인**: jinjo202 계정의 GitHub 결제 문제로 Actions 가 계정 전체에서 막혔다
+(`recent account payments have failed or your spending limit needs to be increased`).
+private 저장소는 무료 Actions 분(分)에 한도가 있고, 그 한도에 걸리면 결제수단이나 지출
+한도를 올려야 다시 돈다 — 사용자가 결제 여력이 없다고 해서, **public 저장소는 표준
+러너 Actions 분이 무제한 무료**라는 점을 이용해 공개로 돌렸다.
+
+**돌리기 전에 확인한 것** — 히스토리 전체(`git log --all -p`, `devbot` 리모트 포함)를 훑어:
+- `*.pdf`(외사 리서치 원문)는 애초에 커밋된 적 없다(`.gitignore` 가 처음부터 막음)
+- `.env` 류, 실제 키/토큰 값은 커밋된 적 없다 — `my-project/` 의 Supabase·OpenRouter 코드도
+  전부 `process.env.X` 참조뿐
+- JWT 처럼 보이는 문자열 2개를 찾았지만 **둘 다 `devbot` 리모트(옛 저장소) 히스토리에만
+  있고 이 저장소(origin)엔 없다** — `git merge-base --is-ancestor <sha> origin/main` 으로 확인
+- `street-anchors.json` 은 수치·한줄 메모만 옮겨 적었고 원문을 그대로 베낀 문장이 없다
+
+**바뀐 것**: `data/`·`scripts/`·`docs/` 가 이제 GitHub 에서 누구나 보인다(전엔 저장소가
+private 이라 접근 자체가 막혀 있었다 — Vercel 배포에서만 `.vercelignore` 로 숨겼었다).
+분석 코드·방법론 자체는 공개해도 문제없는 내용이라 판단했다. 배포된 사이트(`jj-liquidity.vercel.app`)
+는 그대로 `index.html`/`email.html` 만 노출한다 — `.vercelignore` 는 계속 유지한다(§ README
+"배포" 절).
+
+**확인**: `gh workflow run` 으로 수동 실행해서 public 전환 직후 Actions 가 정상 도는지
+확인했다. 그 뒤로는 스케줄이 다시 자동으로 돈다.
+
 ## 1. 이게 뭔가
 
 증권사 유료 단말(Quantiwise) 기반 리서치를 공개 데이터만으로 재현하고, 반대 방향(숏커버)과
@@ -50,7 +75,7 @@ gh workflow disable "Update reports" --repo devbotsender8282/jj-liquidity-analys
 
 - 웹 리포트: **https://jj-liquidity.vercel.app**
 - 상태 확인: **https://jj-liquidity.vercel.app/status.json** ← 뭐가 잘 도는지 여기서 먼저 본다
-- 저장소(정본): **https://github.com/jinjo202/jj-liquidity-analysis** (private)
+- 저장소(정본): **https://github.com/jinjo202/jj-liquidity-analysis** (public, §0.2)
 - 옛 저장소: `devbotsender8282/jj-liquidity-analysis` — 워크플로는 껐다. 옛 Vercel 계정이 아직
   `jj-liquidity-analysis.vercel.app` 주소를 붙들고 있어 08-03 빌드가 그대로 떠 있다(§0)
 - 방법론 전문: [`docs/methodology.md`](docs/methodology.md) §1~24 — 역설계 과정, 가정, 한계, 디버깅 기록 전부
