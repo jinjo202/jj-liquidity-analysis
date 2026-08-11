@@ -3070,7 +3070,11 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
   .wrap { max-width:1400px; margin:0 auto; padding:30px 26px 60px; }
-  header { border-bottom:2px solid var(--fg); padding-bottom:12px; margin-bottom:18px; }
+  header { border-bottom:2px solid var(--fg); padding-bottom:12px; margin-bottom:18px;
+    display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  .hub-link { font-size:12px; color:var(--acc); border:1px solid var(--line); border-radius:6px;
+    padding:5px 10px; white-space:nowrap; text-decoration:none; }
+  .hub-link:hover { background:var(--surf); }
   .kicker { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--mut); }
   h1 { font-size:24px; margin:6px 0 4px; letter-spacing:-.4px; }
   .sub { color:var(--mut); font-size:13px; }
@@ -3425,11 +3429,14 @@ ${cycleCss}
 
 <div class="wrap">
 <header>
-  <div class="kicker">Liquidity Analysis</div>
-  <h1>사이클별 지수대별 신용융자 누적과 반대매매 진행률</h1>
-  <div class="sub">코스피 ${dtFull(co.headline.idxLastDate)} 종가 ${f(co.headline.idxLast)}p ·
-    신용융자 ${dtFull(co.headline.creditLastDate)} 기준 ${f(co.headline.creditLastJo)}조원 ·
-    ${A.meta.hasSplit ? '유가증권/코스닥 분리 적용' : '시장 합계 기준'}</div>
+  <div>
+    <div class="kicker">Liquidity Analysis</div>
+    <h1>사이클별 지수대별 신용융자 누적과 반대매매 진행률</h1>
+    <div class="sub">코스피 ${dtFull(co.headline.idxLastDate)} 종가 ${f(co.headline.idxLast)}p ·
+      신용융자 ${dtFull(co.headline.creditLastDate)} 기준 ${f(co.headline.creditLastJo)}조원 ·
+      ${A.meta.hasSplit ? '유가증권/코스닥 분리 적용' : '시장 합계 기준'}</div>
+  </div>
+  <a class="hub-link" href="https://pf-dash-a3k9m-sigma.vercel.app/portfolio.html">← 허브로</a>
 </header>
 
 ${splitBox}
