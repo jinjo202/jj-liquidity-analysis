@@ -111,6 +111,18 @@
       t.setAttribute('x', x.toFixed(1));
       t.setAttribute('y', y.toFixed(1));
       placed.push({ x: x, y: y, w: w });
+      // 라벨 뒤에 배경판을 깐다. 다른 라벨과는 안 겹치게 밀어냈지만, 데이터가 조밀한
+      // 구간(여러 계열이 같은 날 같이 바닥을 찍는 등)에서는 선 자체와 여전히 겹친다 —
+      // 위/아래로 아무리 밀어도 그 옆 계열도 같은 자리에서 바닥을 찍으면 못 피한다.
+      // 그래서 선을 피해 다니는 대신, 배경색 판을 깔아 무엇이 뒤에 있어도 글자가 읽히게
+      // 한다 — 차트 라이브러리들이 흔히 쓰는 방법이다. text 보다 먼저 그려야 뒤에 깔린다.
+      var h = 10.5;
+      var bg = el('rect', {
+        x: (x - w / 2 - 2).toFixed(1), y: (y - h / 2 - 1).toFixed(1),
+        width: (w + 4).toFixed(1), height: (h + 2).toFixed(1),
+        class: 'mk-bg', rx: 2,
+      });
+      svg.insertBefore(bg, t);
     });
   }
 
@@ -334,9 +346,9 @@
     if (spec.stack) {
       var ext = seriesExtent(stackSums);
       if (ext && ext.hiI !== ext.loI) {
-        marks.push({ cx: xAt(ext.hiI), cy: yAt(ext.hi) - 8, dotY: yAt(ext.hi), dotColor: 'var(--fg)',
+        marks.push({ cx: xAt(ext.hiI), cy: yAt(ext.hi) - 11, dotY: yAt(ext.hi), dotColor: 'var(--fg)',
           text: '고 ' + fmt(ext.hi, spec.dg || 0) + (spec.suffix || '') + ' ' + dShort(cut.dates[ext.hiI]) });
-        marks.push({ cx: xAt(ext.loI), cy: yAt(ext.lo) + 13, dotY: yAt(ext.lo), dotColor: 'var(--fg)',
+        marks.push({ cx: xAt(ext.loI), cy: yAt(ext.lo) + 19, dotY: yAt(ext.lo), dotColor: 'var(--fg)',
           text: '저 ' + fmt(ext.lo, spec.dg || 0) + (spec.suffix || '') + ' ' + dShort(cut.dates[ext.loI]) });
       }
     } else {
@@ -355,10 +367,10 @@
         // 그대로 붙이면 '코스피 9,114조원' 처럼 틀린 라벨이 나온다.
         var dg = s.axis2 ? (spec.dg2 == null ? 0 : spec.dg2) : (spec.dg || 0);
         var sfx = s.axis2 ? '' : (spec.suffix || '');
-        marks.push({ cx: xAt(ext.hiI), cy: yFn(ext.hi) - 8, dotY: yFn(ext.hi), dotColor: s.color,
+        marks.push({ cx: xAt(ext.hiI), cy: yFn(ext.hi) - 11, dotY: yFn(ext.hi), dotColor: s.color,
           text: (s.name ? s.name + ' ' : '') + '고 ' + fmt(ext.hi, dg) + sfx + ' ' + dShort(cut.dates[ext.hiI]) });
         if (ext.loI !== ext.hiI) {
-          marks.push({ cx: xAt(ext.loI), cy: yFn(ext.lo) + 13, dotY: yFn(ext.lo), dotColor: s.color,
+          marks.push({ cx: xAt(ext.loI), cy: yFn(ext.lo) + 19, dotY: yFn(ext.lo), dotColor: s.color,
             text: (s.name ? s.name + ' ' : '') + '저 ' + fmt(ext.lo, dg) + sfx + ' ' + dShort(cut.dates[ext.loI]) });
         }
       });
@@ -590,9 +602,9 @@
       var ext = seriesExtent(totals);
       if (ext && ext.hiI !== ext.loI) {
         placeMarks(svg, [
-          { cx: cx(ext.hiI), cy: yAt(ext.hi) - 8, dotY: yAt(ext.hi), dotColor: 'var(--fg)',
+          { cx: cx(ext.hiI), cy: yAt(ext.hi) - 11, dotY: yAt(ext.hi), dotColor: 'var(--fg)',
             text: '최고 ' + fmt(ext.hi, spec.dg || 0) + (spec.suffix || '') + ' (' + cats[ext.hiI] + ')' },
-          { cx: cx(ext.loI), cy: yAt(ext.lo) + 13, dotY: yAt(ext.lo), dotColor: 'var(--fg)',
+          { cx: cx(ext.loI), cy: yAt(ext.lo) + 19, dotY: yAt(ext.lo), dotColor: 'var(--fg)',
             text: '최저 ' + fmt(ext.lo, spec.dg || 0) + (spec.suffix || '') + ' (' + cats[ext.loI] + ')' },
         ], W, M.t + 2, M.t + ih + 11);
       }

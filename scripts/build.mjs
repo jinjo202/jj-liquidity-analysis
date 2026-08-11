@@ -3170,6 +3170,9 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   /* 대화형 차트의 고점/저점 라벨. 눈금 글자보다 살짝 진하게 — 그냥 축이 아니라
      "이 지점을 보라"는 표시라는 걸 구분한다. */
   .mk-lab { font-size:8.5px; font-weight:600; fill:var(--fg); }
+  /* 라벨 뒤 배경판. 데이터가 조밀한 구간(여러 계열이 같은 날 바닥을 찍는 등)에서는
+     라벨을 아무리 밀어도 선 자체와 겹친다 — 피해 다니는 대신 뒤에 판을 깔아 항상 읽히게 한다. */
+  .mk-bg { fill: var(--bg); opacity: .88; }
   /* 범주형(막대) 차트. 시계열 svg 와 같은 축(.ax/.axu/.grid/.zero) 스타일을 그대로 쓴다. */
   .catbar { cursor:default; }
   .ic-sum { display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:4px;
