@@ -3053,19 +3053,19 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   :root {
     --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
     --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b;
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b; --sup:#b5348a;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
       --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; }
+      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; --sup:#d873b8; }
   }
   :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
     --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b; }
+    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b; --sup:#b5348a; }
   :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
     --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; }
+    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; --sup:#d873b8; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
     font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
@@ -3238,6 +3238,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-next:checked ~ .tabs label[for="tab-next"],
   #tab-stock:checked ~ .tabs label[for="tab-stock"],
   #tab-ctry:checked ~ .tabs label[for="tab-ctry"],
+  #tab-supply:checked ~ .tabs label[for="tab-supply"],
   #tab-all:checked ~ .tabs label[for="tab-all"] { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] b,
   #tab-up:checked ~ .tabs label[for="tab-up"] b,
@@ -3245,6 +3246,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-next:checked ~ .tabs label[for="tab-next"] b,
   #tab-stock:checked ~ .tabs label[for="tab-stock"] b,
   #tab-ctry:checked ~ .tabs label[for="tab-ctry"] b,
+  #tab-supply:checked ~ .tabs label[for="tab-supply"] b,
   #tab-all:checked ~ .tabs label[for="tab-all"] b { color:#fff; }
   #tab-down:checked ~ .tabs label[for="tab-down"] { background:var(--cr); border-color:var(--cr); }
   #tab-up:checked ~ .tabs label[for="tab-up"] { background:var(--kq); border-color:var(--kq); }
@@ -3252,6 +3254,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   #tab-next:checked ~ .tabs label[for="tab-next"] { background:var(--nx); border-color:var(--nx); }
   #tab-stock:checked ~ .tabs label[for="tab-stock"] { background:var(--stk); border-color:var(--stk); }
   #tab-ctry:checked ~ .tabs label[for="tab-ctry"] { background:var(--ctry); border-color:var(--ctry); }
+  #tab-supply:checked ~ .tabs label[for="tab-supply"] { background:var(--sup); border-color:var(--sup); }
   #tab-all:checked ~ .tabs label[for="tab-all"] { background:var(--acc); border-color:var(--acc); }
   /* 선택 안 된 탭에도 파트 색을 왼쪽 띠로 조금 남겨 어느 축인지 알 수 있게 한다. */
   .tabs label[for="tab-down"] { border-left:5px solid var(--cr); }
@@ -3260,10 +3263,12 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .tabs label[for="tab-next"] { border-left:5px solid var(--nx); }
   .tabs label[for="tab-stock"] { border-left:5px solid var(--stk); }
   .tabs label[for="tab-ctry"] { border-left:5px solid var(--ctry); }
+  .tabs label[for="tab-supply"] { border-left:5px solid var(--sup); }
   .tabs label[for="tab-all"] { border-left:5px solid var(--acc); }
   .pane { display:none; }
   #tab-down:checked ~ .p-down, #tab-up:checked ~ .p-up, #tab-etf:checked ~ .p-etf,
   #tab-next:checked ~ .p-next, #tab-stock:checked ~ .p-stock, #tab-ctry:checked ~ .p-ctry,
+  #tab-supply:checked ~ .p-supply,
   #tab-all:checked ~ .pane { display:block; }
   tr.dim td { opacity:.55; }
   td.up { color:var(--kq); } td.dn { color:var(--cr); }
@@ -3316,6 +3321,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ph-next { background:var(--nx); }
   .ph-stock { background:var(--stk); }
   .ph-ctry { background:var(--ctry); }
+  .ph-supply { background:var(--sup); }
   /* 국가별 포지션 막대 — 씨티 차트 색을 그대로 따른다(파랑 신규롱 / 빨강 신규숏 /
      연파랑 롱청산 / 분홍 숏커버 / 노란 마름모 Net). 색이 곧 범례라 임의로 바꾸지 않는다. */
   .b-nl { fill:var(--acc); } .b-ns { fill:var(--cr); }
@@ -3444,6 +3450,7 @@ ${etfSection ? '<input type="radio" name="tab" id="tab-etf" class="tabin">' : ''
 ${outlookSection ? '<input type="radio" name="tab" id="tab-next" class="tabin">' : ''}
 ${stockFlowSection ? '<input type="radio" name="tab" id="tab-stock" class="tabin">' : ''}
 ${countrySection ? '<input type="radio" name="tab" id="tab-ctry" class="tabin">' : ''}
+<input type="radio" name="tab" id="tab-supply" class="tabin">
 <input type="radio" name="tab" id="tab-all" class="tabin">
 <!-- 화면에 늘 붙어 있는 메뉴. 파트 설명은 각 파트 머리(.parthead)가 이미 달고 있으니
      여기서는 한 줄로 줄인다 — 세 줄짜리 카드를 sticky 로 붙이면 화면을 너무 먹는다. -->
@@ -3456,6 +3463,7 @@ ${countrySection ? '<input type="radio" name="tab" id="tab-ctry" class="tabin">'
   ${outlookSection ? '<label for="tab-next"><i>4</i><b>다음 주 수급</b></label>' : ''}
   ${stockFlowSection ? '<label for="tab-stock"><i>5</i><b>종목 트래킹</b></label>' : ''}
   ${countrySection ? '<label for="tab-ctry"><i>6</i><b>국가별 포지션</b></label>' : ''}
+  <label for="tab-supply"><i>7</i><b>수급분석</b></label>
   <label for="tab-all" class="t-all"><b>전체</b></label>
 </nav>
 
@@ -3566,6 +3574,14 @@ ${stockFlowSection}
 ${globalSemisSection}
 
 </div><!-- /p-stock -->` : ''}
+
+<div class="pane p-supply">
+<div class="parthead ph-supply"><i>PART 7</i><b>수급분석 — 외부 대시보드</b></div>
+<p class="lead">별도로 운영 중인 수급분석 대시보드를 그대로 붙였다.
+  <a href="https://jinjo202.github.io/pf-dash-a3k9m/" target="_blank" rel="noopener">새 탭에서 열기 ↗</a></p>
+<iframe src="https://jinjo202.github.io/pf-dash-a3k9m/" title="수급분석" loading="lazy"
+  style="width:100%;height:2000px;border:1px solid var(--line);border-radius:8px;background:var(--bg)"></iframe>
+</div><!-- /p-supply -->
 
 <footer>
   <b>데이터 출처</b>
