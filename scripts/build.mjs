@@ -3169,7 +3169,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .ic-guide { stroke:var(--mut); stroke-width:1; stroke-dasharray:3 3; }
   /* 대화형 차트의 고점/저점 라벨. 눈금 글자보다 살짝 진하게 — 그냥 축이 아니라
      "이 지점을 보라"는 표시라는 걸 구분한다. */
-  .mk-lab { font-weight:700; fill:var(--fg); }
+  .mk-lab { font-size:8.5px; font-weight:600; fill:var(--fg); }
   /* 범주형(막대) 차트. 시계열 svg 와 같은 축(.ax/.axu/.grid/.zero) 스타일을 그대로 쓴다. */
   .catbar { cursor:default; }
   .ic-sum { display:flex; flex-wrap:wrap; gap:4px 16px; margin-top:4px;

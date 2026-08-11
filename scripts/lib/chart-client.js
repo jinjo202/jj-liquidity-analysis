@@ -94,7 +94,7 @@
       svg.appendChild(t);
       var w = 0;
       try { w = t.getBBox().width; } catch (e) { /* 실패 — 아래에서 추정으로 대체 */ }
-      if (!w) w = estWidth(m.text, 9);
+      if (!w) w = estWidth(m.text, 8.5);
       var x = Math.min(Math.max(m.cx, w / 2 + 2), W - w / 2 - 2);
       var y = m.cy;
       // 세로 간격 13 은 눈대중이 아니다 — lib/labels.mjs 가 이미 실측해 둔 값이다: 이
@@ -340,7 +340,12 @@
           text: '저 ' + fmt(ext.lo, spec.dg || 0) + (spec.suffix || '') + ' ' + dShort(cut.dates[ext.loI]) });
       }
     } else {
-      cut.series.forEach(function (s) {
+      // 계열마다 고점/저점을 다 찍으면 안 겹쳐도 지저분해진다(실측 피드백 — 4~5계열 차트에서
+      // 라벨 8~10개). 계열이 셋 이상이면 첫 번째(그 차트의 headline 지표, 보통 '전체'처럼
+      // 대표값)만 찍는다. 나머지 계열의 정확한 값은 마우스오버로 언제든 볼 수 있다 — 차트에
+      // 늘 박아 둘 필요가 없다. 2계열 이하(단일 지표 + 지수 보조축 등)는 그대로 다 찍는다.
+      var toMark = cut.series.length > 2 ? cut.series.slice(0, 1) : cut.series;
+      toMark.forEach(function (s) {
         var ext = seriesExtent(s.vals);
         // 평균·±1σ 같은 참조선은 값이 완전히 평평하다(모든 점이 같은 수) — "고점"이
         // 첫 점일 뿐 아무 의미가 없고, 그 자리에 라벨 여러 개가 겹쳐 찍힌다(실측).
