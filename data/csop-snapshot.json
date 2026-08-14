@@ -1,6 +1,6 @@
 {
  "_note": "fetch-csop.mjs 가 자동 생성한다(§23.6). 손으로 고쳐도 다음 실행에서 덮어써진다. 일별 히스토리는 data/csop-daily.json 에 쌓인다.",
- "asOf": "20260813",
+ "asOf": "20260814",
  "scrapedAt": "2026-08-14",
  "source": "https://website-api.csopasset.com/cmsApi/NAV/product",
  "products": [
@@ -11,12 +11,12 @@
    "underlying": "000660",
    "lev": 2,
    "listingDate": "20251016",
-   "totalNavUsd": 4864270221.32,
-   "outstandingUnits": 1092000000,
-   "navPerUnitUsd": 4.4545,
-   "navPerUnitHkd": 34.9484,
-   "closeHkd": 33.58,
-   "notionalUsd": 9604736464.38
+   "totalNavUsd": 5131455528.71,
+   "outstandingUnits": 1081500000,
+   "navPerUnitUsd": 4.7448,
+   "navPerUnitHkd": 37.2324,
+   "closeHkd": 36.94,
+   "notionalUsd": 9776841791.04
   },
   {
    "ticker": "7747",
@@ -24,12 +24,12 @@
    "name": "CSOP Samsung Electronics Daily Max (2x) Leveraged Product",
    "underlying": "005930",
    "lev": 2,
-   "totalNavUsd": 1085305780.67,
+   "totalNavUsd": 1139085301.22,
    "outstandingUnits": 103500000,
-   "navPerUnitUsd": 10.486,
-   "navPerUnitHkd": 82.2695,
-   "closeHkd": 79.58,
-   "notionalUsd": 2165529581.11
+   "navPerUnitUsd": 11.0057,
+   "navPerUnitHkd": 86.3617,
+   "closeHkd": 85.46,
+   "notionalUsd": 2273862663.97
   },
   {
    "ticker": "7347",
@@ -37,12 +37,12 @@
    "name": "CSOP Samsung Electronics Daily Max (-2x) Inverse Product",
    "underlying": "005930",
    "lev": -2,
-   "totalNavUsd": 18704612.52,
+   "totalNavUsd": 17804002.8,
    "outstandingUnits": 198500000,
-   "navPerUnitUsd": 0.0942,
-   "navPerUnitHkd": 0.7391,
-   "closeHkd": 0.758,
-   "notionalUsd": -37313549.39
+   "navPerUnitUsd": 0.0897,
+   "navPerUnitHkd": 0.7039,
+   "closeHkd": 0.713,
+   "notionalUsd": -48297875.57
   }
  ]
 }
