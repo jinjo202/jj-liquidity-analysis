@@ -1450,6 +1450,18 @@ DTC(days to cover)는 평균 거래량으로 잔고를 되갚는 데 걸리는 �
   <figcaption>정산일 ${C.settlements}개. 0 아래면 그 구간에 그 나라에서 돈이 빠졌다는 뜻이다.</figcaption>
 </figure>
 
+${C.unitsRows.length < 2 ? '' : `<figure>
+  <h4>일별 좌수(상장주식수) 추이 — EWY vs 주요 국가 ETF</h4>
+  ${levelChart(C.unitsRows, C.ishareSyms.filter(s => focus.includes(s)).map((s, i) => ({
+    key: s, cls: LINE[i], name: C.items.find(x => x.s === s)?.country ?? s,
+  })), '상장좌수 (백만좌)', { dg: 1, zeroBase: false })}
+  <div class="lg">${C.ishareSyms.filter(s => focus.includes(s)).map((s, i) =>
+    `<span><i class="sw ${['cr', 'acc', 'kq', 'mut'][i]}"></i>${esc(C.items.find(x => x.s === s)?.country ?? s)} <span class="mut">${esc(s)}</span></span>`).join('')}</div>
+  <figcaption>정산 구간(2주)과 달리 이건 진짜 매일이다 — iShares 는 순자산·NAV 를 매일 공표해서 좌수(= 순자산÷NAV)를
+    바로 계산할 수 있다. 과거를 주는 API 가 없어 ${dtFull(C.longSideFrom)}부터 ${C.longSideDays}일치만 쌓였다 —
+    짧지만 매일 늘어난다. 좌수가 늘면 설정(매수 유입), 줄면 환매(매도 유출)다.</figcaption>
+</figure>`}
+
 <div class="box">
   <b>이건 선물이 아니라 ETF 다</b> — 원 차트는 지수 선물 미결제약정을 쓴다. 그런데 선물 미결제약정은
   거래소마다 따로 공표하고 익명으로는 안 준다(KRX·SGX·HKEX·JPX·CME 전부 확인). 그래서 같은 질문을

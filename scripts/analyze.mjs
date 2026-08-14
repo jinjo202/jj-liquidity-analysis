@@ -319,6 +319,14 @@ function countryFlows() {
   items.sort((a, b) => a.net - b.net);          // 매도 우위부터 — 씨티 차트 읽는 순서다
 
   const withLong = items.filter(x => x.hasLong).length;
+
+  // 일별 좌수(상장주식수) 추이 — 정산 구간(2주)과 별개로, ishares 펀드는 매일 쌓인다.
+  // §27.4 의 국내 레버리지 ETF 좌수 차트와 같은 질문을 여기서도 매일 물을 수 있게 한다.
+  const ishareSyms = (raw.meta?.funds ?? []).filter(f => f.issuer === 'ishares').map(f => f.s);
+  const unitsRows = ishareSyms.length
+    ? aum.map(r => Object.fromEntries([['d', r.d], ...ishareSyms.map(s => [s, r[s]?.shares != null ? r[s].shares / 1e6 : null])]))
+    : [];
+
   return {
     asOf: si.at(-1).settlementDate,
     windowFrom: si.at(-2).settlementDate,
@@ -328,6 +336,7 @@ function countryFlows() {
     longSideDays: aum.length,
     withLong,
     items,
+    unitsRows, ishareSyms,
     meta: raw.meta,
   };
 }
