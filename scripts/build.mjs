@@ -38,6 +38,7 @@ const KNOWN_UNITS = new Set([
   '%', '%p', 'p', '배', '회',
   '억주', '백만주', '만주', '천주', '주',
   '억좌', '백만좌', '만좌', '좌',
+  '천계약', '계약',
 ]);
 const normUnit = u => UNIT_ALIAS[u] ?? u;
 
@@ -2997,6 +2998,84 @@ ${anchorRows ? `<h3>외사 리서치 수치와 대조</h3>
 </section>`;
 })();
 
+/* ---------- 방향 수급 — 외국인 현·선물 동조 (PART 4, §44) ---------- */
+// 잔고(신용·대차·좌수)는 부담의 크기를, 이 절은 방향을 본다. 원래 목표였던 옵션
+// (풋/콜·VKOSPI)은 무인증 일별 소스가 없어 제외했다 — fetch-direction-flows.mjs 머리 참조.
+const directionSection = !A.directionFlow ? '' : (() => {
+  const D = A.directionFlow;
+  const sg1 = (n, d = 1) => `${n >= 0 ? '+' : ''}${f(n, d)}`;
+  const cumRows = D.kospi.series.map(r => ({ d: r.d, cum: r.cum, idx: r.idx }));
+  const fut = D.futures.series;
+  const futRows = fut.map((r, i) => {
+    const back = k => fut.slice(Math.max(0, i - k + 1), i + 1).reduce((t, x) => t + x.v, 0);
+    return { d: r.d, f5: back(5) / 1e3, f20: back(20) / 1e3 };
+  });
+
+  const cumChart = interactive({
+    unit: '외국인 누적 순매수 (조원)', dg: 1, zeroBase: false, h: 250,
+    axis2Unit: '코스피(p)', dg2: 0,
+    dates: cumRows.map(r => r.d),
+    series: [
+      { name: '누적 순매수(코스피 현물)', color: CL.acc, vals: cumRows.map(r => r.cum) },
+      { name: '코스피', color: CL.mut, axis2: true, vals: cumRows.map(r => r.idx) },
+    ],
+  }, levelChartStatic(cumRows, [{ key: 'cum', cls: 'ln-idx', name: '누적 순매수' }],
+    '외국인 누적 순매수 (조원)', { dg: 1, zeroBase: false }));
+
+  const alignBox = {
+    'aligned-buy': ['<b>현물과 선물이 같이 매수다</b> — 헤지가 아니라 방향 베팅이고, 위쪽을 보고 있다.', ''],
+    'aligned-sell': ['<b>현물과 선물이 같이 매도다</b> — 자금이 방향성으로 빠지는 국면이다.', ' warn'],
+    mixed: ['<b>현물과 선물이 엇갈려 있다</b> — 한쪽이 헤지일 가능성이 커서 방향 신호로 읽으면 안 된다. 동조로 돌아서는 쪽이 다음 방향이다.', ''],
+  }[D.align];
+
+  return `<section>
+<h2>외국인 방향 수급 — 현물과 선물이 같은 쪽인가</h2>
+<p class="lead">앞의 지표들은 전부 <b>잔고</b>(부담의 크기)다. 이 절은 <b>방향</b>을 본다 —
+외국인이 현물과 선물을 같은 쪽으로 밀면 방향 베팅, 엇갈리면 헤지·차익 성격이라 동조 여부 자체가 신호다.
+원래는 옵션(풋/콜 비율·VKOSPI)을 붙이려 했으나 무인증 일별 소스가 없다(§44).</p>
+
+<div class="cards">
+  <div class="card"><div class="lb">코스피 현물 20일</div><div class="vl ${D.kospi.f20 >= 0 ? 'up' : 'neg'}">${sg1(D.kospi.f20)}<span class="u">조</span></div>
+    <div class="nt">5일 ${sg1(D.kospi.f5)}조 · 연속 ${D.kospi.streak.days}일 ${D.kospi.streak.sign > 0 ? '순매수' : '순매도'}</div></div>
+  <div class="card"><div class="lb">코스닥 현물 20일</div><div class="vl ${D.kosdaq.f20 >= 0 ? 'up' : 'neg'}">${sg1(D.kosdaq.f20)}<span class="u">조</span></div>
+    <div class="nt">5일 ${sg1(D.kosdaq.f5)}조</div></div>
+  <div class="card"><div class="lb">K200 선물 20일</div><div class="vl ${D.futures.f20 >= 0 ? 'up' : 'neg'}">${sg1(D.futures.f20 / 1e3)}<span class="u">천계약</span></div>
+    <div class="nt">5일 ${sg1(D.futures.f5 / 1e3)}천계약 · 연속 ${D.futures.streak.days}일 ${D.futures.streak.sign > 0 ? '순매수' : '순매도'}</div></div>
+  <div class="card"><div class="lb">동조 판정</div><div class="vl">${{ 'aligned-buy': '동시 매수', 'aligned-sell': '동시 매도', mixed: '엇갈림' }[D.align]}</div>
+    <div class="nt">20일 누적 부호 기준</div></div>
+</div>
+
+<div class="box${alignBox[1]}">${alignBox[0]}</div>
+
+<figure>
+  <h4>외국인 코스피 현물 누적 순매수 vs 코스피</h4>
+  ${cumChart}
+  <div class="lg"><span><i class="sw acc"></i>누적 순매수(조, 좌)</span><span><i class="sw" style="background:var(--mut)"></i>코스피(p, 우)</span></div>
+  <figcaption>${dtFull(D.from)}부터의 누적이다(수집 시작일 기준 — 그 이전 누적分은 0 으로 둔 상대값).
+    누적선이 꺾이는 지점이 외국인 태도가 바뀐 날이다.</figcaption>
+</figure>
+
+<figure>
+  <h4>외국인 K200 선물 순매수 — 5일합·20일합</h4>
+  ${levelChart(futRows, [
+    { key: 'f5', cls: 'ln-cr', name: '5일합' },
+    { key: 'f20', cls: 'ln-idx', name: '20일합' },
+  ], '외국인 선물 순매수 합 (천계약)', { dg: 1, zeroBase: false })}
+  <div class="lg"><span><i class="sw cr"></i>5일합</span><span><i class="sw acc"></i>20일합</span></div>
+  <figcaption>0 위면 선물 매수 우위, 아래면 매도 우위다. 5일합이 20일합을 위로 가로지르면
+    태도 전환이 빠르게 진행 중이라는 뜻이다. 계약수라 금액과 직접 비교할 수 없다 —
+    방향과 전환 시점만 읽는다.</figcaption>
+</figure>
+
+<div class="box">
+  <b>옵션이 빠진 이유</b> — 풋/콜 비율과 VKOSPI 는 KRX 정보데이터시스템이 익명 접근을 막았고
+  (LOGOUT), KRX Open API 는 키 발급에 로그인이 필요해 자동 파이프라인에 넣지 않았다.
+  네이버의 옵션 투자자별 표는 구조만 남고 행이 비어 있다. 방향 신호는 현·선물 동조로 대신한다 —
+  옵션이 주는 추가 정보(기대 변동성의 가격)는 이 구도에 없다는 한계를 그대로 둔다(§44).
+</div>
+</section>`;
+})();
+
 /* ---------- 사이클별 상세 — 탭 ---------- */
 // 두 사이클을 세로로 이어 붙이면 어느 쪽 숫자를 보고 있는지 헷갈린다.
 // 바깥 탭(§9)과 같은 방식으로 라디오 + 형제 선택자만 쓴다. 스크립트 없음.
@@ -3567,6 +3646,8 @@ ${outlookSection ? `<div class="pane p-next">
 <div class="parthead ph-next"><i>PART 4</i><b>다음 주 수급 — 지수가 어디로 가면 무엇이 따라 나오나</b></div>
 
 ${outlookSection}
+
+${directionSection}
 
 </div><!-- /p-next -->` : ''}
 

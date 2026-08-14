@@ -342,6 +342,54 @@ function countryFlows() {
 }
 const countryFlow = countryFlows();
 
+/* ---------- 방향 수급 — 외국인 현물·선물 동조 (§44) ---------- */
+// 잔고 지표(신용·대차·좌수)는 부담의 '크기'를 재고, 이건 '방향'을 잰다.
+// 외국인이 현물과 선물을 같은 쪽으로 밀면 방향 신호, 엇갈리면 헤지·차익 성격이라
+// 방향으로 읽으면 안 된다 — 동조 여부 자체가 판정값이다.
+// 원래는 옵션(풋/콜·VKOSPI)을 붙이려 했으나 무인증 소스가 없다(fetch-direction-flows.mjs 머리 참조).
+function directionFlows() {
+  const p = path.join(DIR, 'direction-flows.json');
+  if (!fs.existsSync(p)) return null;
+  const raw2 = JSON.parse(fs.readFileSync(p, 'utf8'));
+  if (!raw2.kospi?.length || !raw2.futures?.length) return null;
+
+  const idxByDate = new Map(raw.series.filter(r => Number.isFinite(r.OS0001)).map(r => [r.date, r.OS0001]));
+  const sumTail = (a, k) => a.slice(-k).reduce((t, r) => t + r.foreign, 0);
+  const streakOf = a => {
+    let n = 0;
+    const sign = Math.sign(a.at(-1)?.foreign ?? 0);
+    if (!sign) return { days: 0, sign: 0 };
+    for (let i = a.length - 1; i >= 0 && Math.sign(a[i].foreign) === sign; i--) n++;
+    return { days: n, sign };
+  };
+
+  const mk = (rows, scale) => {
+    let cum = 0;
+    return {
+      last: rows.at(-1),
+      f5: sumTail(rows, 5) / scale,
+      f20: sumTail(rows, 20) / scale,
+      streak: streakOf(rows),
+      // 차트용 — 일별 순매수와 누적. 억원은 조로, 계약은 그대로.
+      series: rows.map(r => ({ d: r.d, v: r.foreign / scale, cum: (cum += r.foreign / scale), idx: idxByDate.get(r.d) ?? null })),
+    };
+  };
+
+  const kospi = mk(raw2.kospi, 1e4);      // 억원 → 조
+  const kosdaq = mk(raw2.kosdaq, 1e4);
+  const futures = mk(raw2.futures, 1);    // 계약
+
+  const sameSign = Math.sign(kospi.f20) === Math.sign(futures.f20) && kospi.f20 !== 0;
+  const align = !sameSign ? 'mixed' : kospi.f20 > 0 ? 'aligned-buy' : 'aligned-sell';
+
+  return {
+    asOf: raw2.kospi.at(-1).d, from: raw2.kospi[0].d, days: raw2.kospi.length,
+    kospi, kosdaq, futures, align,
+    meta: raw2.meta,
+  };
+}
+const directionFlow = directionFlows();
+
 /* ---------- 마진콜 스트레스 시계열 ---------- */
 // 반대매매 ÷ 위탁매매미수금 = 미수 잔액 중 강제로 처분된 비율. 절대액은 시장 규모에 끌려
 // 다니지만 이 비율은 "미수를 낸 사람들이 실제로 얼마나 털렸나" 를 바로 말한다.
@@ -1635,6 +1683,23 @@ function dailyVerdict() {
       + `좌수와 달리 이건 **투자자가 실제로 낸 주문**이라 하루도 늦지 않는다.`);
   }
 
+  /* --- 축 4: 방향 — 외국인이 어느 쪽에 베팅하나 (§44) --- */
+  const DF = directionFlow;
+  if (DF) {
+    const fmtFut = n => `${n >= 0 ? '+' : ''}${(n / 1e3).toFixed(1)}천계약`;
+    add('direction', 'foreignAlign', '외국인 현·선물 동조',
+      DF.align === 'aligned-sell' ? 'alert' : DF.align === 'mixed' ? 'watch' : 'ok',
+      `현물 ${DF.kospi.f20 >= 0 ? '+' : ''}${n2(DF.kospi.f20)}조 / 선물 ${fmtFut(DF.futures.f20)}`,
+      `20일 누적 기준. 코스피 현물 ${DF.kospi.f20 >= 0 ? '+' : ''}${n2(DF.kospi.f20)}조`
+      + `(연속 ${DF.kospi.streak.days}일 ${DF.kospi.streak.sign > 0 ? '순매수' : '순매도'}), `
+      + `K200 선물 ${fmtFut(DF.futures.f20)}. `
+      + (DF.align === 'aligned-buy'
+        ? '**현물과 선물이 같이 매수다** — 헤지가 아니라 방향 베팅이고, 위쪽을 보고 있다.'
+        : DF.align === 'aligned-sell'
+          ? '**현물과 선물이 같이 매도다** — 자금이 방향성으로 빠지는 국면이다.'
+          : '**현물과 선물이 엇갈린다** — 한쪽이 헤지일 가능성이 커서 방향 신호로 읽으면 안 된다. 동조로 돌아서는 쪽이 다음 방향이다.'));
+  }
+
   if (!S.length) return null;
 
   /* --- 집계 --- */
@@ -1643,6 +1708,7 @@ function dailyVerdict() {
     down: { label: '하방 — 신용발 강제 매도', q: '지수가 여기서 더 빠지면 기계적으로 나올 물량이 있나' },
     up: { label: '상방 — 숏커버 연료', q: '되갚아야 할 공매도가 얼마나 남았나' },
     crowd: { label: '군중 — 레버리지 물량 정리', q: '개인이 실제로 팔고 나갔나' },
+    direction: { label: '방향 — 외국인 베팅', q: '외국인 현물과 선물이 같은 쪽인가' },
   };
   const axes = Object.entries(AXIS).map(([axis, m]) => {
     const list = S.filter(x => x.axis === axis);
@@ -1681,6 +1747,14 @@ function dailyVerdict() {
       ? `**대신 위쪽 연료도 없다** — 대차 주수가 저점 대비 ${ss.value} 늘어 새 숏이 들어오는 국면이고, 대차/시총은 이미 직전 저점 아래다.`
       : `**위쪽은 되돌림이 대체로 끝났다** — 대차/시총이 직전 사이클 저점 부근이다.`);
   }
+  const dirSig = S.find(x => x.key === 'foreignAlign');
+  if (dirSig) {
+    parts.push(dirSig.state === 'ok'
+      ? `**외국인은 현·선물 동시 매수다** — 방향은 위를 보고 있다(${dirSig.value}).`
+      : dirSig.state === 'alert'
+        ? `**외국인은 현·선물 동시 매도다** — 방향성 이탈이 진행 중이다(${dirSig.value}).`
+        : `**외국인 현·선물은 엇갈려 있다**(${dirSig.value}) — 방향 신호는 아직 없다.`);
+  }
 
   /* --- 오늘 움직인 것. 전일 대비 변화 중 큰 것만 --- */
   const moves = (daily?.items ?? [])
@@ -1714,6 +1788,7 @@ const out = {
   marginStress: marginStressData,
   globalSemis: globalSemisData,
   countryFlow,
+  directionFlow,
   stockFlow,
   investorFlow,
   unitsAgreement,

@@ -488,6 +488,25 @@ if (A.countryFlow) {
   assert.ok(C.windowFrom < C.windowTo, '정산 구간의 앞뒤가 바뀌었다');
 }
 
+/* ---------- 방향 수급 (§44) ---------- */
+if (A.directionFlow) {
+  const D = A.directionFlow;
+  for (const key of ['kospi', 'kosdaq', 'futures']) {
+    const s = D[key].series;
+    assert.ok(s.length >= 20, `${key}: 20일 합을 낼 수 없다 (${s.length}행)`);
+    for (let i = 1; i < s.length; i++) {
+      assert.ok(s[i - 1].d < s[i].d, `${key}: 날짜 정렬이 깨졌다 (${s[i].d})`);
+    }
+    // 누적은 일별의 합이어야 한다 — 마지막 값으로 전체를 검산한다.
+    const total = s.reduce((t, r) => t + r.v, 0);
+    near(s.at(-1).cum, total, 1e-6, `${key} 누적 검산`);
+  }
+  // 동조 판정이 20일 합의 부호와 맞는가
+  const same = Math.sign(D.kospi.f20) === Math.sign(D.futures.f20) && D.kospi.f20 !== 0;
+  assert.equal(D.align, !same ? 'mixed' : D.kospi.f20 > 0 ? 'aligned-buy' : 'aligned-sell',
+    '동조 판정이 20일 합과 어긋난다');
+}
+
 console.log(`selfcheck OK — ${A.series.length}행, 재현 MAE ${A.reproMAE.toFixed(3)}조, `
   + `사이클 ${A.periods.length}개, 채널 ${A.channels ? 'O' : 'X'}, 미수금 ${A.unpaid ? 'O' : 'X'}, `
   + `ETF ${A.etf ? `O(${A.etf.perFund.length}종)` : 'X'}`);

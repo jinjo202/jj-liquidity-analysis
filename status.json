@@ -1,7 +1,7 @@
 {
   "ranOn": "2026-08-14",
-  "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/31828706207",
+  "ranBy": "local",
+  "runUrl": null,
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -40,8 +40,8 @@
     "stance": "easing",
     "stanceLabel": "완만한 정리",
     "score": 6,
-    "signals": 13,
-    "headline": "아래쪽에 아직 2개가 걸려 있다 — 시장별 되돌림 진행도·신용융자 상승 추세. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 대신 위쪽 연료도 없다 — 대차 주수가 저점 대비 +8.8% 늘어 새 숏이 들어오는 국면이고, 대차/시총은 이미 직전 저점 아래다.",
+    "signals": 14,
+    "headline": "아래쪽에 아직 2개가 걸려 있다 — 시장별 되돌림 진행도·신용융자 상승 추세. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 대신 위쪽 연료도 없다 — 대차 주수가 저점 대비 +8.8% 늘어 새 숏이 들어오는 국면이고, 대차/시총은 이미 직전 저점 아래다. 외국인 현·선물은 엇갈려 있다(현물 +2.9조 / 선물 -6.1천계약) — 방향 신호는 아직 없다.",
     "axes": {
       "down": {
         "ok": 4,
@@ -57,6 +57,11 @@
         "ok": 4,
         "alert": 0,
         "n": 4
+      },
+      "direction": {
+        "ok": 0,
+        "alert": 0,
+        "n": 1
       }
     },
     "alerts": [

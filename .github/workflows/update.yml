@@ -64,6 +64,8 @@ jobs:
           # 국가별 포지셔닝(§36). 롱 사이드(좌수=순자산÷NAV)는 과거를 주는 API 가 없어
           # **매일 받아 누적해야** 히스토리가 생긴다 — 하루 거르면 그날은 영영 빈다.
           node scripts/fetch-country-flows.mjs 10 || ERR="$ERR countryflows"
+          # 방향 수급(§44). 외국인 현물·선물 순매수 — 페이징 백필이 되므로 3페이지면 공백이 메워진다.
+          node scripts/fetch-direction-flows.mjs 3 || ERR="$ERR directionflows"
           echo "FETCH_ERRORS=${ERR# }" >> "$GITHUB_ENV"
           echo "실패한 소스: ${ERR:-없음}"
 
