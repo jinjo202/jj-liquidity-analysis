@@ -1001,7 +1001,32 @@ function chartRuntime() {
   // </script> 가 데이터 안에 들어가면 스크립트가 조기 종료된다.
   const data = JSON.stringify(CHARTS).replace(/<\//g, '<\\/');
   return `window.__CHARTS__=${data};
-${js}`;
+${js}
+${tabScrollJs()}`;
+}
+
+// 탭(파트 1~6·전체)을 누르면 그 내용으로 스크롤한다. 탭 자체는 라디오+형제 선택자라
+// JS 없이도 전환되지만(§9), 요약이 늘 위에 고정되어 있어 "눌렀는데 화면이 그대로다"로
+// 보인다는 지적이 있었다 — 전환은 됐는데 이동한 게 안 보이는 것이다. 라디오의 change 에
+// 얹어서 해당 파트의 머리글로 스크롤한다. 스크립트가 없으면 이 동작만 빠지고 전환 자체는
+// 그대로 동작한다.
+function tabScrollJs() {
+  return `(function(){
+  var inputs = document.querySelectorAll('input.tabin');
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].addEventListener('change', function () {
+      if (!this.checked) return;
+      // 라디오가 포커스를 받으면 브라우저가 자체적으로 (보이지도 않는) input 을
+      // 화면에 넣으려는 스크롤을 같이 걸 때가 있어, smooth 애니메이션끼리 겹쳐
+      // 엉뚱한 위치로 튄다. blur 로 그 경쟁을 없앤 뒤 우리가 원하는 곳으로 보낸다.
+      this.blur();
+      var target = this.id === 'tab-all'
+        ? document.querySelector('.pane')
+        : document.querySelector('.pane.p-' + this.id.slice(4) + ' .parthead');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+})();`;
 }
 
 // 서버가 그린 SVG 는 그대로 두고, 같은 데이터를 window.__CHARTS__ 로 함께 내보낸다.
@@ -2294,6 +2319,35 @@ if (co && PJ) {
 </div>`;
   })();
 
+  // 매일 확인할 지표 둘째 — 신용융자 상승 추세. 메인 차트(PART 1 첫 그림)는 2020년부터라
+  // 최근 며칠의 상승이 6년치 등락 옆에서 안 보인다. 여기는 최근 3개월만 잘라 보여준다.
+  const CT = A.creditTrend;
+  const creditSeries = A.daily?.items?.find(x => x.key === 'credit')?.series ?? [];
+  const CVERD = {
+    building: { label: '연속 상승 중', cls: 'w-build', line: '신용융자가 며칠째 다시 쌓이고 있다. 정리된 만큼 다시 채워지는 중이다.' },
+    flat: { label: '방향 불분명', cls: 'w-flat', line: '하루짜리 반등인지 추세 전환인지 아직 구분할 수 없다.' },
+    easing: { label: '정리 중', cls: 'w-roll', line: '되돌림이 계속되고 있다. 연속 상승은 아직 없다.' },
+    unknown: { label: '판정 불가', cls: 'w-flat', line: '표본이 모자란다.' },
+  };
+  const creditBox = !CT || !creditSeries.length ? '' : (() => {
+    const v = CVERD[CT.verdict];
+    const sg = (x, d = 1) => (Number.isFinite(x) ? `${x >= 0 ? '+' : ''}${f(x, d)}%` : '-');
+    return `<div class="watch ${v.cls}">
+  <div class="wl">매일 볼 것 · 신용융자 상승 추세</div>
+  <div class="wmain">
+    <div class="wv">${f(CT.last.v)}<span class="u">조</span></div>
+    <div class="wtag">${esc(v.label)}</div>
+  </div>
+  <div class="wnums">
+    <span>전일 <b class="${CT.d1 >= 0 ? 'up' : 'dn'}">${sg(CT.d1)}</b></span>
+    <span>5일 <b class="${CT.d5 >= 0 ? 'up' : 'dn'}">${sg(CT.d5)}</b></span>
+    <span>10일 <b class="${CT.d10 >= 0 ? 'up' : 'dn'}">${sg(CT.d10)}</b></span>
+    <span>연속 상승 <b>${CT.upStreak}일</b></span>
+  </div>
+  <div class="wline">${esc(v.line)} 메인 차트(PART 1)는 2020년부터라 최근 등락은 여기서 확대해서 본다.</div>
+  <div class="wtrend">${trendChart(creditSeries.slice(-90), '신용융자 (조원)', 2, '최근 3개월')}</div>
+</div>`;
+  })();
 
   // 좌수가 "환매가 있었나" 라면 AUM 은 "시장에 주는 충격이 얼마나 큰가" 다 — 리밸런싱 필요액도,
   // 시장 거래대금에서 차지하는 몫도 AUM 에 비례한다. 좌수만 보면 그 축소를 놓친다.
@@ -2368,6 +2422,7 @@ if (co && PJ) {
 
 <div class="wgrid">
 ${watchBox}
+${creditBox}
 ${impactBox}
 ${stressBox}
 </div>
@@ -3325,7 +3380,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
     .tabs::-webkit-scrollbar { display:none; }
   }
   /* 앵커로 이동할 때 sticky 메뉴가 제목을 덮지 않게 한다. */
-  .today, .summary, .pane h2 { scroll-margin-top:60px; }
+  .today, .summary, .pane h2, .pane, .parthead { scroll-margin-top:60px; }
   /* 선택 상태 — 배경을 파트 색으로 채우고 글자를 흰색으로 뒤집는다. */
   #tab-down:checked ~ .tabs label[for="tab-down"],
   #tab-up:checked ~ .tabs label[for="tab-up"],
