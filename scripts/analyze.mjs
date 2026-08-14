@@ -1440,6 +1440,31 @@ function dailyDelta() {
 
 const daily = dailyDelta();
 
+/* ---------- 신용융자 상승 추세 — 매일 잡아내기 ---------- */
+// "오늘 움직인 것"은 하루짜리 delta라 며칠 연속 쌓이는 중인지는 안 보여준다.
+// etf.mjs 의 좌수 downStreak(§27.4)과 같은 패턴을 반대 방향(연속 상승)으로 적용한다.
+function creditTrend() {
+  const s = daily.items.find(x => x.key === 'credit')?.series;
+  if (!s || s.length < 11) return null;
+  const last = s.at(-1);
+  const back = k => s[Math.max(0, s.length - 1 - k)];
+  const chg = k => (back(k).v > 0 ? (last.v / back(k).v - 1) * 100 : null);
+
+  let upStreak = 0;
+  for (let i = s.length - 1; i > 0; i--) {
+    if (s[i].v > s[i - 1].v) upStreak++;
+    else break;
+  }
+
+  const d5 = chg(5);
+  const verdict = d5 == null ? 'unknown'
+    : upStreak >= 3 || d5 > 2 ? 'building'   // 며칠째 쌓이는 중
+    : d5 < -1 ? 'easing'                     // 풀리는 중
+    : 'flat';
+  return { last, upStreak, d1: chg(1), d5, d10: chg(10), verdict };
+}
+const creditTrendData = creditTrend();
+
 /* ---------- 다음 주 수급 전망(PART 4) ---------- */
 // 방향을 맞히려는 게 아니라, 지수가 어디로 가면 어떤 물량이 기계적으로 따라 나오는지를
 // 미리 적어 두는 것이다. 다음 주에 실제 움직임과 대조하면 수급이 원인이었는지 판정할 수 있다.
@@ -1527,6 +1552,18 @@ function dailyVerdict() {
       `코스닥은 이번에 쌓은 것의 ${n2(Q.retracedPctOfBuild, 0)}%를 되돌려 신용/시총이 직전 저점의 ${n2(Q.ratioVsPrevTrough, 2)}배 — 끝났다. `
       + `코스피는 ${n2(K.retracedPctOfBuild, 0)}%만 되돌려 잔고가 아직 시작의 ${n2(K.multipleOfStart, 2)}배이고, `
       + `직전 저점까지 ${n2(K.toPrevTroughJo)}조 남았다. 합계 청산률은 이 둘의 평균이라 어느 쪽도 설명하지 못한다.`);
+  }
+  const CT = creditTrendData;
+  if (CT && CT.d5 != null) {
+    add('down', 'creditTrend', '신용융자 상승 추세',
+      CT.verdict === 'building' ? 'alert' : CT.verdict === 'flat' ? 'watch' : 'ok',
+      `연속 ${CT.upStreak}일 상승`,
+      `5일 ${sg(CT.d5)}, 10일 ${sg(CT.d10)}, 전일 ${sg(CT.d1)}. `
+      + (CT.verdict === 'building'
+        ? `**새로 쌓이는 중이다** — 정리된 만큼 다시 채워지고 있다는 뜻이라, 위 지표들의 '여지'는 그만큼 좁아진다.`
+        : CT.verdict === 'easing'
+          ? `되돌림이 계속되고 있다. 연속 상승은 아직 없다.`
+          : `방향이 뚜렷하지 않다. 하루짜리 반등과 추세 전환을 아직 구분할 수 없다.`));
   }
 
   /* --- 축 2: 상방 — 되갚아야 할 공매도가 남았나 --- */
@@ -1662,6 +1699,7 @@ const out = {
   verdict,
   creditByMarket,
   periods, repro, reproMAE, stress, projection, monthly, lending, etf, outlook, channels, unpaid, spot, daily,
+  creditTrend: creditTrendData,
   ratio: ratioSeries.filter((r, i) => i % 5 === 0 || i === ratioSeries.length - 1),
   divergence,
   marginStress: marginStressData,
