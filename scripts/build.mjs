@@ -1018,12 +1018,15 @@ function tabScrollJs() {
       if (!this.checked) return;
       // 라디오가 포커스를 받으면 브라우저가 자체적으로 (보이지도 않는) input 을
       // 화면에 넣으려는 스크롤을 같이 걸 때가 있어, smooth 애니메이션끼리 겹쳐
-      // 엉뚱한 위치로 튄다. blur 로 그 경쟁을 없앤 뒤 우리가 원하는 곳으로 보낸다.
+      // 엉뚱한 위치로 튄다. blur 로 그 경쟁을 없앤다.
       this.blur();
       var target = this.id === 'tab-all'
         ? document.querySelector('.pane')
         : document.querySelector('.pane.p-' + this.id.slice(4) + ' .parthead');
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // smooth 는 배경 탭(비활성 탭)에서 requestAnimationFrame 이 스로틀되면 아예 안 움직이거나
+      // 애니메이션이 밀려 있다가 한꺼번에 실행돼 엉뚱한 곳에 착지한다 — auto(즉시 이동)로
+      // 그 경로 자체를 없앤다. 부드러움보다 "확실히 그 자리로 갔다"가 여기선 더 중요하다.
+      if (target) target.scrollIntoView({ behavior: 'auto', block: 'start' });
     });
   }
 })();`;
