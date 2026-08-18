@@ -1268,6 +1268,16 @@
      "closeHkd": 36.94,
      "notionalUsd": 9776841791.04,
      "deemedNavUsd": 4887540357.87
+    },
+    {
+     "d": "20260818",
+     "units": 1032000000,
+     "totalNavUsd": 4980201660.87,
+     "navPerUnitUsd": 4.8258,
+     "navPerUnitHkd": 37.8521,
+     "closeHkd": 36.9,
+     "notionalUsd": 9493219376.07,
+     "deemedNavUsd": 4742888227.06
     }
    ]
   },
@@ -2539,6 +2549,16 @@
      "closeHkd": 85.46,
      "notionalUsd": 2273862663.97,
      "deemedNavUsd": 1136854216.86
+    },
+    {
+     "d": "20260818",
+     "units": 103500000,
+     "totalNavUsd": 1085262102.68,
+     "navPerUnitUsd": 10.4856,
+     "navPerUnitHkd": 82.2459,
+     "closeHkd": 80.56,
+     "notionalUsd": 2110666669.03,
+     "deemedNavUsd": 1052580222.8
     }
    ]
   },
@@ -3810,6 +3830,16 @@
      "closeHkd": 0.713,
      "notionalUsd": -48297875.57,
      "deemedNavUsd": 24128017.82
+    },
+    {
+     "d": "20260818",
+     "units": 269000000,
+     "totalNavUsd": 25191639.98,
+     "navPerUnitUsd": 0.0936,
+     "navPerUnitHkd": 0.7342,
+     "closeHkd": 0.745,
+     "notionalUsd": -50373175.25,
+     "deemedNavUsd": 25183590.44
     }
    ]
   }
@@ -3968,7 +3998,7 @@
   },
   {
    "d": "20260818",
-   "krw": 1410.4
+   "krw": 1413.5
   }
  ]
 }

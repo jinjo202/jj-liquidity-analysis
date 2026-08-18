@@ -1,7 +1,7 @@
 {
   "ranOn": "2026-08-18",
-  "ranBy": "local",
-  "runUrl": null,
+  "ranBy": "github-actions",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/32194759610",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -20,24 +20,24 @@
     "c2026"
   ],
   "singleStockEtfUnits": {
-    "date": "20260818",
-    "unitsMillion": 677,
+    "date": "20260819",
+    "unitsMillion": 665,
     "verdict": "rolling",
     "changePct": {
-      "d1": -1.6,
-      "d5": -4.3,
-      "d10": -18.9
+      "d1": -1.8,
+      "d5": -5.5,
+      "d10": -21.1
     },
     "peak": {
       "date": "20260804",
       "unitsMillion": 843,
-      "fromPeakPct": -19.7,
-      "tradingDaysSince": 9
+      "fromPeakPct": -21.1,
+      "tradingDaysSince": 10
     },
-    "consecutiveDownDays": 2
+    "consecutiveDownDays": 3
   },
   "verdict": {
-    "asOf": "20260818",
+    "asOf": "20260819",
     "stance": "easing",
     "stanceLabel": "완만한 정리",
     "score": 6,
