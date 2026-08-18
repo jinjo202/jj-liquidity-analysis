@@ -1,7 +1,7 @@
 {
   "ranOn": "2026-08-18",
-  "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/32128961449",
+  "ranBy": "local",
+  "runUrl": null,
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -9,6 +9,7 @@
   "dataThrough": {
     "지수·거래대금": "20260818",
     "신용융자·예탁금": "20260814",
+    "신용융자 분리(유가증권/코스닥)": "20260729",
     "대차잔고": "20260818",
     "지수 장중(네이버)": "20260818"
   },

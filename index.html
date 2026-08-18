@@ -409,6 +409,12 @@
 </header>
 
 
+<div class="box warn">
+  <b>유가증권/코스닥 분리 데이터가 낡았다</b> — 마지막 갱신 2026.07.29,
+  전체(신용융자 합계)는 2026.08.14까지 나와 있어 <b>16일</b> 벌어졌다.
+  이 계열은 금투협이 프로그램 API로 안 열어 둬 <code>node scripts/ingest-split.mjs</code> 수동 재다운로드가
+  필요하다(§8·§45) — FREESIS &gt; 주식 &gt; 신용공여현황 &gt; 신용공여 잔고 추이 에서 최신까지 다시 받을 것.
+</div>
 
 <div id="ic-bar" class="ic-bar" hidden></div>
 
@@ -802,7 +808,7 @@
     </details>
 </div>
 <div class="fresh">데이터 최신일 —
-  <span><b>지수·거래대금</b> 2026.08.18</span><span><b>신용융자·예탁금</b> 2026.08.14</span><span><b>대차잔고</b> 2026.08.18</span><span><b>지수 장중(네이버)</b> 2026.08.18 <i>(장중 갱신)</i></span>
+  <span><b>지수·거래대금</b> 2026.08.18</span><span><b>신용융자·예탁금</b> 2026.08.14</span><span><b>신용융자 분리(유가증권/코스닥)</b> 2026.07.29</span><span><b>대차잔고</b> 2026.08.18</span><span><b>지수 장중(네이버)</b> 2026.08.18 <i>(장중 갱신)</i></span>
   <span class="fn">계열마다 공표 시차가 다르다: 지수 T+1, 신용융자는 결제일 기준이라 하루 더 늦다.</span>
 </div>
 

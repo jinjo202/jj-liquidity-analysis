@@ -3189,13 +3189,28 @@ const reproRows = A.repro.map(r => `<tr><td>${k0(r.low)}–${k0(r.high)}</td>
   <td class="n">${f(r.pdf)}</td><td class="n">${f(r.mine)}</td>
   <td class="n ${Math.abs(r.diff) > 0.1 ? 'warn' : 'ok'}">${r.diff >= 0 ? '+' : ''}${f(r.diff)}</td></tr>`).join('');
 
-const splitBox = A.meta.hasSplit ? '' : `
+// 분리 계열(유가증권/코스닥)은 수동 xlsx 갱신이라 전체(OS0026, 매일)보다 항상 며칠 늦다 —
+// 그 자체는 정상이다(§8). 문제는 사람이 재다운로드를 잊으면 몇 주씩 조용히 벌어진다는 것 —
+// 지금까지는 알아챌 방법이 없었다. splitThrough 와 전체 최신일의 격차를 재서 14일(약 2주,
+// 정상 지연의 상한) 넘게 벌어지면 "적용은 됐지만 낡았다"를 별도로 경고한다.
+const ymdToDate = s => new Date(`${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)}`);
+const creditThrough = A.daily?.freshness.find(x => x.label === '신용융자·예탁금')?.date;
+const splitLagDays = A.creditByMarket && creditThrough
+  ? Math.round((ymdToDate(creditThrough) - ymdToDate(A.creditByMarket.splitThrough)) / 86400000)
+  : null;
+const splitBox = !A.meta.hasSplit ? `
 <div class="box warn">
   <b>유가증권/코스닥 분리 미적용</b> — 금투협은 신용거래융자를 전체·유가증권·코스닥으로 나눠 공표하지만,
   프로그램으로 접근 가능한 크로스통계 API에는 '전체'만 노출된다. 현재 신용융자는 <b>유가증권+코스닥 합계</b>이며
   코스피 지수로만 버킷을 나눈 상태다. FREESIS &gt; 주식 &gt; 신용공여현황 &gt; 신용공여 잔고 추이 에서 내려받아
   <code>data/</code> 에 넣고 <code>node scripts/ingest-split.mjs</code> 를 실행하면 시장별 분석이 자동으로 붙는다.
-</div>`;
+</div>` : (splitLagDays != null && splitLagDays > 14) ? `
+<div class="box warn">
+  <b>유가증권/코스닥 분리 데이터가 낡았다</b> — 마지막 갱신 ${dtFull(A.creditByMarket.splitThrough)},
+  전체(신용융자 합계)는 ${dtFull(creditThrough)}까지 나와 있어 <b>${splitLagDays}일</b> 벌어졌다.
+  이 계열은 금투협이 프로그램 API로 안 열어 둬 <code>node scripts/ingest-split.mjs</code> 수동 재다운로드가
+  필요하다(§8·§45) — FREESIS &gt; 주식 &gt; 신용공여현황 &gt; 신용공여 잔고 추이 에서 최신까지 다시 받을 것.
+</div>` : '';
 
 const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추정 — ${dtFull(co.headline.idxLastDate)}</title>
 <style>

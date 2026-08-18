@@ -1484,6 +1484,9 @@ function dailyDelta() {
   const freshness = [
     { label: '지수·거래대금', date: raw.series.filter(r => Number.isFinite(r.OS0001)).at(-1)?.date },
     { label: '신용융자·예탁금', date: raw.series.filter(r => Number.isFinite(r.OS0026)).at(-1)?.date },
+    // 분리(유가증권/코스닥)는 수동 xlsx 갱신이라 전체보다 항상 늦다(§8) — 그 지연이
+    // 몇 주씩 조용히 벌어지는 걸 여기 freshness 목록에 올려서 매일 눈에 띄게 한다.
+    creditByMarket && { label: '신용융자 분리(유가증권/코스닥)', date: creditByMarket.splitThrough },
     lending && { label: '대차잔고', date: lending.last.date },
     Object.keys(spotSources).length && {
       label: '지수 장중(네이버)',
