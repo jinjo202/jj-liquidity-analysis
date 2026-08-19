@@ -47,23 +47,36 @@ const split = fs.existsSync(splitPath)
 // 코스피·코스닥은 credit-split.json(§8, 수동 xlsx 갱신이라 1~2주 늦다) — 겹치는 날짜에서
 // 값이 정확히 같은 소스라는 것을 확인했으므로(전체 vs kospi+kosdaq, 오차 ±1백만원 = xlsx 반올림)
 // 늦게 확정되는 두 계열을 억지로 오늘까지 늘리지 않고, 없는 날은 그냥 null 로 둔다.
+//
+// §45.1: 실측 이후 구간은 '마지막 실측 비율'로 전체(OS0026, 매일 갱신)를 나눈 추정치를 채운다 —
+// 0 이나 결측으로 두면 그래프가 몇 주씩 끊겨 보이고, 그렇다고 정밀한 척 숫자를 박으면 거짓말이다.
+// 그래서 반드시 estimated 플래그를 달아 리포트가 "이 구간부터는 비율 고정 추정"이라고 밝히게 한다.
+// 비율 자체가 크게 움직이는 계열은 아니다(§8.1: 유가증권 비중이 사이클 안에서는 꽤 안정적으로 움직인다).
 const creditByMarket = !split ? null : (() => {
   const byDate = new Map(split.series.map(r => [r.date, r]));
+  const lastReal = split.series.at(-1);
+  const lastRatio = lastReal.total > 0 ? lastReal.kospi / lastReal.total : null;
   const series = raw.series
     .filter(r => Number.isFinite(r.OS0001) && r.date >= '20200101')
     .map(r => {
       const s = byDate.get(r.date);
+      const totalJo = Number.isFinite(r.OS0026) ? r.OS0026 / 1e6 : null;
+      const estimated = !s && totalJo != null && lastRatio != null && r.date > lastReal.date;
       return {
         d: r.date,
-        total: Number.isFinite(r.OS0026) ? r.OS0026 / 1e6 : null,
-        kospi: s ? s.kospi / 1e6 : null,
-        kosdaq: s ? s.kosdaq / 1e6 : null,
+        total: totalJo,
+        kospi: s ? s.kospi / 1e6 : (estimated ? totalJo * lastRatio : null),
+        kosdaq: s ? s.kosdaq / 1e6 : (estimated ? totalJo * (1 - lastRatio) : null),
+        estimated,
         // 코스피 지수. 신용융자·지수 관계를 같은 차트에서 보려면 필요하다 — PART 1
         // 첫 차트가 이 배열 하나로 시장별 신용융자 + 지수 추이를 다 그린다.
         idx: r.OS0001 ?? null,
       };
     });
-  return { series, splitThrough: split.series.at(-1).date };
+  return {
+    series, splitThrough: lastReal.date,
+    estimatedRatio: lastRatio, estimatedSince: series.find(r => r.estimated)?.d ?? null,
+  };
 })();
 
 function buildInput(market) {

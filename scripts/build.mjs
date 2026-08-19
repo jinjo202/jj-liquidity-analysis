@@ -3643,9 +3643,15 @@ ${summarySection}
     : timeSeriesChart(A.series.filter(p => p.d >= '20200101').map(p => ({ d: p.d, total: p.c != null ? p.c / 1e6 : null, idx: p.i })), A.periods)}
   <div class="lg"><span><i class="sw cr"></i>전체</span><span><i class="sw acc"></i>코스피</span><span><i class="sw kq"></i>코스닥</span><span><i class="sw" style="background:var(--mut)"></i>코스피 지수(우, 점선)</span></div>
   <figcaption>체크박스로 전체·코스피·코스닥을 하나씩, 또는 원하는 조합으로 겹쳐 볼 수 있다(기본 전체 켜짐).
-    음영은 각 사이클의 적립 구간. 전체는 결제일 기준이라 지수보다 1~2일 늦게 확정되고, 코스피·코스닥
-    분리분은 수동으로 올리는 분리 파일(§8) 기준이라 <b>그보다 1~2주 더 늦다</b> — 오른쪽 끝의 빈 구간은
-    누락이 아니라 그 지연이다.</figcaption>
+    음영은 각 사이클의 적립 구간. 전체는 결제일 기준이라 지수보다 1~2일 늦게 확정된다.
+    ${A.creditByMarket?.estimatedSince
+      ? `코스피·코스닥 분리는 수동으로 올리는 분리 파일(§8) 기준이라 실측은 ${dtFull(A.creditByMarket.splitThrough)}까지다 —
+         <b>그 이후(${dtFull(A.creditByMarket.estimatedSince)}~)는 실측이 아니라 마지막 비율
+         (유가증권 ${f(A.creditByMarket.estimatedRatio * 100, 1)}%)을 그날그날의 전체 잔고에 그대로
+         적용한 추정치</b>다(§45.1). 비율 자체가 바뀌었는데 아직 못 반영했을 수 있다 — 분리 파일이
+         갱신되면 그 구간은 실측으로 자동 교체된다.`
+      : `코스피·코스닥 분리분은 수동으로 올리는 분리 파일(§8) 기준이라 그보다 1~2주 더 늦다 —
+         오른쪽 끝의 빈 구간은 누락이 아니라 그 지연이다.`}</figcaption>
 </figure>
 
 ${compare}
