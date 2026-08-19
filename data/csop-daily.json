@@ -3844,7 +3844,7 @@
    ]
   }
  ],
- "updatedAt": "2026-08-18",
+ "updatedAt": "2026-08-19",
  "source": "website-api.csopasset.com/cmsApi/NAV/product (POST {productName})",
  "note": "기준일(HstDateFormat)별 1행. 과거 API 가 없어 20260802 수집 시작 이후만 존재한다(§23.6).",
  "fx": [
@@ -4002,7 +4002,7 @@
   },
   {
    "d": "20260819",
-   "krw": 1413.5
+   "krw": 1390.7
   }
  ]
 }
