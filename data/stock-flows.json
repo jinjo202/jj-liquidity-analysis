@@ -3977,8 +3977,8 @@
      "balanceShares": 86105141,
      "balanceMil": 21311022,
      "close": 247500,
-     "foreignShares": 2733510436,
-     "foreignPct": 46.76
+     "foreignShares": 2732901459,
+     "foreignPct": 46.75
     }
    ]
   },
@@ -7953,8 +7953,8 @@
      "balanceShares": 12748772,
      "balanceMil": 19123158,
      "close": 1500000,
-     "foreignShares": 372541277,
-     "foreignPct": 51
+     "foreignShares": 372458143,
+     "foreignPct": 50.99
     }
    ]
   }
