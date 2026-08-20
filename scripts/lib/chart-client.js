@@ -151,7 +151,10 @@
     return {
       dates: idx.map(function (i) { return spec.dates[i]; }),
       series: spec.series.map(function (s) {
-        return { name: s.name, color: s.color, axis2: s.axis2, vals: idx.map(function (i) { return s.vals[i]; }) };
+        // line·opacity 를 안 옮기면 구간을 좁히는 순간 stack 차트의 합계선이 면적으로
+        // 바뀌고 면적 투명도도 기본값으로 돌아간다 — 필드를 통째로 승계한다.
+        return { name: s.name, color: s.color, axis2: s.axis2, line: s.line, opacity: s.opacity,
+          vals: idx.map(function (i) { return s.vals[i]; }) };
       }),
     };
   }
@@ -423,20 +426,39 @@
     // 구간 요약 — 시작/끝/변화. "구간별 수치" 가 여기서 나온다.
     var sum = document.createElement('div');
     sum.className = 'ic-sum';
-    sum.innerHTML = '<span class="ic-range">' + dLabel(cut.dates[0]) + ' ~ ' + dLabel(cut.dates[n - 1])
-      + ' · ' + n + '개 점</span>'
+    // stack 차트의 계열별 %는 대부분 "상장 이후 +2138%" 같은 상장 시점 잡음이라(값이 0 근처에서
+    // 시작하는 계열이 늘 있다) 오해만 부른다 — 구성 차트의 결론은 합계이므로 합계에만 %를 달고
+    // 계열별로는 시작→끝 값만 보여준다. 일반(선) 차트는 기존 그대로 계열별 %를 단다.
+    var sumHead = '<span class="ic-range">' + dLabel(cut.dates[0]) + ' ~ ' + dLabel(cut.dates[n - 1])
+      + ' · ' + n + '개 점</span>';
+    var pct = function (f, l) {
+      if (f == null || l == null || f === 0) return '';
+      var chg = (l / f - 1) * 100;
+      return ' <em class="' + (chg >= 0 ? 'up' : 'dn') + '">'
+        + (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%</em>';
+    };
+    var ends = function (vals) {
+      var f = null, l = null;
+      for (var i = 0; i < vals.length; i++) if (vals[i] != null && isFinite(vals[i])) { f = vals[i]; break; }
+      for (var j = vals.length - 1; j >= 0; j--) if (vals[j] != null && isFinite(vals[j])) { l = vals[j]; break; }
+      return [f, l];
+    };
+    if (spec.stack && stackSums) {
+      var te = ends(stackSums);
+      if (te[0] != null) {
+        sumHead += '<span><i style="background:var(--fg)"></i>합계 ' + fmt(te[0], spec.dg || 0)
+          + ' → <b>' + fmt(te[1], spec.dg || 0) + (spec.suffix || '') + '</b>' + pct(te[0], te[1]) + '</span>';
+      }
+    }
+    sum.innerHTML = sumHead
       + cut.series.map(function (s) {
-        var f = null, l = null;
-        for (var i = 0; i < s.vals.length; i++) if (s.vals[i] != null && isFinite(s.vals[i])) { f = s.vals[i]; break; }
-        for (var j = s.vals.length - 1; j >= 0; j--) if (s.vals[j] != null && isFinite(s.vals[j])) { l = s.vals[j]; break; }
-        if (f == null || l == null) return '';
-        var chg = f !== 0 ? ((l / f - 1) * 100) : null;
+        var e = ends(s.vals);
+        if (e[0] == null) return '';
         var dg = s.axis2 ? (spec.dg2 == null ? 0 : spec.dg2) : (spec.dg || 0);
         var sfx = s.axis2 ? '' : (spec.suffix || '');
         return '<span><i style="background:' + s.color + '"></i>' + (s.name ? s.name + ' ' : '')
-          + fmt(f, dg) + ' → <b>' + fmt(l, dg) + sfx + '</b>'
-          + (chg == null ? '' : ' <em class="' + (chg >= 0 ? 'up' : 'dn') + '">'
-            + (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%</em>') + '</span>';
+          + fmt(e[0], dg) + ' → <b>' + fmt(e[1], dg) + sfx + '</b>'
+          + (spec.stack ? '' : pct(e[0], e[1])) + '</span>';
       }).join('');
     box.appendChild(sum);
   }

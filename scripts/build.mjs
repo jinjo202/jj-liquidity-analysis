@@ -1067,12 +1067,16 @@ function ratioChart(rows, marks, unit, suf = '%', dg = 3) {
 
 function stackChart(rows, keys, unit, marks = []) {
   const rs = (rows ?? []).filter(r => r && r.d);
-  const palette = [CL.lv, CL.cr, CL.acc, CL.nx, CL.kq];
+  // stack:true 를 안 넘겨서 정적(쌓은 면적)과 대화형(선 5개)이 완전히 다른 그림이었고,
+  // 색도 여기 palette 와 keys 의 색이 어긋나 범례가 대화형 선과 안 맞았다(실측 §46).
+  // 정적과 같은 모양·같은 색으로 맞춘다. marks(세로 기준선)는 폭 0 밴드로 넘긴다 —
+  // 대화형 밴드는 최소 1px 로 그려져 정적의 기준선과 같은 효과가 난다.
   return interactive({
-    unit, dg: 1, zeroBase: true, h: 250,
+    unit, dg: 1, zeroBase: true, h: 250, stack: true,
+    bands: marks.map(m => ({ from: m.d, to: m.d, label: m.label, cls: 'c0' })),
     dates: rs.map(r => r.d),
-    series: keys.map((k, i) => ({
-      name: k.label ?? k.key, color: palette[i % palette.length],
+    series: keys.map(k => ({
+      name: k.label ?? k.key, color: k.color, opacity: k.op,
       vals: rs.map(r => (Number.isFinite(r[k.key]) ? r[k.key] : null)),
     })),
   }, stackChartStatic(rows, keys, unit, marks));
@@ -2508,6 +2512,81 @@ const etfSection = !A.etf ? '' : (() => {
       <td class="n">${x.full ? sgn(x.full.aumPct, 0) + '%' : '-'}</td>
     </tr>`).join('');
 
+  // 홍콩 CSOP 3종을 같은 표에 붙인다. 좌수는 CSOP 일별 히스토리(§23.6)에서 시점별로 꺼내고,
+  // 홍콩은 거래일이 달라 그 날짜 '직전 거래일' 값을 쓴다. 가격·AUM 분해는 국내식(원화 종가 기준
+  // Δln 분해)을 적용할 수 없어 비워 둔다 — NAV 가 달러 기준이라 환율 변동이 섞인다.
+  const atOrBefore = (series, d) => {
+    let hit = null;
+    for (const r of series) { if (r.d <= d) hit = r; else break; }
+    return hit;
+  };
+  const spHk = A.etf.split?.hk ?? [];
+  const csopRows = (E.hk?.products ?? [])
+    .filter(p => p.series?.length)
+    .map(p => {
+      const first = p.series[0], last = p.series.at(-1);
+      const uPct = first.unitsM > 0 ? (last.unitsM / first.unitsM - 1) * 100 : null;
+      const aumJo = spHk.find(x => x.ticker === p.ticker)?.aumJo ?? null;
+      return `<tr>
+      <td><span class="pill pl">홍콩</span> ${esc(p.name)}</td>
+      <td class="n">${p.lev > 0 ? '2X' : '-2X'}</td>
+      ${cps.map(d => { const r = atOrBefore(p.series, d); return `<td class="n">${r ? f(r.unitsM, 1) : '-'}</td>`; }).join('')}
+      <td class="n">${aumJo == null ? '-' : f(aumJo)}</td>
+      <td class="n">${sgn(uPct, 0)}%</td>
+      <td class="n mut">-</td>
+      <td class="n mut">-</td>
+    </tr>`;
+    }).join('');
+
+  // 삼성전자·SK하이닉스 합계 — 5월말/고점/6월말/최저/최근을 한 줄씩. 개별 상품 16행을
+  // 훑지 않아도 "물량이 어디까지 갔다 어디로 왔나"가 바로 나오게 한다(사용자 요청).
+  // 국내는 unitsTrend(삼성/하이닉스 = 2X 합)의 일별 합 시계열을 그대로 쓰고, 홍콩은 CSOP 2X.
+  const totalsTable = (() => {
+    const dom = { '005930': E.unitsTrend?.samsung, '000660': E.unitsTrend?.hynix };
+    const csop2x = u => (E.hk?.products ?? []).filter(p => p.lev > 0 && new RegExp(u === '005930' ? 'Samsung' : 'Hynix', 'i').test(p.name));
+    if (!dom['005930']?.series?.length && !dom['000660']?.series?.length) return '';
+
+    const rowOf = (label, series, aumJo) => {
+      if (!series?.length) return '';
+      const min = series.reduce((m, r) => (r.unitsM < m.unitsM ? r : m));
+      const last = series.at(-1);
+      return `<tr>
+        <td>${label}</td>
+        ${cps.slice(0, -1).map(d => { const r = atOrBefore(series, d); return `<td class="n">${r ? f(r.unitsM, 1) : '-'}</td>`; }).join('')}
+        <td class="n">${f(min.unitsM, 1)} <span class="mut">${dtFull(min.d)}</span></td>
+        <td class="n"><b>${f(last.unitsM, 1)}</b> <span class="mut">${dtFull(last.d)}</span></td>
+        <td class="n">${aumJo == null ? '-' : f(aumJo)}</td>
+      </tr>`;
+    };
+    // 국내+홍콩 합산 시계열 — 국내 거래일 축 위에 홍콩(직전 거래일)을 얹는다.
+    const merged = u => {
+      const d0 = dom[u]?.series ?? [];
+      const hks = csop2x(u).map(p => p.series);
+      return d0.map(r => ({ d: r.d, unitsM: r.unitsM + hks.reduce((s, hs) => s + (atOrBefore(hs, r.d)?.unitsM ?? 0), 0) }));
+    };
+    const hkAum = u => csop2x(u).reduce((s, p) => s + (spHk.find(x => x.ticker === p.ticker)?.aumJo ?? 0), 0);
+    const domAum = u => dom[u]?.series.at(-1)?.aumJo ?? null;
+
+    const rows = ['005930', '000660'].map(u => {
+      const nm = u === '005930' ? '삼성전자' : 'SK하이닉스';
+      const hk2x = csop2x(u);
+      return rowOf(`<b>${nm}</b> <span class="mut">국내 2X 합</span>`, dom[u]?.series, domAum(u))
+        + hk2x.map(p => rowOf(`${nm} <span class="mut">홍콩 CSOP ${esc(p.ticker)}</span>`,
+          p.series, spHk.find(x => x.ticker === p.ticker)?.aumJo ?? null)).join('')
+        + (hk2x.length ? rowOf(`<b>${nm} 국내+홍콩</b>`, merged(u), (domAum(u) ?? 0) + hkAum(u)) : '');
+    }).join('');
+
+    return `<h3>단일종목 2X 합계 — 시점별 좌수 한눈에</h3>
+<div class="tw"><table>
+  <thead><tr><th>합계</th>${cps.slice(0, -1).map(d => `<th class="n">${lab(d)}<br><span class="mut">${dtFull(d)}</span></th>`).join('')}
+    <th class="n">최저</th><th class="n">최근</th><th class="n">AUM(조)</th></tr></thead>
+  <tbody>${rows}</tbody>
+</table></div>
+<div class="box">단위 백만좌. 좌수는 상품마다 1좌 크기가 달라 <b>정확한 금액 합이 아니라 물량 추세의 근사</b>다 —
+  금액 비교는 AUM(조) 열로 할 것. 홍콩 좌수는 그 날짜 직전 홍콩 거래일 기준이고,
+  홍콩 히스토리가 시작되는 ${E.hk?.products?.[0]?.series?.[0] ? dtFull(E.hk.products[0].series[0].d) : '-'} 이전 시점은 '-' 다.</div>`;
+  })();
+
   const stockBlocks = Object.values(E.stockDaily).map(s => {
     const rows = s.series.slice(-12).reverse().map(r => `<tr>
       <td>${dtFull(r.d)}</td>
@@ -2713,14 +2792,18 @@ ${!SP.etfMarket ? '' : `<div class="box">
   카테고리 자체가 두 달밖에 안 됐다. 그 사이에 ${f(single?.sums[0].aumJo)}조 → ${f(single?.sums.at(-1).aumJo)}조가 됐고,
   중간 고점은 ${f(Math.max(...(single?.sums.map(s => s.aumJo) ?? [0])))}조였다.</div>
 
+${totalsTable}
+
 <h3>단일종목 ETF 상세 — 좌수(백만좌)와 AUM 분해</h3>
 <div class="tw"><table>
   <thead><tr><th>종목</th><th class="n">배수</th>${cps.map(d => `<th class="n">${lab(d)}</th>`).join('')}
     <th class="n">현재 AUM(조)</th><th class="n">유출입</th><th class="n">가격</th><th class="n">AUM</th></tr></thead>
-  <tbody>${fundRows}</tbody>
+  <tbody>${fundRows}${csopRows}</tbody>
 </table></div>
 <div class="box">AUM = 좌수 × 가격이라 로그로 보면 정확히 갈린다: <b>Δln AUM = Δln 좌수 + Δln 가격</b>.
-  유출입(좌수)이 플러스인데 AUM이 덜 늘었다면 가격이 그만큼 깎아먹은 것이다.</div>
+  유출입(좌수)이 플러스인데 AUM이 덜 늘었다면 가격이 그만큼 깎아먹은 것이다.
+  <span class="mut">홍콩 CSOP 행의 가격·AUM 분해는 비워 뒀다 — NAV 가 달러 기준이라 환율이 섞여
+  국내식 분해가 성립하지 않는다. 유출입 열은 히스토리 시작 이후 좌수 변화율이다.</span></div>
 
 ${stockBlocks}
 
