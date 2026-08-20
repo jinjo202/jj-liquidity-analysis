@@ -4,9 +4,15 @@
 // 페이지가 로드하는 상품 전용 JS(asset/lai/js/hk-skhy-2l.js)를 읽어 보니 요청 바디가
 // {"productName": "<상품 전체 영문명>"} 이었다 — fundCode/slug 가 아니라 이름 전문이라
 // 추측으로는 맞출 수 없었던 것이다(전부 500). 이 바디로 POST 하면 통화별(HKD/USD)로
-// NAV·AUM·Shares(좌수)·기준일이 온다. 과거 시계열 엔드포인트(ChartData)는 403 이라
-// 히스토리는 못 받는다 — 대신 이 스크립트가 매일 돌며 data/csop-daily.json 에 하루씩
-// 쌓는다. 좌수 추이는 수집을 시작한 20260802 이후부터만 존재한다.
+// NAV·AUM·Shares(좌수)·기준일이 온다.
+//
+// 과거 NAV(§23.7, 2026-08-21): 예전에 403 이던 'ChartData' 는 경로를 잘못 짚은 것이었다.
+// 공통 차트 스크립트(config/js/lai_functions.js)를 읽으니 실제 엔드포인트는
+//   POST /cmsApi/performanceView/LI/Performance/ChartData
+//   body {"ticker":"7709 HK","fundId":"HK-SKHY-2L","beginDate":"YYYYMMDD","endDate":"YYYYMMDD"}
+// 이고, 상장일부터의 **일별 좌당 NAV(USD)** 를 준다. 이걸로 SDW 백필 구간(좌수만 있던
+// 2025-10~2026-07)의 총 NAV 를 좌수 × 좌당 NAV 로 복원한다 — 좌수가 등록기관(SDW) 기준이라
+// CSOP 신고좌수와 5~20% 어긋날 수 있는 근사치다(§23.6 의 이음새와 같은 한계).
 //
 // 산출물 두 개:
 //   data/csop-daily.json     기준일별 히스토리(append, 같은 날짜는 갱신)
@@ -106,9 +112,54 @@ for (const r of results) {
   if (i >= 0) entry.series[i] = r.row; else entry.series.push(r.row);
   entry.series.sort((a, b) => a.d.localeCompare(b.d));
 }
+/* ---------- 과거 좌당 NAV 백필 (§23.7) ---------- */
+// 좌수만 있고 NAV 가 없는 행(SDW 백필 구간)에 좌당 NAV 를 채우고 총 NAV 를 복원한다.
+// 상품당 요청 한 번이면 전 구간이 오므로, 빠진 행이 있을 때만 부른다.
+const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+for (const p of PRODUCTS) {
+  const entry = daily.products.find(x => x.ticker === p.ticker);
+  if (!entry) continue;
+  const missing = entry.series.filter(r => !Number.isFinite(r.totalNavUsd));
+  if (!missing.length) continue;
+  try {
+    const res = await fetch('https://website-api.csopasset.com/cmsApi/performanceView/LI/Performance/ChartData', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json', 'cache-control': 'no-cache',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131.0 Safari/537.36',
+        Origin: 'https://www.csopasset.com', Referer: 'https://www.csopasset.com/',
+      },
+      body: JSON.stringify({
+        ticker: `${p.ticker} HK`, fundId: p.slug.toUpperCase(),
+        beginDate: p.listingDate ?? '20251001', endDate: today,
+      }),
+      signal: AbortSignal.timeout(30000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
+    const navByDate = new Map((Array.isArray(rows) ? rows : [])
+      .filter(r => /^\d{8}$/.test(String(r.Date)) && Number.isFinite(Number(r.NAV)))
+      .map(r => [String(r.Date), Number(r.NAV)]));
+    let filled = 0;
+    for (const r of missing) {
+      const nav = navByDate.get(r.d);
+      if (nav == null || !Number.isFinite(r.units)) continue;
+      r.navPerUnitUsd = nav;
+      r.totalNavUsd = nav * r.units;                 // 등록기관 좌수 × 좌당 NAV — 근사치
+      r.navSrc = 'chart-api';                        // 일별 수집분(NAV/product)과 구분
+      filled++;
+    }
+    console.log(`${p.ticker} 과거 NAV 백필: ${filled}/${missing.length}행 채움`);
+  } catch (e) {
+    console.log(`${p.ticker} 과거 NAV 백필 실패(치명 아님): ${e.message}`);
+  }
+}
+
 daily.updatedAt = new Date().toISOString().slice(0, 10);
-daily.source = 'website-api.csopasset.com/cmsApi/NAV/product (POST {productName})';
-daily.note = '기준일(HstDateFormat)별 1행. 과거 API 가 없어 20260802 수집 시작 이후만 존재한다(§23.6).';
+daily.source = 'website-api.csopasset.com/cmsApi/NAV/product (POST {productName})'
+  + ' + performanceView/LI/Performance/ChartData (과거 좌당 NAV, §23.7)';
+daily.note = '기준일(HstDateFormat)별 1행. 2026-08-02 이전 구간은 SDW 좌수 × ChartData 좌당 NAV 로'
+  + ' 복원한 근사치다(navSrc:"chart-api"). CSOP 신고좌수 기준이 아니라 5~20% 어긋날 수 있다(§23.6~23.7).';
 fs.writeFileSync(dailyPath, JSON.stringify(daily, null, 1));
 
 /* ---------- csop-snapshot.json — analyze.mjs 가 읽는 최신 스냅샷 ---------- */
@@ -145,24 +196,33 @@ console.log(`csop-daily.json / csop-snapshot.json 갱신 — asOf ${snapshot.asO
 /* ---------- USD/KRW ---------- */
 // 홍콩분 AUM 은 USD 라 국내(조원)와 더하려면 환율이 필요하다. 네이버 모바일 시장지표에서
 // 일별 종가를 받아 csop-daily.json 에 함께 둔다 — 페이지당 최소 10행이라 30행씩 받는다.
+// 과거 NAV 를 조원으로 환산하려면 환율도 상장일(2025-10-16)까지 있어야 한다 —
+// 이미 커버됐으면 1페이지(최근 30일)만 받고, 빈 과거가 있으면 커버될 때까지 페이지를 더 넘긴다.
 try {
-  const fxRes = await fetch(
-    'https://m.stock.naver.com/front-api/marketIndex/prices?category=exchange&reutersCode=FX_USDKRW&page=1&pageSize=30',
-    { headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) AppleWebKit/605.1.15 Mobile/15E148',
-      Referer: 'https://m.stock.naver.com/' }, signal: AbortSignal.timeout(30000) });
-  const fxJson = await fxRes.json();
-  const fresh = (fxJson.result ?? []).map(r => ({
-    d: String(r.localTradedAt).replace(/-/g, ''),
-    krw: Number(String(r.closePrice).replace(/,/g, '')),
-  })).filter(r => /^\d{8}$/.test(r.d) && Number.isFinite(r.krw));
-
   const outPath = path.join(DIR, 'csop-daily.json');
   const cur = JSON.parse(fs.readFileSync(outPath, 'utf8'));
   const merged = new Map((cur.fx ?? []).map(r => [r.d, r]));
-  for (const r of fresh) merged.set(r.d, r);
+  const NEED_FROM = '20251016';
+  const covered = () => merged.size && [...merged.keys()].sort()[0] <= NEED_FROM;
+
+  for (let page = 1; page <= 15; page++) {
+    const fxRes = await fetch(
+      `https://m.stock.naver.com/front-api/marketIndex/prices?category=exchange&reutersCode=FX_USDKRW&page=${page}&pageSize=30`,
+      { headers: { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0) AppleWebKit/605.1.15 Mobile/15E148',
+        Referer: 'https://m.stock.naver.com/' }, signal: AbortSignal.timeout(30000) });
+    const fxJson = await fxRes.json();
+    const fresh = (fxJson.result ?? []).map(r => ({
+      d: String(r.localTradedAt).replace(/-/g, ''),
+      krw: Number(String(r.closePrice).replace(/,/g, '')),
+    })).filter(r => /^\d{8}$/.test(r.d) && Number.isFinite(r.krw));
+    if (!fresh.length) break;
+    for (const r of fresh) merged.set(r.d, r);
+    if (covered()) break;                            // 상장일까지 닿았으면 그만
+    await new Promise(r => setTimeout(r, 150));
+  }
   cur.fx = [...merged.values()].sort((a, b) => a.d.localeCompare(b.d));
   fs.writeFileSync(outPath, JSON.stringify(cur, null, 1));
-  console.log(`USD/KRW ${cur.fx.length}일 (최신 ${cur.fx.at(-1).d} ${cur.fx.at(-1).krw})`);
+  console.log(`USD/KRW ${cur.fx.length}일 (${cur.fx[0].d}~${cur.fx.at(-1).d}, 최신 ${cur.fx.at(-1).krw})`);
 } catch (e) {
   console.log(`USD/KRW 수집 실패 — 홍콩 AUM 합산은 건너뛴다: ${e.message}`);
 }

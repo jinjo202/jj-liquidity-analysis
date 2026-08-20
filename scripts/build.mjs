@@ -2403,7 +2403,8 @@ if (co && PJ) {
     리밸런싱 필요액도, 시장 거래대금에서 차지하는 몫도 AUM 에 비례한다.
     좌수는 안 줄었는데 AUM 이 반토막이면 <b>물량은 남았지만 시장에 미치는 힘은 그만큼 줄어든</b> 상태다.</div>
   ${(() => {
-    // 홍콩분은 NAV 수집 시작(2026-08) 이후만 있다 — 없는 날은 null 로 두고 거기서부터 그린다.
+    // 홍콩분은 §23.7 백필로 상장일(2025-10)부터 있다. 홍콩 휴장일은 직전 거래일 값을 이월해
+    // 선이 끊기지 않는다(analyze 쪽 7일 한도).
     const CB = A.etf.aumCombined, CM = A.etf.aumCombinedMeta;
     if (!CB) return `<div class="wtrend">${trendChart(A.etf.aumDaily.map(r => ({ d: r.d, v: r.total })),
       '레버리지 ETF 합계 AUM (조원)', 1, `${dtFull(A.etf.aumDaily[0].d)} 이후`)}</div>`;
@@ -2413,8 +2414,9 @@ if (co && PJ) {
       { key: 'total', cls: 'ln-idx', name: '합계' },
     ], '레버리지 ETF AUM — 국내 + 홍콩 (조원)', { dg: 1, zeroBase: false })}</div>
   <div class="lg"><span><i class="sw cr"></i>국내</span><span><i class="sw kq"></i>홍콩 CSOP</span><span><i class="sw acc"></i>합계</span></div>
-  <div class="wline mut">홍콩분은 <b>${dtFull(CM.hkFrom)}부터</b> 있다 — CSOP 은 과거 NAV 를 주는 API 가 없어
-    수집을 시작한 날부터만 쌓인다(§23.6). 없는 구간을 0 으로 채우면 없던 자금이 빠진 것처럼 보이므로 비워 뒀다.
+  <div class="wline mut">홍콩분은 CSOP 상장일(<b>${dtFull(CM.hkFrom)}</b>)부터다 — 2026-08 이전 구간은
+    좌당 NAV(차트 API, §23.7) × 등록기관(SDW) 좌수로 복원한 <b>근사치</b>라 CSOP 신고좌수 기준과
+    5~20% 어긋날 수 있다. 홍콩 휴장일은 직전 거래일 값을 이월했다.
     USD→원 환산은 그날 환율(최신 ${CM.fxLast ? k0(CM.fxLast.krw) : '-'}원)을 쓴다.
     ${CM.last ? `최신 ${dtFull(CM.last.d)} 기준 국내 ${f(CM.last.domestic, 1)}조 + 홍콩 <b>${f(CM.last.hk, 1)}조</b>
     = <b>${f(CM.last.total, 1)}조</b> (홍콩이 국내의 ${f(CM.last.hk / CM.last.domestic * 100, 0)}%)` : ''}</div>`;
@@ -2541,10 +2543,10 @@ const etfSection = !A.etf ? '' : (() => {
   // 삼성전자·SK하이닉스 합계 — 5월말/고점/6월말/최저/최근을 한 줄씩. 개별 상품 16행을
   // 훑지 않아도 "물량이 어디까지 갔다 어디로 왔나"가 바로 나오게 한다(사용자 요청).
   // 국내는 unitsTrend(삼성/하이닉스 = 2X 합)의 일별 합 시계열을 그대로 쓰고, 홍콩은 CSOP 2X.
-  const totalsTable = (() => {
+  const totalsCtx = (() => {
     const dom = { '005930': E.unitsTrend?.samsung, '000660': E.unitsTrend?.hynix };
     const csop2x = u => (E.hk?.products ?? []).filter(p => p.lev > 0 && new RegExp(u === '005930' ? 'Samsung' : 'Hynix', 'i').test(p.name));
-    if (!dom['005930']?.series?.length && !dom['000660']?.series?.length) return '';
+    if (!dom['005930']?.series?.length && !dom['000660']?.series?.length) return null;
 
     const rowOf = (label, series, aumJo) => {
       if (!series?.length) return '';
@@ -2567,6 +2569,28 @@ const etfSection = !A.etf ? '' : (() => {
     const hkAum = u => csop2x(u).reduce((s, p) => s + (spHk.find(x => x.ticker === p.ticker)?.aumJo ?? 0), 0);
     const domAum = u => dom[u]?.series.at(-1)?.aumJo ?? null;
 
+    return { dom, csop2x, merged, hkAum, domAum, rowOf };
+  })();
+
+  // 상세 표 맨 아래에 붙는 종목별 합계 행 — "하이닉스 합계 얼마, 삼전 합계 얼마"가
+  // 개별 16행을 안 훑어도 바로 나오게 한다(사용자 요청). AUM 은 국내 2X + 홍콩 2X 원화 환산 합.
+  const fundTotalRows = !totalsCtx ? '' : ['000660', '005930'].map(u => {
+    const nm = u === '005930' ? '삼성전자' : 'SK하이닉스';
+    const domSeries = totalsCtx.dom[u]?.series ?? [];
+    if (!domSeries.length) return '';
+    const mergedSeries = totalsCtx.merged(u);
+    const aum = (totalsCtx.domAum(u) ?? 0) + totalsCtx.hkAum(u);
+    return `<tr style="border-top:2px solid var(--line)">
+      <td><b>${nm} 단일종목 레버리지 합계</b> <span class="mut">국내 2X + 홍콩 2X</span></td>
+      <td class="n">2X</td>
+      ${cps.map(d => { const r = atOrBefore(mergedSeries, d); return `<td class="n"><b>${r ? f(r.unitsM, 1) : '-'}</b></td>`; }).join('')}
+      <td class="n"><b>${f(aum)}</b></td>
+      <td class="n mut">-</td><td class="n mut">-</td><td class="n mut">-</td>
+    </tr>`;
+  }).join('');
+
+  const totalsTable = !totalsCtx ? '' : (() => {
+    const { dom, csop2x, merged, hkAum, domAum, rowOf } = totalsCtx;
     const rows = ['005930', '000660'].map(u => {
       const nm = u === '005930' ? '삼성전자' : 'SK하이닉스';
       const hk2x = csop2x(u);
@@ -2744,10 +2768,14 @@ ${!A.etf.split ? '' : (() => {
   </tbody>
 </table></div>
 <div class="box">
-  <b>홍콩이 국내보다 크다</b> — 국내 단일종목 ${f(domTot)}조 vs 홍콩 CSOP <b>${f(SP.hkTotalAumJo)}조</b>
-  (전체의 ${f(SP.hkTotalAumJo / grand * 100, 0)}%). 특히 <b>SK하이닉스는 홍콩 7709 한 종목이 ${f(sum(hkBy('SK하이닉스'), 'aumJo'))}조</b>로
-  국내 단일종목 레버리지 전체와 맞먹는다. 국내만 보면 이 종목에 걸린 레버리지를 절반쯤 놓친다.
-  <span class="mut">USD→원 환산은 ${SP.fxLast ? k0(SP.fxLast) + '원' : '-'} 기준. 홍콩 익스포저는 CSOP 이 공시하는 명목(ContractValue)이다.</span>
+  <b>${SP.hkTotalAumJo > domTot ? '홍콩이 국내보다 크다'
+    : SP.hkTotalAumJo > domTot * 0.7 ? '홍콩이 국내와 맞먹는다'
+      : '지금은 국내가 더 크다'}</b> — 국내 단일종목 ${f(domTot)}조 vs 홍콩 CSOP <b>${f(SP.hkTotalAumJo)}조</b>
+  (전체의 ${f(SP.hkTotalAumJo / grand * 100, 0)}%). <b>SK하이닉스는 홍콩 7709 한 종목이 ${f(sum(hkBy('SK하이닉스'), 'aumJo'))}조</b>로
+  국내 단일종목 레버리지 전체와 견줄 크기다. 국내만 보면 이 종목에 걸린 레버리지의 상당분을 놓친다.
+  <span class="mut">USD→원 환산은 ${SP.fxLast ? k0(SP.fxLast) + '원' : '-'} 기준. 홍콩 익스포저는 CSOP 이 공시하는 명목(ContractValue)이다.
+  홍콩 NAV 기준일(${E.hk ? dtFull(E.hk.asOf) : '-'})은 국내(${dtFull(SP.asOf)})보다 하루 늦게 확정된다 —
+  급등락일에는 이 하루 차이만큼 비교가 어긋날 수 있다.</span>
 </div>
 
 ${!SP.etfMarket ? '' : `<div class="box">
@@ -2798,7 +2826,7 @@ ${totalsTable}
 <div class="tw"><table>
   <thead><tr><th>종목</th><th class="n">배수</th>${cps.map(d => `<th class="n">${lab(d)}</th>`).join('')}
     <th class="n">현재 AUM(조)</th><th class="n">유출입</th><th class="n">가격</th><th class="n">AUM</th></tr></thead>
-  <tbody>${fundRows}${csopRows}</tbody>
+  <tbody>${fundRows}${csopRows}${fundTotalRows}</tbody>
 </table></div>
 <div class="box">AUM = 좌수 × 가격이라 로그로 보면 정확히 갈린다: <b>Δln AUM = Δln 좌수 + Δln 가격</b>.
   유출입(좌수)이 플러스인데 AUM이 덜 늘었다면 가격이 그만큼 깎아먹은 것이다.

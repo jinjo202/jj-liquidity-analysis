@@ -1195,8 +1195,9 @@ if (fs.existsSync(etfPath)) {
     etf.breakdown = aumBreakdown(etfData, ['single_lev', 'sector_lev', 'index_lev', 'single_inv', 'index_inv'], market);
 
     // 국내 + 홍콩 합산 AUM. 홍콩분은 USD 라 환율로 조원에 맞춘다.
-    // 홍콩 NAV 는 2026-08-02 수집 시작이라 그 이전은 없다 — 없는 날은 null 로 두고
-    // 차트가 거기서부터 그리게 한다(0 으로 채우면 없던 자금이 빠진 것처럼 보인다).
+    // 과거 NAV 는 §23.7 백필로 상장일(2025-10-16)부터 있다. 홍콩과 한국의 휴장일이 달라
+    // 날짜를 정확히 맞추면 국내만 열린 날마다 구멍이 나 선이 끊긴다 — 그날은 홍콩의
+    // '직전 거래일' 값을 이월한다(7일 한도 — 그보다 벌어지면 진짜 결측이다).
     if (csopDaily?.products?.length) {
       const fx = new Map((csopDaily.fx ?? []).map(r => [r.d, r.krw]));
       const fxAt = d => {
@@ -1211,8 +1212,17 @@ if (fs.existsSync(etfPath)) {
           hkByDate.set(r.d, (hkByDate.get(r.d) ?? 0) + r.totalNavUsd);
         }
       }
+      const hkDates = [...hkByDate.keys()].sort();
+      const dayGap = (a, b) =>
+        Math.round((Date.parse(`${b.slice(0, 4)}-${b.slice(4, 6)}-${b.slice(6, 8)}`)
+          - Date.parse(`${a.slice(0, 4)}-${a.slice(4, 6)}-${a.slice(6, 8)}`)) / 86400000);
+      const hkAt = d => {
+        if (hkByDate.has(d)) return hkByDate.get(d);
+        const before = hkDates.filter(k => k <= d).at(-1);
+        return before && dayGap(before, d) <= 7 ? hkByDate.get(before) : null;
+      };
       etf.aumCombined = (etf.aumDaily ?? []).map(r => {
-        const usd = hkByDate.get(r.d) ?? null;
+        const usd = hkAt(r.d);
         const rate = usd != null ? fxAt(r.d) : null;
         const hkJo = usd != null && rate ? (usd * rate) / 1e12 : null;
         return { d: r.d, domestic: r.total, hk: hkJo, total: hkJo == null ? null : r.total + hkJo };
