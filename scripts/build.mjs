@@ -3702,6 +3702,7 @@ ${cycleCss}
   code { font-size:11.5px; background:color-mix(in srgb, var(--fg) 8%, transparent); padding:1px 4px; border-radius:3px; }
 </style>
 
+<script src="nav.js" data-base="https://pf-dash-a3k9m-sigma.vercel.app/" data-active="수급분석"></script>
 <div class="wrap">
 <header>
   <div>
@@ -3711,7 +3712,6 @@ ${cycleCss}
       신용융자 ${dtFull(co.headline.creditLastDate)} 기준 ${f(co.headline.creditLastJo)}조원 ·
       ${A.meta.hasSplit ? '유가증권/코스닥 분리 적용' : '시장 합계 기준'}</div>
   </div>
-  <a class="hub-link" href="https://pf-dash-a3k9m-sigma.vercel.app/portfolio.html">← 허브로</a>
 </header>
 
 ${splitBox}
