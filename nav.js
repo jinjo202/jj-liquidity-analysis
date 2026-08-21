@@ -5,6 +5,10 @@
  * (페이지별 테마 로직을 그대로 재사용 — 중복 구현 없음).
  */
 (function () {
+  // stock.html·agent.html 은 위원회 화면을 iframe 으로 품는다. 그 안에서 또 그리면
+  // 사이드바가 이중으로 뜨고 폭을 갉아먹는다.
+  if (window.top !== window.self) return;
+
   var script = document.currentScript;
   // data-base 를 주면 그 절대주소를 기준으로 링크를 건다. 다른 도메인에 있는 화면
   // (jj-liquidity)이 이 파일을 그대로 복사해 쓰기 위한 것 — 파일 내용은 동일하게 유지한다.
@@ -119,7 +123,8 @@
     { label: null, items: [
       { href: 'index.html', label: '홈', icon: 'home' },
       { href: 'portfolio.html', label: '포트폴리오', icon: 'briefcase' },
-      { href: 'fm.html', label: '펀드매니저', icon: 'landmark' }
+      { href: 'fm.html', label: '펀드매니저', icon: 'landmark' },
+      { href: 'longshort/index.html', label: '롱숏포트폴리오', icon: 'scale' }
     ]},
     { label: '시장', items: [
       { href: 'daily.html', label: '데일리', icon: 'bars' },
@@ -130,7 +135,9 @@
     { label: '리서치·에이전트', items: [
       { href: 'sectors.html', label: '섹터분석', icon: 'layers' },
       { href: 'dividends.html', label: '배당주', icon: 'dollar' },
-      { href: 'agent.html', label: '펀드매니저agent', icon: 'bot' }
+      { href: 'agent.html', label: '펀드매니저agent', icon: 'bot' },
+      { href: 'stock.html', label: '종목분석agent', icon: 'trending' },
+      { href: 'aihedgefund.html', label: 'AI헤지펀드', icon: 'cpu' }
     ]}
   ];
 
