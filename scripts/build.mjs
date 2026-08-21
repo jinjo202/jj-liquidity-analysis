@@ -2283,7 +2283,10 @@ if (co && PJ) {
   }).join('')}
 </div>
 <div class="fresh">데이터 최신일 —
-  ${D.freshness.map(x => `<span><b>${esc(x.label)}</b> ${dtFull(x.date)}${x.live ? ' <i>(장중 갱신)</i>' : ''}</span>`).join('')}
+  ${/* 항목 사이를 공백으로 잇는다 — 각 span 이 nowrap 이라 join('') 로 붙이면 줄 전체에
+       줄바꿈 지점이 하나도 없어져 한 줄로 뻗는다. 폭이 좁아지면(사이드바가 232px 를 가져간
+       뒤 실제로 그랬다) 그대로 넘쳐 페이지에 가로 스크롤이 생겼다(§47). */''}
+  ${D.freshness.map(x => `<span><b>${esc(x.label)}</b> ${dtFull(x.date)}${x.live ? ' <i>(장중 갱신)</i>' : ''}</span>`).join(' ')}
   <span class="fn">계열마다 공표 시차가 다르다: 지수 T+1, 신용융자는 결제일 기준이라 하루 더 늦다.</span>
 </div>` : '';
 
@@ -3632,10 +3635,13 @@ ${cycleCss}
   ul.find li { margin:6px 0; }
   figure { margin:14px 0 0; border:1px solid var(--line); border-radius:8px; padding:14px 14px 10px; overflow-x:auto; }
   figcaption { font-size:11.5px; color:var(--mut); margin-top:6px; }
-  svg { width:100%; height:auto; display:block; min-width:430px; }
+  /* 이 규칙은 '리포트가 그린 차트'에만 걸어야 한다 — 셀렉터를 svg 로 열어 두면 이 문서에
+     들어오는 남의 svg 까지 늘려 버린다. 실제로 공용 사이드바(nav.js, body 직속으로 붙는다)가
+     생기면서 16px 아이콘이 min-width 430px 로 부풀었다(§47). 본문은 .wrap 안에만 있다. */
+  .wrap svg { width:100%; height:auto; display:block; min-width:430px; }
   /* min-width 는 figure(가로 스크롤 있음) 안의 본문 차트용이다. 요약칸의 미니 차트는
      폭 170~360px 칸에 들어가므로 그대로 두면 칸을 뚫고 나가 페이지에 가로 스크롤이 생긴다. */
-  .trend svg, .wtrend svg { min-width:0; }
+  .wrap .trend svg, .wrap .wtrend svg { min-width:0; }
   .grid { stroke:var(--line); stroke-width:1; }
   /* 누적 면적 차트의 사건 표시선(단일종목 상장일 등) */
   line.mk { stroke:var(--fg); stroke-width:1; stroke-dasharray:3 3; opacity:.45; }
