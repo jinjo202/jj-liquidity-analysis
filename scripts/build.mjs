@@ -3326,33 +3326,84 @@ const splitBox = !A.meta.hasSplit ? `
   필요하다(§8·§45) — FREESIS &gt; 주식 &gt; 신용공여현황 &gt; 신용공여 잔고 추이 에서 최신까지 다시 받을 것.
 </div>` : '';
 
+/**
+ * 테마 초기화 + 허브 임베드 대응(§48).
+ *
+ * 이 리포트는 두 가지 방식으로 열린다:
+ *   1) 직접 방문 — 사이드바(nav.js)가 붙고, 그 토글이 :root[data-theme] 을 바꾼다.
+ *      pf_theme 를 읽어 새로고침해도 선택이 유지되게 한다(허브 페이지들과 같은 규칙).
+ *   2) 허브 안 iframe(liquidity.html) — 오리진이 달라 localStorage 를 공유할 수 없다.
+ *      부모가 ?theme= 로 첫 값을 넘기고, 이후 토글은 postMessage 로 전달한다.
+ *
+ * <head> 안에서 동기 실행한다 — 첫 페인트 전에 정해져야 화면이 번쩍이지 않는다.
+ */
+function themeInitJs() {
+  return `<script>
+(function () {
+  var root = document.documentElement;
+  function set(t) { if (t === 'dark' || t === 'light') root.setAttribute('data-theme', t); }
+  var embedded = false;
+  try { embedded = window.top !== window.self; } catch (e) { embedded = true; }
+  var q = null;
+  try { q = new URLSearchParams(location.search).get('theme'); } catch (e) {}
+  if (q) set(q);
+  else if (!embedded) { try { set(localStorage.getItem('pf_theme')); } catch (e) {} }
+  // 임베드 중에는 부모(허브)의 토글을 따라간다. 출처를 확인하고 받는다.
+  if (embedded) {
+    root.setAttribute('data-embedded', '1');
+    window.addEventListener('message', function (e) {
+      if (!e.data || e.data.type !== 'pf-theme') return;
+      set(e.data.theme);
+    });
+  }
+})();
+<\/script>`;
+}
+
 const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추정 — ${dtFull(co.headline.idxLastDate)}</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css" rel="stylesheet">
+${themeInitJs()}
 <style>
+  /* 색·서체는 허브(pf-dash-a3k9m)와 같은 토큰을 쓴다 — 사이드바로 이어진 한 사이트이므로
+     화면이 바뀔 때 팔레트가 튀면 안 된다(§48). 이 리포트 고유의 계열색(사이클 음영·파트색)만
+     따로 유지한다. --bg 는 페이지 바닥, --panel 은 카드/표/차트가 올라가는 면이다. */
   :root {
-    --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8; --kq:#2e8b6f;
-    --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b;
+    --bg:#f6f7f9; --panel:#ffffff; --surf:#fafbfc; --line:#e6e8eb;
+    --fg:#0f172a; --mut:#64748b; --acc:#2563eb; --acc-soft:#eff6ff;
+    --kq:#15803d; --cr:#b91c1c; --hit:#b91c1c; --part:#ea580c; --bar:#7f95ad; --band:#fdf1ec;
+    --shadow:0 1px 2px 0 rgba(15,23,42,.04);
+    --cyc0:rgba(37,99,235,.07); --cyc1:rgba(185,28,28,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b; --sup:#b5348a;
+    color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6; --kq:#5fc4a2;
-      --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-      --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; }
+    :root:not([data-theme="light"]) { --bg:#0b1020; --panel:#141a2e; --surf:#1a2138; --line:#2a324a;
+      --fg:#e2e8f0; --mut:#94a3b8; --acc:#60a5fa; --acc-soft:#1e3a8a55;
+      --kq:#22c55e; --cr:#f87171; --hit:#f87171; --part:#f0a868; --bar:#5f7994; --band:#2a1c19;
+      --shadow:0 1px 2px 0 rgba(0,0,0,.5);
+      --cyc0:rgba(96,165,250,.10); --cyc1:rgba(248,113,113,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; --sup:#d873b8;
+      color-scheme: dark; }
   }
-  :root[data-theme="light"] { --bg:#fff; --fg:#12181f; --mut:#5a6672; --line:#e2e6ea; --acc:#1a56a8;
-    --kq:#2e8b6f; --cr:#c0392b; --hit:#c0392b; --part:#e8883a; --bar:#7f95ad; --band:#fdf1ec; --surf:#f3f5f8;
-    --cyc0:rgba(26,86,168,.07); --cyc1:rgba(192,57,43,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b; }
-  :root[data-theme="dark"] { --bg:#10151b; --fg:#e6ebf0; --mut:#93a1b0; --line:#26303a; --acc:#5c9ce6;
-    --kq:#5fc4a2; --cr:#e8705f; --hit:#e8705f; --part:#f0a868; --bar:#5f7994; --band:#2a1c19; --surf:#1b2431;
-    --cyc0:rgba(92,156,230,.10); --cyc1:rgba(232,112,95,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; }
+  :root[data-theme="light"] { --bg:#f6f7f9; --panel:#ffffff; --surf:#fafbfc; --line:#e6e8eb;
+    --fg:#0f172a; --mut:#64748b; --acc:#2563eb; --acc-soft:#eff6ff;
+    --kq:#15803d; --cr:#b91c1c; --hit:#b91c1c; --part:#ea580c; --bar:#7f95ad; --band:#fdf1ec;
+    --shadow:0 1px 2px 0 rgba(15,23,42,.04);
+    --cyc0:rgba(37,99,235,.07); --cyc1:rgba(185,28,28,.07); --lv:#7b4fb5; --nx:#b8792a; --stk:#2f7d8c; --ctry:#8a5a2b; --sup:#b5348a;
+    color-scheme: light; }
+  :root[data-theme="dark"] { --bg:#0b1020; --panel:#141a2e; --surf:#1a2138; --line:#2a324a;
+    --fg:#e2e8f0; --mut:#94a3b8; --acc:#60a5fa; --acc-soft:#1e3a8a55;
+    --kq:#22c55e; --cr:#f87171; --hit:#f87171; --part:#f0a868; --bar:#5f7994; --band:#2a1c19;
+    --shadow:0 1px 2px 0 rgba(0,0,0,.5);
+    --cyc0:rgba(96,165,250,.10); --cyc1:rgba(248,113,113,.10); --lv:#a78bda; --nx:#d9a05b; --stk:#5fb4c6; --ctry:#c99055; --sup:#d873b8;
+    color-scheme: dark; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--fg); font-size:14px; line-height:1.62;
-    font-family:"Malgun Gothic","Segoe UI",system-ui,sans-serif; }
+    font-family:"Pretendard Variable",Pretendard,-apple-system,"Segoe UI","Noto Sans KR",sans-serif;
+    -webkit-font-smoothing:antialiased; }
   .wrap { max-width:1400px; margin:0 auto; padding:30px 26px 60px; }
-  header { border-bottom:2px solid var(--fg); padding-bottom:12px; margin-bottom:18px;
+  header { background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    box-shadow:var(--shadow); padding:16px 18px; margin-bottom:16px;
     display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; }
-  .hub-link { font-size:12px; color:var(--acc); border:1px solid var(--line); border-radius:6px;
-    padding:5px 10px; white-space:nowrap; text-decoration:none; }
-  .hub-link:hover { background:var(--surf); }
   .kicker { font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:var(--mut); }
   h1 { font-size:24px; margin:6px 0 4px; letter-spacing:-.4px; }
   .sub { color:var(--mut); font-size:13px; }
@@ -3424,7 +3475,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   .fresh span { margin-right:12px; white-space:nowrap; }
   .fresh span.fn { display:block; margin-top:3px; white-space:normal; }
   .fresh i { font-style:normal; color:var(--part); }
-  .verdict { border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:0 8px 8px 0;
+  .verdict { border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:0 12px 12px 0;
     padding:12px 15px; margin:12px 0 4px; background:var(--band); }
   .verdict .vl { font-size:11px; letter-spacing:1.5px; color:var(--mut); text-transform:uppercase; }
   .verdict .vt { font-size:14px; margin-top:3px; }
@@ -3500,7 +3551,7 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
     margin:10px -26px 8px; padding:8px 26px; background:var(--bg);
     border-bottom:1px solid var(--line); box-shadow:0 6px 14px -12px rgba(0,0,0,.5); }
   .tabs label, .tabs a.tj { flex:0 0 auto; cursor:pointer; padding:6px 12px; line-height:1.3;
-    border:1.5px solid var(--line); border-radius:8px; background:var(--surf);
+    border:1.5px solid var(--line); border-radius:8px; background:var(--panel);
     color:var(--mut); text-decoration:none; white-space:nowrap; }
   .tabs label i { font-size:9.5px; letter-spacing:1px; font-style:normal; opacity:.7; margin-right:5px; }
   .tabs label b, .tabs a.tj { font-size:13px; letter-spacing:-.2px; color:var(--fg); font-weight:700; }
@@ -3550,8 +3601,9 @@ const html = `<title>사이클별 지수대별 신용잔고와 반대매매 추�
   tr.dim td { opacity:.55; }
   td.up { color:var(--kq); } td.dn { color:var(--cr); }
   /* 매일 볼 것 — 첫 화면 고정 박스. 판정에 따라 색이 바뀐다. */
-  .watch { margin:18px 0 4px; padding:14px 16px 12px; border-radius:10px;
-    border:1.5px solid var(--line); border-left:6px solid var(--mut); background:var(--surf); }
+  .watch { margin:18px 0 4px; padding:14px 16px 12px; border-radius:12px;
+    border:1px solid var(--line); border-left:6px solid var(--mut); background:var(--panel);
+    box-shadow:var(--shadow); }
   .watch.w-build { border-left-color:var(--cr); }
   .watch.w-flat { border-left-color:var(--part); }
   .watch.w-roll { border-left-color:var(--kq); }
@@ -3625,7 +3677,8 @@ ${cycleCss}
   .mkt { margin-top:10px; padding-top:4px; }
   .mkt + .mkt { border-top:1px dashed var(--line); margin-top:26px; padding-top:12px; }
   .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:10px; margin:12px 0; }
-  .card { border:1px solid var(--line); border-radius:7px; padding:10px 12px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    box-shadow:var(--shadow); padding:12px 14px; }
   .card .lb { font-size:11px; color:var(--mut); }
   .card .vl { font-size:20px; font-variant-numeric:tabular-nums; letter-spacing:-.5px; }
   .card .u { font-size:12px; }
@@ -3633,7 +3686,8 @@ ${cycleCss}
   .neg { color:var(--cr); }
   ul.find { padding-left:19px; margin:10px 0; }
   ul.find li { margin:6px 0; }
-  figure { margin:14px 0 0; border:1px solid var(--line); border-radius:8px; padding:14px 14px 10px; overflow-x:auto; }
+  figure { margin:14px 0 0; background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    box-shadow:var(--shadow); padding:14px 14px 10px; overflow-x:auto; }
   figcaption { font-size:11.5px; color:var(--mut); margin-top:6px; }
   /* 이 규칙은 '리포트가 그린 차트'에만 걸어야 한다 — 셀렉터를 svg 로 열어 두면 이 문서에
      들어오는 남의 svg 까지 늘려 버린다. 실제로 공용 사이드바(nav.js, body 직속으로 붙는다)가
@@ -3691,7 +3745,10 @@ ${cycleCss}
      2×2 로 고정한다 — 1·2(잔고 양방향)와 3·4(ETF·전망)가 줄로도 짝이 맞는다. */
   .tables { display:grid; grid-template-columns:1fr; gap:20px; margin-top:16px; }
   @media (min-width:760px) { .tables { grid-template-columns:1fr 1fr; } }
-  .tw { overflow-x:auto; }
+  .tw { overflow-x:auto; background:var(--panel); border:1px solid var(--line);
+    border-radius:12px; box-shadow:var(--shadow); padding:2px 10px 6px; }
+  /* figure·watch 안은 이미 패널이다 — 면을 또 깔면 카드 안에 카드가 생긴다. */
+  figure .tw, .watch .tw { background:none; border:none; border-radius:0; box-shadow:none; padding:0; }
   table { border-collapse:collapse; width:100%; font-size:12.5px; min-width:270px; }
   th,td { padding:5px 9px; border-bottom:1px solid var(--line); text-align:left; white-space:nowrap; }
   th { font-size:11px; color:var(--mut); font-weight:600; border-bottom:1px solid var(--fg); }
@@ -3699,8 +3756,8 @@ ${cycleCss}
   td.dim { color:var(--mut); }
   tr.r-hit td { color:var(--hit); } tr.r-part td { color:var(--part); } tr.r-base td { font-weight:700; }
   .ok { color:var(--mut); } .warn { color:var(--part); }
-  .box { border:1px solid var(--line); border-left:3px solid var(--acc); border-radius:0 7px 7px 0;
-    padding:11px 14px; margin:12px 0; font-size:12.5px; }
+  .box { background:var(--surf); border:1px solid var(--line); border-left:3px solid var(--acc);
+    border-radius:0 10px 10px 0; padding:11px 14px; margin:12px 0; font-size:12.5px; }
   .box.warn { border-left-color:var(--part); }
   .empty { color:var(--mut); font-size:12px; padding:20px; text-align:center; }
   footer { margin-top:32px; padding-top:14px; border-top:1px solid var(--line); font-size:11.5px; color:var(--mut); }

@@ -130,7 +130,8 @@
       { href: 'daily.html', label: '데일리', icon: 'bars' },
       { href: 'macro.html', label: '매크로', icon: 'compass' },
       { href: 'calendar.html', label: '캘린더', icon: 'calendar' },
-      { href: 'https://jj-liquidity.vercel.app/', label: '수급분석', icon: 'droplet', ext: true }
+      // 허브 안(liquidity.html)에서 iframe 으로 품는다 — 새 탭으로 튕겨 나가지 않는다(§48).
+      { href: 'liquidity.html', label: '수급분석', icon: 'droplet' }
     ]},
     { label: '리서치·에이전트', items: [
       { href: 'sectors.html', label: '섹터분석', icon: 'layers' },
