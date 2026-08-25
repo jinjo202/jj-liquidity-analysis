@@ -2,7 +2,7 @@
  "meta": {
   "source": "네이버 모바일 m.stock.naver.com/api/stock/{code}/trend (individualPureBuyQuant). 최근 20거래일만 오므로 매일 받아 누적한다(§27).",
   "unit": "순매수 수량(주). 금액이 아니라서 종목 간 직접 비교는 할 수 없다.",
-  "fetchedAt": "2026-08-24"
+  "fetchedAt": "2026-08-25"
  },
  "items": [
   {
@@ -246,6 +246,13 @@
      "individual": 11125505,
      "foreign": -6882379,
      "institution": -6269240,
+     "close": 257000
+    },
+    {
+     "d": "20260825",
+     "individual": 2784825,
+     "foreign": -5003317,
+     "institution": 203484,
      "close": 257000
     }
    ]
@@ -492,6 +499,13 @@
      "foreign": -913265,
      "institution": -173328,
      "close": 1671000
+    },
+    {
+     "d": "20260825",
+     "individual": 386856,
+     "foreign": -1234309,
+     "institution": 197025,
+     "close": 1678000
     }
    ]
   },
@@ -738,6 +752,13 @@
      "foreign": -19342,
      "institution": -930310,
      "close": 104015
+    },
+    {
+     "d": "20260825",
+     "individual": 477388,
+     "foreign": 303633,
+     "institution": -798567,
+     "close": 105550
     }
    ]
   },
@@ -984,6 +1005,13 @@
      "foreign": 1248151,
      "institution": 10798888,
      "close": 7010
+    },
+    {
+     "d": "20260825",
+     "individual": -657669,
+     "foreign": -109200,
+     "institution": 854246,
+     "close": 7220
     }
    ]
   },
@@ -1230,6 +1258,13 @@
      "foreign": 1171528,
      "institution": -707426,
      "close": 9915
+    },
+    {
+     "d": "20260825",
+     "individual": 1951599,
+     "foreign": -52861,
+     "institution": -2906382,
+     "close": 10085
     }
    ]
   },
@@ -1476,6 +1511,13 @@
      "foreign": -629148,
      "institution": -1992214,
      "close": 11705
+    },
+    {
+     "d": "20260825",
+     "individual": 1962316,
+     "foreign": 106486,
+     "institution": -1842621,
+     "close": 11650
     }
    ]
   },
@@ -1722,6 +1764,13 @@
      "foreign": 624439,
      "institution": -246769,
      "close": 8400
+    },
+    {
+     "d": "20260825",
+     "individual": 1886802,
+     "foreign": -1006026,
+     "institution": -1452436,
+     "close": 8485
     }
    ]
   },
@@ -1968,6 +2017,13 @@
      "foreign": -954607,
      "institution": 122337,
      "close": 10660
+    },
+    {
+     "d": "20260825",
+     "individual": 391830,
+     "foreign": -241824,
+     "institution": -368977,
+     "close": 10600
     }
    ]
   },
@@ -2214,6 +2270,13 @@
      "foreign": -13330,
      "institution": -8369,
      "close": 104925
+    },
+    {
+     "d": "20260825",
+     "individual": 8301,
+     "foreign": -22018,
+     "institution": 13772,
+     "close": 106205
     }
    ]
   },
@@ -2460,6 +2523,13 @@
      "foreign": 389660,
      "institution": -112984,
      "close": 7770
+    },
+    {
+     "d": "20260825",
+     "individual": -111156,
+     "foreign": 393967,
+     "institution": -282821,
+     "close": 7995
     }
    ]
   },
@@ -2706,6 +2776,13 @@
      "foreign": 73554,
      "institution": 833535,
      "close": 7185
+    },
+    {
+     "d": "20260825",
+     "individual": -1783350,
+     "foreign": 384678,
+     "institution": 1482041,
+     "close": 7045
     }
    ]
   },
@@ -2952,6 +3029,13 @@
      "foreign": -40124,
      "institution": 77652,
      "close": 8360
+    },
+    {
+     "d": "20260825",
+     "individual": 50385,
+     "foreign": 26,
+     "institution": -57370,
+     "close": 8520
     }
    ]
   },
@@ -3198,6 +3282,13 @@
      "foreign": -51544,
      "institution": 54955,
      "close": 8240
+    },
+    {
+     "d": "20260825",
+     "individual": -65494,
+     "foreign": 2788,
+     "institution": 58279,
+     "close": 8360
     }
    ]
   },
@@ -3444,6 +3535,13 @@
      "foreign": -38129,
      "institution": -20714,
      "close": 10685
+    },
+    {
+     "d": "20260825",
+     "individual": 22660,
+     "foreign": -27119,
+     "institution": 3700,
+     "close": 10670
     }
    ]
   },
@@ -3690,6 +3788,13 @@
      "foreign": -15165,
      "institution": 22523,
      "close": 8555
+    },
+    {
+     "d": "20260825",
+     "individual": 43287,
+     "foreign": -25620,
+     "institution": -17683,
+     "close": 8685
     }
    ]
   },
@@ -3936,6 +4041,13 @@
      "foreign": -12939,
      "institution": -10307,
      "close": 10915
+    },
+    {
+     "d": "20260825",
+     "individual": 30572,
+     "foreign": -22798,
+     "institution": -7782,
+     "close": 10815
     }
    ]
   },
@@ -4182,6 +4294,13 @@
      "foreign": -18444,
      "institution": 43939,
      "close": 8675
+    },
+    {
+     "d": "20260825",
+     "individual": 9577,
+     "foreign": 0,
+     "institution": -9577,
+     "close": 8775
     }
    ]
   },
@@ -4428,6 +4547,13 @@
      "foreign": -14364,
      "institution": -11387,
      "close": 11080
+    },
+    {
+     "d": "20260825",
+     "individual": 7496,
+     "foreign": -21887,
+     "institution": 14391,
+     "close": 10980
     }
    ]
   },
@@ -4674,6 +4800,13 @@
      "foreign": -9003,
      "institution": -8025,
      "close": 11825
+    },
+    {
+     "d": "20260825",
+     "individual": -10706,
+     "foreign": -18,
+     "institution": 10906,
+     "close": 11780
     }
    ]
   },
@@ -4920,6 +5053,13 @@
      "foreign": 46709,
      "institution": 367837,
      "close": 9660
+    },
+    {
+     "d": "20260825",
+     "individual": 61484,
+     "foreign": -77155,
+     "institution": 26497,
+     "close": 9555
     }
    ]
   },
@@ -5166,6 +5306,13 @@
      "foreign": -6082,
      "institution": 12981,
      "close": 8230
+    },
+    {
+     "d": "20260825",
+     "individual": 15295,
+     "foreign": 0,
+     "institution": -15295,
+     "close": 8395
     }
    ]
   },
@@ -5412,6 +5559,13 @@
      "foreign": 0,
      "institution": -10260,
      "close": 10750
+    },
+    {
+     "d": "20260825",
+     "individual": 8040,
+     "foreign": 0,
+     "institution": -8040,
+     "close": 10685
     }
    ]
   }
