@@ -1,7 +1,7 @@
 {
  "_note": "fetch-csop.mjs 가 자동 생성한다(§23.6). 손으로 고쳐도 다음 실행에서 덮어써진다. 일별 히스토리는 data/csop-daily.json 에 쌓인다.",
  "asOf": "20260831",
- "scrapedAt": "2026-08-31",
+ "scrapedAt": "2026-09-01",
  "source": "https://website-api.csopasset.com/cmsApi/NAV/product",
  "products": [
   {
