@@ -1,7 +1,7 @@
 {
-  "ranOn": "2026-09-03",
+  "ranOn": "2026-09-04",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/33768118070",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/33824682677",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -11,7 +11,7 @@
     "신용융자·예탁금": "20260902",
     "신용융자 분리(유가증권/코스닥)": "20260729",
     "대차잔고": "20260903",
-    "지수 장중(네이버)": "20260903"
+    "지수 장중(네이버)": "20260904"
   },
   "lastSeriesDate": "20260903",
   "reproMAE": 0.0512,
@@ -20,29 +20,29 @@
     "c2026"
   ],
   "singleStockEtfUnits": {
-    "date": "20260903",
+    "date": "20260904",
     "unitsMillion": 638,
-    "verdict": "flat",
+    "verdict": "rolling",
     "changePct": {
       "d1": 0,
-      "d5": -0.2,
-      "d10": -2.6
+      "d5": -1.1,
+      "d10": -0.9
     },
     "peak": {
       "date": "20260804",
       "unitsMillion": 843,
-      "fromPeakPct": -24.4,
-      "tradingDaysSince": 21
+      "fromPeakPct": -24.3,
+      "tradingDaysSince": 22
     },
-    "consecutiveDownDays": 4
+    "consecutiveDownDays": 0
   },
   "verdict": {
-    "asOf": "20260903",
+    "asOf": "20260904",
     "stance": "clearing",
     "stanceLabel": "정리 우위",
-    "score": 7,
+    "score": 8,
     "signals": 14,
-    "headline": "아래쪽에 아직 1개가 걸려 있다 — 시장별 되돌림 진행도. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -10.8조 / 선물 +9.0천계약) — 방향 신호는 아직 없다.",
+    "headline": "아래쪽에 아직 1개가 걸려 있다 — 시장별 되돌림 진행도. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -7.3조 / 선물 +9.6천계약) — 방향 신호는 아직 없다.",
     "axes": {
       "down": {
         "ok": 3,
@@ -55,7 +55,7 @@
         "n": 3
       },
       "crowd": {
-        "ok": 3,
+        "ok": 4,
         "alert": 0,
         "n": 4
       },
