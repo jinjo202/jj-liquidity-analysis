@@ -324,6 +324,13 @@
      "foreign": 3332528,
      "institution": 2406250,
      "close": 269500
+    },
+    {
+     "d": "20260909",
+     "individual": -920131,
+     "foreign": -2884161,
+     "institution": 1740154,
+     "close": 269500
     }
    ]
   },
@@ -646,6 +653,13 @@
      "foreign": 97545,
      "institution": -14560,
      "close": 1793000
+    },
+    {
+     "d": "20260909",
+     "individual": -752453,
+     "foreign": 41716,
+     "institution": 74984,
+     "close": 1856000
     }
    ]
   },
@@ -969,6 +983,13 @@
      "foreign": 38933,
      "institution": 574538,
      "close": 112150
+    },
+    {
+     "d": "20260909",
+     "individual": -94885,
+     "foreign": 144092,
+     "institution": -31665,
+     "close": 115580
     }
    ]
   },
@@ -1292,6 +1313,13 @@
      "foreign": -1770893,
      "institution": 1595484,
      "close": 6570
+    },
+    {
+     "d": "20260909",
+     "individual": -8350534,
+     "foreign": 504120,
+     "institution": 8024366,
+     "close": 6965
     }
    ]
   },
@@ -1615,6 +1643,13 @@
      "foreign": 970214,
      "institution": 4375821,
      "close": 11155
+    },
+    {
+     "d": "20260909",
+     "individual": -2933017,
+     "foreign": 857062,
+     "institution": 2368692,
+     "close": 12000
     }
    ]
   },
@@ -1938,6 +1973,13 @@
      "foreign": 629782,
      "institution": 2069271,
      "close": 9460
+    },
+    {
+     "d": "20260909",
+     "individual": -2613698,
+     "foreign": 1274146,
+     "institution": 1385577,
+     "close": 10175
     }
    ]
   },
@@ -2261,6 +2303,13 @@
      "foreign": 129795,
      "institution": 1870312,
      "close": 12550
+    },
+    {
+     "d": "20260909",
+     "individual": -247274,
+     "foreign": -164725,
+     "institution": 310371,
+     "close": 12650
     }
    ]
   },
@@ -2584,6 +2633,13 @@
      "foreign": -43340,
      "institution": 1650914,
      "close": 11415
+    },
+    {
+     "d": "20260909",
+     "individual": -160525,
+     "foreign": -767077,
+     "institution": 898063,
+     "close": 11525
     }
    ]
   },
@@ -2907,6 +2963,13 @@
      "foreign": 16408,
      "institution": 12231,
      "close": 113090
+    },
+    {
+     "d": "20260909",
+     "individual": -8840,
+     "foreign": -24815,
+     "institution": 34092,
+     "close": 116580
     }
    ]
   },
@@ -3230,6 +3293,13 @@
      "foreign": 275801,
      "institution": -238651,
      "close": 7270
+    },
+    {
+     "d": "20260909",
+     "individual": -325860,
+     "foreign": 140364,
+     "institution": 170295,
+     "close": 7710
     }
    ]
   },
@@ -3553,6 +3623,13 @@
      "foreign": -334235,
      "institution": -1575755,
      "close": 6045
+    },
+    {
+     "d": "20260909",
+     "individual": 3364980,
+     "foreign": 47505,
+     "institution": -4009365,
+     "close": 5595
     }
    ]
   },
@@ -3876,6 +3953,13 @@
      "foreign": -5150,
      "institution": 173056,
      "close": 9500
+    },
+    {
+     "d": "20260909",
+     "individual": -136857,
+     "foreign": -1384,
+     "institution": 146973,
+     "close": 10180
     }
    ]
   },
@@ -4199,6 +4283,13 @@
      "foreign": -3599,
      "institution": 307500,
      "close": 9345
+    },
+    {
+     "d": "20260909",
+     "individual": -53741,
+     "foreign": 102759,
+     "institution": -58800,
+     "close": 10015
     }
    ]
   },
@@ -4522,6 +4613,13 @@
      "foreign": 24223,
      "institution": 47353,
      "close": 9630
+    },
+    {
+     "d": "20260909",
+     "individual": -21261,
+     "foreign": 879,
+     "institution": 17366,
+     "close": 10365
     }
    ]
   },
@@ -4845,6 +4943,13 @@
      "foreign": 17470,
      "institution": 5900,
      "close": 11560
+    },
+    {
+     "d": "20260909",
+     "individual": -6046,
+     "foreign": 7909,
+     "institution": -5740,
+     "close": 11615
     }
    ]
   },
@@ -5167,6 +5272,13 @@
      "individual": -49264,
      "foreign": -9492,
      "institution": 58128,
+     "close": 11685
+    },
+    {
+     "d": "20260909",
+     "individual": -1241,
+     "foreign": -176,
+     "institution": 1418,
      "close": 11685
     }
    ]
@@ -5491,6 +5603,13 @@
      "foreign": 9194,
      "institution": 25055,
      "close": 9840
+    },
+    {
+     "d": "20260909",
+     "individual": -5399,
+     "foreign": -45,
+     "institution": 5444,
+     "close": 10590
     }
    ]
   },
@@ -5814,6 +5933,13 @@
      "foreign": 3313,
      "institution": 9628,
      "close": 11975
+    },
+    {
+     "d": "20260909",
+     "individual": 1908,
+     "foreign": 4526,
+     "institution": -6434,
+     "close": 11980
     }
    ]
   },
@@ -6137,6 +6263,13 @@
      "foreign": 3191,
      "institution": 7545,
      "close": 12735
+    },
+    {
+     "d": "20260909",
+     "individual": 5,
+     "foreign": -218,
+     "institution": 213,
+     "close": 12710
     }
    ]
   },
@@ -6460,6 +6593,13 @@
      "foreign": -1502,
      "institution": 35567,
      "close": 9250
+    },
+    {
+     "d": "20260909",
+     "individual": -23450,
+     "foreign": 317,
+     "institution": 23013,
+     "close": 9960
     }
    ]
   },
@@ -6783,6 +6923,13 @@
      "foreign": -33032,
      "institution": -82558,
      "close": 8600
+    },
+    {
+     "d": "20260909",
+     "individual": 86187,
+     "foreign": 7469,
+     "institution": -85469,
+     "close": 8540
     }
    ]
   },
@@ -7106,6 +7253,13 @@
      "foreign": 0,
      "institution": 7201,
      "close": 11600
+    },
+    {
+     "d": "20260909",
+     "individual": 1121,
+     "foreign": 0,
+     "institution": -1121,
+     "close": 11685
     }
    ]
   }
