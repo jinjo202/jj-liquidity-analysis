@@ -1,8 +1,8 @@
 {
  "meta": {
   "lending": "FREESIS 대차거래추이 (STATSCU0100000140, tmpV72=종목코드). 잔고금액(백만원)은 교차검증용으로만 두고, 표시 금액은 주수 × 종가로 계산한다(§26).",
-  "foreign": "네이버 금융 item/frgn (외국인 보유주식수·지분율). KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.",
-  "fetchedAt": "2026-09-10",
+  "foreign": "네이버 시세 API siseJson (종가·외국인소진율). 외국인 보유주식수는 소스에 없어 지분율 × 상장주식수로 되살린다. KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.",
+  "fetchedAt": "2026-09-12",
   "start": "20250101"
  },
  "stocks": [
@@ -17,7 +17,7 @@
      "balanceShares": 125251528,
      "balanceMil": 6688432,
      "close": 53400,
-     "foreignShares": 3011670051,
+     "foreignShares": 3011755296,
      "foreignPct": 50.45
     },
     {
@@ -27,7 +27,7 @@
      "balanceShares": 128272268,
      "balanceMil": 6978011,
      "close": 54400,
-     "foreignShares": 3012996685,
+     "foreignShares": 3012949253,
      "foreignPct": 50.47
     },
     {
@@ -37,7 +37,7 @@
      "balanceShares": 131403656,
      "balanceMil": 7345464,
      "close": 55900,
-     "foreignShares": 3014814916,
+     "foreignShares": 3014740188,
      "foreignPct": 50.5
     },
     {
@@ -47,7 +47,7 @@
      "balanceShares": 132447951,
      "balanceMil": 7337616,
      "close": 55400,
-     "foreignShares": 3014176803,
+     "foreignShares": 3014143209,
      "foreignPct": 50.49
     },
     {
@@ -57,7 +57,7 @@
      "balanceShares": 132811706,
      "balanceMil": 7610111,
      "close": 57300,
-     "foreignShares": 3018857665,
+     "foreignShares": 3018919036,
      "foreignPct": 50.57
     },
     {
@@ -67,7 +67,7 @@
      "balanceShares": 135045637,
      "balanceMil": 7576060,
      "close": 56100,
-     "foreignShares": 3020475123,
+     "foreignShares": 3020709970,
      "foreignPct": 50.6
     },
     {
@@ -77,7 +77,7 @@
      "balanceShares": 136627575,
      "balanceMil": 7555505,
      "close": 55300,
-     "foreignShares": 3019584746,
+     "foreignShares": 3019516014,
      "foreignPct": 50.58
     },
     {
@@ -87,7 +87,7 @@
      "balanceShares": 136725069,
      "balanceMil": 7396826,
      "close": 54100,
-     "foreignShares": 3014829508,
+     "foreignShares": 3014740188,
      "foreignPct": 50.5
     },
     {
@@ -97,7 +97,7 @@
      "balanceShares": 137232889,
      "balanceMil": 7396853,
      "close": 53900,
-     "foreignShares": 3010937245,
+     "foreignShares": 3011158318,
      "foreignPct": 50.44
     },
     {
@@ -107,7 +107,7 @@
      "balanceShares": 137949451,
      "balanceMil": 7407886,
      "close": 53700,
-     "foreignShares": 3008674751,
+     "foreignShares": 3008770405,
      "foreignPct": 50.4
     },
     {
@@ -117,7 +117,7 @@
      "balanceShares": 139940215,
      "balanceMil": 7598754,
      "close": 54300,
-     "foreignShares": 3009409784,
+     "foreignShares": 3009367383,
      "foreignPct": 50.41
     },
     {
@@ -127,7 +127,7 @@
      "balanceShares": 140405923,
      "balanceMil": 7539798,
      "close": 53700,
-     "foreignShares": 3004720630,
+     "foreignShares": 3004591557,
      "foreignPct": 50.33
     },
     {
@@ -137,7 +137,7 @@
      "balanceShares": 141225551,
      "balanceMil": 7541444,
      "close": 53400,
-     "foreignShares": 3002835039,
+     "foreignShares": 3002800623,
      "foreignPct": 50.3
     },
     {
@@ -147,7 +147,7 @@
      "balanceShares": 141841459,
      "balanceMil": 7588518,
      "close": 53500,
-     "foreignShares": 3002373701,
+     "foreignShares": 3002203644,
      "foreignPct": 50.29
     },
     {
@@ -157,7 +157,7 @@
      "balanceShares": 141484117,
      "balanceMil": 7682588,
      "close": 54300,
-     "foreignShares": 3001593131,
+     "foreignShares": 3001606666,
      "foreignPct": 50.28
     },
     {
@@ -167,7 +167,7 @@
      "balanceShares": 140711347,
      "balanceMil": 7556199,
      "close": 53700,
-     "foreignShares": 2999197865,
+     "foreignShares": 2999218753,
      "foreignPct": 50.24
     },
     {
@@ -177,7 +177,7 @@
      "balanceShares": 137901635,
      "balanceMil": 7405318,
      "close": 53700,
-     "foreignShares": 2997465388,
+     "foreignShares": 2997427818,
      "foreignPct": 50.21
     },
     {
@@ -187,7 +187,7 @@
      "balanceShares": 132290277,
      "balanceMil": 6932011,
      "close": 52400,
-     "foreignShares": 2984481317,
+     "foreignShares": 2984294297,
      "foreignPct": 49.99
     },
     {
@@ -197,7 +197,7 @@
      "balanceShares": 130216634,
      "balanceMil": 6641048,
      "close": 51000,
-     "foreignShares": 2976921453,
+     "foreignShares": 2977130558,
      "foreignPct": 49.87
     },
     {
@@ -207,7 +207,7 @@
      "balanceShares": 133488425,
      "balanceMil": 7034840,
      "close": 52700,
-     "foreignShares": 2981464751,
+     "foreignShares": 2981309405,
      "foreignPct": 49.94
     },
     {
@@ -217,7 +217,7 @@
      "balanceShares": 131798313,
      "balanceMil": 6972131,
      "close": 52900,
-     "foreignShares": 2979245176,
+     "foreignShares": 2979518471,
      "foreignPct": 49.91
     },
     {
@@ -227,7 +227,7 @@
      "balanceShares": 131459168,
      "balanceMil": 7098795,
      "close": 54000,
-     "foreignShares": 2980461469,
+     "foreignShares": 2980712427,
      "foreignPct": 49.93
     },
     {
@@ -237,7 +237,7 @@
      "balanceShares": 132391204,
      "balanceMil": 7109408,
      "close": 53700,
-     "foreignShares": 2978336764,
+     "foreignShares": 2978324514,
      "foreignPct": 49.89
     },
     {
@@ -247,7 +247,7 @@
      "balanceShares": 132715900,
      "balanceMil": 7379004,
      "close": 55600,
-     "foreignShares": 2979350384,
+     "foreignShares": 2979518471,
      "foreignPct": 49.91
     },
     {
@@ -257,7 +257,7 @@
      "balanceShares": 133242340,
      "balanceMil": 7421598,
      "close": 55700,
-     "foreignShares": 2980079504,
+     "foreignShares": 2980115449,
      "foreignPct": 49.92
     },
     {
@@ -267,7 +267,7 @@
      "balanceShares": 132964024,
      "balanceMil": 7419393,
      "close": 55800,
-     "foreignShares": 2987019919,
+     "foreignShares": 2987279188,
      "foreignPct": 50.04
     },
     {
@@ -277,7 +277,7 @@
      "balanceShares": 133898064,
      "balanceMil": 7471512,
      "close": 55800,
-     "foreignShares": 2985101810,
+     "foreignShares": 2984891275,
      "foreignPct": 50
     },
     {
@@ -287,7 +287,7 @@
      "balanceShares": 133466862,
      "balanceMil": 7474144,
      "close": 56000,
-     "foreignShares": 2984184121,
+     "foreignShares": 2984294297,
      "foreignPct": 49.99
     },
     {
@@ -297,7 +297,7 @@
      "balanceShares": 132142052,
      "balanceMil": 7399955,
      "close": 56000,
-     "foreignShares": 2982593053,
+     "foreignShares": 2982503362,
      "foreignPct": 49.96
     },
     {
@@ -307,7 +307,7 @@
      "balanceShares": 131423350,
      "balanceMil": 7477989,
      "close": 56900,
-     "foreignShares": 2984858672,
+     "foreignShares": 2984891275,
      "foreignPct": 50
     },
     {
@@ -317,7 +317,7 @@
      "balanceShares": 128957910,
      "balanceMil": 7569829,
      "close": 58700,
-     "foreignShares": 2986698249,
+     "foreignShares": 2986682210,
      "foreignPct": 50.03
     },
     {
@@ -327,7 +327,7 @@
      "balanceShares": 129156180,
      "balanceMil": 7542721,
      "close": 58400,
-     "foreignShares": 2987378018,
+     "foreignShares": 2987279188,
      "foreignPct": 50.04
     },
     {
@@ -337,7 +337,7 @@
      "balanceShares": 128274051,
      "balanceMil": 7465550,
      "close": 58200,
-     "foreignShares": 2986419656,
+     "foreignShares": 2986682210,
      "foreignPct": 50.03
     },
     {
@@ -347,7 +347,7 @@
      "balanceShares": 128011773,
      "balanceMil": 7335075,
      "close": 57300,
-     "foreignShares": 2986650376,
+     "foreignShares": 2986682210,
      "foreignPct": 50.03
     },
     {
@@ -357,7 +357,7 @@
      "balanceShares": 129229474,
      "balanceMil": 7391926,
      "close": 57200,
-     "foreignShares": 2988880724,
+     "foreignShares": 2989070123,
      "foreignPct": 50.07
     },
     {
@@ -367,7 +367,7 @@
      "balanceShares": 128589311,
      "balanceMil": 7278155,
      "close": 56600,
-     "foreignShares": 2985304947,
+     "foreignShares": 2985488253,
      "foreignPct": 50.01
     },
     {
@@ -377,7 +377,7 @@
      "balanceShares": 131878527,
      "balanceMil": 7424761,
      "close": 56300,
-     "foreignShares": 2990165535,
+     "foreignShares": 2990264079,
      "foreignPct": 50.09
     },
     {
@@ -387,7 +387,7 @@
      "balanceShares": 125158318,
      "balanceMil": 6821128,
      "close": 54500,
-     "foreignShares": 2986853301,
+     "foreignShares": 2986682210,
      "foreignPct": 50.03
     },
     {
@@ -397,7 +397,7 @@
      "balanceShares": 125835557,
      "balanceMil": 6858038,
      "close": 54500,
-     "foreignShares": 2986523692,
+     "foreignShares": 2986682210,
      "foreignPct": 50.03
     },
     {
@@ -407,8 +407,8 @@
      "balanceShares": 123339050,
      "balanceMil": 6660309,
      "close": 54000,
-     "foreignShares": 2982314257,
-     "foreignPct": 49.96
+     "foreignShares": 3007576449,
+     "foreignPct": 50.38
     },
     {
      "d": "20250306",
@@ -417,7 +417,7 @@
      "balanceShares": 122268015,
      "balanceMil": 6639153,
      "close": 54300,
-     "foreignShares": 2979775079,
+     "foreignShares": 2979945730,
      "foreignPct": 50.34
     },
     {
@@ -427,7 +427,7 @@
      "balanceShares": 119709203,
      "balanceMil": 6428384,
      "close": 53700,
-     "foreignShares": 2977134516,
+     "foreignShares": 2976985911,
      "foreignPct": 50.29
     },
     {
@@ -437,7 +437,7 @@
      "balanceShares": 119715623,
      "balanceMil": 6428729,
      "close": 53700,
-     "foreignShares": 2975265463,
+     "foreignShares": 2975210020,
      "foreignPct": 50.26
     },
     {
@@ -447,7 +447,7 @@
      "balanceShares": 119444068,
      "balanceMil": 6402202,
      "close": 53600,
-     "foreignShares": 2975082289,
+     "foreignShares": 2975210020,
      "foreignPct": 50.26
     },
     {
@@ -457,7 +457,7 @@
      "balanceShares": 121659101,
      "balanceMil": 6679085,
      "close": 54900,
-     "foreignShares": 2977213961,
+     "foreignShares": 2976985911,
      "foreignPct": 50.29
     },
     {
@@ -467,7 +467,7 @@
      "balanceShares": 122187052,
      "balanceMil": 6683632,
      "close": 54700,
-     "foreignShares": 2973621640,
+     "foreignShares": 2973434128,
      "foreignPct": 50.23
     },
     {
@@ -477,7 +477,7 @@
      "balanceShares": 122424876,
      "balanceMil": 6696641,
      "close": 54700,
-     "foreignShares": 2971213664,
+     "foreignShares": 2971066273,
      "foreignPct": 50.19
     },
     {
@@ -487,7 +487,7 @@
      "balanceShares": 119571129,
      "balanceMil": 6887297,
      "close": 57600,
-     "foreignShares": 2978890688,
+     "foreignShares": 2978761802,
      "foreignPct": 50.32
     },
     {
@@ -497,7 +497,7 @@
      "balanceShares": 118277519,
      "balanceMil": 6812785,
      "close": 57600,
-     "foreignShares": 2982340402,
+     "foreignShares": 2982313585,
      "foreignPct": 50.38
     },
     {
@@ -507,7 +507,7 @@
      "balanceShares": 120363307,
      "balanceMil": 7041253,
      "close": 58500,
-     "foreignShares": 2987112717,
+     "foreignShares": 2987049295,
      "foreignPct": 50.46
     },
     {
@@ -517,7 +517,7 @@
      "balanceShares": 124699365,
      "balanceMil": 7506902,
      "close": 60200,
-     "foreignShares": 2995008175,
+     "foreignShares": 2994744825,
      "foreignPct": 50.59
     },
     {
@@ -527,7 +527,7 @@
      "balanceShares": 120947240,
      "balanceMil": 7462445,
      "close": 61700,
-     "foreignShares": 3002867286,
+     "foreignShares": 3003032318,
      "foreignPct": 50.73
     },
     {
@@ -537,7 +537,7 @@
      "balanceShares": 120737017,
      "balanceMil": 7304590,
      "close": 60500,
-     "foreignShares": 3000416019,
+     "foreignShares": 3000664463,
      "foreignPct": 50.69
     },
     {
@@ -547,7 +547,7 @@
      "balanceShares": 120598028,
      "balanceMil": 7211762,
      "close": 59800,
-     "foreignShares": 2999244826,
+     "foreignShares": 2999480535,
      "foreignPct": 50.67
     },
     {
@@ -557,7 +557,7 @@
      "balanceShares": 118216772,
      "balanceMil": 7258510,
      "close": 61400,
-     "foreignShares": 2999844940,
+     "foreignShares": 3000072499,
      "foreignPct": 50.68
     },
     {
@@ -567,7 +567,7 @@
      "balanceShares": 114413985,
      "balanceMil": 7070784,
      "close": 61800,
-     "foreignShares": 3003283937,
+     "foreignShares": 3003032318,
      "foreignPct": 50.73
     },
     {
@@ -577,7 +577,7 @@
      "balanceShares": 113173881,
      "balanceMil": 6813068,
      "close": 60200,
-     "foreignShares": 3002243251,
+     "foreignShares": 3002440354,
      "foreignPct": 50.72
     },
     {
@@ -587,7 +587,7 @@
      "balanceShares": 113186900,
      "balanceMil": 6542203,
      "close": 57800,
-     "foreignShares": 2999293419,
+     "foreignShares": 2999480535,
      "foreignPct": 50.67
     },
     {
@@ -597,7 +597,7 @@
      "balanceShares": 115163004,
      "balanceMil": 6771585,
      "close": 58800,
-     "foreignShares": 3000566263,
+     "foreignShares": 3000664463,
      "foreignPct": 50.69
     },
     {
@@ -607,7 +607,7 @@
      "balanceShares": 116469821,
      "balanceMil": 6848425,
      "close": 58800,
-     "foreignShares": 3001103122,
+     "foreignShares": 3001256426,
      "foreignPct": 50.7
     },
     {
@@ -617,7 +617,7 @@
      "balanceShares": 119766071,
      "balanceMil": 6898526,
      "close": 57600,
-     "foreignShares": 2997508171,
+     "foreignShares": 2997704644,
      "foreignPct": 50.64
     },
     {
@@ -627,7 +627,7 @@
      "balanceShares": 121057385,
      "balanceMil": 6791319,
      "close": 56100,
-     "foreignShares": 2990069334,
+     "foreignShares": 2990009114,
      "foreignPct": 50.51
     },
     {
@@ -637,7 +637,7 @@
      "balanceShares": 121868955,
      "balanceMil": 6483428,
      "close": 53200,
-     "foreignShares": 2976963081,
+     "foreignShares": 2976985911,
      "foreignPct": 50.29
     },
     {
@@ -647,7 +647,7 @@
      "balanceShares": 122843686,
      "balanceMil": 6572137,
      "close": 53500,
-     "foreignShares": 2973931019,
+     "foreignShares": 2974026092,
      "foreignPct": 50.24
     },
     {
@@ -657,7 +657,7 @@
      "balanceShares": 125929052,
      "balanceMil": 6674240,
      "close": 53000,
-     "foreignShares": 2971902781,
+     "foreignShares": 2971658237,
      "foreignPct": 50.2
     },
     {
@@ -667,7 +667,7 @@
      "balanceShares": 125980947,
      "balanceMil": 7105325,
      "close": 56400,
-     "foreignShares": 2972160869,
+     "foreignShares": 2972250201,
      "foreignPct": 50.21
     },
     {
@@ -677,7 +677,7 @@
      "balanceShares": 125258833,
      "balanceMil": 6914288,
      "close": 55200,
-     "foreignShares": 2968692346,
+     "foreignShares": 2968698418,
      "foreignPct": 50.15
     },
     {
@@ -687,7 +687,7 @@
      "balanceShares": 124380415,
      "balanceMil": 6990179,
      "close": 56200,
-     "foreignShares": 2970075706,
+     "foreignShares": 2969882345,
      "foreignPct": 50.17
     },
     {
@@ -697,7 +697,7 @@
      "balanceShares": 124513101,
      "balanceMil": 7047442,
      "close": 56600,
-     "foreignShares": 2970550837,
+     "foreignShares": 2970474309,
      "foreignPct": 50.18
     },
     {
@@ -707,7 +707,7 @@
      "balanceShares": 124750365,
      "balanceMil": 6823845,
      "close": 54700,
-     "foreignShares": 2965690524,
+     "foreignShares": 2965738599,
      "foreignPct": 50.1
     },
     {
@@ -717,7 +717,7 @@
      "balanceShares": 124711618,
      "balanceMil": 6871610,
      "close": 55100,
-     "foreignShares": 2963359261,
+     "foreignShares": 2963370744,
      "foreignPct": 50.06
     },
     {
@@ -727,7 +727,7 @@
      "balanceShares": 123570403,
      "balanceMil": 6833443,
      "close": 55300,
-     "foreignShares": 2963404245,
+     "foreignShares": 2963370744,
      "foreignPct": 50.06
     },
     {
@@ -737,7 +737,7 @@
      "balanceShares": 119916968,
      "balanceMil": 6643400,
      "close": 55400,
-     "foreignShares": 2963471324,
+     "foreignShares": 2963370744,
      "foreignPct": 50.06
     },
     {
@@ -747,7 +747,7 @@
      "balanceShares": 120551955,
      "balanceMil": 6630358,
      "close": 55000,
-     "foreignShares": 2961442858,
+     "foreignShares": 2961594852,
      "foreignPct": 50.03
     },
     {
@@ -757,7 +757,7 @@
      "balanceShares": 110396176,
      "balanceMil": 6149067,
      "close": 55700,
-     "foreignShares": 2959600961,
+     "foreignShares": 2959818961,
      "foreignPct": 50
     },
     {
@@ -767,7 +767,7 @@
      "balanceShares": 106123187,
      "balanceMil": 5911062,
      "close": 55700,
-     "foreignShares": 2960046864,
+     "foreignShares": 2959818961,
      "foreignPct": 50
     },
     {
@@ -777,7 +777,7 @@
      "balanceShares": 102409920,
      "balanceMil": 5704233,
      "close": 55700,
-     "foreignShares": 2957863828,
+     "foreignShares": 2958043070,
      "foreignPct": 49.97
     },
     {
@@ -787,7 +787,7 @@
      "balanceShares": 100245885,
      "balanceMil": 5593720,
      "close": 55800,
-     "foreignShares": 2957058292,
+     "foreignShares": 2956859142,
      "foreignPct": 49.95
     },
     {
@@ -797,7 +797,7 @@
      "balanceShares": 99725189,
      "balanceMil": 5564666,
      "close": 55800,
-     "foreignShares": 2957103496,
+     "foreignShares": 2956859142,
      "foreignPct": 49.95
     },
     {
@@ -807,7 +807,7 @@
      "balanceShares": 98242435,
      "balanceMil": 5452455,
      "close": 55500,
-     "foreignShares": 2953457615,
+     "foreignShares": 2953307359,
      "foreignPct": 49.89
     },
     {
@@ -817,7 +817,7 @@
      "balanceShares": 98462761,
      "balanceMil": 5346528,
      "close": 54300,
-     "foreignShares": 2941148623,
+     "foreignShares": 2940876120,
      "foreignPct": 49.68
     },
     {
@@ -827,7 +827,7 @@
      "balanceShares": 99587122,
      "balanceMil": 5437457,
      "close": 54600,
-     "foreignShares": 2939155731,
+     "foreignShares": 2939100228,
      "foreignPct": 49.65
     },
     {
@@ -837,7 +837,7 @@
      "balanceShares": 99647079,
      "balanceMil": 5440731,
      "close": 54600,
-     "foreignShares": 2940680845,
+     "foreignShares": 2940876120,
      "foreignPct": 49.68
     },
     {
@@ -847,7 +847,7 @@
      "balanceShares": 96482136,
      "balanceMil": 5287221,
      "close": 54800,
-     "foreignShares": 2941364598,
+     "foreignShares": 2941468083,
      "foreignPct": 49.69
     },
     {
@@ -857,7 +857,7 @@
      "balanceShares": 96788895,
      "balanceMil": 5575040,
      "close": 57600,
-     "foreignShares": 2944290941,
+     "foreignShares": 2944427902,
      "foreignPct": 49.74
     },
     {
@@ -867,7 +867,7 @@
      "balanceShares": 96291328,
      "balanceMil": 5478977,
      "close": 56900,
-     "foreignShares": 2943840089,
+     "foreignShares": 2943835939,
      "foreignPct": 49.73
     },
     {
@@ -877,7 +877,7 @@
      "balanceShares": 98266846,
      "balanceMil": 5640517,
      "close": 57400,
-     "foreignShares": 2944114202,
+     "foreignShares": 2943835939,
      "foreignPct": 49.73
     },
     {
@@ -887,7 +887,7 @@
      "balanceShares": 98596059,
      "balanceMil": 5649554,
      "close": 57300,
-     "foreignShares": 2947461769,
+     "foreignShares": 2947387721,
      "foreignPct": 49.79
     },
     {
@@ -897,7 +897,7 @@
      "balanceShares": 106758357,
      "balanceMil": 6063875,
      "close": 56800,
-     "foreignShares": 2947516847,
+     "foreignShares": 2947387721,
      "foreignPct": 49.79
     },
     {
@@ -907,7 +907,7 @@
      "balanceShares": 102226471,
      "balanceMil": 5704237,
      "close": 55800,
-     "foreignShares": 2945457411,
+     "foreignShares": 2945611830,
      "foreignPct": 49.76
     },
     {
@@ -917,7 +917,7 @@
      "balanceShares": 101526877,
      "balanceMil": 5675352,
      "close": 55900,
-     "foreignShares": 2944864193,
+     "foreignShares": 2945019866,
      "foreignPct": 49.75
     },
     {
@@ -927,7 +927,7 @@
      "balanceShares": 101334223,
      "balanceMil": 5644316,
      "close": 55700,
-     "foreignShares": 2944014301,
+     "foreignShares": 2943835939,
      "foreignPct": 49.73
     },
     {
@@ -937,7 +937,7 @@
      "balanceShares": 101049280,
      "balanceMil": 5527396,
      "close": 54700,
-     "foreignShares": 2940153011,
+     "foreignShares": 2940284156,
      "foreignPct": 49.67
     },
     {
@@ -947,7 +947,7 @@
      "balanceShares": 101759772,
      "balanceMil": 5515380,
      "close": 54200,
-     "foreignShares": 2939639882,
+     "foreignShares": 2939692192,
      "foreignPct": 49.66
     },
     {
@@ -957,7 +957,7 @@
      "balanceShares": 101924480,
      "balanceMil": 5575269,
      "close": 54700,
-     "foreignShares": 2938571616,
+     "foreignShares": 2938508264,
      "foreignPct": 49.64
     },
     {
@@ -967,7 +967,7 @@
      "balanceShares": 101424502,
      "balanceMil": 5466781,
      "close": 53900,
-     "foreignShares": 2933909455,
+     "foreignShares": 2933772554,
      "foreignPct": 49.56
     },
     {
@@ -977,7 +977,7 @@
      "balanceShares": 101465514,
      "balanceMil": 5671922,
      "close": 55900,
-     "foreignShares": 2936611791,
+     "foreignShares": 2936732373,
      "foreignPct": 49.61
     },
     {
@@ -987,7 +987,7 @@
      "balanceShares": 103631463,
      "balanceMil": 5813725,
      "close": 56100,
-     "foreignShares": 2939104889,
+     "foreignShares": 2939100228,
      "foreignPct": 49.65
     },
     {
@@ -997,7 +997,7 @@
      "balanceShares": 103618547,
      "balanceMil": 5823362,
      "close": 56200,
-     "foreignShares": 2939336917,
+     "foreignShares": 2939100228,
      "foreignPct": 49.65
     },
     {
@@ -1007,7 +1007,7 @@
      "balanceShares": 101139964,
      "balanceMil": 5744750,
      "close": 56800,
-     "foreignShares": 2938473904,
+     "foreignShares": 2938508264,
      "foreignPct": 49.64
     },
     {
@@ -1017,7 +1017,7 @@
      "balanceShares": 98900655,
      "balanceMil": 5716458,
      "close": 57800,
-     "foreignShares": 2938736013,
+     "foreignShares": 2938508264,
      "foreignPct": 49.64
     },
     {
@@ -1027,7 +1027,7 @@
      "balanceShares": 101970915,
      "balanceMil": 6026481,
      "close": 59100,
-     "foreignShares": 2943488117,
+     "foreignShares": 2943243975,
      "foreignPct": 49.72
     },
     {
@@ -1037,7 +1037,7 @@
      "balanceShares": 102820496,
      "balanceMil": 6148666,
      "close": 59800,
-     "foreignShares": 2948427352,
+     "foreignShares": 2948571649,
      "foreignPct": 49.81
     },
     {
@@ -1047,7 +1047,7 @@
      "balanceShares": 104310862,
      "balanceMil": 6175203,
      "close": 59200,
-     "foreignShares": 2946323431,
+     "foreignShares": 2946203794,
      "foreignPct": 49.77
     },
     {
@@ -1057,7 +1057,7 @@
      "balanceShares": 104009015,
      "balanceMil": 6230140,
      "close": 59900,
-     "foreignShares": 2949041109,
+     "foreignShares": 2949163613,
      "foreignPct": 49.82
     },
     {
@@ -1067,7 +1067,7 @@
      "balanceShares": 102505320,
      "balanceMil": 6099067,
      "close": 59500,
-     "foreignShares": 2949355692,
+     "foreignShares": 2949163613,
      "foreignPct": 49.82
     },
     {
@@ -1077,7 +1077,7 @@
      "balanceShares": 101951068,
      "balanceMil": 5943747,
      "close": 58300,
-     "foreignShares": 2949238843,
+     "foreignShares": 2949163613,
      "foreignPct": 49.82
     },
     {
@@ -1087,7 +1087,7 @@
      "balanceShares": 102090829,
      "balanceMil": 5839595,
      "close": 57200,
-     "foreignShares": 2941545351,
+     "foreignShares": 2941468083,
      "foreignPct": 49.69
     },
     {
@@ -1097,7 +1097,7 @@
      "balanceShares": 102615999,
      "balanceMil": 5961990,
      "close": 58100,
-     "foreignShares": 2943552867,
+     "foreignShares": 2943835939,
      "foreignPct": 49.73
     },
     {
@@ -1107,7 +1107,7 @@
      "balanceShares": 103001674,
      "balanceMil": 6159500,
      "close": 59800,
-     "foreignShares": 2947020765,
+     "foreignShares": 2946795758,
      "foreignPct": 49.78
     },
     {
@@ -1117,7 +1117,7 @@
      "balanceShares": 101827967,
      "balanceMil": 6028216,
      "close": 59200,
-     "foreignShares": 2945181119,
+     "foreignShares": 2945019866,
      "foreignPct": 49.75
     },
     {
@@ -1127,7 +1127,7 @@
      "balanceShares": 101517560,
      "balanceMil": 6040295,
      "close": 59500,
-     "foreignShares": 2943863218,
+     "foreignShares": 2943835939,
      "foreignPct": 49.73
     },
     {
@@ -1137,7 +1137,7 @@
      "balanceShares": 102364595,
      "balanceMil": 5937147,
      "close": 58000,
-     "foreignShares": 2941258999,
+     "foreignShares": 2941468083,
      "foreignPct": 49.69
     },
     {
@@ -1147,7 +1147,7 @@
      "balanceShares": 100403908,
      "balanceMil": 6074436,
      "close": 60500,
-     "foreignShares": 2945611911,
+     "foreignShares": 2945611830,
      "foreignPct": 49.76
     },
     {
@@ -1157,7 +1157,7 @@
      "balanceShares": 99476747,
      "balanceMil": 6097925,
      "close": 61300,
-     "foreignShares": 2946616974,
+     "foreignShares": 2946795758,
      "foreignPct": 49.78
     },
     {
@@ -1167,7 +1167,7 @@
      "balanceShares": 97828641,
      "balanceMil": 5889284,
      "close": 60200,
-     "foreignShares": 2943723966,
+     "foreignShares": 2943835939,
      "foreignPct": 49.73
     },
     {
@@ -1177,7 +1177,7 @@
      "balanceShares": 95288884,
      "balanceMil": 5793564,
      "close": 60800,
-     "foreignShares": 2944601377,
+     "foreignShares": 2944427902,
      "foreignPct": 49.74
     },
     {
@@ -1187,7 +1187,7 @@
      "balanceShares": 95551275,
      "balanceMil": 5713966,
      "close": 59800,
-     "foreignShares": 2938510431,
+     "foreignShares": 2938508264,
      "foreignPct": 49.64
     },
     {
@@ -1197,7 +1197,7 @@
      "balanceShares": 96224185,
      "balanceMil": 5792696,
      "close": 60200,
-     "foreignShares": 2938644887,
+     "foreignShares": 2938508264,
      "foreignPct": 49.64
     },
     {
@@ -1207,7 +1207,7 @@
      "balanceShares": 95189767,
      "balanceMil": 5787538,
      "close": 60800,
-     "foreignShares": 2938216867,
+     "foreignShares": 2938508264,
      "foreignPct": 49.64
     },
     {
@@ -1217,7 +1217,7 @@
      "balanceShares": 95569181,
      "balanceMil": 6097314,
      "close": 63800,
-     "foreignShares": 2948119029,
+     "foreignShares": 2947979685,
      "foreignPct": 49.8
     },
     {
@@ -1227,7 +1227,7 @@
      "balanceShares": 96374185,
      "balanceMil": 6100486,
      "close": 63300,
-     "foreignShares": 2947645617,
+     "foreignShares": 2947387721,
      "foreignPct": 49.79
     },
     {
@@ -1237,7 +1237,7 @@
      "balanceShares": 95558106,
      "balanceMil": 5895935,
      "close": 61700,
-     "foreignShares": 2945127396,
+     "foreignShares": 2945019866,
      "foreignPct": 49.75
     },
     {
@@ -1247,7 +1247,7 @@
      "balanceShares": 95192355,
      "balanceMil": 5844811,
      "close": 61400,
-     "foreignShares": 2943386461,
+     "foreignShares": 2943243975,
      "foreignPct": 49.72
     },
     {
@@ -1257,7 +1257,7 @@
      "balanceShares": 95654877,
      "balanceMil": 5777555,
      "close": 60400,
-     "foreignShares": 2939869423,
+     "foreignShares": 2939692192,
      "foreignPct": 49.66
     },
     {
@@ -1267,7 +1267,7 @@
      "balanceShares": 96486562,
      "balanceMil": 5885680,
      "close": 61000,
-     "foreignShares": 2941146842,
+     "foreignShares": 2940876120,
      "foreignPct": 49.68
     },
     {
@@ -1277,7 +1277,7 @@
      "balanceShares": 96960941,
      "balanceMil": 6069755,
      "close": 62600,
-     "foreignShares": 2946506051,
+     "foreignShares": 2946795758,
      "foreignPct": 49.78
     },
     {
@@ -1287,7 +1287,7 @@
      "balanceShares": 95989955,
      "balanceMil": 5999372,
      "close": 62500,
-     "foreignShares": 2945677318,
+     "foreignShares": 2945611830,
      "foreignPct": 49.76
     },
     {
@@ -1297,7 +1297,7 @@
      "balanceShares": 95455852,
      "balanceMil": 6080538,
      "close": 63700,
-     "foreignShares": 2949734976,
+     "foreignShares": 2949755577,
      "foreignPct": 49.83
     },
     {
@@ -1307,7 +1307,7 @@
      "balanceShares": 96073614,
      "balanceMil": 6215963,
      "close": 64700,
-     "foreignShares": 2955641591,
+     "foreignShares": 2955675214,
      "foreignPct": 49.93
     },
     {
@@ -1317,7 +1317,7 @@
      "balanceShares": 95747608,
      "balanceMil": 6386365,
      "close": 66700,
-     "foreignShares": 2964429360,
+     "foreignShares": 2964554671,
      "foreignPct": 50.08
     },
     {
@@ -1327,7 +1327,7 @@
      "balanceShares": 96709184,
      "balanceMil": 6489186,
      "close": 67100,
-     "foreignShares": 2970770446,
+     "foreignShares": 2971066273,
      "foreignPct": 50.19
     },
     {
@@ -1337,7 +1337,7 @@
      "balanceShares": 95432280,
      "balanceMil": 6470309,
      "close": 67800,
-     "foreignShares": 2974238142,
+     "foreignShares": 2974026092,
      "foreignPct": 50.24
     },
     {
@@ -1347,7 +1347,7 @@
      "balanceShares": 94886970,
      "balanceMil": 6262540,
      "close": 66000,
-     "foreignShares": 2974246288,
+     "foreignShares": 2974026092,
      "foreignPct": 50.24
     },
     {
@@ -1357,7 +1357,7 @@
      "balanceShares": 92759748,
      "balanceMil": 6159247,
      "close": 66400,
-     "foreignShares": 2972931129,
+     "foreignShares": 2972842164,
      "foreignPct": 50.22
     },
     {
@@ -1367,7 +1367,7 @@
      "balanceShares": 92800453,
      "balanceMil": 6124830,
      "close": 66000,
-     "foreignShares": 2973484820,
+     "foreignShares": 2973434128,
      "foreignPct": 50.23
     },
     {
@@ -1377,7 +1377,7 @@
      "balanceShares": 93386782,
      "balanceMil": 6154189,
      "close": 65900,
-     "foreignShares": 2974598924,
+     "foreignShares": 2974618056,
      "foreignPct": 50.25
     },
     {
@@ -1387,7 +1387,7 @@
      "balanceShares": 93466293,
      "balanceMil": 6580027,
      "close": 70400,
-     "foreignShares": 2985910008,
+     "foreignShares": 2985865368,
      "foreignPct": 50.44
     },
     {
@@ -1397,7 +1397,7 @@
      "balanceShares": 91408220,
      "balanceMil": 6453420,
      "close": 70600,
-     "foreignShares": 2988785258,
+     "foreignShares": 2988825187,
      "foreignPct": 50.49
     },
     {
@@ -1407,7 +1407,7 @@
      "balanceShares": 92503648,
      "balanceMil": 6715765,
      "close": 72600,
-     "foreignShares": 2998059371,
+     "foreignShares": 2998296607,
      "foreignPct": 50.65
     },
     {
@@ -1417,7 +1417,7 @@
      "balanceShares": 94780747,
      "balanceMil": 6767345,
      "close": 71400,
-     "foreignShares": 2996633526,
+     "foreignShares": 2996520716,
      "foreignPct": 50.62
     },
     {
@@ -1427,7 +1427,7 @@
      "balanceShares": 95073064,
      "balanceMil": 6550534,
      "close": 68900,
-     "foreignShares": 2995859495,
+     "foreignShares": 2995928752,
      "foreignPct": 50.61
     },
     {
@@ -1437,7 +1437,7 @@
      "balanceShares": 96437269,
      "balanceMil": 6721678,
      "close": 69700,
-     "foreignShares": 2995705047,
+     "foreignShares": 2995928752,
      "foreignPct": 50.61
     },
     {
@@ -1447,7 +1447,7 @@
      "balanceShares": 96321689,
      "balanceMil": 6732886,
      "close": 69900,
-     "foreignShares": 2993253083,
+     "foreignShares": 2992968933,
      "foreignPct": 50.56
     },
     {
@@ -1457,7 +1457,7 @@
      "balanceShares": 96856672,
      "balanceMil": 6663739,
      "close": 68800,
-     "foreignShares": 2992404196,
+     "foreignShares": 2992376970,
      "foreignPct": 50.55
     },
     {
@@ -1467,7 +1467,7 @@
      "balanceShares": 96695216,
      "balanceMil": 6817013,
      "close": 70500,
-     "foreignShares": 2992532697,
+     "foreignShares": 2992376970,
      "foreignPct": 50.55
     },
     {
@@ -1477,7 +1477,7 @@
      "balanceShares": 95335685,
      "balanceMil": 6845102,
      "close": 71800,
-     "foreignShares": 2995976810,
+     "foreignShares": 2995928752,
      "foreignPct": 50.61
     },
     {
@@ -1487,7 +1487,7 @@
      "balanceShares": 95263332,
      "balanceMil": 6763697,
      "close": 71000,
-     "foreignShares": 2993550055,
+     "foreignShares": 2993560897,
      "foreignPct": 50.57
     },
     {
@@ -1497,7 +1497,7 @@
      "balanceShares": 94318038,
      "balanceMil": 6706013,
      "close": 71100,
-     "foreignShares": 2994396798,
+     "foreignShares": 2994152861,
      "foreignPct": 50.58
     },
     {
@@ -1507,7 +1507,7 @@
      "balanceShares": 94527332,
      "balanceMil": 6796515,
      "close": 71900,
-     "foreignShares": 2995250841,
+     "foreignShares": 2995336789,
      "foreignPct": 50.6
     },
     {
@@ -1517,7 +1517,7 @@
      "balanceShares": 95222144,
      "balanceMil": 6817906,
      "close": 71600,
-     "foreignShares": 2993414066,
+     "foreignShares": 2993560897,
      "foreignPct": 50.57
     },
     {
@@ -1527,7 +1527,7 @@
      "balanceShares": 95013349,
      "balanceMil": 6650934,
      "close": 70000,
-     "foreignShares": 2990385579,
+     "foreignShares": 2990601078,
      "foreignPct": 50.52
     },
     {
@@ -1537,7 +1537,7 @@
      "balanceShares": 95723751,
      "balanceMil": 6700663,
      "close": 70000,
-     "foreignShares": 2989902404,
+     "foreignShares": 2990009114,
      "foreignPct": 50.51
     },
     {
@@ -1547,7 +1547,7 @@
      "balanceShares": 96203316,
      "balanceMil": 6782334,
      "close": 70500,
-     "foreignShares": 2990804940,
+     "foreignShares": 2990601078,
      "foreignPct": 50.52
     },
     {
@@ -1557,7 +1557,7 @@
      "balanceShares": 96898058,
      "balanceMil": 6841003,
      "close": 70600,
-     "foreignShares": 2993089297,
+     "foreignShares": 2992968933,
      "foreignPct": 50.56
     },
     {
@@ -1567,7 +1567,7 @@
      "balanceShares": 96921729,
      "balanceMil": 6920211,
      "close": 71400,
-     "foreignShares": 2993194589,
+     "foreignShares": 2992968933,
      "foreignPct": 50.56
     },
     {
@@ -1577,7 +1577,7 @@
      "balanceShares": 97639826,
      "balanceMil": 6981248,
      "close": 71500,
-     "foreignShares": 2991425207,
+     "foreignShares": 2991193042,
      "foreignPct": 50.53
     },
     {
@@ -1587,7 +1587,7 @@
      "balanceShares": 97307343,
      "balanceMil": 6840706,
      "close": 70300,
-     "foreignShares": 2989410645,
+     "foreignShares": 2989417151,
      "foreignPct": 50.5
     },
     {
@@ -1597,7 +1597,7 @@
      "balanceShares": 97741776,
      "balanceMil": 6900569,
      "close": 70600,
-     "foreignShares": 2988972297,
+     "foreignShares": 2988825187,
      "foreignPct": 50.49
     },
     {
@@ -1607,7 +1607,7 @@
      "balanceShares": 97783372,
      "balanceMil": 6805723,
      "close": 69600,
-     "foreignShares": 2990763837,
+     "foreignShares": 2990601078,
      "foreignPct": 50.52
     },
     {
@@ -1617,7 +1617,7 @@
      "balanceShares": 97581241,
      "balanceMil": 6801412,
      "close": 69700,
-     "foreignShares": 2988611451,
+     "foreignShares": 2988825187,
      "foreignPct": 50.49
     },
     {
@@ -1627,7 +1627,7 @@
      "balanceShares": 93180291,
      "balanceMil": 6298988,
      "close": 67600,
-     "foreignShares": 2978969474,
+     "foreignShares": 2978761802,
      "foreignPct": 50.32
     },
     {
@@ -1637,7 +1637,7 @@
      "balanceShares": 93439774,
      "balanceMil": 6456688,
      "close": 69100,
-     "foreignShares": 2980485743,
+     "foreignShares": 2980537694,
      "foreignPct": 50.35
     },
     {
@@ -1647,7 +1647,7 @@
      "balanceShares": 93060154,
      "balanceMil": 6495599,
      "close": 69800,
-     "foreignShares": 2981918379,
+     "foreignShares": 2981721621,
      "foreignPct": 50.37
     },
     {
@@ -1657,7 +1657,7 @@
      "balanceShares": 93626301,
      "balanceMil": 6563204,
      "close": 70100,
-     "foreignShares": 2982190520,
+     "foreignShares": 2982313585,
      "foreignPct": 50.38
     },
     {
@@ -1667,7 +1667,7 @@
      "balanceShares": 94247986,
      "balanceMil": 6550235,
      "close": 69500,
-     "foreignShares": 2980661159,
+     "foreignShares": 2980537694,
      "foreignPct": 50.35
     },
     {
@@ -1677,7 +1677,7 @@
      "balanceShares": 93892177,
      "balanceMil": 6581842,
      "close": 70100,
-     "foreignShares": 2981563245,
+     "foreignShares": 2981721621,
      "foreignPct": 50.37
     },
     {
@@ -1687,7 +1687,7 @@
      "balanceShares": 93221265,
      "balanceMil": 6665320,
      "close": 71500,
-     "foreignShares": 2986050245,
+     "foreignShares": 2985865368,
      "foreignPct": 50.44
     },
     {
@@ -1697,7 +1697,7 @@
      "balanceShares": 92578756,
      "balanceMil": 6721218,
      "close": 72600,
-     "foreignShares": 2991576151,
+     "foreignShares": 2991785006,
      "foreignPct": 50.54
     },
     {
@@ -1707,7 +1707,7 @@
      "balanceShares": 90064372,
      "balanceMil": 6610725,
      "close": 73400,
-     "foreignShares": 2990923159,
+     "foreignShares": 2991193042,
      "foreignPct": 50.53
     },
     {
@@ -1717,7 +1717,7 @@
      "balanceShares": 91589000,
      "balanceMil": 6905811,
      "close": 75400,
-     "foreignShares": 3002648691,
+     "foreignShares": 3002440354,
      "foreignPct": 50.72
     },
     {
@@ -1727,7 +1727,7 @@
      "balanceShares": 94643157,
      "balanceMil": 7240202,
      "close": 76500,
-     "foreignShares": 3005883104,
+     "foreignShares": 3005992137,
      "foreignPct": 50.78
     },
     {
@@ -1737,7 +1737,7 @@
      "balanceShares": 95854253,
      "balanceMil": 7610828,
      "close": 79400,
-     "foreignShares": 3020101606,
+     "foreignShares": 3020199268,
      "foreignPct": 51.02
     },
     {
@@ -1747,7 +1747,7 @@
      "balanceShares": 95691137,
      "balanceMil": 7483047,
      "close": 78200,
-     "foreignShares": 3021421283,
+     "foreignShares": 3021383195,
      "foreignPct": 51.04
     },
     {
@@ -1757,7 +1757,7 @@
      "balanceShares": 95936885,
      "balanceMil": 7722919,
      "close": 80500,
-     "foreignShares": 3025944594,
+     "foreignShares": 3026118906,
      "foreignPct": 51.12
     },
     {
@@ -1767,7 +1767,7 @@
      "balanceShares": 97240457,
      "balanceMil": 7750064,
      "close": 79700,
-     "foreignShares": 3025406868,
+     "foreignShares": 3025526942,
      "foreignPct": 51.11
     },
     {
@@ -1777,7 +1777,7 @@
      "balanceShares": 96742384,
      "balanceMil": 8077989,
      "close": 83500,
-     "foreignShares": 3033899199,
+     "foreignShares": 3033814435,
      "foreignPct": 51.25
     },
     {
@@ -1787,7 +1787,7 @@
      "balanceShares": 97220462,
      "balanceMil": 8234573,
      "close": 84700,
-     "foreignShares": 3034545790,
+     "foreignShares": 3034406399,
      "foreignPct": 51.26
     },
     {
@@ -1797,7 +1797,7 @@
      "balanceShares": 95380371,
      "balanceMil": 8145484,
      "close": 85400,
-     "foreignShares": 3034864374,
+     "foreignShares": 3034998363,
      "foreignPct": 51.27
     },
     {
@@ -1807,7 +1807,7 @@
      "balanceShares": 95659818,
      "balanceMil": 8236310,
      "close": 86100,
-     "foreignShares": 3039960438,
+     "foreignShares": 3039734073,
      "foreignPct": 51.35
     },
     {
@@ -1817,7 +1817,7 @@
      "balanceShares": 96038393,
      "balanceMil": 7999998,
      "close": 83300,
-     "foreignShares": 3041091825,
+     "foreignShares": 3040918001,
      "foreignPct": 51.37
     },
     {
@@ -1827,7 +1827,7 @@
      "balanceShares": 97131306,
      "balanceMil": 8178456,
      "close": 84200,
-     "foreignShares": 3041632443,
+     "foreignShares": 3041509964,
      "foreignPct": 51.38
     },
     {
@@ -1837,7 +1837,7 @@
      "balanceShares": 96082181,
      "balanceMil": 8061295,
      "close": 83900,
-     "foreignShares": 3043011972,
+     "foreignShares": 3043285856,
      "foreignPct": 51.41
     },
     {
@@ -1847,7 +1847,7 @@
      "balanceShares": 95136431,
      "balanceMil": 8181733,
      "close": 86000,
-     "foreignShares": 3049667965,
+     "foreignShares": 3049797457,
      "foreignPct": 51.52
     },
     {
@@ -1857,7 +1857,7 @@
      "balanceShares": 93091808,
      "balanceMil": 8285171,
      "close": 89000,
-     "foreignShares": 3069550553,
+     "foreignShares": 3069332263,
      "foreignPct": 51.85
     },
     {
@@ -1867,7 +1867,7 @@
      "balanceShares": 93164169,
      "balanceMil": 8794698,
      "close": 94400,
-     "foreignShares": 3075742738,
+     "foreignShares": 3075843864,
      "foreignPct": 51.96
     },
     {
@@ -1877,7 +1877,7 @@
      "balanceShares": 88871505,
      "balanceMil": 8291711,
      "close": 93300,
-     "foreignShares": 3073190623,
+     "foreignShares": 3073476009,
      "foreignPct": 51.92
     },
     {
@@ -1887,7 +1887,7 @@
      "balanceShares": 95313331,
      "balanceMil": 8730701,
      "close": 91600,
-     "foreignShares": 3075753056,
+     "foreignShares": 3075843864,
      "foreignPct": 51.96
     },
     {
@@ -1897,7 +1897,7 @@
      "balanceShares": 99055178,
      "balanceMil": 9410242,
      "close": 95000,
-     "foreignShares": 3078031288,
+     "foreignShares": 3078211719,
      "foreignPct": 52
     },
     {
@@ -1907,7 +1907,7 @@
      "balanceShares": 99851907,
      "balanceMil": 9755531,
      "close": 97700,
-     "foreignShares": 3083302152,
+     "foreignShares": 3083539394,
      "foreignPct": 52.09
     },
     {
@@ -1917,7 +1917,7 @@
      "balanceShares": 99709759,
      "balanceMil": 9761585,
      "close": 97900,
-     "foreignShares": 3087080265,
+     "foreignShares": 3087091176,
      "foreignPct": 52.15
     },
     {
@@ -1927,7 +1927,7 @@
      "balanceShares": 98332781,
      "balanceMil": 9646446,
      "close": 98100,
-     "foreignShares": 3086125637,
+     "foreignShares": 3085907249,
      "foreignPct": 52.13
     },
     {
@@ -1937,7 +1937,7 @@
      "balanceShares": 98169183,
      "balanceMil": 9571495,
      "close": 97500,
-     "foreignShares": 3086938651,
+     "foreignShares": 3087091176,
      "foreignPct": 52.15
     },
     {
@@ -1947,7 +1947,7 @@
      "balanceShares": 99209461,
      "balanceMil": 9782053,
      "close": 98600,
-     "foreignShares": 3087213232,
+     "foreignShares": 3087091176,
      "foreignPct": 52.15
     },
     {
@@ -1957,7 +1957,7 @@
      "balanceShares": 99583077,
      "balanceMil": 9609767,
      "close": 96500,
-     "foreignShares": 3086077254,
+     "foreignShares": 3085907249,
      "foreignPct": 52.13
     },
     {
@@ -1967,7 +1967,7 @@
      "balanceShares": 98913633,
      "balanceMil": 9772667,
      "close": 98800,
-     "foreignShares": 3091363399,
+     "foreignShares": 3091234923,
      "foreignPct": 52.22
     },
     {
@@ -1977,7 +1977,7 @@
      "balanceShares": 99861183,
      "balanceMil": 10185841,
      "close": 102000,
-     "foreignShares": 3099594022,
+     "foreignShares": 3099522416,
      "foreignPct": 52.36
     },
     {
@@ -1987,7 +1987,7 @@
      "balanceShares": 102167587,
      "balanceMil": 10165675,
      "close": 99500,
-     "foreignShares": 3096128203,
+     "foreignShares": 3095970633,
      "foreignPct": 52.3
     },
     {
@@ -1997,7 +1997,7 @@
      "balanceShares": 102676764,
      "balanceMil": 10319015,
      "close": 100500,
-     "foreignShares": 3093738222,
+     "foreignShares": 3093602778,
      "foreignPct": 52.26
     },
     {
@@ -2007,7 +2007,7 @@
      "balanceShares": 102513511,
      "balanceMil": 10671656,
      "close": 104100,
-     "foreignShares": 3099432179,
+     "foreignShares": 3099522416,
      "foreignPct": 52.36
     },
     {
@@ -2017,7 +2017,7 @@
      "balanceShares": 103351385,
      "balanceMil": 11110274,
      "close": 107500,
-     "foreignShares": 3115181152,
+     "foreignShares": 3114913475,
      "foreignPct": 52.62
     },
     {
@@ -2027,7 +2027,7 @@
      "balanceShares": 103852267,
      "balanceMil": 11537987,
      "close": 111100,
-     "foreignShares": 3111651621,
+     "foreignShares": 3111361692,
      "foreignPct": 52.56
     },
     {
@@ -2037,7 +2037,7 @@
      "balanceShares": 103503532,
      "balanceMil": 10857521,
      "close": 104900,
-     "foreignShares": 3106003807,
+     "foreignShares": 3106034018,
      "foreignPct": 52.47
     },
     {
@@ -2047,7 +2047,7 @@
      "balanceShares": 104899027,
      "balanceMil": 10552842,
      "close": 100600,
-     "foreignShares": 3103697504,
+     "foreignShares": 3103666163,
      "foreignPct": 52.43
     },
     {
@@ -2057,7 +2057,7 @@
      "balanceShares": 106448579,
      "balanceMil": 10559699,
      "close": 99200,
-     "foreignShares": 3096248834,
+     "foreignShares": 3095970633,
      "foreignPct": 52.3
     },
     {
@@ -2067,7 +2067,7 @@
      "balanceShares": 105517488,
      "balanceMil": 10330162,
      "close": 97900,
-     "foreignShares": 3098387153,
+     "foreignShares": 3098338488,
      "foreignPct": 52.34
     },
     {
@@ -2077,7 +2077,7 @@
      "balanceShares": 106209593,
      "balanceMil": 10684685,
      "close": 100600,
-     "foreignShares": 3099534820,
+     "foreignShares": 3099522416,
      "foreignPct": 52.36
     },
     {
@@ -2087,7 +2087,7 @@
      "balanceShares": 106608311,
      "balanceMil": 11033960,
      "close": 103500,
-     "foreignShares": 3101591376,
+     "foreignShares": 3101298307,
      "foreignPct": 52.39
     },
     {
@@ -2097,7 +2097,7 @@
      "balanceShares": 105559655,
      "balanceMil": 10883200,
      "close": 103100,
-     "foreignShares": 3096884633,
+     "foreignShares": 3097154561,
      "foreignPct": 52.32
     },
     {
@@ -2107,7 +2107,7 @@
      "balanceShares": 104761157,
      "balanceMil": 10769447,
      "close": 102800,
-     "foreignShares": 3098479227,
+     "foreignShares": 3098338488,
      "foreignPct": 52.34
     },
     {
@@ -2117,7 +2117,7 @@
      "balanceShares": 104131533,
      "balanceMil": 10121585,
      "close": 97200,
-     "foreignShares": 3091906346,
+     "foreignShares": 3091826887,
      "foreignPct": 52.23
     },
     {
@@ -2127,7 +2127,7 @@
      "balanceShares": 102648174,
      "balanceMil": 10326406,
      "close": 100600,
-     "foreignShares": 3095567843,
+     "foreignShares": 3095378669,
      "foreignPct": 52.29
     },
     {
@@ -2137,7 +2137,7 @@
      "balanceShares": 101873928,
      "balanceMil": 9963270,
      "close": 97800,
-     "foreignShares": 3096408391,
+     "foreignShares": 3096562597,
      "foreignPct": 52.31
     },
     {
@@ -2147,7 +2147,7 @@
      "balanceShares": 102402907,
      "balanceMil": 9881881,
      "close": 96500,
-     "foreignShares": 3093916854,
+     "foreignShares": 3094194742,
      "foreignPct": 52.27
     },
     {
@@ -2157,7 +2157,7 @@
      "balanceShares": 104465302,
      "balanceMil": 10509209,
      "close": 100600,
-     "foreignShares": 3099481989,
+     "foreignShares": 3099522416,
      "foreignPct": 52.36
     },
     {
@@ -2167,7 +2167,7 @@
      "balanceShares": 104454529,
      "balanceMil": 9902289,
      "close": 94800,
-     "foreignShares": 3090091574,
+     "foreignShares": 3090050995,
      "foreignPct": 52.2
     },
     {
@@ -2177,7 +2177,7 @@
      "balanceShares": 104972882,
      "balanceMil": 10150878,
      "close": 96700,
-     "foreignShares": 3091276437,
+     "foreignShares": 3091234923,
      "foreignPct": 52.22
     },
     {
@@ -2187,7 +2187,7 @@
      "balanceShares": 103753944,
      "balanceMil": 10302767,
      "close": 99300,
-     "foreignShares": 3091276905,
+     "foreignShares": 3091234923,
      "foreignPct": 52.22
     },
     {
@@ -2197,7 +2197,7 @@
      "balanceShares": 103775295,
      "balanceMil": 10668100,
      "close": 102800,
-     "foreignShares": 3093867352,
+     "foreignShares": 3093602778,
      "foreignPct": 52.26
     },
     {
@@ -2207,7 +2207,7 @@
      "balanceShares": 102501939,
      "balanceMil": 10608951,
      "close": 103500,
-     "foreignShares": 3094429305,
+     "foreignShares": 3094194742,
      "foreignPct": 52.27
     },
     {
@@ -2217,7 +2217,7 @@
      "balanceShares": 106476727,
      "balanceMil": 10700911,
      "close": 100500,
-     "foreignShares": 3088359913,
+     "foreignShares": 3088275104,
      "foreignPct": 52.17
     },
     {
@@ -2227,7 +2227,7 @@
      "balanceShares": 115270336,
      "balanceMil": 11619250,
      "close": 100800,
-     "foreignShares": 3086562086,
+     "foreignShares": 3086499213,
      "foreignPct": 52.14
     },
     {
@@ -2237,7 +2237,7 @@
      "balanceShares": 104786163,
      "balanceMil": 10834889,
      "close": 103400,
-     "foreignShares": 3091421105,
+     "foreignShares": 3091234923,
      "foreignPct": 52.22
     },
     {
@@ -2247,7 +2247,7 @@
      "balanceShares": 104774538,
      "balanceMil": 10948939,
      "close": 104500,
-     "foreignShares": 3092512218,
+     "foreignShares": 3092418850,
      "foreignPct": 52.24
     },
     {
@@ -2257,7 +2257,7 @@
      "balanceShares": 106696898,
      "balanceMil": 11213844,
      "close": 105100,
-     "foreignShares": 3090454057,
+     "foreignShares": 3090642959,
      "foreignPct": 52.21
     },
     {
@@ -2267,7 +2267,7 @@
      "balanceShares": 111917081,
      "balanceMil": 12131812,
      "close": 108400,
-     "foreignShares": 3094904303,
+     "foreignShares": 3094786706,
      "foreignPct": 52.28
     },
     {
@@ -2277,7 +2277,7 @@
      "balanceShares": 113352817,
      "balanceMil": 12412133,
      "close": 109500,
-     "foreignShares": 3095816857,
+     "foreignShares": 3095970633,
      "foreignPct": 52.3
     },
     {
@@ -2287,7 +2287,7 @@
      "balanceShares": 113822220,
      "balanceMil": 12338329,
      "close": 108400,
-     "foreignShares": 3091865514,
+     "foreignShares": 3091826887,
      "foreignPct": 52.23
     },
     {
@@ -2297,7 +2297,7 @@
      "balanceShares": 114192806,
      "balanceMil": 12332823,
      "close": 108000,
-     "foreignShares": 3090474547,
+     "foreignShares": 3090642959,
      "foreignPct": 52.21
     },
     {
@@ -2307,7 +2307,7 @@
      "balanceShares": 111800493,
      "balanceMil": 11996193,
      "close": 107300,
-     "foreignShares": 3093413472,
+     "foreignShares": 3093602778,
      "foreignPct": 52.26
     },
     {
@@ -2317,7 +2317,7 @@
      "balanceShares": 111740764,
      "balanceMil": 12168569,
      "close": 108900,
-     "foreignShares": 3092450602,
+     "foreignShares": 3092418850,
      "foreignPct": 52.24
     },
     {
@@ -2327,7 +2327,7 @@
      "balanceShares": 110959867,
      "balanceMil": 11628594,
      "close": 104800,
-     "foreignShares": 3084527933,
+     "foreignShares": 3084723321,
      "foreignPct": 52.11
     },
     {
@@ -2337,7 +2337,7 @@
      "balanceShares": 110845548,
      "balanceMil": 11394922,
      "close": 102800,
-     "foreignShares": 3082232109,
+     "foreignShares": 3082355466,
      "foreignPct": 52.07
     },
     {
@@ -2347,7 +2347,7 @@
      "balanceShares": 112476663,
      "balanceMil": 12136232,
      "close": 107900,
-     "foreignShares": 3085220645,
+     "foreignShares": 3085315285,
      "foreignPct": 52.12
     },
     {
@@ -2357,7 +2357,7 @@
      "balanceShares": 111923045,
      "balanceMil": 12042920,
      "close": 107600,
-     "foreignShares": 3084568873,
+     "foreignShares": 3084723321,
      "foreignPct": 52.11
     },
     {
@@ -2367,7 +2367,7 @@
      "balanceShares": 110168152,
      "balanceMil": 11710875,
      "close": 106300,
-     "foreignShares": 3077221578,
+     "foreignShares": 3077027792,
      "foreignPct": 51.98
     },
     {
@@ -2377,7 +2377,7 @@
      "balanceShares": 107936205,
      "balanceMil": 11926951,
      "close": 110500,
-     "foreignShares": 3085687598,
+     "foreignShares": 3085907249,
      "foreignPct": 52.13
     },
     {
@@ -2387,7 +2387,7 @@
      "balanceShares": 104561210,
      "balanceMil": 11658575,
      "close": 111500,
-     "foreignShares": 3091003529,
+     "foreignShares": 3091234923,
      "foreignPct": 52.22
     },
     {
@@ -2397,7 +2397,7 @@
      "balanceShares": 102247530,
      "balanceMil": 11359701,
      "close": 111100,
-     "foreignShares": 3091479232,
+     "foreignShares": 3091234923,
      "foreignPct": 52.22
     },
     {
@@ -2407,7 +2407,7 @@
      "balanceShares": 94013441,
      "balanceMil": 10999573,
      "close": 117000,
-     "foreignShares": 3103243584,
+     "foreignShares": 3103074199,
      "foreignPct": 52.42
     },
     {
@@ -2417,7 +2417,7 @@
      "balanceShares": 89218562,
      "balanceMil": 10661618,
      "close": 119500,
-     "foreignShares": 3098470824,
+     "foreignShares": 3098338488,
      "foreignPct": 52.34
     },
     {
@@ -2427,7 +2427,7 @@
      "balanceShares": 88574796,
      "balanceMil": 10620118,
      "close": 119900,
-     "foreignShares": 3097590504,
+     "foreignShares": 3097746525,
      "foreignPct": 52.33
     },
     {
@@ -2447,7 +2447,7 @@
      "balanceShares": 85136098,
      "balanceMil": 10939989,
      "close": 128500,
-     "foreignShares": 3100167694,
+     "foreignShares": 3100114380,
      "foreignPct": 52.37
     },
     {
@@ -2457,7 +2457,7 @@
      "balanceShares": 96275519,
      "balanceMil": 13295649,
      "close": 138100,
-     "foreignShares": 3101833095,
+     "foreignShares": 3101890271,
      "foreignPct": 52.4
     },
     {
@@ -2467,7 +2467,7 @@
      "balanceShares": 95675339,
      "balanceMil": 13289305,
      "close": 138900,
-     "foreignShares": 3089004199,
+     "foreignShares": 3088867068,
      "foreignPct": 52.18
     },
     {
@@ -2477,7 +2477,7 @@
      "balanceShares": 97761726,
      "balanceMil": 13784403,
      "close": 141000,
-     "foreignShares": 3091298327,
+     "foreignShares": 3091234923,
      "foreignPct": 52.22
     },
     {
@@ -2487,7 +2487,7 @@
      "balanceShares": 96704250,
      "balanceMil": 13422550,
      "close": 138800,
-     "foreignShares": 3087021171,
+     "foreignShares": 3087091176,
      "foreignPct": 52.15
     },
     {
@@ -2497,7 +2497,7 @@
      "balanceShares": 98857857,
      "balanceMil": 13741242,
      "close": 139000,
-     "foreignShares": 3079883845,
+     "foreignShares": 3079987611,
      "foreignPct": 52.03
     },
     {
@@ -2507,7 +2507,7 @@
      "balanceShares": 97051187,
      "balanceMil": 13470705,
      "close": 138800,
-     "foreignShares": 3073039514,
+     "foreignShares": 3072884045,
      "foreignPct": 51.91
     },
     {
@@ -2517,7 +2517,7 @@
      "balanceShares": 96895914,
      "balanceMil": 13332878,
      "close": 137600,
-     "foreignShares": 3068751791,
+     "foreignShares": 3068740299,
      "foreignPct": 51.84
     },
     {
@@ -2527,7 +2527,7 @@
      "balanceShares": 96361822,
      "balanceMil": 13519564,
      "close": 140300,
-     "foreignShares": 3069071746,
+     "foreignShares": 3069332263,
      "foreignPct": 51.85
     },
     {
@@ -2537,7 +2537,7 @@
      "balanceShares": 96477969,
      "balanceMil": 13883180,
      "close": 143900,
-     "foreignShares": 3069336101,
+     "foreignShares": 3069332263,
      "foreignPct": 51.85
     },
     {
@@ -2547,7 +2547,7 @@
      "balanceShares": 96112909,
      "balanceMil": 14311212,
      "close": 148900,
-     "foreignShares": 3069973372,
+     "foreignShares": 3069924226,
      "foreignPct": 51.86
     },
     {
@@ -2557,7 +2557,7 @@
      "balanceShares": 97056191,
      "balanceMil": 14490489,
      "close": 149300,
-     "foreignShares": 3069681760,
+     "foreignShares": 3069924226,
      "foreignPct": 51.86
     },
     {
@@ -2567,7 +2567,7 @@
      "balanceShares": 97643197,
      "balanceMil": 14177792,
      "close": 145200,
-     "foreignShares": 3066331668,
+     "foreignShares": 3066372444,
      "foreignPct": 51.8
     },
     {
@@ -2577,7 +2577,7 @@
      "balanceShares": 98087396,
      "balanceMil": 14664066,
      "close": 149500,
-     "foreignShares": 3073396423,
+     "foreignShares": 3073476009,
      "foreignPct": 51.92
     },
     {
@@ -2587,7 +2587,7 @@
      "balanceShares": 98191702,
      "balanceMil": 14954596,
      "close": 152300,
-     "foreignShares": 3073803942,
+     "foreignShares": 3074067973,
      "foreignPct": 51.93
     },
     {
@@ -2597,7 +2597,7 @@
      "balanceShares": 98825236,
      "balanceMil": 15031318,
      "close": 152100,
-     "foreignShares": 3071886829,
+     "foreignShares": 3071700118,
      "foreignPct": 51.89
     },
     {
@@ -2607,7 +2607,7 @@
      "balanceShares": 99635288,
      "balanceMil": 15154527,
      "close": 152100,
-     "foreignShares": 3072818835,
+     "foreignShares": 3072884045,
      "foreignPct": 51.91
     },
     {
@@ -2617,7 +2617,7 @@
      "balanceShares": 100122646,
      "balanceMil": 15969562,
      "close": 159500,
-     "foreignShares": 3076417030,
+     "foreignShares": 3076435828,
      "foreignPct": 51.97
     },
     {
@@ -2627,7 +2627,7 @@
      "balanceShares": 94577151,
      "balanceMil": 15359329,
      "close": 162400,
-     "foreignShares": 3074256200,
+     "foreignShares": 3074067973,
      "foreignPct": 51.93
     },
     {
@@ -2637,7 +2637,7 @@
      "balanceShares": 94615171,
      "balanceMil": 15204658,
      "close": 160700,
-     "foreignShares": 3066246478,
+     "foreignShares": 3066372444,
      "foreignPct": 51.8
     },
     {
@@ -2647,7 +2647,7 @@
      "balanceShares": 93298438,
      "balanceMil": 14974399,
      "close": 160500,
-     "foreignShares": 3062692626,
+     "foreignShares": 3062820661,
      "foreignPct": 51.74
     },
     {
@@ -2657,7 +2657,7 @@
      "balanceShares": 92508902,
      "balanceMil": 13913339,
      "close": 150400,
-     "foreignShares": 3055667910,
+     "foreignShares": 3055717095,
      "foreignPct": 51.62
     },
     {
@@ -2667,7 +2667,7 @@
      "balanceShares": 93922274,
      "balanceMil": 15731981,
      "close": 167500,
-     "foreignShares": 3061436498,
+     "foreignShares": 3061636733,
      "foreignPct": 51.72
     },
     {
@@ -2677,7 +2677,7 @@
      "balanceShares": 93062049,
      "balanceMil": 15736792,
      "close": 169100,
-     "foreignShares": 3055434126,
+     "foreignShares": 3055717095,
      "foreignPct": 51.62
     },
     {
@@ -2687,7 +2687,7 @@
      "balanceShares": 93933267,
      "balanceMil": 14963569,
      "close": 159300,
-     "foreignShares": 3036915957,
+     "foreignShares": 3036774254,
      "foreignPct": 51.3
     },
     {
@@ -2697,7 +2697,7 @@
      "balanceShares": 97508451,
      "balanceMil": 15464840,
      "close": 158600,
-     "foreignShares": 3029682515,
+     "foreignShares": 3029670688,
      "foreignPct": 51.18
     },
     {
@@ -2707,7 +2707,7 @@
      "balanceShares": 98092370,
      "balanceMil": 16322570,
      "close": 166400,
-     "foreignShares": 3030221788,
+     "foreignShares": 3030262652,
      "foreignPct": 51.19
     },
     {
@@ -2717,7 +2717,7 @@
      "balanceShares": 97956158,
      "balanceMil": 16241131,
      "close": 165800,
-     "foreignShares": 3032106611,
+     "foreignShares": 3032038544,
      "foreignPct": 51.22
     },
     {
@@ -2727,7 +2727,7 @@
      "balanceShares": 97803724,
      "balanceMil": 16411465,
      "close": 167800,
-     "foreignShares": 3035641311,
+     "foreignShares": 3035590326,
      "foreignPct": 51.28
     },
     {
@@ -2737,7 +2737,7 @@
      "balanceShares": 97668139,
      "balanceMil": 17443530,
      "close": 178600,
-     "foreignShares": 3049619497,
+     "foreignShares": 3049797457,
      "foreignPct": 51.52
     },
     {
@@ -2747,7 +2747,7 @@
      "balanceShares": 96015089,
      "balanceMil": 17397934,
      "close": 181200,
-     "foreignShares": 3044123961,
+     "foreignShares": 3043877819,
      "foreignPct": 51.42
     },
     {
@@ -2757,7 +2757,7 @@
      "balanceShares": 96048068,
      "balanceMil": 18249133,
      "close": 190000,
-     "foreignShares": 3036968120,
+     "foreignShares": 3036774254,
      "foreignPct": 51.3
     },
     {
@@ -2767,7 +2767,7 @@
      "balanceShares": 92146339,
      "balanceMil": 17517019,
      "close": 190100,
-     "foreignShares": 3024589956,
+     "foreignShares": 3024343014,
      "foreignPct": 51.09
     },
     {
@@ -2777,7 +2777,7 @@
      "balanceShares": 93079593,
      "balanceMil": 17964361,
      "close": 193000,
-     "foreignShares": 3018736358,
+     "foreignShares": 3019015340,
      "foreignPct": 51
     },
     {
@@ -2787,7 +2787,7 @@
      "balanceShares": 93894023,
      "balanceMil": 18778805,
      "close": 200000,
-     "foreignShares": 3016640847,
+     "foreignShares": 3016647485,
      "foreignPct": 50.96
     },
     {
@@ -2797,7 +2797,7 @@
      "balanceShares": 95721046,
      "balanceMil": 19479233,
      "close": 203500,
-     "foreignShares": 3007370145,
+     "foreignShares": 3007176064,
      "foreignPct": 50.8
     },
     {
@@ -2807,7 +2807,7 @@
      "balanceShares": 93758262,
      "balanceMil": 20439301,
      "close": 218000,
-     "foreignShares": 2998866540,
+     "foreignShares": 2998888571,
      "foreignPct": 50.66
     },
     {
@@ -2817,7 +2817,7 @@
      "balanceShares": 91214326,
      "balanceMil": 19747902,
      "close": 216500,
-     "foreignShares": 2977292115,
+     "foreignShares": 2977577875,
      "foreignPct": 50.3
     },
     {
@@ -2827,7 +2827,7 @@
      "balanceShares": 90456059,
      "balanceMil": 17647977,
      "close": 195100,
-     "foreignShares": 2961513226,
+     "foreignShares": 2961594852,
      "foreignPct": 50.03
     },
     {
@@ -2837,7 +2837,7 @@
      "balanceShares": 93664073,
      "balanceMil": 16128953,
      "close": 172200,
-     "foreignShares": 2958274311,
+     "foreignShares": 2958043070,
      "foreignPct": 49.97
     },
     {
@@ -2847,7 +2847,7 @@
      "balanceShares": 91014978,
      "balanceMil": 17438470,
      "close": 191600,
-     "foreignShares": 2956779806,
+     "foreignShares": 2956859142,
      "foreignPct": 49.95
     },
     {
@@ -2857,7 +2857,7 @@
      "balanceShares": 86815380,
      "balanceMil": 16338655,
      "close": 188200,
-     "foreignShares": 2948878486,
+     "foreignShares": 2949163613,
      "foreignPct": 49.82
     },
     {
@@ -2867,7 +2867,7 @@
      "balanceShares": 90719067,
      "balanceMil": 15739758,
      "close": 173500,
-     "foreignShares": 2940478982,
+     "foreignShares": 2940284156,
      "foreignPct": 49.67
     },
     {
@@ -2877,7 +2877,7 @@
      "balanceShares": 92227527,
      "balanceMil": 17329552,
      "close": 187900,
-     "foreignShares": 2947388026,
+     "foreignShares": 2947387721,
      "foreignPct": 49.79
     },
     {
@@ -2887,7 +2887,7 @@
      "balanceShares": 93021754,
      "balanceMil": 17674133,
      "close": 190000,
-     "foreignShares": 2946311451,
+     "foreignShares": 2946203794,
      "foreignPct": 49.77
     },
     {
@@ -2897,7 +2897,7 @@
      "balanceShares": 91575068,
      "balanceMil": 17206955,
      "close": 187900,
-     "foreignShares": 2939792553,
+     "foreignShares": 2939692192,
      "foreignPct": 49.66
     },
     {
@@ -2907,7 +2907,7 @@
      "balanceShares": 92238663,
      "balanceMil": 16925795,
      "close": 183500,
-     "foreignShares": 2935056281,
+     "foreignShares": 2934956482,
      "foreignPct": 49.58
     },
     {
@@ -2917,7 +2917,7 @@
      "balanceShares": 91748641,
      "balanceMil": 17312969,
      "close": 188700,
-     "foreignShares": 2933954265,
+     "foreignShares": 2933772554,
      "foreignPct": 49.56
     },
     {
@@ -2927,7 +2927,7 @@
      "balanceShares": 92272696,
      "balanceMil": 17891676,
      "close": 193900,
-     "foreignShares": 2933995169,
+     "foreignShares": 2933772554,
      "foreignPct": 49.56
     },
     {
@@ -2937,7 +2937,7 @@
      "balanceShares": 92702638,
      "balanceMil": 19328500,
      "close": 208500,
-     "foreignShares": 2935853943,
+     "foreignShares": 2936140409,
      "foreignPct": 49.6
     },
     {
@@ -2947,7 +2947,7 @@
      "balanceShares": 90727650,
      "balanceMil": 18190894,
      "close": 200500,
-     "foreignShares": 2931797750,
+     "foreignShares": 2931996663,
      "foreignPct": 49.53
     },
     {
@@ -2957,7 +2957,7 @@
      "balanceShares": 89781788,
      "balanceMil": 17902489,
      "close": 199400,
-     "foreignShares": 2930122329,
+     "foreignShares": 2930220771,
      "foreignPct": 49.5
     },
     {
@@ -2967,7 +2967,7 @@
      "balanceShares": 93054588,
      "balanceMil": 17336070,
      "close": 186300,
-     "foreignShares": 2920839345,
+     "foreignShares": 2920749351,
      "foreignPct": 49.34
     },
     {
@@ -2977,7 +2977,7 @@
      "balanceShares": 93356608,
      "balanceMil": 17709749,
      "close": 189700,
-     "foreignShares": 2913298249,
+     "foreignShares": 2913053821,
      "foreignPct": 49.21
     },
     {
@@ -2987,7 +2987,7 @@
      "balanceShares": 94471891,
      "balanceMil": 17855187,
      "close": 189000,
-     "foreignShares": 2907588213,
+     "foreignShares": 2907726147,
      "foreignPct": 49.12
     },
     {
@@ -2997,7 +2997,7 @@
      "balanceShares": 96544131,
      "balanceMil": 17387598,
      "close": 180100,
-     "foreignShares": 2894900363,
+     "foreignShares": 2894702944,
      "foreignPct": 48.9
     },
     {
@@ -3007,7 +3007,7 @@
      "balanceShares": 89401537,
      "balanceMil": 16065456,
      "close": 179700,
-     "foreignShares": 2883086550,
+     "foreignShares": 2882863668,
      "foreignPct": 48.7
     },
     {
@@ -3017,7 +3017,7 @@
      "balanceShares": 82049974,
      "balanceMil": 14465410,
      "close": 176300,
-     "foreignShares": 2878115331,
+     "foreignShares": 2878127958,
      "foreignPct": 48.62
     },
     {
@@ -3027,7 +3027,7 @@
      "balanceShares": 82282404,
      "balanceMil": 13757618,
      "close": 167200,
-     "foreignShares": 2865908267,
+     "foreignShares": 2865696718,
      "foreignPct": 48.41
     },
     {
@@ -3037,7 +3037,7 @@
      "balanceShares": 100582575,
      "balanceMil": 19070456,
      "close": 189600,
-     "foreignShares": 2866910860,
+     "foreignShares": 2866880646,
      "foreignPct": 48.43
     },
     {
@@ -3047,7 +3047,7 @@
      "balanceShares": 101499473,
      "balanceMil": 18107506,
      "close": 178400,
-     "foreignShares": 2864990285,
+     "foreignShares": 2865104754,
      "foreignPct": 48.4
     },
     {
@@ -3057,7 +3057,7 @@
      "balanceShares": 102044184,
      "balanceMil": 19000627,
      "close": 186200,
-     "foreignShares": 2865838096,
+     "foreignShares": 2865696718,
      "foreignPct": 48.41
     },
     {
@@ -3067,7 +3067,7 @@
      "balanceShares": 101435924,
      "balanceMil": 19587277,
      "close": 193100,
-     "foreignShares": 2867201462,
+     "foreignShares": 2867472609,
      "foreignPct": 48.44
     },
     {
@@ -3077,7 +3077,7 @@
      "balanceShares": 99187603,
      "balanceMil": 19490364,
      "close": 196500,
-     "foreignShares": 2865350322,
+     "foreignShares": 2865104754,
      "foreignPct": 48.4
     },
     {
@@ -3087,7 +3087,7 @@
      "balanceShares": 98735843,
      "balanceMil": 20783895,
      "close": 210500,
-     "foreignShares": 2868893700,
+     "foreignShares": 2868656537,
      "foreignPct": 48.46
     },
     {
@@ -3097,7 +3097,7 @@
      "balanceShares": 95710943,
      "balanceMil": 19525032,
      "close": 204000,
-     "foreignShares": 2879133836,
+     "foreignShares": 2879311885,
      "foreignPct": 48.64
     },
     {
@@ -3107,7 +3107,7 @@
      "balanceShares": 96596066,
      "balanceMil": 19898790,
      "close": 206000,
-     "foreignShares": 2879624027,
+     "foreignShares": 2879903849,
      "foreignPct": 48.65
     },
     {
@@ -3117,8 +3117,8 @@
      "balanceShares": 94914117,
      "balanceMil": 19077738,
      "close": 201000,
-     "foreignShares": 2878213138,
-     "foreignPct": 48.62
+     "foreignShares": 2914237749,
+     "foreignPct": 49.23
     },
     {
      "d": "20260414",
@@ -3127,7 +3127,7 @@
      "balanceShares": 93999940,
      "balanceMil": 19410988,
      "close": 206500,
-     "foreignShares": 2877934076,
+     "foreignShares": 2878122959,
      "foreignPct": 49.23
     },
     {
@@ -3137,7 +3137,7 @@
      "balanceShares": 92445402,
      "balanceMil": 19505980,
      "close": 211000,
-     "foreignShares": 2878212160,
+     "foreignShares": 2878122959,
      "foreignPct": 49.23
     },
     {
@@ -3147,7 +3147,7 @@
      "balanceShares": 91515370,
      "balanceMil": 19904593,
      "close": 217500,
-     "foreignShares": 2880075967,
+     "foreignShares": 2879876842,
      "foreignPct": 49.26
     },
     {
@@ -3157,7 +3157,7 @@
      "balanceShares": 90275241,
      "balanceMil": 19499452,
      "close": 216000,
-     "foreignShares": 2876290074,
+     "foreignShares": 2876369075,
      "foreignPct": 49.2
     },
     {
@@ -3167,7 +3167,7 @@
      "balanceShares": 89418005,
      "balanceMil": 19180162,
      "close": 214500,
-     "foreignShares": 2873068206,
+     "foreignShares": 2872861308,
      "foreignPct": 49.14
     },
     {
@@ -3177,7 +3177,7 @@
      "balanceShares": 89600590,
      "balanceMil": 19622529,
      "close": 219000,
-     "foreignShares": 2875135385,
+     "foreignShares": 2875199819,
      "foreignPct": 49.18
     },
     {
@@ -3187,7 +3187,7 @@
      "balanceShares": 88885959,
      "balanceMil": 19332696,
      "close": 217500,
-     "foreignShares": 2874108639,
+     "foreignShares": 2874030564,
      "foreignPct": 49.16
     },
     {
@@ -3197,7 +3197,7 @@
      "balanceShares": 88809652,
      "balanceMil": 19937767,
      "close": 224500,
-     "foreignShares": 2878653125,
+     "foreignShares": 2878707587,
      "foreignPct": 49.24
     },
     {
@@ -3207,7 +3207,7 @@
      "balanceShares": 88139953,
      "balanceMil": 19346720,
      "close": 219500,
-     "foreignShares": 2873031329,
+     "foreignShares": 2872861308,
      "foreignPct": 49.14
     },
     {
@@ -3217,7 +3217,7 @@
      "balanceShares": 86688194,
      "balanceMil": 19461500,
      "close": 224500,
-     "foreignShares": 2879307377,
+     "foreignShares": 2879292214,
      "foreignPct": 49.25
     },
     {
@@ -3227,7 +3227,7 @@
      "balanceShares": 85913881,
      "balanceMil": 19072882,
      "close": 222000,
-     "foreignShares": 2875735982,
+     "foreignShares": 2875784447,
      "foreignPct": 49.19
     },
     {
@@ -3237,7 +3237,7 @@
      "balanceShares": 84772832,
      "balanceMil": 19158660,
      "close": 226000,
-     "foreignShares": 2880255430,
+     "foreignShares": 2880461470,
      "foreignPct": 49.27
     },
     {
@@ -3247,7 +3247,7 @@
      "balanceShares": 82641344,
      "balanceMil": 18222416,
      "close": 220500,
-     "foreignShares": 2878971983,
+     "foreignShares": 2878707587,
      "foreignPct": 49.24
     },
     {
@@ -3257,7 +3257,7 @@
      "balanceShares": 82741037,
      "balanceMil": 19237291,
      "close": 232500,
-     "foreignShares": 2886478875,
+     "foreignShares": 2886307749,
      "foreignPct": 49.37
     },
     {
@@ -3267,7 +3267,7 @@
      "balanceShares": 82451667,
      "balanceMil": 21932143,
      "close": 266000,
-     "foreignShares": 2900260708,
+     "foreignShares": 2900338817,
      "foreignPct": 49.61
     },
     {
@@ -3277,7 +3277,7 @@
      "balanceShares": 79694607,
      "balanceMil": 21637086,
      "close": 271500,
-     "foreignShares": 2888080689,
+     "foreignShares": 2888061632,
      "foreignPct": 49.4
     },
     {
@@ -3287,7 +3287,7 @@
      "balanceShares": 80840903,
      "balanceMil": 21705782,
      "close": 268500,
-     "foreignShares": 2876884902,
+     "foreignShares": 2876953703,
      "foreignPct": 49.21
     },
     {
@@ -3297,7 +3297,7 @@
      "balanceShares": 82696827,
      "balanceMil": 23609944,
      "close": 285500,
-     "foreignShares": 2868638061,
+     "foreignShares": 2868768913,
      "foreignPct": 49.07
     },
     {
@@ -3307,7 +3307,7 @@
      "balanceShares": 81667957,
      "balanceMil": 22785360,
      "close": 279000,
-     "foreignShares": 2859644172,
+     "foreignShares": 2859414867,
      "foreignPct": 48.91
     },
     {
@@ -3317,7 +3317,7 @@
      "balanceShares": 81595258,
      "balanceMil": 23173053,
      "close": 284000,
-     "foreignShares": 2854564675,
+     "foreignShares": 2854737844,
      "foreignPct": 48.83
     },
     {
@@ -3327,7 +3327,7 @@
      "balanceShares": 82988539,
      "balanceMil": 24564608,
      "close": 296000,
-     "foreignShares": 2856158359,
+     "foreignShares": 2855907100,
      "foreignPct": 48.85
     },
     {
@@ -3337,7 +3337,7 @@
      "balanceShares": 83181700,
      "balanceMil": 22500650,
      "close": 270500,
-     "foreignShares": 2846384725,
+     "foreignShares": 2846553054,
      "foreignPct": 48.69
     },
     {
@@ -3347,7 +3347,7 @@
      "balanceShares": 81164814,
      "balanceMil": 22807313,
      "close": 281000,
-     "foreignShares": 2841763953,
+     "foreignShares": 2841876031,
      "foreignPct": 48.61
     },
     {
@@ -3357,7 +3357,7 @@
      "balanceShares": 79289056,
      "balanceMil": 21844135,
      "close": 275500,
-     "foreignShares": 2830968525,
+     "foreignShares": 2830768102,
      "foreignPct": 48.42
     },
     {
@@ -3367,7 +3367,7 @@
      "balanceShares": 80162243,
      "balanceMil": 22124779,
      "close": 276000,
-     "foreignShares": 2825334465,
+     "foreignShares": 2825506451,
      "foreignPct": 48.33
     },
     {
@@ -3377,7 +3377,7 @@
      "balanceShares": 80118232,
      "balanceMil": 23995410,
      "close": 299500,
-     "foreignShares": 2829121739,
+     "foreignShares": 2829014218,
      "foreignPct": 48.39
     },
     {
@@ -3387,7 +3387,7 @@
      "balanceShares": 79372926,
      "balanceMil": 23216581,
      "close": 292500,
-     "foreignShares": 2824975242,
+     "foreignShares": 2824921823,
      "foreignPct": 48.32
     },
     {
@@ -3397,7 +3397,7 @@
      "balanceShares": 79152538,
      "balanceMil": 23666609,
      "close": 299000,
-     "foreignShares": 2827623606,
+     "foreignShares": 2827844963,
      "foreignPct": 48.37
     },
     {
@@ -3407,7 +3407,7 @@
      "balanceShares": 79391703,
      "balanceMil": 24373253,
      "close": 307000,
-     "foreignShares": 2828993929,
+     "foreignShares": 2829014218,
      "foreignPct": 48.39
     },
     {
@@ -3417,7 +3417,7 @@
      "balanceShares": 81146479,
      "balanceMil": 24303370,
      "close": 299500,
-     "foreignShares": 2823193413,
+     "foreignShares": 2823167940,
      "foreignPct": 48.29
     },
     {
@@ -3427,7 +3427,7 @@
      "balanceShares": 80059247,
      "balanceMil": 25378781,
      "close": 317000,
-     "foreignShares": 2822876112,
+     "foreignShares": 2823167940,
      "foreignPct": 48.29
     },
     {
@@ -3437,7 +3437,7 @@
      "balanceShares": 79860110,
      "balanceMil": 27871178,
      "close": 349000,
-     "foreignShares": 2823815351,
+     "foreignShares": 2823752568,
      "foreignPct": 48.3
     },
     {
@@ -3447,7 +3447,7 @@
      "balanceShares": 78191005,
      "balanceMil": 28187857,
      "close": 360500,
-     "foreignShares": 2810201369,
+     "foreignShares": 2810306127,
      "foreignPct": 48.07
     },
     {
@@ -3457,7 +3457,7 @@
      "balanceShares": 80642789,
      "balanceMil": 28345940,
      "close": 351500,
-     "foreignShares": 2795254819,
+     "foreignShares": 2795105802,
      "foreignPct": 47.81
     },
     {
@@ -3467,7 +3467,7 @@
      "balanceShares": 80696777,
      "balanceMil": 26549240,
      "close": 329000,
-     "foreignShares": 2790424635,
+     "foreignShares": 2790428780,
      "foreignPct": 47.73
     },
     {
@@ -3477,7 +3477,7 @@
      "balanceShares": 81476813,
      "balanceMil": 24076398,
      "close": 295500,
-     "foreignShares": 2788556831,
+     "foreignShares": 2788674896,
      "foreignPct": 47.7
     },
     {
@@ -3487,7 +3487,7 @@
      "balanceShares": 85695912,
      "balanceMil": 27594084,
      "close": 322000,
-     "foreignShares": 2787647977,
+     "foreignShares": 2787505640,
      "foreignPct": 47.68
     },
     {
@@ -3497,7 +3497,7 @@
      "balanceShares": 84769394,
      "balanceMil": 25642742,
      "close": 302500,
-     "foreignShares": 2783409826,
+     "foreignShares": 2783413245,
      "foreignPct": 47.61
     },
     {
@@ -3507,7 +3507,7 @@
      "balanceShares": 85004005,
      "balanceMil": 25416197,
      "close": 299000,
-     "foreignShares": 2781886598,
+     "foreignShares": 2781659362,
      "foreignPct": 47.58
     },
     {
@@ -3517,7 +3517,7 @@
      "balanceShares": 85731608,
      "balanceMil": 27648444,
      "close": 322500,
-     "foreignShares": 2784774758,
+     "foreignShares": 2784582501,
      "foreignPct": 47.63
     },
     {
@@ -3527,7 +3527,7 @@
      "balanceShares": 83625185,
      "balanceMil": 28181687,
      "close": 337000,
-     "foreignShares": 2782738967,
+     "foreignShares": 2782828617,
      "foreignPct": 47.6
     },
     {
@@ -3537,7 +3537,7 @@
      "balanceShares": 81850788,
      "balanceMil": 28074820,
      "close": 343000,
-     "foreignShares": 2783095245,
+     "foreignShares": 2782828617,
      "foreignPct": 47.6
     },
     {
@@ -3547,7 +3547,7 @@
      "balanceShares": 78459612,
      "balanceMil": 27186256,
      "close": 346500,
-     "foreignShares": 2780810260,
+     "foreignShares": 2781074734,
      "foreignPct": 47.57
     },
     {
@@ -3557,7 +3557,7 @@
      "balanceShares": 77695233,
      "balanceMil": 28164522,
      "close": 362500,
-     "foreignShares": 2783827018,
+     "foreignShares": 2783997873,
      "foreignPct": 47.62
     },
     {
@@ -3567,7 +3567,7 @@
      "balanceShares": 76992639,
      "balanceMil": 27255394,
      "close": 354000,
-     "foreignShares": 2780421758,
+     "foreignShares": 2780490106,
      "foreignPct": 47.56
     },
     {
@@ -3577,7 +3577,7 @@
      "balanceShares": 75995131,
      "balanceMil": 26864279,
      "close": 353500,
-     "foreignShares": 2778199519,
+     "foreignShares": 2778151595,
      "foreignPct": 47.52
     },
     {
@@ -3587,7 +3587,7 @@
      "balanceShares": 75900554,
      "balanceMil": 23529172,
      "close": 310000,
-     "foreignShares": 2773061323,
+     "foreignShares": 2772889944,
      "foreignPct": 47.43
     },
     {
@@ -3597,7 +3597,7 @@
      "balanceShares": 76988278,
      "balanceMil": 26214509,
      "close": 340500,
-     "foreignShares": 2771882013,
+     "foreignShares": 2771720688,
      "foreignPct": 47.41
     },
     {
@@ -3607,7 +3607,7 @@
      "balanceShares": 76552458,
      "balanceMil": 27444056,
      "close": 358500,
-     "foreignShares": 2769269981,
+     "foreignShares": 2769382177,
      "foreignPct": 47.37
     },
     {
@@ -3617,7 +3617,7 @@
      "balanceShares": 72613926,
      "balanceMil": 24652428,
      "close": 339500,
-     "foreignShares": 2761916467,
+     "foreignShares": 2761782014,
      "foreignPct": 47.24
     },
     {
@@ -3627,7 +3627,7 @@
      "balanceShares": 71797998,
      "balanceMil": 23190753,
      "close": 323000,
-     "foreignShares": 2748428575,
+     "foreignShares": 2748335574,
      "foreignPct": 47.01
     },
     {
@@ -3637,7 +3637,7 @@
      "balanceShares": 71187188,
      "balanceMil": 23776521,
      "close": 334000,
-     "foreignShares": 2745545855,
+     "foreignShares": 2745412434,
      "foreignPct": 46.96
     },
     {
@@ -3647,7 +3647,7 @@
      "balanceShares": 74289788,
      "balanceMil": 23364138,
      "close": 314500,
-     "foreignShares": 2740723918,
+     "foreignShares": 2740735411,
      "foreignPct": 46.88
     },
     {
@@ -3657,7 +3657,7 @@
      "balanceShares": 79181225,
      "balanceMil": 22645830,
      "close": 286000,
-     "foreignShares": 2733869197,
+     "foreignShares": 2733719877,
      "foreignPct": 46.76
     },
     {
@@ -3667,7 +3667,7 @@
      "balanceShares": 86582650,
      "balanceMil": 26797330,
      "close": 309500,
-     "foreignShares": 2731669403,
+     "foreignShares": 2731381366,
      "foreignPct": 46.72
     },
     {
@@ -3677,7 +3677,7 @@
      "balanceShares": 85162331,
      "balanceMil": 27081621,
      "close": 318000,
-     "foreignShares": 2729917330,
+     "foreignShares": 2729627482,
      "foreignPct": 46.69
     },
     {
@@ -3687,7 +3687,7 @@
      "balanceShares": 84485076,
      "balanceMil": 25007582,
      "close": 296000,
-     "foreignShares": 2723095280,
+     "foreignShares": 2723196576,
      "foreignPct": 46.58
     },
     {
@@ -3697,7 +3697,7 @@
      "balanceShares": 84771433,
      "balanceMil": 23524073,
      "close": 277500,
-     "foreignShares": 2721421307,
+     "foreignShares": 2721442692,
      "foreignPct": 46.55
     },
     {
@@ -3707,7 +3707,7 @@
      "balanceShares": 83045770,
      "balanceMil": 23086724,
      "close": 278000,
-     "foreignShares": 2722350029,
+     "foreignShares": 2722611948,
      "foreignPct": 46.57
     },
     {
@@ -3717,7 +3717,7 @@
      "balanceShares": 78736716,
      "balanceMil": 22439964,
      "close": 285000,
-     "foreignShares": 2723845202,
+     "foreignShares": 2723781203,
      "foreignPct": 46.59
     },
     {
@@ -3727,7 +3727,7 @@
      "balanceShares": 77764011,
      "balanceMil": 19790941,
      "close": 254500,
-     "foreignShares": 2723415460,
+     "foreignShares": 2723196576,
      "foreignPct": 46.58
     },
     {
@@ -3737,7 +3737,7 @@
      "balanceShares": 83037453,
      "balanceMil": 21838850,
      "close": 263000,
-     "foreignShares": 2723127968,
+     "foreignShares": 2723196576,
      "foreignPct": 46.58
     },
     {
@@ -3747,7 +3747,7 @@
      "balanceShares": 82414108,
      "balanceMil": 23034743,
      "close": 279500,
-     "foreignShares": 2724479848,
+     "foreignShares": 2724365831,
      "foreignPct": 46.6
     },
     {
@@ -3757,7 +3757,7 @@
      "balanceShares": 80433213,
      "balanceMil": 20510469,
      "close": 255000,
-     "foreignShares": 2722256008,
+     "foreignShares": 2722027320,
      "foreignPct": 46.56
     },
     {
@@ -3767,7 +3767,7 @@
      "balanceShares": 84497979,
      "balanceMil": 20617507,
      "close": 244000,
-     "foreignShares": 2723716006,
+     "foreignShares": 2723781203,
      "foreignPct": 46.59
     },
     {
@@ -3777,7 +3777,7 @@
      "balanceShares": 86177480,
      "balanceMil": 22319967,
      "close": 259000,
-     "foreignShares": 2726295963,
+     "foreignShares": 2726119715,
      "foreignPct": 46.63
     },
     {
@@ -3787,7 +3787,7 @@
      "balanceShares": 85993424,
      "balanceMil": 22401287,
      "close": 260500,
-     "foreignShares": 2730842893,
+     "foreignShares": 2730796738,
      "foreignPct": 46.71
     },
     {
@@ -3797,7 +3797,7 @@
      "balanceShares": 84852806,
      "balanceMil": 22910258,
      "close": 270000,
-     "foreignShares": 2733792499,
+     "foreignShares": 2733719877,
      "foreignPct": 46.76
     },
     {
@@ -3807,7 +3807,7 @@
      "balanceShares": 84210081,
      "balanceMil": 21010415,
      "close": 249500,
-     "foreignShares": 2730814851,
+     "foreignShares": 2730796738,
      "foreignPct": 46.71
     },
     {
@@ -3817,7 +3817,7 @@
      "balanceShares": 84868356,
      "balanceMil": 21556562,
      "close": 254000,
-     "foreignShares": 2727994783,
+     "foreignShares": 2727873598,
      "foreignPct": 46.66
     },
     {
@@ -3827,7 +3827,7 @@
      "balanceShares": 86145355,
      "balanceMil": 18951978,
      "close": 220000,
-     "foreignShares": 2720613671,
+     "foreignShares": 2720858064,
      "foreignPct": 46.54
     },
     {
@@ -3837,7 +3837,7 @@
      "balanceShares": 89077944,
      "balanceMil": 18572751,
      "close": 208500,
-     "foreignShares": 2718800009,
+     "foreignShares": 2718519553,
      "foreignPct": 46.5
     },
     {
@@ -3847,7 +3847,7 @@
      "balanceShares": 90358712,
      "balanceMil": 18704253,
      "close": 207000,
-     "foreignShares": 2720398405,
+     "foreignShares": 2720273436,
      "foreignPct": 46.53
     },
     {
@@ -3857,7 +3857,7 @@
      "balanceShares": 94663584,
      "balanceMil": 24849191,
      "close": 262500,
-     "foreignShares": 2730295646,
+     "foreignShares": 2730212110,
      "foreignPct": 46.7
     },
     {
@@ -3867,7 +3867,7 @@
      "balanceShares": 94117330,
      "balanceMil": 22541101,
      "close": 239500,
-     "foreignShares": 2725083751,
+     "foreignShares": 2724950459,
      "foreignPct": 46.61
     },
     {
@@ -3877,7 +3877,7 @@
      "balanceShares": 93193099,
      "balanceMil": 22366344,
      "close": 240000,
-     "foreignShares": 2726229175,
+     "foreignShares": 2726119715,
      "foreignPct": 46.63
     },
     {
@@ -3887,7 +3887,7 @@
      "balanceShares": 92143029,
      "balanceMil": 22667185,
      "close": 246000,
-     "foreignShares": 2728997182,
+     "foreignShares": 2729042854,
      "foreignPct": 46.68
     },
     {
@@ -3897,7 +3897,7 @@
      "balanceShares": 87803519,
      "balanceMil": 20238711,
      "close": 230500,
-     "foreignShares": 2726127159,
+     "foreignShares": 2726119715,
      "foreignPct": 46.63
     },
     {
@@ -3907,7 +3907,7 @@
      "balanceShares": 90385395,
      "balanceMil": 20879026,
      "close": 231000,
-     "foreignShares": 2725008527,
+     "foreignShares": 2724950459,
      "foreignPct": 46.61
     },
     {
@@ -3917,7 +3917,7 @@
      "balanceShares": 89671695,
      "balanceMil": 20624490,
      "close": 230000,
-     "foreignShares": 2720516559,
+     "foreignShares": 2720273436,
      "foreignPct": 46.53
     },
     {
@@ -3927,7 +3927,7 @@
      "balanceShares": 89578799,
      "balanceMil": 21454122,
      "close": 239500,
-     "foreignShares": 2724356859,
+     "foreignShares": 2724365831,
      "foreignPct": 46.6
     },
     {
@@ -3937,7 +3937,7 @@
      "balanceShares": 89405665,
      "balanceMil": 22843147,
      "close": 255500,
-     "foreignShares": 2730723101,
+     "foreignShares": 2730796738,
      "foreignPct": 46.71
     },
     {
@@ -3947,7 +3947,7 @@
      "balanceShares": 86340378,
      "balanceMil": 23139221,
      "close": 268000,
-     "foreignShares": 2730484137,
+     "foreignShares": 2730212110,
      "foreignPct": 46.7
     },
     {
@@ -3957,7 +3957,7 @@
      "balanceShares": 84200755,
      "balanceMil": 23113107,
      "close": 274500,
-     "foreignShares": 2736287683,
+     "foreignShares": 2736058389,
      "foreignPct": 46.8
     },
     {
@@ -3967,7 +3967,7 @@
      "balanceShares": 84312867,
      "balanceMil": 22638005,
      "close": 268500,
-     "foreignShares": 2737687949,
+     "foreignShares": 2737812272,
      "foreignPct": 46.83
     },
     {
@@ -3977,7 +3977,7 @@
      "balanceShares": 86105141,
      "balanceMil": 21311022,
      "close": 247500,
-     "foreignShares": 2732901459,
+     "foreignShares": 2733135249,
      "foreignPct": 46.75
     },
     {
@@ -3987,7 +3987,7 @@
      "balanceShares": 86571032,
      "balanceMil": 23460750,
      "close": 271000,
-     "foreignShares": 2739342435,
+     "foreignShares": 2739566156,
      "foreignPct": 46.86
     },
     {
@@ -3997,7 +3997,7 @@
      "balanceShares": 88151890,
      "balanceMil": 24814757,
      "close": 281500,
-     "foreignShares": 2740358454,
+     "foreignShares": 2740150784,
      "foreignPct": 46.87
     },
     {
@@ -4007,7 +4007,7 @@
      "balanceShares": 86932937,
      "balanceMil": 22341765,
      "close": 257000,
-     "foreignShares": 2732498187,
+     "foreignShares": 2732550621,
      "foreignPct": 46.74
     },
     {
@@ -4017,7 +4017,7 @@
      "balanceShares": 86376132,
      "balanceMil": 22198666,
      "close": 257000,
-     "foreignShares": 2727210290,
+     "foreignShares": 2727288971,
      "foreignPct": 46.65
     },
     {
@@ -4027,7 +4027,7 @@
      "balanceShares": 86556532,
      "balanceMil": 22634533,
      "close": 261500,
-     "foreignShares": 2730850645,
+     "foreignShares": 2730796738,
      "foreignPct": 46.71
     },
     {
@@ -4037,7 +4037,7 @@
      "balanceShares": 86161430,
      "balanceMil": 22918940,
      "close": 266000,
-     "foreignShares": 2733143049,
+     "foreignShares": 2733135249,
      "foreignPct": 46.75
     },
     {
@@ -4047,7 +4047,7 @@
      "balanceShares": 88814937,
      "balanceMil": 22825439,
      "close": 257000,
-     "foreignShares": 2731622252,
+     "foreignShares": 2731381366,
      "foreignPct": 46.72
     },
     {
@@ -4057,7 +4057,7 @@
      "balanceShares": 88303849,
      "balanceMil": 22959001,
      "close": 260000,
-     "foreignShares": 2731664332,
+     "foreignShares": 2731381366,
      "foreignPct": 46.72
     },
     {
@@ -4067,7 +4067,7 @@
      "balanceShares": 88757265,
      "balanceMil": 23165646,
      "close": 261000,
-     "foreignShares": 2730947457,
+     "foreignShares": 2730796738,
      "foreignPct": 46.71
     },
     {
@@ -4077,7 +4077,7 @@
      "balanceShares": 90466883,
      "balanceMil": 22661954,
      "close": 250500,
-     "foreignShares": 2729876332,
+     "foreignShares": 2729627482,
      "foreignPct": 46.69
     },
     {
@@ -4087,7 +4087,7 @@
      "balanceShares": 92987066,
      "balanceMil": 23246767,
      "close": 250000,
-     "foreignShares": 2730744673,
+     "foreignShares": 2730796738,
      "foreignPct": 46.71
     },
     {
@@ -4097,7 +4097,7 @@
      "balanceShares": 92361294,
      "balanceMil": 23598311,
      "close": 255500,
-     "foreignShares": 2731696033,
+     "foreignShares": 2731965994,
      "foreignPct": 46.73
     },
     {
@@ -4107,7 +4107,7 @@
      "balanceShares": 91647121,
      "balanceMil": 24744723,
      "close": 270000,
-     "foreignShares": 2735646674,
+     "foreignShares": 2735473761,
      "foreignPct": 46.79
     },
     {
@@ -4117,7 +4117,7 @@
      "balanceShares": 89159479,
      "balanceMil": 24028480,
      "close": 269500,
-     "foreignShares": 2739271097,
+     "foreignShares": 2738981528,
      "foreignPct": 46.85
     },
     {
@@ -4127,8 +4127,28 @@
      "balanceShares": 87616074,
      "balanceMil": 23612532,
      "close": 269500,
-     "foreignShares": 2736456466,
+     "foreignShares": 2736643016,
      "foreignPct": 46.81
+    },
+    {
+     "d": "20260910",
+     "dealShares": 3586484,
+     "repayShares": 3548345,
+     "balanceShares": 87654213,
+     "balanceMil": 23578983,
+     "close": 269000,
+     "foreignShares": 2730796738,
+     "foreignPct": 46.71
+    },
+    {
+     "d": "20260911",
+     "dealShares": 4310426,
+     "repayShares": 2801585,
+     "balanceShares": 89163054,
+     "balanceMil": 23137813,
+     "close": 259500,
+     "foreignShares": 2730796738,
+     "foreignPct": 46.71
     }
    ]
   },
@@ -4143,7 +4163,7 @@
      "balanceShares": 14615820,
      "balanceMil": 2502228,
      "close": 171200,
-     "foreignShares": 398030588,
+     "foreignShares": 397998893,
      "foreignPct": 54.67
     },
     {
@@ -4153,7 +4173,7 @@
      "balanceShares": 15119318,
      "balanceMil": 2750204,
      "close": 181900,
-     "foreignShares": 398925122,
+     "foreignShares": 398945296,
      "foreignPct": 54.8
     },
     {
@@ -4163,7 +4183,7 @@
      "balanceShares": 16045307,
      "balanceMil": 3205852,
      "close": 199800,
-     "foreignShares": 400408336,
+     "foreignShares": 400401301,
      "foreignPct": 55
     },
     {
@@ -4173,7 +4193,7 @@
      "balanceShares": 16108894,
      "balanceMil": 3141234,
      "close": 195000,
-     "foreignShares": 400269012,
+     "foreignShares": 400255700,
      "foreignPct": 54.98
     },
     {
@@ -4183,7 +4203,7 @@
      "balanceShares": 16364968,
      "balanceMil": 3186259,
      "close": 194700,
-     "foreignShares": 400178175,
+     "foreignShares": 400182900,
      "foreignPct": 54.97
     },
     {
@@ -4193,7 +4213,7 @@
      "balanceShares": 16103348,
      "balanceMil": 3301186,
      "close": 205000,
-     "foreignShares": 402332517,
+     "foreignShares": 402366907,
      "foreignPct": 55.27
     },
     {
@@ -4203,7 +4223,7 @@
      "balanceShares": 16337437,
      "balanceMil": 3324668,
      "close": 203500,
-     "foreignShares": 403126887,
+     "foreignShares": 403094910,
      "foreignPct": 55.37
     },
     {
@@ -4213,7 +4233,7 @@
      "balanceShares": 16355678,
      "balanceMil": 3177908,
      "close": 194300,
-     "foreignShares": 402262610,
+     "foreignShares": 402294107,
      "foreignPct": 55.26
     },
     {
@@ -4223,7 +4243,7 @@
      "balanceShares": 16441942,
      "balanceMil": 3206179,
      "close": 195000,
-     "foreignShares": 401954064,
+     "foreignShares": 401930106,
      "foreignPct": 55.21
     },
     {
@@ -4233,7 +4253,7 @@
      "balanceShares": 15834460,
      "balanceMil": 3138390,
      "close": 198200,
-     "foreignShares": 402731885,
+     "foreignShares": 402730908,
      "foreignPct": 55.32
     },
     {
@@ -4243,7 +4263,7 @@
      "balanceShares": 15496396,
      "balanceMil": 3254243,
      "close": 210000,
-     "foreignShares": 405000904,
+     "foreignShares": 404987716,
      "foreignPct": 55.63
     },
     {
@@ -4253,7 +4273,7 @@
      "balanceShares": 14895166,
      "balanceMil": 3195013,
      "close": 214500,
-     "foreignShares": 406026336,
+     "foreignShares": 406006919,
      "foreignPct": 55.77
     },
     {
@@ -4263,7 +4283,7 @@
      "balanceShares": 14890840,
      "balanceMil": 3156858,
      "close": 212000,
-     "foreignShares": 406009046,
+     "foreignShares": 406006919,
      "foreignPct": 55.77
     },
     {
@@ -4273,7 +4293,7 @@
      "balanceShares": 14950640,
      "balanceMil": 3259240,
      "close": 218000,
-     "foreignShares": 406364594,
+     "foreignShares": 406370920,
      "foreignPct": 55.82
     },
     {
@@ -4283,7 +4303,7 @@
      "balanceShares": 14976741,
      "balanceMil": 3377255,
      "close": 225500,
-     "foreignShares": 407478977,
+     "foreignShares": 407462924,
      "foreignPct": 55.97
     },
     {
@@ -4293,7 +4313,7 @@
      "balanceShares": 14916468,
      "balanceMil": 3274165,
      "close": 219500,
-     "foreignShares": 406822986,
+     "foreignShares": 406807722,
      "foreignPct": 55.88
     },
     {
@@ -4303,7 +4323,7 @@
      "balanceShares": 14957430,
      "balanceMil": 3305592,
      "close": 221000,
-     "foreignShares": 406895368,
+     "foreignShares": 406880522,
      "foreignPct": 55.89
     },
     {
@@ -4313,7 +4333,7 @@
      "balanceShares": 15015084,
      "balanceMil": 2991005,
      "close": 199200,
-     "foreignShares": 404894267,
+     "foreignShares": 404914915,
      "foreignPct": 55.62
     },
     {
@@ -4323,7 +4343,7 @@
      "balanceShares": 15391141,
      "balanceMil": 2938169,
      "close": 190900,
-     "foreignShares": 405069267,
+     "foreignShares": 405060516,
      "foreignPct": 55.64
     },
     {
@@ -4333,7 +4353,7 @@
      "balanceShares": 15986760,
      "balanceMil": 3055070,
      "close": 191100,
-     "foreignShares": 404139816,
+     "foreignShares": 404114113,
      "foreignPct": 55.51
     },
     {
@@ -4343,7 +4363,7 @@
      "balanceShares": 16063342,
      "balanceMil": 3193392,
      "close": 198800,
-     "foreignShares": 404973711,
+     "foreignShares": 404987716,
      "foreignPct": 55.63
     },
     {
@@ -4353,7 +4373,7 @@
      "balanceShares": 16076501,
      "balanceMil": 3271568,
      "close": 203500,
-     "foreignShares": 405967009,
+     "foreignShares": 405934119,
      "foreignPct": 55.76
     },
     {
@@ -4363,7 +4383,7 @@
      "balanceShares": 15598121,
      "balanceMil": 3166419,
      "close": 203000,
-     "foreignShares": 406192401,
+     "foreignShares": 406225320,
      "foreignPct": 55.8
     },
     {
@@ -4373,7 +4393,7 @@
      "balanceShares": 15519834,
      "balanceMil": 3074479,
      "close": 198100,
-     "foreignShares": 406210056,
+     "foreignShares": 406225320,
      "foreignPct": 55.8
     },
     {
@@ -4383,7 +4403,7 @@
      "balanceShares": 15533893,
      "balanceMil": 3102118,
      "close": 199700,
-     "foreignShares": 406323852,
+     "foreignShares": 406298120,
      "foreignPct": 55.81
     },
     {
@@ -4393,7 +4413,7 @@
      "balanceShares": 15479193,
      "balanceMil": 3078811,
      "close": 198900,
-     "foreignShares": 406576284,
+     "foreignShares": 406589321,
      "foreignPct": 55.85
     },
     {
@@ -4403,7 +4423,7 @@
      "balanceShares": 15523808,
      "balanceMil": 3236714,
      "close": 208500,
-     "foreignShares": 406783384,
+     "foreignShares": 406807722,
      "foreignPct": 55.88
     },
     {
@@ -4413,7 +4433,7 @@
      "balanceShares": 15581152,
      "balanceMil": 3272042,
      "close": 210000,
-     "foreignShares": 407464577,
+     "foreignShares": 407462924,
      "foreignPct": 55.97
     },
     {
@@ -4423,7 +4443,7 @@
      "balanceShares": 15650563,
      "balanceMil": 3317919,
      "close": 212000,
-     "foreignShares": 407738229,
+     "foreignShares": 407754125,
      "foreignPct": 56.01
     },
     {
@@ -4433,7 +4453,7 @@
      "balanceShares": 15318059,
      "balanceMil": 3216792,
      "close": 210000,
-     "foreignShares": 407502379,
+     "foreignShares": 407535724,
      "foreignPct": 55.98
     },
     {
@@ -4443,7 +4463,7 @@
      "balanceShares": 15237648,
      "balanceMil": 3329426,
      "close": 218500,
-     "foreignShares": 408230492,
+     "foreignShares": 408263726,
      "foreignPct": 56.08
     },
     {
@@ -4453,7 +4473,7 @@
      "balanceShares": 15049093,
      "balanceMil": 3190408,
      "close": 212000,
-     "foreignShares": 407853206,
+     "foreignShares": 407826925,
      "foreignPct": 56.02
     },
     {
@@ -4463,7 +4483,7 @@
      "balanceShares": 14762716,
      "balanceMil": 3092789,
      "close": 209500,
-     "foreignShares": 407596215,
+     "foreignShares": 407608524,
      "foreignPct": 55.99
     },
     {
@@ -4473,7 +4493,7 @@
      "balanceShares": 14504324,
      "balanceMil": 2973386,
      "close": 205000,
-     "foreignShares": 407283467,
+     "foreignShares": 407317323,
      "foreignPct": 55.95
     },
     {
@@ -4483,7 +4503,7 @@
      "balanceShares": 13535270,
      "balanceMil": 2713822,
      "close": 200500,
-     "foreignShares": 406511717,
+     "foreignShares": 406516521,
      "foreignPct": 55.84
     },
     {
@@ -4493,7 +4513,7 @@
      "balanceShares": 14729474,
      "balanceMil": 2990083,
      "close": 203000,
-     "foreignShares": 406834729,
+     "foreignShares": 406807722,
      "foreignPct": 55.88
     },
     {
@@ -4503,7 +4523,7 @@
      "balanceShares": 13818361,
      "balanceMil": 2752618,
      "close": 199200,
-     "foreignShares": 404452032,
+     "foreignShares": 404478114,
      "foreignPct": 55.56
     },
     {
@@ -4513,7 +4533,7 @@
      "balanceShares": 14031787,
      "balanceMil": 2668846,
      "close": 190200,
-     "foreignShares": 403197584,
+     "foreignShares": 403167710,
      "foreignPct": 55.38
     },
     {
@@ -4523,7 +4543,7 @@
      "balanceShares": 16112130,
      "balanceMil": 2998467,
      "close": 186100,
-     "foreignShares": 402417223,
+     "foreignShares": 402439707,
      "foreignPct": 55.28
     },
     {
@@ -4533,7 +4553,7 @@
      "balanceShares": 16595165,
      "balanceMil": 3204526,
      "close": 193100,
-     "foreignShares": 402655773,
+     "foreignShares": 402658108,
      "foreignPct": 55.31
     },
     {
@@ -4543,7 +4563,7 @@
      "balanceShares": 16692355,
      "balanceMil": 3211609,
      "close": 192400,
-     "foreignShares": 402907143,
+     "foreignShares": 402876509,
      "foreignPct": 55.34
     },
     {
@@ -4553,7 +4573,7 @@
      "balanceShares": 16717919,
      "balanceMil": 3216528,
      "close": 192400,
-     "foreignShares": 403306753,
+     "foreignShares": 403313310,
      "foreignPct": 55.4
     },
     {
@@ -4563,7 +4583,7 @@
      "balanceShares": 16846346,
      "balanceMil": 3165428,
      "close": 187900,
-     "foreignShares": 402496708,
+     "foreignShares": 402512508,
      "foreignPct": 55.29
     },
     {
@@ -4573,7 +4593,7 @@
      "balanceShares": 18401530,
      "balanceMil": 3455807,
      "close": 187800,
-     "foreignShares": 402314733,
+     "foreignShares": 402294107,
      "foreignPct": 55.26
     },
     {
@@ -4583,7 +4603,7 @@
      "balanceShares": 18919008,
      "balanceMil": 3762991,
      "close": 198900,
-     "foreignShares": 403330594,
+     "foreignShares": 403313310,
      "foreignPct": 55.4
     },
     {
@@ -4593,7 +4613,7 @@
      "balanceShares": 18730889,
      "balanceMil": 3740559,
      "close": 199700,
-     "foreignShares": 402700231,
+     "foreignShares": 402730908,
      "foreignPct": 55.32
     },
     {
@@ -4603,7 +4623,7 @@
      "balanceShares": 18846109,
      "balanceMil": 3854029,
      "close": 204500,
-     "foreignShares": 403856287,
+     "foreignShares": 403822912,
      "foreignPct": 55.47
     },
     {
@@ -4613,7 +4633,7 @@
      "balanceShares": 19050755,
      "balanceMil": 3924456,
      "close": 206000,
-     "foreignShares": 403838966,
+     "foreignShares": 403822912,
      "foreignPct": 55.47
     },
     {
@@ -4623,7 +4643,7 @@
      "balanceShares": 18853602,
      "balanceMil": 3827281,
      "close": 203000,
-     "foreignShares": 403696053,
+     "foreignShares": 403677311,
      "foreignPct": 55.45
     },
     {
@@ -4633,7 +4653,7 @@
      "balanceShares": 18814551,
      "balanceMil": 3866390,
      "close": 205500,
-     "foreignShares": 403874840,
+     "foreignShares": 403895712,
      "foreignPct": 55.48
     },
     {
@@ -4643,7 +4663,7 @@
      "balanceShares": 19029577,
      "balanceMil": 3996211,
      "close": 210000,
-     "foreignShares": 404682928,
+     "foreignShares": 404696515,
      "foreignPct": 55.59
     },
     {
@@ -4653,7 +4673,7 @@
      "balanceShares": 18988717,
      "balanceMil": 4092069,
      "close": 215500,
-     "foreignShares": 406045985,
+     "foreignShares": 406079719,
      "foreignPct": 55.78
     },
     {
@@ -4663,7 +4683,7 @@
      "balanceShares": 19117672,
      "balanceMil": 4043388,
      "close": 211500,
-     "foreignShares": 405819330,
+     "foreignShares": 405788518,
      "foreignPct": 55.74
     },
     {
@@ -4673,7 +4693,7 @@
      "balanceShares": 18043658,
      "balanceMil": 3753081,
      "close": 208000,
-     "foreignShares": 405677526,
+     "foreignShares": 405642918,
      "foreignPct": 55.72
     },
     {
@@ -4683,7 +4703,7 @@
      "balanceShares": 17736375,
      "balanceMil": 3795584,
      "close": 214000,
-     "foreignShares": 406027355,
+     "foreignShares": 406006919,
      "foreignPct": 55.77
     },
     {
@@ -4693,7 +4713,7 @@
      "balanceShares": 18232236,
      "balanceMil": 3774073,
      "close": 207000,
-     "foreignShares": 405571035,
+     "foreignShares": 405570118,
      "foreignPct": 55.71
     },
     {
@@ -4703,7 +4723,7 @@
      "balanceShares": 17088256,
      "balanceMil": 3405689,
      "close": 199300,
-     "foreignShares": 404259772,
+     "foreignShares": 404259713,
      "foreignPct": 55.53
     },
     {
@@ -4713,7 +4733,7 @@
      "balanceShares": 18520926,
      "balanceMil": 3531941,
      "close": 190700,
-     "foreignShares": 402952214,
+     "foreignShares": 402949309,
      "foreignPct": 55.35
     },
     {
@@ -4723,7 +4743,7 @@
      "balanceShares": 19178201,
      "balanceMil": 3778106,
      "close": 197000,
-     "foreignShares": 403181298,
+     "foreignShares": 403167710,
      "foreignPct": 55.38
     },
     {
@@ -4733,7 +4753,7 @@
      "balanceShares": 21728992,
      "balanceMil": 4300168,
      "close": 197900,
-     "foreignShares": 402989092,
+     "foreignShares": 403022109,
      "foreignPct": 55.36
     },
     {
@@ -4743,7 +4763,7 @@
      "balanceShares": 22139769,
      "balanceMil": 4308399,
      "close": 194600,
-     "foreignShares": 401418712,
+     "foreignShares": 401420504,
      "foreignPct": 55.14
     },
     {
@@ -4753,7 +4773,7 @@
      "balanceShares": 22878302,
      "balanceMil": 4168427,
      "close": 182200,
-     "foreignShares": 396410000,
+     "foreignShares": 396397288,
      "foreignPct": 54.45
     },
     {
@@ -4763,7 +4783,7 @@
      "balanceShares": 24347024,
      "balanceMil": 4012390,
      "close": 164800,
-     "foreignShares": 394408104,
+     "foreignShares": 394431681,
      "foreignPct": 54.18
     },
     {
@@ -4773,7 +4793,7 @@
      "balanceShares": 24025522,
      "balanceMil": 4072326,
      "close": 169500,
-     "foreignShares": 394379354,
+     "foreignShares": 394358881,
      "foreignPct": 54.17
     },
     {
@@ -4783,7 +4803,7 @@
      "balanceShares": 24982352,
      "balanceMil": 4122088,
      "close": 165000,
-     "foreignShares": 392689931,
+     "foreignShares": 392684476,
      "foreignPct": 53.94
     },
     {
@@ -4793,7 +4813,7 @@
      "balanceShares": 26893001,
      "balanceMil": 4926798,
      "close": 183200,
-     "foreignShares": 392803683,
+     "foreignShares": 392830076,
      "foreignPct": 53.96
     },
     {
@@ -4803,7 +4823,7 @@
      "balanceShares": 26613161,
      "balanceMil": 4811660,
      "close": 180800,
-     "foreignShares": 391633284,
+     "foreignShares": 391665272,
      "foreignPct": 53.8
     },
     {
@@ -4813,7 +4833,7 @@
      "balanceShares": 26802227,
      "balanceMil": 4829761,
      "close": 180200,
-     "foreignShares": 391044482,
+     "foreignShares": 391010070,
      "foreignPct": 53.71
     },
     {
@@ -4823,7 +4843,7 @@
      "balanceShares": 26826794,
      "balanceMil": 4844919,
      "close": 180600,
-     "foreignShares": 391157495,
+     "foreignShares": 391155671,
      "foreignPct": 53.73
     },
     {
@@ -4833,7 +4853,7 @@
      "balanceShares": 26553085,
      "balanceMil": 4620237,
      "close": 174000,
-     "foreignShares": 390509365,
+     "foreignShares": 390500469,
      "foreignPct": 53.64
     },
     {
@@ -4843,7 +4863,7 @@
      "balanceShares": 26525524,
      "balanceMil": 4641967,
      "close": 175000,
-     "foreignShares": 389552977,
+     "foreignShares": 389554066,
      "foreignPct": 53.51
     },
     {
@@ -4853,7 +4873,7 @@
      "balanceShares": 26409333,
      "balanceMil": 4621633,
      "close": 175000,
-     "foreignShares": 389171161,
+     "foreignShares": 389190064,
      "foreignPct": 53.46
     },
     {
@@ -4863,7 +4883,7 @@
      "balanceShares": 25112275,
      "balanceMil": 4434828,
      "close": 176600,
-     "foreignShares": 388974713,
+     "foreignShares": 388971664,
      "foreignPct": 53.43
     },
     {
@@ -4873,7 +4893,7 @@
      "balanceShares": 27597010,
      "balanceMil": 4796360,
      "close": 173800,
-     "foreignShares": 388554528,
+     "foreignShares": 388534862,
      "foreignPct": 53.37
     },
     {
@@ -4883,7 +4903,7 @@
      "balanceShares": 26687002,
      "balanceMil": 4830347,
      "close": 181000,
-     "foreignShares": 388165738,
+     "foreignShares": 388170861,
      "foreignPct": 53.32
     },
     {
@@ -4893,7 +4913,7 @@
      "balanceShares": 27287922,
      "balanceMil": 4865436,
      "close": 178300,
-     "foreignShares": 387520472,
+     "foreignShares": 387515659,
      "foreignPct": 53.23
     },
     {
@@ -4903,7 +4923,7 @@
      "balanceShares": 28195014,
      "balanceMil": 5199161,
      "close": 184400,
-     "foreignShares": 388326855,
+     "foreignShares": 388316461,
      "foreignPct": 53.34
     },
     {
@@ -4913,7 +4933,7 @@
      "balanceShares": 28596368,
      "balanceMil": 5204539,
      "close": 182000,
-     "foreignShares": 388157371,
+     "foreignShares": 388170861,
      "foreignPct": 53.32
     },
     {
@@ -4923,7 +4943,7 @@
      "balanceShares": 28861478,
      "balanceMil": 5218155,
      "close": 180800,
-     "foreignShares": 387980913,
+     "foreignShares": 387952460,
      "foreignPct": 53.29
     },
     {
@@ -4933,7 +4953,7 @@
      "balanceShares": 29049770,
      "balanceMil": 5156334,
      "close": 177500,
-     "foreignShares": 387429323,
+     "foreignShares": 387442859,
      "foreignPct": 53.22
     },
     {
@@ -4943,7 +4963,7 @@
      "balanceShares": 29794839,
      "balanceMil": 5541840,
      "close": 186000,
-     "foreignShares": 389290462,
+     "foreignShares": 389262865,
      "foreignPct": 53.47
     },
     {
@@ -4953,7 +4973,7 @@
      "balanceShares": 29903488,
      "balanceMil": 5705586,
      "close": 190800,
-     "foreignShares": 390308276,
+     "foreignShares": 390282068,
      "foreignPct": 53.61
     },
     {
@@ -4963,7 +4983,7 @@
      "balanceShares": 30191976,
      "balanceMil": 5745533,
      "close": 190300,
-     "foreignShares": 391327246,
+     "foreignShares": 391301271,
      "foreignPct": 53.75
     },
     {
@@ -4973,7 +4993,7 @@
      "balanceShares": 30284754,
      "balanceMil": 5757132,
      "close": 190100,
-     "foreignShares": 391513278,
+     "foreignShares": 391519672,
      "foreignPct": 53.78
     },
     {
@@ -4983,7 +5003,7 @@
      "balanceShares": 30811502,
      "balanceMil": 6008243,
      "close": 195000,
-     "foreignShares": 392627883,
+     "foreignShares": 392611675,
      "foreignPct": 53.93
     },
     {
@@ -4993,7 +5013,7 @@
      "balanceShares": 30834845,
      "balanceMil": 6120717,
      "close": 198500,
-     "foreignShares": 393834763,
+     "foreignShares": 393849279,
      "foreignPct": 54.1
     },
     {
@@ -5003,7 +5023,7 @@
      "balanceShares": 30918559,
      "balanceMil": 6369223,
      "close": 206000,
-     "foreignShares": 395222209,
+     "foreignShares": 395232484,
      "foreignPct": 54.29
     },
     {
@@ -5013,7 +5033,7 @@
      "balanceShares": 30863710,
      "balanceMil": 6188174,
      "close": 200500,
-     "foreignShares": 395564738,
+     "foreignShares": 395596485,
      "foreignPct": 54.34
     },
     {
@@ -5023,7 +5043,7 @@
      "balanceShares": 31604965,
      "balanceMil": 6463215,
      "close": 204500,
-     "foreignShares": 396392795,
+     "foreignShares": 396397288,
      "foreignPct": 54.45
     },
     {
@@ -5033,7 +5053,7 @@
      "balanceShares": 31054537,
      "balanceMil": 6192275,
      "close": 199400,
-     "foreignShares": 396397210,
+     "foreignShares": 396397288,
      "foreignPct": 54.45
     },
     {
@@ -5043,7 +5063,7 @@
      "balanceShares": 31597164,
      "balanceMil": 6382627,
      "close": 202000,
-     "foreignShares": 396738824,
+     "foreignShares": 396761289,
      "foreignPct": 54.5
     },
     {
@@ -5053,7 +5073,7 @@
      "balanceShares": 32170316,
      "balanceMil": 6450148,
      "close": 200500,
-     "foreignShares": 396528189,
+     "foreignShares": 396542888,
      "foreignPct": 54.47
     },
     {
@@ -5063,7 +5083,7 @@
      "balanceShares": 32166781,
      "balanceMil": 6333639,
      "close": 196900,
-     "foreignShares": 396614805,
+     "foreignShares": 396615688,
      "foreignPct": 54.48
     },
     {
@@ -5073,7 +5093,7 @@
      "balanceShares": 30132787,
      "balanceMil": 6026557,
      "close": 200000,
-     "foreignShares": 395736555,
+     "foreignShares": 395742086,
      "foreignPct": 54.36
     },
     {
@@ -5083,7 +5103,7 @@
      "balanceShares": 30177572,
      "balanceMil": 6126047,
      "close": 203000,
-     "foreignShares": 395853119,
+     "foreignShares": 395887686,
      "foreignPct": 54.38
     },
     {
@@ -5093,7 +5113,7 @@
      "balanceShares": 28727349,
      "balanceMil": 5817288,
      "close": 202500,
-     "foreignShares": 395972738,
+     "foreignShares": 395960486,
      "foreignPct": 54.39
     },
     {
@@ -5103,7 +5123,7 @@
      "balanceShares": 28474698,
      "balanceMil": 5922737,
      "close": 208000,
-     "foreignShares": 396002111,
+     "foreignShares": 396033287,
      "foreignPct": 54.4
     },
     {
@@ -5113,7 +5133,7 @@
      "balanceShares": 25860131,
      "balanceMil": 5482348,
      "close": 212000,
-     "foreignShares": 394526399,
+     "foreignShares": 394504482,
      "foreignPct": 54.19
     },
     {
@@ -5123,7 +5143,7 @@
      "balanceShares": 25693173,
      "balanceMil": 5254254,
      "close": 204500,
-     "foreignShares": 394837346,
+     "foreignShares": 394868483,
      "foreignPct": 54.24
     },
     {
@@ -5133,7 +5153,7 @@
      "balanceShares": 27375217,
      "balanceMil": 5680358,
      "close": 207500,
-     "foreignShares": 396140679,
+     "foreignShares": 396106087,
      "foreignPct": 54.41
     },
     {
@@ -5143,7 +5163,7 @@
      "balanceShares": 29882294,
      "balanceMil": 6499399,
      "close": 217500,
-     "foreignShares": 399046235,
+     "foreignShares": 399018096,
      "foreignPct": 54.81
     },
     {
@@ -5153,7 +5173,7 @@
      "balanceShares": 29572378,
      "balanceMil": 6638999,
      "close": 224500,
-     "foreignShares": 399976372,
+     "foreignShares": 399964499,
      "foreignPct": 54.94
     },
     {
@@ -5163,7 +5183,7 @@
      "balanceShares": 29233666,
      "balanceMil": 6694510,
      "close": 229000,
-     "foreignShares": 400371622,
+     "foreignShares": 400401301,
      "foreignPct": 55
     },
     {
@@ -5173,7 +5193,7 @@
      "balanceShares": 29143468,
      "balanceMil": 6717569,
      "close": 230500,
-     "foreignShares": 400509337,
+     "foreignShares": 400474101,
      "foreignPct": 55.01
     },
     {
@@ -5183,7 +5203,7 @@
      "balanceShares": 28939857,
      "balanceMil": 6945566,
      "close": 240000,
-     "foreignShares": 401710152,
+     "foreignShares": 401711705,
      "foreignPct": 55.18
     },
     {
@@ -5193,7 +5213,7 @@
      "balanceShares": 28583194,
      "balanceMil": 6731342,
      "close": 235500,
-     "foreignShares": 401768306,
+     "foreignShares": 401784505,
      "foreignPct": 55.19
     },
     {
@@ -5203,7 +5223,7 @@
      "balanceShares": 28490806,
      "balanceMil": 6709585,
      "close": 235500,
-     "foreignShares": 402652678,
+     "foreignShares": 402658108,
      "foreignPct": 55.31
     },
     {
@@ -5213,7 +5233,7 @@
      "balanceShares": 28503058,
      "balanceMil": 7068758,
      "close": 248000,
-     "foreignShares": 403433422,
+     "foreignShares": 403458911,
      "foreignPct": 55.42
     },
     {
@@ -5223,7 +5243,7 @@
      "balanceShares": 27988664,
      "balanceMil": 6969177,
      "close": 249000,
-     "foreignShares": 402791887,
+     "foreignShares": 402803709,
      "foreignPct": 55.33
     },
     {
@@ -5233,7 +5253,7 @@
      "balanceShares": 27792810,
      "balanceMil": 6850928,
      "close": 246500,
-     "foreignShares": 402642638,
+     "foreignShares": 402658108,
      "foreignPct": 55.31
     },
     {
@@ -5243,7 +5263,7 @@
      "balanceShares": 27601300,
      "balanceMil": 6789920,
      "close": 246000,
-     "foreignShares": 402699288,
+     "foreignShares": 402730908,
      "foreignPct": 55.32
     },
     {
@@ -5253,7 +5273,7 @@
      "balanceShares": 27524839,
      "balanceMil": 7073884,
      "close": 257000,
-     "foreignShares": 403425951,
+     "foreignShares": 403458911,
      "foreignPct": 55.42
     },
     {
@@ -5263,7 +5283,7 @@
      "balanceShares": 27726225,
      "balanceMil": 7194955,
      "close": 259500,
-     "foreignShares": 403599525,
+     "foreignShares": 403604511,
      "foreignPct": 55.44
     },
     {
@@ -5273,7 +5293,7 @@
      "balanceShares": 28664297,
      "balanceMil": 7983007,
      "close": 278500,
-     "foreignShares": 404723518,
+     "foreignShares": 404696515,
      "foreignPct": 55.59
     },
     {
@@ -5283,7 +5303,7 @@
      "balanceShares": 28108456,
      "balanceMil": 8039018,
      "close": 286000,
-     "foreignShares": 404861585,
+     "foreignShares": 404842115,
      "foreignPct": 55.61
     },
     {
@@ -5293,7 +5313,7 @@
      "balanceShares": 28841957,
      "balanceMil": 8450693,
      "close": 293000,
-     "foreignShares": 405232597,
+     "foreignShares": 405206116,
      "foreignPct": 55.66
     },
     {
@@ -5303,7 +5323,7 @@
      "balanceShares": 29602754,
      "balanceMil": 8407182,
      "close": 284000,
-     "foreignShares": 404164567,
+     "foreignShares": 404186913,
      "foreignPct": 55.52
     },
     {
@@ -5313,7 +5333,7 @@
      "balanceShares": 29116437,
      "balanceMil": 8502000,
      "close": 292000,
-     "foreignShares": 404143773,
+     "foreignShares": 404114113,
      "foreignPct": 55.51
     },
     {
@@ -5323,7 +5343,7 @@
      "balanceShares": 28717068,
      "balanceMil": 8198723,
      "close": 285500,
-     "foreignShares": 404086162,
+     "foreignShares": 404114113,
      "foreignPct": 55.51
     },
     {
@@ -5333,7 +5353,7 @@
      "balanceShares": 28708517,
      "balanceMil": 8009676,
      "close": 279000,
-     "foreignShares": 404065202,
+     "foreignShares": 404041313,
      "foreignPct": 55.5
     },
     {
@@ -5343,7 +5363,7 @@
      "balanceShares": 28659025,
      "balanceMil": 7981538,
      "close": 278500,
-     "foreignShares": 403876598,
+     "foreignShares": 403895712,
      "foreignPct": 55.48
     },
     {
@@ -5353,7 +5373,7 @@
      "balanceShares": 28544195,
      "balanceMil": 7721205,
      "close": 270500,
-     "foreignShares": 403721644,
+     "foreignShares": 403750112,
      "foreignPct": 55.46
     },
     {
@@ -5363,7 +5383,7 @@
      "balanceShares": 28685154,
      "balanceMil": 7773677,
      "close": 271000,
-     "foreignShares": 403452266,
+     "foreignShares": 403458911,
      "foreignPct": 55.42
     },
     {
@@ -5373,7 +5393,7 @@
      "balanceShares": 27749728,
      "balanceMil": 7825423,
      "close": 282000,
-     "foreignShares": 403610606,
+     "foreignShares": 403604511,
      "foreignPct": 55.44
     },
     {
@@ -5383,7 +5403,7 @@
      "balanceShares": 26393368,
      "balanceMil": 7416536,
      "close": 281000,
-     "foreignShares": 403516441,
+     "foreignShares": 403531711,
      "foreignPct": 55.43
     },
     {
@@ -5393,7 +5413,7 @@
      "balanceShares": 26196788,
      "balanceMil": 7780446,
      "close": 297000,
-     "foreignShares": 403821077,
+     "foreignShares": 403822912,
      "foreignPct": 55.47
     },
     {
@@ -5403,7 +5423,7 @@
      "balanceShares": 25948360,
      "balanceMil": 7641792,
      "close": 294500,
-     "foreignShares": 403775564,
+     "foreignShares": 403750112,
      "foreignPct": 55.46
     },
     {
@@ -5413,7 +5433,7 @@
      "balanceShares": 25352213,
      "balanceMil": 7605664,
      "close": 300000,
-     "foreignShares": 404369052,
+     "foreignShares": 404405314,
      "foreignPct": 55.55
     },
     {
@@ -5423,7 +5443,7 @@
      "balanceShares": 25454863,
      "balanceMil": 7598277,
      "close": 298500,
-     "foreignShares": 404406141,
+     "foreignShares": 404405314,
      "foreignPct": 55.55
     },
     {
@@ -5433,7 +5453,7 @@
      "balanceShares": 26618403,
      "balanceMil": 7879047,
      "close": 296000,
-     "foreignShares": 404531288,
+     "foreignShares": 404550914,
      "foreignPct": 55.57
     },
     {
@@ -5443,7 +5463,7 @@
      "balanceShares": 27381948,
      "balanceMil": 7379435,
      "close": 269500,
-     "foreignShares": 402473258,
+     "foreignShares": 402439707,
      "foreignPct": 55.28
     },
     {
@@ -5453,7 +5473,7 @@
      "balanceShares": 27998018,
      "balanceMil": 7531467,
      "close": 269000,
-     "foreignShares": 401776598,
+     "foreignShares": 401784505,
      "foreignPct": 55.19
     },
     {
@@ -5463,7 +5483,7 @@
      "balanceShares": 28168320,
      "balanceMil": 7675867,
      "close": 272500,
-     "foreignShares": 401580669,
+     "foreignShares": 401566105,
      "foreignPct": 55.16
     },
     {
@@ -5473,7 +5493,7 @@
      "balanceShares": 28222590,
      "balanceMil": 7577765,
      "close": 268500,
-     "foreignShares": 401327225,
+     "foreignShares": 401347704,
      "foreignPct": 55.13
     },
     {
@@ -5483,7 +5503,7 @@
      "balanceShares": 27636974,
      "balanceMil": 7434346,
      "close": 269000,
-     "foreignShares": 401567451,
+     "foreignShares": 401566105,
      "foreignPct": 55.16
     },
     {
@@ -5493,7 +5513,7 @@
      "balanceShares": 27939343,
      "balanceMil": 7529653,
      "close": 269500,
-     "foreignShares": 402004616,
+     "foreignShares": 402002906,
      "foreignPct": 55.22
     },
     {
@@ -5503,7 +5523,7 @@
      "balanceShares": 28071322,
      "balanceMil": 7466972,
      "close": 266000,
-     "foreignShares": 401890747,
+     "foreignShares": 401857305,
      "foreignPct": 55.2
     },
     {
@@ -5513,7 +5533,7 @@
      "balanceShares": 29504483,
      "balanceMil": 7730175,
      "close": 262000,
-     "foreignShares": 401670563,
+     "foreignShares": 401638905,
      "foreignPct": 55.17
     },
     {
@@ -5523,7 +5543,7 @@
      "balanceShares": 28410945,
      "balanceMil": 7457873,
      "close": 262500,
-     "foreignShares": 401296962,
+     "foreignShares": 401274904,
      "foreignPct": 55.12
     },
     {
@@ -5533,7 +5553,7 @@
      "balanceShares": 28150069,
      "balanceMil": 7417543,
      "close": 263500,
-     "foreignShares": 401197587,
+     "foreignShares": 401202103,
      "foreignPct": 55.11
     },
     {
@@ -5543,7 +5563,7 @@
      "balanceShares": 28155120,
      "balanceMil": 7700425,
      "close": 273500,
-     "foreignShares": 401888200,
+     "foreignShares": 401857305,
      "foreignPct": 55.2
     },
     {
@@ -5553,7 +5573,7 @@
      "balanceShares": 28333621,
      "balanceMil": 7310074,
      "close": 258000,
-     "foreignShares": 400963152,
+     "foreignShares": 400983703,
      "foreignPct": 55.08
     },
     {
@@ -5563,7 +5583,7 @@
      "balanceShares": 28753458,
      "balanceMil": 7418392,
      "close": 258000,
-     "foreignShares": 400872356,
+     "foreignShares": 400838102,
      "foreignPct": 55.06
     },
     {
@@ -5573,7 +5593,7 @@
      "balanceShares": 28306144,
      "balanceMil": 7458669,
      "close": 263500,
-     "foreignShares": 401265892,
+     "foreignShares": 401274904,
      "foreignPct": 55.12
     },
     {
@@ -5583,7 +5603,7 @@
      "balanceShares": 28218111,
      "balanceMil": 7294382,
      "close": 258500,
-     "foreignShares": 401397425,
+     "foreignShares": 401420504,
      "foreignPct": 55.14
     },
     {
@@ -5593,7 +5613,7 @@
      "balanceShares": 28400603,
      "balanceMil": 7440958,
      "close": 262000,
-     "foreignShares": 401636522,
+     "foreignShares": 401638905,
      "foreignPct": 55.17
     },
     {
@@ -5603,7 +5623,7 @@
      "balanceShares": 28385660,
      "balanceMil": 7280922,
      "close": 256500,
-     "foreignShares": 401487765,
+     "foreignShares": 401493304,
      "foreignPct": 55.15
     },
     {
@@ -5613,7 +5633,7 @@
      "balanceShares": 28740597,
      "balanceMil": 7673739,
      "close": 267000,
-     "foreignShares": 401950003,
+     "foreignShares": 401930106,
      "foreignPct": 55.21
     },
     {
@@ -5623,7 +5643,7 @@
      "balanceShares": 29114824,
      "balanceMil": 7831888,
      "close": 269000,
-     "foreignShares": 402640948,
+     "foreignShares": 402658108,
      "foreignPct": 55.31
     },
     {
@@ -5633,7 +5653,7 @@
      "balanceShares": 29050680,
      "balanceMil": 8076089,
      "close": 278000,
-     "foreignShares": 403903024,
+     "foreignShares": 403895712,
      "foreignPct": 55.48
     },
     {
@@ -5643,7 +5663,7 @@
      "balanceShares": 28951624,
      "balanceMil": 8005124,
      "close": 276500,
-     "foreignShares": 403892945,
+     "foreignShares": 403895712,
      "foreignPct": 55.48
     },
     {
@@ -5653,7 +5673,7 @@
      "balanceShares": 29012231,
      "balanceMil": 7760772,
      "close": 267500,
-     "foreignShares": 403418475,
+     "foreignShares": 403386110,
      "foreignPct": 55.41
     },
     {
@@ -5663,7 +5683,7 @@
      "balanceShares": 28946008,
      "balanceMil": 7612800,
      "close": 263000,
-     "foreignShares": 403096822,
+     "foreignShares": 403094910,
      "foreignPct": 55.37
     },
     {
@@ -5673,7 +5693,7 @@
      "balanceShares": 27047951,
      "balanceMil": 6910751,
      "close": 255500,
-     "foreignShares": 402569151,
+     "foreignShares": 402585308,
      "foreignPct": 55.3
     },
     {
@@ -5683,7 +5703,7 @@
      "balanceShares": 27653748,
      "balanceMil": 6775168,
      "close": 245000,
-     "foreignShares": 400760696,
+     "foreignShares": 400765302,
      "foreignPct": 55.05
     },
     {
@@ -5693,7 +5713,7 @@
      "balanceShares": 27184219,
      "balanceMil": 6823239,
      "close": 251000,
-     "foreignShares": 400904629,
+     "foreignShares": 400910902,
      "foreignPct": 55.07
     },
     {
@@ -5703,7 +5723,7 @@
      "balanceShares": 26974323,
      "balanceMil": 6999837,
      "close": 259500,
-     "foreignShares": 401414270,
+     "foreignShares": 401420504,
      "foreignPct": 55.14
     },
     {
@@ -5713,7 +5733,7 @@
      "balanceShares": 25452689,
      "balanceMil": 6655878,
      "close": 261500,
-     "foreignShares": 401505888,
+     "foreignShares": 401493304,
      "foreignPct": 55.15
     },
     {
@@ -5723,7 +5743,7 @@
      "balanceShares": 25340569,
      "balanceMil": 6588548,
      "close": 260000,
-     "foreignShares": 400843562,
+     "foreignShares": 400838102,
      "foreignPct": 55.06
     },
     {
@@ -5733,7 +5753,7 @@
      "balanceShares": 23576580,
      "balanceMil": 6330312,
      "close": 268500,
-     "foreignShares": 398995275,
+     "foreignShares": 399018096,
      "foreignPct": 54.81
     },
     {
@@ -5743,7 +5763,7 @@
      "balanceShares": 23596457,
      "balanceMil": 6347447,
      "close": 269000,
-     "foreignShares": 399108287,
+     "foreignShares": 399090896,
      "foreignPct": 54.82
     },
     {
@@ -5753,7 +5773,7 @@
      "balanceShares": 26692528,
      "balanceMil": 6833287,
      "close": 256000,
-     "foreignShares": 400806546,
+     "foreignShares": 400838102,
      "foreignPct": 55.06
     },
     {
@@ -5763,7 +5783,7 @@
      "balanceShares": 25800019,
      "balanceMil": 6720905,
      "close": 260500,
-     "foreignShares": 401317583,
+     "foreignShares": 401347704,
      "foreignPct": 55.13
     },
     {
@@ -5773,7 +5793,7 @@
      "balanceShares": 25525059,
      "balanceMil": 6700328,
      "close": 262500,
-     "foreignShares": 401712531,
+     "foreignShares": 401711705,
      "foreignPct": 55.18
     },
     {
@@ -5783,7 +5803,7 @@
      "balanceShares": 25799111,
      "balanceMil": 6849664,
      "close": 265500,
-     "foreignShares": 401583302,
+     "foreignShares": 401566105,
      "foreignPct": 55.16
     },
     {
@@ -5793,7 +5813,7 @@
      "balanceShares": 26225134,
      "balanceMil": 7172574,
      "close": 273500,
-     "foreignShares": 402979510,
+     "foreignShares": 402949309,
      "foreignPct": 55.35
     },
     {
@@ -5803,7 +5823,7 @@
      "balanceShares": 26169383,
      "balanceMil": 7248919,
      "close": 277000,
-     "foreignShares": 403606378,
+     "foreignShares": 403604511,
      "foreignPct": 55.44
     },
     {
@@ -5813,7 +5833,7 @@
      "balanceShares": 26330565,
      "balanceMil": 7583203,
      "close": 288000,
-     "foreignShares": 405006867,
+     "foreignShares": 404987716,
      "foreignPct": 55.63
     },
     {
@@ -5823,7 +5843,7 @@
      "balanceShares": 26637029,
      "balanceMil": 8097657,
      "close": 304000,
-     "foreignShares": 407428484,
+     "foreignShares": 407462924,
      "foreignPct": 55.97
     },
     {
@@ -5833,7 +5853,7 @@
      "balanceShares": 25918808,
      "balanceMil": 7957074,
      "close": 307000,
-     "foreignShares": 408361546,
+     "foreignShares": 408336527,
      "foreignPct": 56.09
     },
     {
@@ -5843,7 +5863,7 @@
      "balanceShares": 26143888,
      "balanceMil": 8588267,
      "close": 328500,
-     "foreignShares": 409191859,
+     "foreignShares": 409210129,
      "foreignPct": 56.21
     },
     {
@@ -5853,7 +5873,7 @@
      "balanceShares": 26006412,
      "balanceMil": 8608122,
      "close": 331000,
-     "foreignShares": 409477022,
+     "foreignShares": 409501330,
      "foreignPct": 56.25
     },
     {
@@ -5863,7 +5883,7 @@
      "balanceShares": 25978888,
      "balanceMil": 9040653,
      "close": 348000,
-     "foreignShares": 410046859,
+     "foreignShares": 410010932,
      "foreignPct": 56.32
     },
     {
@@ -5873,7 +5893,7 @@
      "balanceShares": 25892344,
      "balanceMil": 8635097,
      "close": 333500,
-     "foreignShares": 409568585,
+     "foreignShares": 409574131,
      "foreignPct": 56.26
     },
     {
@@ -5883,7 +5903,7 @@
      "balanceShares": 26391342,
      "balanceMil": 9316144,
      "close": 353000,
-     "foreignShares": 409242607,
+     "foreignShares": 409210129,
      "foreignPct": 56.21
     },
     {
@@ -5893,7 +5913,7 @@
      "balanceShares": 26519421,
      "balanceMil": 9361356,
      "close": 353000,
-     "foreignShares": 408260104,
+     "foreignShares": 408263726,
      "foreignPct": 56.08
     },
     {
@@ -5903,7 +5923,7 @@
      "balanceShares": 25607633,
      "balanceMil": 8988279,
      "close": 351000,
-     "foreignShares": 406921863,
+     "foreignShares": 406953322,
      "foreignPct": 55.9
     },
     {
@@ -5913,7 +5933,7 @@
      "balanceShares": 25703101,
      "balanceMil": 9278819,
      "close": 361000,
-     "foreignShares": 406931793,
+     "foreignShares": 406953322,
      "foreignPct": 55.9
     },
     {
@@ -5923,7 +5943,7 @@
      "balanceShares": 25991353,
      "balanceMil": 9291909,
      "close": 357500,
-     "foreignShares": 406267777,
+     "foreignShares": 406298120,
      "foreignPct": 55.81
     },
     {
@@ -5933,7 +5953,7 @@
      "balanceShares": 26327809,
      "balanceMil": 9385864,
      "close": 356500,
-     "foreignShares": 406553185,
+     "foreignShares": 406589321,
      "foreignPct": 55.85
     },
     {
@@ -5943,7 +5963,7 @@
      "balanceShares": 25722056,
      "balanceMil": 8655472,
      "close": 336500,
-     "foreignShares": 404538401,
+     "foreignShares": 404550914,
      "foreignPct": 55.57
     },
     {
@@ -5953,7 +5973,7 @@
      "balanceShares": 24554450,
      "balanceMil": 8569503,
      "close": 349000,
-     "foreignShares": 403894222,
+     "foreignShares": 403895712,
      "foreignPct": 55.48
     },
     {
@@ -5963,7 +5983,7 @@
      "balanceShares": 25048615,
      "balanceMil": 8704394,
      "close": 347500,
-     "foreignShares": 403667689,
+     "foreignShares": 403677311,
      "foreignPct": 55.45
     },
     {
@@ -5973,7 +5993,7 @@
      "balanceShares": 25215295,
      "balanceMil": 9077506,
      "close": 360000,
-     "foreignShares": 403868023,
+     "foreignShares": 403895712,
      "foreignPct": 55.48
     },
     {
@@ -5983,7 +6003,7 @@
      "balanceShares": 24594124,
      "balanceMil": 9726976,
      "close": 395500,
-     "foreignShares": 405042033,
+     "foreignShares": 405060516,
      "foreignPct": 55.64
     },
     {
@@ -5993,7 +6013,7 @@
      "balanceShares": 24417906,
      "balanceMil": 10450864,
      "close": 428000,
-     "foreignShares": 404827404,
+     "foreignShares": 404842115,
      "foreignPct": 55.61
     },
     {
@@ -6003,7 +6023,7 @@
      "balanceShares": 24480830,
      "balanceMil": 10159544,
      "close": 415000,
-     "foreignShares": 403602701,
+     "foreignShares": 403604511,
      "foreignPct": 55.44
     },
     {
@@ -6013,7 +6033,7 @@
      "balanceShares": 24386542,
      "balanceMil": 10035062,
      "close": 411500,
-     "foreignShares": 403385878,
+     "foreignShares": 403386110,
      "foreignPct": 55.41
     },
     {
@@ -6023,7 +6043,7 @@
      "balanceShares": 24630123,
      "balanceMil": 10406227,
      "close": 422500,
-     "foreignShares": 402591683,
+     "foreignShares": 402585308,
      "foreignPct": 55.3
     },
     {
@@ -6033,8 +6053,8 @@
      "balanceShares": 24612659,
      "balanceMil": 11137228,
      "close": 452500,
-     "foreignShares": 402912770,
-     "foreignPct": 55.35
+     "foreignShares": 402876509,
+     "foreignPct": 55.34
     },
     {
      "d": "20251017",
@@ -6043,7 +6063,7 @@
      "balanceShares": 24409063,
      "balanceMil": 11362419,
      "close": 465500,
-     "foreignShares": 402554243,
+     "foreignShares": 402585308,
      "foreignPct": 55.3
     },
     {
@@ -6053,7 +6073,7 @@
      "balanceShares": 24369878,
      "balanceMil": 11831576,
      "close": 485500,
-     "foreignShares": 402082107,
+     "foreignShares": 402075706,
      "foreignPct": 55.23
     },
     {
@@ -6063,7 +6083,7 @@
      "balanceShares": 24237266,
      "balanceMil": 11609650,
      "close": 479000,
-     "foreignShares": 401336924,
+     "foreignShares": 401347704,
      "foreignPct": 55.13
     },
     {
@@ -6073,7 +6093,7 @@
      "balanceShares": 24366806,
      "balanceMil": 11732617,
      "close": 481500,
-     "foreignShares": 400134615,
+     "foreignShares": 400110100,
      "foreignPct": 54.96
     },
     {
@@ -6083,7 +6103,7 @@
      "balanceShares": 24400298,
      "balanceMil": 11675543,
      "close": 478500,
-     "foreignShares": 399475320,
+     "foreignShares": 399454898,
      "foreignPct": 54.87
     },
     {
@@ -6093,7 +6113,7 @@
      "balanceShares": 24265612,
      "balanceMil": 12375462,
      "close": 510000,
-     "foreignShares": 400331386,
+     "foreignShares": 400328501,
      "foreignPct": 54.99
     },
     {
@@ -6103,7 +6123,7 @@
      "balanceShares": 24287075,
      "balanceMil": 12993585,
      "close": 535000,
-     "foreignShares": 399998844,
+     "foreignShares": 399964499,
      "foreignPct": 54.94
     },
     {
@@ -6113,7 +6133,7 @@
      "balanceShares": 24121122,
      "balanceMil": 12567105,
      "close": 521000,
-     "foreignShares": 397717054,
+     "foreignShares": 397707692,
      "foreignPct": 54.63
     },
     {
@@ -6123,7 +6143,7 @@
      "balanceShares": 24041376,
      "balanceMil": 13415088,
      "close": 558000,
-     "foreignShares": 397465295,
+     "foreignShares": 397489291,
      "foreignPct": 54.6
     },
     {
@@ -6133,7 +6153,7 @@
      "balanceShares": 23721269,
      "balanceMil": 13473681,
      "close": 568000,
-     "foreignShares": 396952611,
+     "foreignShares": 396979690,
      "foreignPct": 54.53
     },
     {
@@ -6143,7 +6163,7 @@
      "balanceShares": 23627336,
      "balanceMil": 13207681,
      "close": 559000,
-     "foreignShares": 395780054,
+     "foreignShares": 395814886,
      "foreignPct": 54.37
     },
     {
@@ -6153,7 +6173,7 @@
      "balanceShares": 23216635,
      "balanceMil": 14394314,
      "close": 620000,
-     "foreignShares": 395514297,
+     "foreignShares": 395523685,
      "foreignPct": 54.33
     },
     {
@@ -6163,7 +6183,7 @@
      "balanceShares": 22847508,
      "balanceMil": 13388640,
      "close": 586000,
-     "foreignShares": 394614330,
+     "foreignShares": 394650082,
      "foreignPct": 54.21
     },
     {
@@ -6173,7 +6193,7 @@
      "balanceShares": 22719906,
      "balanceMil": 13154826,
      "close": 579000,
-     "foreignShares": 392379775,
+     "foreignShares": 392393275,
      "foreignPct": 53.9
     },
     {
@@ -6183,7 +6203,7 @@
      "balanceShares": 24026206,
      "balanceMil": 14247540,
      "close": 593000,
-     "foreignShares": 391411432,
+     "foreignShares": 391446872,
      "foreignPct": 53.77
     },
     {
@@ -6193,7 +6213,7 @@
      "balanceShares": 23846696,
      "balanceMil": 13831084,
      "close": 580000,
-     "foreignShares": 390970078,
+     "foreignShares": 390937270,
      "foreignPct": 53.7
     },
     {
@@ -6203,7 +6223,7 @@
      "balanceShares": 24105266,
      "balanceMil": 14607791,
      "close": 606000,
-     "foreignShares": 390725266,
+     "foreignShares": 390718869,
      "foreignPct": 53.67
     },
     {
@@ -6213,7 +6233,7 @@
      "balanceShares": 23502843,
      "balanceMil": 14548260,
      "close": 619000,
-     "foreignShares": 390018719,
+     "foreignShares": 389990867,
      "foreignPct": 53.57
     },
     {
@@ -6223,7 +6243,7 @@
      "balanceShares": 23355305,
      "balanceMil": 14410223,
      "close": 617000,
-     "foreignShares": 392731036,
+     "foreignShares": 392757276,
      "foreignPct": 53.95
     },
     {
@@ -6233,7 +6253,7 @@
      "balanceShares": 23072649,
      "balanceMil": 14120461,
      "close": 612000,
-     "foreignShares": 393116312,
+     "foreignShares": 393121277,
      "foreignPct": 54
     },
     {
@@ -6243,7 +6263,7 @@
      "balanceShares": 20973131,
      "balanceMil": 11744953,
      "close": 560000,
-     "foreignShares": 390698703,
+     "foreignShares": 390718869,
      "foreignPct": 53.67
     },
     {
@@ -6253,7 +6273,7 @@
      "balanceShares": 20926928,
      "balanceMil": 12681718,
      "close": 606000,
-     "foreignShares": 391358403,
+     "foreignShares": 391374071,
      "foreignPct": 53.76
     },
     {
@@ -6263,7 +6283,7 @@
      "balanceShares": 20673716,
      "balanceMil": 11784018,
      "close": 570000,
-     "foreignShares": 390421302,
+     "foreignShares": 390427668,
      "foreignPct": 53.63
     },
     {
@@ -6273,7 +6293,7 @@
      "balanceShares": 20831936,
      "balanceMil": 11707548,
      "close": 562000,
-     "foreignShares": 389196339,
+     "foreignShares": 389190064,
      "foreignPct": 53.46
     },
     {
@@ -6283,7 +6303,7 @@
      "balanceShares": 21100561,
      "balanceMil": 12048420,
      "close": 571000,
-     "foreignShares": 388441097,
+     "foreignShares": 388462062,
      "foreignPct": 53.36
     },
     {
@@ -6293,7 +6313,7 @@
      "balanceShares": 21050533,
      "balanceMil": 10967328,
      "close": 521000,
-     "foreignShares": 390130978,
+     "foreignShares": 390136467,
      "foreignPct": 53.59
     },
     {
@@ -6303,7 +6323,7 @@
      "balanceShares": 21251690,
      "balanceMil": 11050879,
      "close": 520000,
-     "foreignShares": 389181453,
+     "foreignShares": 389190064,
      "foreignPct": 53.46
     },
     {
@@ -6313,7 +6333,7 @@
      "balanceShares": 20519714,
      "balanceMil": 10649732,
      "close": 519000,
-     "foreignShares": 388985759,
+     "foreignShares": 388971664,
      "foreignPct": 53.43
     },
     {
@@ -6323,7 +6343,7 @@
      "balanceShares": 19857353,
      "balanceMil": 10405253,
      "close": 524000,
-     "foreignShares": 388309386,
+     "foreignShares": 388316461,
      "foreignPct": 53.34
     },
     {
@@ -6333,7 +6353,7 @@
      "balanceShares": 17732201,
      "balanceMil": 9646317,
      "close": 544000,
-     "foreignShares": 388690123,
+     "foreignShares": 388680463,
      "foreignPct": 53.39
     },
     {
@@ -6343,7 +6363,7 @@
      "balanceShares": 16470551,
      "balanceMil": 8729392,
      "close": 530000,
-     "foreignShares": 387366003,
+     "foreignShares": 387370058,
      "foreignPct": 53.21
     },
     {
@@ -6353,7 +6373,7 @@
      "balanceShares": 18134471,
      "balanceMil": 9756345,
      "close": 538000,
-     "foreignShares": 388061089,
+     "foreignShares": 388025261,
      "foreignPct": 53.3
     },
     {
@@ -6363,7 +6383,7 @@
      "balanceShares": 19265306,
      "balanceMil": 10750041,
      "close": 558000,
-     "foreignShares": 388670266,
+     "foreignShares": 388680463,
      "foreignPct": 53.39
     },
     {
@@ -6373,7 +6393,7 @@
      "balanceShares": 19259139,
      "balanceMil": 10631045,
      "close": 552000,
-     "foreignShares": 388036538,
+     "foreignShares": 388025261,
      "foreignPct": 53.3
     },
     {
@@ -6383,7 +6403,7 @@
      "balanceShares": 19316622,
      "balanceMil": 10469609,
      "close": 542000,
-     "foreignShares": 387126678,
+     "foreignShares": 387151658,
      "foreignPct": 53.18
     },
     {
@@ -6393,7 +6413,7 @@
      "balanceShares": 19468077,
      "balanceMil": 10590634,
      "close": 544000,
-     "foreignShares": 386894042,
+     "foreignShares": 386860457,
      "foreignPct": 53.14
     },
     {
@@ -6403,7 +6423,7 @@
      "balanceShares": 19257114,
      "balanceMil": 11111355,
      "close": 577000,
-     "foreignShares": 387543957,
+     "foreignShares": 387515659,
      "foreignPct": 53.23
     },
     {
@@ -6413,7 +6433,7 @@
      "balanceShares": 18643213,
      "balanceMil": 10552059,
      "close": 566000,
-     "foreignShares": 387603109,
+     "foreignShares": 387588459,
      "foreignPct": 53.24
     },
     {
@@ -6423,7 +6443,7 @@
      "balanceShares": 18639865,
      "balanceMil": 10941601,
      "close": 587000,
-     "foreignShares": 388860920,
+     "foreignShares": 388826063,
      "foreignPct": 53.41
     },
     {
@@ -6433,7 +6453,7 @@
      "balanceShares": 18498509,
      "balanceMil": 10451658,
      "close": 565000,
-     "foreignShares": 388601387,
+     "foreignShares": 388607662,
      "foreignPct": 53.38
     },
     {
@@ -6443,7 +6463,7 @@
      "balanceShares": 18766200,
      "balanceMil": 10715500,
      "close": 571000,
-     "foreignShares": 388627938,
+     "foreignShares": 388607662,
      "foreignPct": 53.38
     },
     {
@@ -6453,7 +6473,7 @@
      "balanceShares": 18856894,
      "balanceMil": 10446719,
      "close": 554000,
-     "foreignShares": 388841027,
+     "foreignShares": 388826063,
      "foreignPct": 53.41
     },
     {
@@ -6463,7 +6483,7 @@
      "balanceShares": 19148115,
      "balanceMil": 10148501,
      "close": 530000,
-     "foreignShares": 388146621,
+     "foreignShares": 388170861,
      "foreignPct": 53.32
     },
     {
@@ -6473,7 +6493,7 @@
      "balanceShares": 19253216,
      "balanceMil": 10608522,
      "close": 551000,
-     "foreignShares": 388312602,
+     "foreignShares": 388316461,
      "foreignPct": 53.34
     },
     {
@@ -6483,7 +6503,7 @@
      "balanceShares": 19073489,
      "balanceMil": 10528566,
      "close": 552000,
-     "foreignShares": 388524982,
+     "foreignShares": 388534862,
      "foreignPct": 53.37
     },
     {
@@ -6493,7 +6513,7 @@
      "balanceShares": 19066216,
      "balanceMil": 10429220,
      "close": 547000,
-     "foreignShares": 388260957,
+     "foreignShares": 388243661,
      "foreignPct": 53.33
     },
     {
@@ -6503,7 +6523,7 @@
      "balanceShares": 19469641,
      "balanceMil": 11292392,
      "close": 580000,
-     "foreignShares": 388889314,
+     "foreignShares": 388898863,
      "foreignPct": 53.42
     },
     {
@@ -6513,7 +6533,7 @@
      "balanceShares": 19358726,
      "balanceMil": 11305496,
      "close": 584000,
-     "foreignShares": 389050228,
+     "foreignShares": 389044464,
      "foreignPct": 53.44
     },
     {
@@ -6523,7 +6543,7 @@
      "balanceShares": 19218019,
      "balanceMil": 11300195,
      "close": 588000,
-     "foreignShares": 389771995,
+     "foreignShares": 389772466,
      "foreignPct": 53.54
     },
     {
@@ -6533,7 +6553,7 @@
      "balanceShares": 19219288,
      "balanceMil": 11512354,
      "close": 599000,
-     "foreignShares": 391214569,
+     "foreignShares": 391228471,
      "foreignPct": 53.74
     },
     {
@@ -6543,7 +6563,7 @@
      "balanceShares": 19116549,
      "balanceMil": 12234591,
      "close": 640000,
-     "foreignShares": 391783117,
+     "foreignShares": 391810873,
      "foreignPct": 53.82
     },
     {
@@ -6553,7 +6573,7 @@
      "balanceShares": 18633217,
      "balanceMil": 12130224,
      "close": 651000,
-     "foreignShares": 391915145,
+     "foreignShares": 391883673,
      "foreignPct": 53.83
     },
     {
@@ -6573,7 +6593,7 @@
      "balanceShares": 18380997,
      "balanceMil": 12443935,
      "close": 677000,
-     "foreignShares": 391757150,
+     "foreignShares": 391738073,
      "foreignPct": 53.81
     },
     {
@@ -6583,7 +6603,7 @@
      "balanceShares": 17979950,
      "balanceMil": 12514045,
      "close": 696000,
-     "foreignShares": 391838608,
+     "foreignShares": 391810873,
      "foreignPct": 53.82
     },
     {
@@ -6593,7 +6613,7 @@
      "balanceShares": 17977665,
      "balanceMil": 13051785,
      "close": 726000,
-     "foreignShares": 392267881,
+     "foreignShares": 392247674,
      "foreignPct": 53.88
     },
     {
@@ -6603,7 +6623,7 @@
      "balanceShares": 17633220,
      "balanceMil": 13083849,
      "close": 742000,
-     "foreignShares": 392994432,
+     "foreignShares": 392975677,
      "foreignPct": 53.98
     },
     {
@@ -6613,7 +6633,7 @@
      "balanceShares": 17783090,
      "balanceMil": 13444016,
      "close": 756000,
-     "foreignShares": 392892972,
+     "foreignShares": 392902876,
      "foreignPct": 53.97
     },
     {
@@ -6623,7 +6643,7 @@
      "balanceShares": 16980059,
      "balanceMil": 12633164,
      "close": 744000,
-     "foreignShares": 391644014,
+     "foreignShares": 391665272,
      "foreignPct": 53.8
     },
     {
@@ -6633,7 +6653,7 @@
      "balanceShares": 15893279,
      "balanceMil": 11904066,
      "close": 749000,
-     "foreignShares": 391572217,
+     "foreignShares": 391592472,
      "foreignPct": 53.79
     },
     {
@@ -6643,7 +6663,7 @@
      "balanceShares": 16260084,
      "balanceMil": 11999942,
      "close": 738000,
-     "foreignShares": 390498057,
+     "foreignShares": 390500469,
      "foreignPct": 53.64
     },
     {
@@ -6653,7 +6673,7 @@
      "balanceShares": 16354985,
      "balanceMil": 12135399,
      "close": 742000,
-     "foreignShares": 390066864,
+     "foreignShares": 390063667,
      "foreignPct": 53.58
     },
     {
@@ -6663,7 +6683,7 @@
      "balanceShares": 16426841,
      "balanceMil": 12303704,
      "close": 749000,
-     "foreignShares": 389797506,
+     "foreignShares": 389772466,
      "foreignPct": 53.54
     },
     {
@@ -6673,7 +6693,7 @@
      "balanceShares": 16434690,
      "balanceMil": 12424626,
      "close": 756000,
-     "foreignShares": 389488090,
+     "foreignShares": 389481265,
      "foreignPct": 53.5
     },
     {
@@ -6683,7 +6703,7 @@
      "balanceShares": 16461517,
      "balanceMil": 12576599,
      "close": 764000,
-     "foreignShares": 389455836,
+     "foreignShares": 389481265,
      "foreignPct": 53.5
     },
     {
@@ -6693,7 +6713,7 @@
      "balanceShares": 16559730,
      "balanceMil": 12303879,
      "close": 743000,
-     "foreignShares": 389222635,
+     "foreignShares": 389190064,
      "foreignPct": 53.46
     },
     {
@@ -6703,7 +6723,7 @@
      "balanceShares": 16307021,
      "balanceMil": 12067196,
      "close": 740000,
-     "foreignShares": 389820946,
+     "foreignShares": 389845266,
      "foreignPct": 53.55
     },
     {
@@ -6713,7 +6733,7 @@
      "balanceShares": 16389624,
      "balanceMil": 12374166,
      "close": 755000,
-     "foreignShares": 389906587,
+     "foreignShares": 389918067,
      "foreignPct": 53.56
     },
     {
@@ -6723,7 +6743,7 @@
      "balanceShares": 16179709,
      "balanceMil": 12409837,
      "close": 767000,
-     "foreignShares": 389922233,
+     "foreignShares": 389918067,
      "foreignPct": 53.56
     },
     {
@@ -6733,7 +6753,7 @@
      "balanceShares": 16321080,
      "balanceMil": 12012315,
      "close": 736000,
-     "foreignShares": 389547147,
+     "foreignShares": 389554066,
      "foreignPct": 53.51
     },
     {
@@ -6743,7 +6763,7 @@
      "balanceShares": 16374666,
      "balanceMil": 13099733,
      "close": 800000,
-     "foreignShares": 390243616,
+     "foreignShares": 390209268,
      "foreignPct": 53.6
     },
     {
@@ -6753,7 +6773,7 @@
      "balanceShares": 15248434,
      "balanceMil": 12823933,
      "close": 841000,
-     "foreignShares": 389929160,
+     "foreignShares": 389918067,
      "foreignPct": 53.56
     },
     {
@@ -6763,7 +6783,7 @@
      "balanceShares": 15271493,
      "balanceMil": 13148755,
      "close": 861000,
-     "foreignShares": 388979556,
+     "foreignShares": 388971664,
      "foreignPct": 53.43
     },
     {
@@ -6773,7 +6793,7 @@
      "balanceShares": 15227261,
      "balanceMil": 13841580,
      "close": 909000,
-     "foreignShares": 389287437,
+     "foreignShares": 389262865,
      "foreignPct": 53.47
     },
     {
@@ -6783,7 +6803,7 @@
      "balanceShares": 15565080,
      "balanceMil": 12919016,
      "close": 830000,
-     "foreignShares": 387371991,
+     "foreignShares": 387370058,
      "foreignPct": 53.21
     },
     {
@@ -6793,7 +6813,7 @@
      "balanceShares": 15729174,
      "balanceMil": 14266361,
      "close": 907000,
-     "foreignShares": 386868236,
+     "foreignShares": 386860457,
      "foreignPct": 53.14
     },
     {
@@ -6803,7 +6823,7 @@
      "balanceShares": 15435220,
      "balanceMil": 13891698,
      "close": 900000,
-     "foreignShares": 385912637,
+     "foreignShares": 385914054,
      "foreignPct": 53.01
     },
     {
@@ -6813,7 +6833,7 @@
      "balanceShares": 15283829,
      "balanceMil": 12868984,
      "close": 842000,
-     "foreignShares": 384199577,
+     "foreignShares": 384166848,
      "foreignPct": 52.77
     },
     {
@@ -6823,7 +6843,7 @@
      "balanceShares": 16005588,
      "balanceMil": 13428688,
      "close": 839000,
-     "foreignShares": 383011535,
+     "foreignShares": 383002044,
      "foreignPct": 52.61
     },
     {
@@ -6833,7 +6853,7 @@
      "balanceShares": 15931750,
      "balanceMil": 14131462,
      "close": 887000,
-     "foreignShares": 384798604,
+     "foreignShares": 384822050,
      "foreignPct": 52.86
     },
     {
@@ -6843,7 +6863,7 @@
      "balanceShares": 15916550,
      "balanceMil": 13942898,
      "close": 876000,
-     "foreignShares": 384927203,
+     "foreignShares": 384894850,
      "foreignPct": 52.87
     },
     {
@@ -6853,7 +6873,7 @@
      "balanceShares": 15892734,
      "balanceMil": 13667751,
      "close": 860000,
-     "foreignShares": 384607438,
+     "foreignShares": 384603649,
      "foreignPct": 52.83
     },
     {
@@ -6863,7 +6883,7 @@
      "balanceShares": 15970939,
      "balanceMil": 14182194,
      "close": 888000,
-     "foreignShares": 386702242,
+     "foreignShares": 386714856,
      "foreignPct": 53.12
     },
     {
@@ -6873,7 +6893,7 @@
      "balanceShares": 15805768,
      "balanceMil": 13909076,
      "close": 880000,
-     "foreignShares": 386803952,
+     "foreignShares": 386787657,
      "foreignPct": 53.13
     },
     {
@@ -6883,7 +6903,7 @@
      "balanceShares": 15952484,
      "balanceMil": 14261521,
      "close": 894000,
-     "foreignShares": 386819403,
+     "foreignShares": 386787657,
      "foreignPct": 53.13
     },
     {
@@ -6893,8 +6913,8 @@
      "balanceShares": 15988145,
      "balanceMil": 15172750,
      "close": 949000,
-     "foreignShares": 389242434,
-     "foreignPct": 53.47
+     "foreignShares": 397634892,
+     "foreignPct": 54.62
     },
     {
      "d": "20260223",
@@ -6903,7 +6923,7 @@
      "balanceShares": 15561628,
      "balanceMil": 14799108,
      "close": 951000,
-     "foreignShares": 389167353,
+     "foreignShares": 389135491,
      "foreignPct": 54.6
     },
     {
@@ -6913,7 +6933,7 @@
      "balanceShares": 15539757,
      "balanceMil": 15617456,
      "close": 1005000,
-     "foreignShares": 389387854,
+     "foreignShares": 389420572,
      "foreignPct": 54.64
     },
     {
@@ -6923,7 +6943,7 @@
      "balanceShares": 14214234,
      "balanceMil": 14470090,
      "close": 1018000,
-     "foreignShares": 388289379,
+     "foreignShares": 388280248,
      "foreignPct": 54.48
     },
     {
@@ -6933,7 +6953,7 @@
      "balanceShares": 13997230,
      "balanceMil": 15382956,
      "close": 1099000,
-     "foreignShares": 387449280,
+     "foreignShares": 387425006,
      "foreignPct": 54.36
     },
     {
@@ -6943,7 +6963,7 @@
      "balanceShares": 12534576,
      "balanceMil": 13299185,
      "close": 1061000,
-     "foreignShares": 384980657,
+     "foreignShares": 385001818,
      "foreignPct": 54.02
     },
     {
@@ -6953,7 +6973,7 @@
      "balanceShares": 12754407,
      "balanceMil": 11976388,
      "close": 939000,
-     "foreignShares": 383907364,
+     "foreignShares": 383932764,
      "foreignPct": 53.87
     },
     {
@@ -6963,7 +6983,7 @@
      "balanceShares": 13328592,
      "balanceMil": 11315975,
      "close": 849000,
-     "foreignShares": 383360387,
+     "foreignShares": 383362602,
      "foreignPct": 53.79
     },
     {
@@ -6973,7 +6993,7 @@
      "balanceShares": 13433141,
      "balanceMil": 12640586,
      "close": 941000,
-     "foreignShares": 383721760,
+     "foreignShares": 383718953,
      "foreignPct": 53.84
     },
     {
@@ -6983,7 +7003,7 @@
      "balanceShares": 13991767,
      "balanceMil": 12928393,
      "close": 924000,
-     "foreignShares": 383163852,
+     "foreignShares": 383148791,
      "foreignPct": 53.76
     },
     {
@@ -6993,7 +7013,7 @@
      "balanceShares": 14446527,
      "balanceMil": 12077297,
      "close": 836000,
-     "foreignShares": 381594453,
+     "foreignShares": 381580846,
      "foreignPct": 53.54
     },
     {
@@ -7003,7 +7023,7 @@
      "balanceShares": 15012912,
      "balanceMil": 14082111,
      "close": 938000,
-     "foreignShares": 382642422,
+     "foreignShares": 382649900,
      "foreignPct": 53.69
     },
     {
@@ -7013,7 +7033,7 @@
      "balanceShares": 15019202,
      "balanceMil": 14343338,
      "close": 955000,
-     "foreignShares": 382696797,
+     "foreignShares": 382721170,
      "foreignPct": 53.7
     },
     {
@@ -7023,7 +7043,7 @@
      "balanceShares": 15210207,
      "balanceMil": 14145493,
      "close": 930000,
-     "foreignShares": 381968625,
+     "foreignShares": 381937197,
      "foreignPct": 53.59
     },
     {
@@ -7033,7 +7053,7 @@
      "balanceShares": 15445209,
      "balanceMil": 14055140,
      "close": 910000,
-     "foreignShares": 381379128,
+     "foreignShares": 381367036,
      "foreignPct": 53.51
     },
     {
@@ -7043,7 +7063,7 @@
      "balanceShares": 15289243,
      "balanceMil": 14891723,
      "close": 974000,
-     "foreignShares": 381775208,
+     "foreignShares": 381794657,
      "foreignPct": 53.57
     },
     {
@@ -7053,7 +7073,7 @@
      "balanceShares": 15212382,
      "balanceMil": 14756011,
      "close": 970000,
-     "foreignShares": 381345612,
+     "foreignShares": 381367036,
      "foreignPct": 53.51
     },
     {
@@ -7063,7 +7083,7 @@
      "balanceShares": 15107538,
      "balanceMil": 15953560,
      "close": 1056000,
-     "foreignShares": 382248097,
+     "foreignShares": 382222278,
      "foreignPct": 53.63
     },
     {
@@ -7073,7 +7093,7 @@
      "balanceShares": 14660648,
      "balanceMil": 14851236,
      "close": 1013000,
-     "foreignShares": 381633310,
+     "foreignShares": 381652116,
      "foreignPct": 53.55
     },
     {
@@ -7083,7 +7103,7 @@
      "balanceShares": 14759856,
      "balanceMil": 14863175,
      "close": 1007000,
-     "foreignShares": 380933621,
+     "foreignShares": 380939414,
      "foreignPct": 53.45
     },
     {
@@ -7093,7 +7113,7 @@
      "balanceShares": 15133355,
      "balanceMil": 14119420,
      "close": 933000,
-     "foreignShares": 380809306,
+     "foreignShares": 380796874,
      "foreignPct": 53.43
     },
     {
@@ -7103,7 +7123,7 @@
      "balanceShares": 14647300,
      "balanceMil": 14442238,
      "close": 986000,
-     "foreignShares": 380657689,
+     "foreignShares": 380654333,
      "foreignPct": 53.41
     },
     {
@@ -7113,7 +7133,7 @@
      "balanceShares": 14882114,
      "balanceMil": 14807703,
      "close": 995000,
-     "foreignShares": 380257775,
+     "foreignShares": 380226712,
      "foreignPct": 53.35
     },
     {
@@ -7123,7 +7143,7 @@
      "balanceShares": 14979670,
      "balanceMil": 13976032,
      "close": 933000,
-     "foreignShares": 379224660,
+     "foreignShares": 379228928,
      "foreignPct": 53.21
     },
     {
@@ -7133,7 +7153,7 @@
      "balanceShares": 15230334,
      "balanceMil": 14042368,
      "close": 922000,
-     "foreignShares": 378090063,
+     "foreignShares": 378088605,
      "foreignPct": 53.05
     },
     {
@@ -7143,7 +7163,7 @@
      "balanceShares": 16758510,
      "balanceMil": 14630179,
      "close": 873000,
-     "foreignShares": 376842409,
+     "foreignShares": 376877011,
      "foreignPct": 52.88
     },
     {
@@ -7153,7 +7173,7 @@
      "balanceShares": 16850323,
      "balanceMil": 13598211,
      "close": 807000,
-     "foreignShares": 375520472,
+     "foreignShares": 375522876,
      "foreignPct": 52.69
     },
     {
@@ -7163,7 +7183,7 @@
      "balanceShares": 16590216,
      "balanceMil": 14815063,
      "close": 893000,
-     "foreignShares": 375002286,
+     "foreignShares": 375023984,
      "foreignPct": 52.62
     },
     {
@@ -7173,7 +7193,7 @@
      "balanceShares": 16528669,
      "balanceMil": 13718795,
      "close": 830000,
-     "foreignShares": 374647986,
+     "foreignShares": 374667633,
      "foreignPct": 52.57
     },
     {
@@ -7183,7 +7203,7 @@
      "balanceShares": 17179365,
      "balanceMil": 15049124,
      "close": 876000,
-     "foreignShares": 375030384,
+     "foreignShares": 375023984,
      "foreignPct": 52.62
     },
     {
@@ -7193,7 +7213,7 @@
      "balanceShares": 17098920,
      "balanceMil": 15149643,
      "close": 886000,
-     "foreignShares": 374972250,
+     "foreignShares": 374952714,
      "foreignPct": 52.61
     },
     {
@@ -7203,7 +7223,7 @@
      "balanceShares": 16902273,
      "balanceMil": 15482482,
      "close": 916000,
-     "foreignShares": 375671796,
+     "foreignShares": 375665417,
      "foreignPct": 52.71
     },
     {
@@ -7213,7 +7233,7 @@
      "balanceShares": 16785066,
      "balanceMil": 17338973,
      "close": 1033000,
-     "foreignShares": 377049585,
+     "foreignShares": 377019551,
      "foreignPct": 52.9
     },
     {
@@ -7223,7 +7243,7 @@
      "balanceShares": 16513539,
      "balanceMil": 16480512,
      "close": 998000,
-     "foreignShares": 376208458,
+     "foreignShares": 376235578,
      "foreignPct": 52.79
     },
     {
@@ -7233,7 +7253,7 @@
      "balanceShares": 16350825,
      "balanceMil": 16792297,
      "close": 1027000,
-     "foreignShares": 377087343,
+     "foreignShares": 377090821,
      "foreignPct": 52.91
     },
     {
@@ -7243,7 +7263,7 @@
      "balanceShares": 16110066,
      "balanceMil": 16754469,
      "close": 1040000,
-     "foreignShares": 377604021,
+     "foreignShares": 377589713,
      "foreignPct": 52.98
     },
     {
@@ -7253,7 +7273,7 @@
      "balanceShares": 15827101,
      "balanceMil": 17457292,
      "close": 1103000,
-     "foreignShares": 378277190,
+     "foreignShares": 378302415,
      "foreignPct": 53.08
     },
     {
@@ -7263,7 +7283,7 @@
      "balanceShares": 15799357,
      "balanceMil": 17948070,
      "close": 1136000,
-     "foreignShares": 377990424,
+     "foreignShares": 378017334,
      "foreignPct": 53.04
     },
     {
@@ -7273,7 +7293,7 @@
      "balanceShares": 15979337,
      "balanceMil": 18456134,
      "close": 1155000,
-     "foreignShares": 377540876,
+     "foreignShares": 377518443,
      "foreignPct": 52.97
     },
     {
@@ -7283,7 +7303,7 @@
      "balanceShares": 14727092,
      "balanceMil": 16612160,
      "close": 1128000,
-     "foreignShares": 376811186,
+     "foreignShares": 376805740,
      "foreignPct": 52.87
     },
     {
@@ -7293,7 +7313,7 @@
      "balanceShares": 14682718,
      "balanceMil": 17120049,
      "close": 1166000,
-     "foreignShares": 377420572,
+     "foreignShares": 377447173,
      "foreignPct": 52.96
     },
     {
@@ -7303,7 +7323,7 @@
      "balanceShares": 15068655,
      "balanceMil": 18444034,
      "close": 1224000,
-     "foreignShares": 378163130,
+     "foreignShares": 378159875,
      "foreignPct": 53.06
     },
     {
@@ -7313,7 +7333,7 @@
      "balanceShares": 15257453,
      "balanceMil": 18659865,
      "close": 1223000,
-     "foreignShares": 378100375,
+     "foreignShares": 378088605,
      "foreignPct": 53.05
     },
     {
@@ -7323,7 +7343,7 @@
      "balanceShares": 15437156,
      "balanceMil": 18910516,
      "close": 1225000,
-     "foreignShares": 378551867,
+     "foreignShares": 378587496,
      "foreignPct": 53.12
     },
     {
@@ -7333,7 +7353,7 @@
      "balanceShares": 15383893,
      "balanceMil": 18799117,
      "close": 1222000,
-     "foreignShares": 377782477,
+     "foreignShares": 377803524,
      "foreignPct": 53.01
     },
     {
@@ -7343,7 +7363,7 @@
      "balanceShares": 15682060,
      "balanceMil": 20261222,
      "close": 1292000,
-     "foreignShares": 378447247,
+     "foreignShares": 378444956,
      "foreignPct": 53.1
     },
     {
@@ -7353,7 +7373,7 @@
      "balanceShares": 15838535,
      "balanceMil": 20590096,
      "close": 1300000,
-     "foreignShares": 377997083,
+     "foreignShares": 378017334,
      "foreignPct": 53.04
     },
     {
@@ -7363,7 +7383,7 @@
      "balanceShares": 15675111,
      "balanceMil": 20267919,
      "close": 1293000,
-     "foreignShares": 377146849,
+     "foreignShares": 377162092,
      "foreignPct": 52.92
     },
     {
@@ -7373,7 +7393,7 @@
      "balanceShares": 15068798,
      "balanceMil": 19378474,
      "close": 1286000,
-     "foreignShares": 377730913,
+     "foreignShares": 377732253,
      "foreignPct": 53
     },
     {
@@ -7383,7 +7403,7 @@
      "balanceShares": 14966040,
      "balanceMil": 21655860,
      "close": 1447000,
-     "foreignShares": 379307011,
+     "foreignShares": 379300199,
      "foreignPct": 53.22
     },
     {
@@ -7393,7 +7413,7 @@
      "balanceShares": 14301849,
      "balanceMil": 22897260,
      "close": 1601000,
-     "foreignShares": 379370167,
+     "foreignShares": 379371469,
      "foreignPct": 53.23
     },
     {
@@ -7403,7 +7423,7 @@
      "balanceShares": 13088850,
      "balanceMil": 21648958,
      "close": 1654000,
-     "foreignShares": 377786594,
+     "foreignShares": 377803524,
      "foreignPct": 53.01
     },
     {
@@ -7413,7 +7433,7 @@
      "balanceShares": 12846648,
      "balanceMil": 21659449,
      "close": 1686000,
-     "foreignShares": 376799722,
+     "foreignShares": 376805740,
      "foreignPct": 52.87
     },
     {
@@ -7423,7 +7443,7 @@
      "balanceShares": 12196850,
      "balanceMil": 22930078,
      "close": 1880000,
-     "foreignShares": 376150702,
+     "foreignShares": 376164308,
      "foreignPct": 52.78
     },
     {
@@ -7433,7 +7453,7 @@
      "balanceShares": 11983842,
      "balanceMil": 21990350,
      "close": 1835000,
-     "foreignShares": 374216478,
+     "foreignShares": 374240012,
      "foreignPct": 52.51
     },
     {
@@ -7443,7 +7463,7 @@
      "balanceShares": 11784532,
      "balanceMil": 23286235,
      "close": 1976000,
-     "foreignShares": 373222603,
+     "foreignShares": 373242229,
      "foreignPct": 52.37
     },
     {
@@ -7453,7 +7473,7 @@
      "balanceShares": 11647391,
      "balanceMil": 22945360,
      "close": 1970000,
-     "foreignShares": 373159473,
+     "foreignShares": 373170958,
      "foreignPct": 52.36
     },
     {
@@ -7463,7 +7483,7 @@
      "balanceShares": 11561582,
      "balanceMil": 21030518,
      "close": 1819000,
-     "foreignShares": 371628936,
+     "foreignShares": 371603013,
      "foreignPct": 52.14
     },
     {
@@ -7473,7 +7493,7 @@
      "balanceShares": 11822037,
      "balanceMil": 21752548,
      "close": 1840000,
-     "foreignShares": 371018686,
+     "foreignShares": 371032851,
      "foreignPct": 52.06
     },
     {
@@ -7483,7 +7503,7 @@
      "balanceShares": 11801618,
      "balanceMil": 20593823,
      "close": 1745000,
-     "foreignShares": 369712382,
+     "foreignShares": 369678717,
      "foreignPct": 51.87
     },
     {
@@ -7493,7 +7513,7 @@
      "balanceShares": 11806877,
      "balanceMil": 20603000,
      "close": 1745000,
-     "foreignShares": 368913597,
+     "foreignShares": 368894744,
      "foreignPct": 51.76
     },
     {
@@ -7503,7 +7523,7 @@
      "balanceShares": 11935743,
      "balanceMil": 23155341,
      "close": 1940000,
-     "foreignShares": 368147159,
+     "foreignShares": 368182042,
      "foreignPct": 51.66
     },
     {
@@ -7513,7 +7533,7 @@
      "balanceShares": 11889776,
      "balanceMil": 23078055,
      "close": 1941000,
-     "foreignShares": 367852558,
+     "foreignShares": 367825691,
      "foreignPct": 51.61
     },
     {
@@ -7523,7 +7543,7 @@
      "balanceShares": 11684372,
      "balanceMil": 23976331,
      "close": 2052000,
-     "foreignShares": 367876138,
+     "foreignShares": 367896961,
      "foreignPct": 51.62
     },
     {
@@ -7533,7 +7553,7 @@
      "balanceShares": 11330399,
      "balanceMil": 25414085,
      "close": 2243000,
-     "foreignShares": 368092443,
+     "foreignShares": 368110772,
      "foreignPct": 51.65
     },
     {
@@ -7543,7 +7563,7 @@
      "balanceShares": 10762831,
      "balanceMil": 24636120,
      "close": 2289000,
-     "foreignShares": 367039611,
+     "foreignShares": 367041718,
      "foreignPct": 51.5
     },
     {
@@ -7553,7 +7573,7 @@
      "balanceShares": 10495815,
      "balanceMil": 24486736,
      "close": 2333000,
-     "foreignShares": 366620555,
+     "foreignShares": 366614097,
      "foreignPct": 51.44
     },
     {
@@ -7563,7 +7583,7 @@
      "balanceShares": 10536418,
      "balanceMil": 24897556,
      "close": 2363000,
-     "foreignShares": 365935511,
+     "foreignShares": 365901394,
      "foreignPct": 51.34
     },
     {
@@ -7573,7 +7593,7 @@
      "balanceShares": 10539500,
      "balanceMil": 24873220,
      "close": 2360000,
-     "foreignShares": 365639298,
+     "foreignShares": 365616313,
      "foreignPct": 51.3
     },
     {
@@ -7583,7 +7603,7 @@
      "balanceShares": 10666910,
      "balanceMil": 24512559,
      "close": 2298000,
-     "foreignShares": 365407346,
+     "foreignShares": 365402503,
      "foreignPct": 51.27
     },
     {
@@ -7593,7 +7613,7 @@
      "balanceShares": 11431969,
      "balanceMil": 23664176,
      "close": 2070000,
-     "foreignShares": 364643405,
+     "foreignShares": 364618530,
      "foreignPct": 51.16
     },
     {
@@ -7603,7 +7623,7 @@
      "balanceShares": 11234258,
      "balanceMil": 21468667,
      "close": 1911000,
-     "foreignShares": 364555819,
+     "foreignShares": 364547260,
      "foreignPct": 51.15
     },
     {
@@ -7613,7 +7633,7 @@
      "balanceShares": 11631415,
      "balanceMil": 25763584,
      "close": 2215000,
-     "foreignShares": 364098607,
+     "foreignShares": 364119638,
      "foreignPct": 51.09
     },
     {
@@ -7623,7 +7643,7 @@
      "balanceShares": 11456324,
      "balanceMil": 23462552,
      "close": 2048000,
-     "foreignShares": 363859098,
+     "foreignShares": 363834557,
      "foreignPct": 51.05
     },
     {
@@ -7633,7 +7653,7 @@
      "balanceShares": 11469809,
      "balanceMil": 24098069,
      "close": 2101000,
-     "foreignShares": 364214412,
+     "foreignShares": 364190909,
      "foreignPct": 51.1
     },
     {
@@ -7643,7 +7663,7 @@
      "balanceShares": 11494354,
      "balanceMil": 24712861,
      "close": 2150000,
-     "foreignShares": 364854420,
+     "foreignShares": 364832341,
      "foreignPct": 51.19
     },
     {
@@ -7653,7 +7673,7 @@
      "balanceShares": 12048910,
      "balanceMil": 27567906,
      "close": 2288000,
-     "foreignShares": 365120307,
+     "foreignShares": 365117422,
      "foreignPct": 51.23
     },
     {
@@ -7663,7 +7683,7 @@
      "balanceShares": 11781201,
      "balanceMil": 28062821,
      "close": 2382000,
-     "foreignShares": 365555054,
+     "foreignShares": 365545043,
      "foreignPct": 51.29
     },
     {
@@ -7673,7 +7693,7 @@
      "balanceShares": 11150910,
      "balanceMil": 28111444,
      "close": 2521000,
-     "foreignShares": 365591606,
+     "foreignShares": 365616313,
      "foreignPct": 51.3
     },
     {
@@ -7683,7 +7703,7 @@
      "balanceShares": 10823904,
      "balanceMil": 29062182,
      "close": 2685000,
-     "foreignShares": 365670993,
+     "foreignShares": 365687583,
      "foreignPct": 51.31
     },
     {
@@ -7693,7 +7713,7 @@
      "balanceShares": 10648884,
      "balanceMil": 29433515,
      "close": 2764000,
-     "foreignShares": 365255861,
+     "foreignShares": 365259962,
      "foreignPct": 51.25
     },
     {
@@ -7703,7 +7723,7 @@
      "balanceShares": 10774814,
      "balanceMil": 31451682,
      "close": 2919000,
-     "foreignShares": 364522517,
+     "foreignShares": 364547260,
      "foreignPct": 51.15
     },
     {
@@ -7713,7 +7733,7 @@
      "balanceShares": 10630892,
      "balanceMil": 27161929,
      "close": 2555000,
-     "foreignShares": 363385896,
+     "foreignShares": 363406936,
      "foreignPct": 50.99
     },
     {
@@ -7723,7 +7743,7 @@
      "balanceShares": 11156224,
      "balanceMil": 28783058,
      "close": 2580000,
-     "foreignShares": 361908661,
+     "foreignShares": 361910261,
      "foreignPct": 50.78
     },
     {
@@ -7733,7 +7753,7 @@
      "balanceShares": 11407140,
      "balanceMil": 33274627,
      "close": 2917000,
-     "foreignShares": 361853016,
+     "foreignShares": 361838991,
      "foreignPct": 50.77
     },
     {
@@ -7743,7 +7763,7 @@
      "balanceShares": 11874847,
      "balanceMil": 31741466,
      "close": 2673000,
-     "foreignShares": 360857855,
+     "foreignShares": 360841207,
      "foreignPct": 50.63
     },
     {
@@ -7753,7 +7773,7 @@
      "balanceShares": 12365045,
      "balanceMil": 32495338,
      "close": 2628000,
-     "foreignShares": 359481989,
+     "foreignShares": 359487073,
      "foreignPct": 50.44
     },
     {
@@ -7763,7 +7783,7 @@
      "balanceShares": 12829115,
      "balanceMil": 33997155,
      "close": 2650000,
-     "foreignShares": 358943321,
+     "foreignShares": 358916911,
      "foreignPct": 50.36
     },
     {
@@ -7773,7 +7793,7 @@
      "balanceShares": 13690049,
      "balanceMil": 35046525,
      "close": 2560000,
-     "foreignShares": 359196577,
+     "foreignShares": 359201992,
      "foreignPct": 50.4
     },
     {
@@ -7783,7 +7803,7 @@
      "balanceShares": 13763803,
      "balanceMil": 30101437,
      "close": 2187000,
-     "foreignShares": 358375802,
+     "foreignShares": 358346749,
      "foreignPct": 50.28
     },
     {
@@ -7793,7 +7813,7 @@
      "balanceShares": 14031908,
      "balanceMil": 34027377,
      "close": 2425000,
-     "foreignShares": 357578157,
+     "foreignShares": 357562777,
      "foreignPct": 50.17
     },
     {
@@ -7803,7 +7823,7 @@
      "balanceShares": 13765789,
      "balanceMil": 32253244,
      "close": 2343000,
-     "foreignShares": 357544949,
+     "foreignShares": 357562777,
      "foreignPct": 50.17
     },
     {
@@ -7813,7 +7833,7 @@
      "balanceShares": 13859619,
      "balanceMil": 30505021,
      "close": 2201000,
-     "foreignShares": 356781819,
+     "foreignShares": 356778804,
      "foreignPct": 50.06
     },
     {
@@ -7823,7 +7843,7 @@
      "balanceShares": 13971171,
      "balanceMil": 29004151,
      "close": 2076000,
-     "foreignShares": 356735202,
+     "foreignShares": 356707534,
      "foreignPct": 50.05
     },
     {
@@ -7833,7 +7853,7 @@
      "balanceShares": 14420269,
      "balanceMil": 31522708,
      "close": 2186000,
-     "foreignShares": 356395099,
+     "foreignShares": 356422453,
      "foreignPct": 50.01
     },
     {
@@ -7843,7 +7863,7 @@
      "balanceShares": 14140221,
      "balanceMil": 30825682,
      "close": 2180000,
-     "foreignShares": 355411351,
+     "foreignShares": 355424669,
      "foreignPct": 49.87
     },
     {
@@ -7853,7 +7873,7 @@
      "balanceShares": 14284621,
      "balanceMil": 26355126,
      "close": 1845000,
-     "foreignShares": 354716373,
+     "foreignShares": 354711967,
      "foreignPct": 49.77
     },
     {
@@ -7863,7 +7883,7 @@
      "balanceShares": 14819345,
      "balanceMil": 28349407,
      "close": 1913000,
-     "foreignShares": 355501397,
+     "foreignShares": 355495940,
      "foreignPct": 49.88
     },
     {
@@ -7873,7 +7893,7 @@
      "balanceShares": 13590991,
      "balanceMil": 28296443,
      "close": 2082000,
-     "foreignShares": 373735122,
+     "foreignShares": 373741120,
      "foreignPct": 52.44
     },
     {
@@ -7883,7 +7903,7 @@
      "balanceShares": 13344324,
      "balanceMil": 24580245,
      "close": 1842000,
-     "foreignShares": 373225991,
+     "foreignShares": 373242229,
      "foreignPct": 52.37
     },
     {
@@ -7893,7 +7913,7 @@
      "balanceShares": 13021353,
      "balanceMil": 22969667,
      "close": 1764000,
-     "foreignShares": 373465582,
+     "foreignShares": 373456039,
      "foreignPct": 52.4
     },
     {
@@ -7903,7 +7923,7 @@
      "balanceShares": 13266548,
      "balanceMil": 24357382,
      "close": 1836000,
-     "foreignShares": 373365128,
+     "foreignShares": 373384769,
      "foreignPct": 52.39
     },
     {
@@ -7913,7 +7933,7 @@
      "balanceShares": 13328272,
      "balanceMil": 24390738,
      "close": 1830000,
-     "foreignShares": 374145231,
+     "foreignShares": 374168742,
      "foreignPct": 52.5
     },
     {
@@ -7923,7 +7943,7 @@
      "balanceShares": 13098070,
      "balanceMil": 25135196,
      "close": 1919000,
-     "foreignShares": 374867633,
+     "foreignShares": 374881444,
      "foreignPct": 52.6
     },
     {
@@ -7933,7 +7953,7 @@
      "balanceShares": 13191674,
      "balanceMil": 23204155,
      "close": 1759000,
-     "foreignShares": 373752032,
+     "foreignShares": 373741120,
      "foreignPct": 52.44
     },
     {
@@ -7943,7 +7963,7 @@
      "balanceShares": 13076578,
      "balanceMil": 23747066,
      "close": 1816000,
-     "foreignShares": 373374636,
+     "foreignShares": 373384769,
      "foreignPct": 52.39
     },
     {
@@ -7953,8 +7973,8 @@
      "balanceShares": 13562638,
      "balanceMil": 21022089,
      "close": 1550000,
-     "foreignShares": 371422583,
-     "foreignPct": 52.11
+     "foreignShares": 362409153,
+     "foreignPct": 50.85
     },
     {
      "d": "20260729",
@@ -7963,7 +7983,7 @@
      "balanceShares": 14348212,
      "balanceMil": 20101845,
      "close": 1401000,
-     "foreignShares": 370884066,
+     "foreignShares": 370870974,
      "foreignPct": 50.77
     },
     {
@@ -7973,7 +7993,7 @@
      "balanceShares": 14201624,
      "balanceMil": 18774547,
      "close": 1322000,
-     "foreignShares": 371509018,
+     "foreignShares": 371528417,
      "foreignPct": 50.86
     },
     {
@@ -7983,7 +8003,7 @@
      "balanceShares": 13631166,
      "balanceMil": 23418343,
      "close": 1718000,
-     "foreignShares": 374151979,
+     "foreignShares": 374158189,
      "foreignPct": 51.22
     },
     {
@@ -7993,7 +8013,7 @@
      "balanceShares": 13345743,
      "balanceMil": 20912779,
      "close": 1567000,
-     "foreignShares": 372867610,
+     "foreignShares": 372843303,
      "foreignPct": 51.04
     },
     {
@@ -8003,7 +8023,7 @@
      "balanceShares": 13202617,
      "balanceMil": 20820527,
      "close": 1577000,
-     "foreignShares": 372194991,
+     "foreignShares": 372185860,
      "foreignPct": 50.95
     },
     {
@@ -8013,7 +8033,7 @@
      "balanceShares": 13129689,
      "balanceMil": 21900321,
      "close": 1668000,
-     "foreignShares": 372740095,
+     "foreignShares": 372770254,
      "foreignPct": 51.03
     },
     {
@@ -8023,7 +8043,7 @@
      "balanceShares": 13247603,
      "balanceMil": 19805166,
      "close": 1495000,
-     "foreignShares": 371391411,
+     "foreignShares": 371382318,
      "foreignPct": 50.84
     },
     {
@@ -8033,7 +8053,7 @@
      "balanceShares": 13488926,
      "balanceMil": 19181253,
      "close": 1422000,
-     "foreignShares": 371126654,
+     "foreignShares": 371163171,
      "foreignPct": 50.81
     },
     {
@@ -8043,7 +8063,7 @@
      "balanceShares": 13351431,
      "balanceMil": 18959032,
      "close": 1420000,
-     "foreignShares": 370879849,
+     "foreignShares": 370870974,
      "foreignPct": 50.77
     },
     {
@@ -8053,7 +8073,7 @@
      "balanceShares": 13477090,
      "balanceMil": 19204853,
      "close": 1425000,
-     "foreignShares": 370653504,
+     "foreignShares": 370651826,
      "foreignPct": 50.74
     },
     {
@@ -8063,7 +8083,7 @@
      "balanceShares": 13520938,
      "balanceMil": 20335491,
      "close": 1504000,
-     "foreignShares": 371325022,
+     "foreignShares": 371309269,
      "foreignPct": 50.83
     },
     {
@@ -8073,7 +8093,7 @@
      "balanceShares": 13115023,
      "balanceMil": 20892232,
      "close": 1593000,
-     "foreignShares": 372240939,
+     "foreignShares": 372258909,
      "foreignPct": 50.96
     },
     {
@@ -8083,7 +8103,7 @@
      "balanceShares": 12833617,
      "balanceMil": 21111300,
      "close": 1645000,
-     "foreignShares": 373084832,
+     "foreignShares": 373062451,
      "foreignPct": 51.07
     },
     {
@@ -8093,7 +8113,7 @@
      "balanceShares": 12661655,
      "balanceMil": 21043671,
      "close": 1662000,
-     "foreignShares": 373740499,
+     "foreignShares": 373719894,
      "foreignPct": 51.16
     },
     {
@@ -8103,7 +8123,7 @@
      "balanceShares": 12748772,
      "balanceMil": 19123158,
      "close": 1500000,
-     "foreignShares": 372458143,
+     "foreignShares": 372478057,
      "foreignPct": 50.99
     },
     {
@@ -8113,7 +8133,7 @@
      "balanceShares": 12804621,
      "balanceMil": 21652614,
      "close": 1691000,
-     "foreignShares": 372915458,
+     "foreignShares": 372916352,
      "foreignPct": 51.05
     },
     {
@@ -8123,7 +8143,7 @@
      "balanceShares": 11802894,
      "balanceMil": 20419007,
      "close": 1730000,
-     "foreignShares": 372945222,
+     "foreignShares": 372916352,
      "foreignPct": 51.05
     },
     {
@@ -8133,7 +8153,7 @@
      "balanceShares": 11734273,
      "balanceMil": 19607970,
      "close": 1671000,
-     "foreignShares": 371954680,
+     "foreignShares": 371966712,
      "foreignPct": 50.92
     },
     {
@@ -8143,7 +8163,7 @@
      "balanceShares": 11704622,
      "balanceMil": 19640356,
      "close": 1678000,
-     "foreignShares": 370525067,
+     "foreignShares": 370505728,
      "foreignPct": 50.72
     },
     {
@@ -8153,7 +8173,7 @@
      "balanceShares": 11329163,
      "balanceMil": 19123627,
      "close": 1688000,
-     "foreignShares": 370000384,
+     "foreignShares": 369994383,
      "foreignPct": 50.65
     },
     {
@@ -8163,7 +8183,7 @@
      "balanceShares": 11452293,
      "balanceMil": 19812467,
      "close": 1730000,
-     "foreignShares": 369832885,
+     "foreignShares": 369848284,
      "foreignPct": 50.63
     },
     {
@@ -8173,7 +8193,7 @@
      "balanceShares": 11745389,
      "balanceMil": 19415128,
      "close": 1653000,
-     "foreignShares": 369439925,
+     "foreignShares": 369409989,
      "foreignPct": 50.57
     },
     {
@@ -8183,7 +8203,7 @@
      "balanceShares": 11745634,
      "balanceMil": 19662191,
      "close": 1674000,
-     "foreignShares": 369314237,
+     "foreignShares": 369336940,
      "foreignPct": 50.56
     },
     {
@@ -8193,7 +8213,7 @@
      "balanceShares": 11891064,
      "balanceMil": 20131571,
      "close": 1693000,
-     "foreignShares": 369394694,
+     "foreignShares": 369409989,
      "foreignPct": 50.57
     },
     {
@@ -8203,7 +8223,7 @@
      "balanceShares": 12303195,
      "balanceMil": 19845054,
      "close": 1613000,
-     "foreignShares": 368668790,
+     "foreignShares": 368679497,
      "foreignPct": 50.47
     },
     {
@@ -8213,7 +8233,7 @@
      "balanceShares": 12409149,
      "balanceMil": 19805002,
      "close": 1596000,
-     "foreignShares": 368514319,
+     "foreignShares": 368533398,
      "foreignPct": 50.45
     },
     {
@@ -8223,7 +8243,7 @@
      "balanceShares": 12853900,
      "balanceMil": 21170373,
      "close": 1647000,
-     "foreignShares": 368923772,
+     "foreignShares": 368898644,
      "foreignPct": 50.5
     },
     {
@@ -8233,7 +8253,7 @@
      "balanceShares": 12664291,
      "balanceMil": 22580431,
      "close": 1783000,
-     "foreignShares": 369877394,
+     "foreignShares": 369848284,
      "foreignPct": 50.63
     },
     {
@@ -8243,7 +8263,7 @@
      "balanceShares": 12479615,
      "balanceMil": 22375950,
      "close": 1793000,
-     "foreignShares": 370096933,
+     "foreignShares": 370067432,
      "foreignPct": 50.66
     },
     {
@@ -8253,8 +8273,28 @@
      "balanceShares": 12480635,
      "balanceMil": 23164059,
      "close": 1856000,
-     "foreignShares": 370159817,
+     "foreignShares": 370140481,
      "foreignPct": 50.67
+    },
+    {
+     "d": "20260910",
+     "dealShares": 195761,
+     "repayShares": 396192,
+     "balanceShares": 12280204,
+     "balanceMil": 22755218,
+     "close": 1853000,
+     "foreignShares": 369263891,
+     "foreignPct": 50.55
+    },
+    {
+     "d": "20260911",
+     "dealShares": 78645,
+     "repayShares": 216789,
+     "balanceShares": 12142060,
+     "balanceMil": 22001413,
+     "close": 1812000,
+     "foreignShares": 369263891,
+     "foreignPct": 50.55
     }
    ]
   }

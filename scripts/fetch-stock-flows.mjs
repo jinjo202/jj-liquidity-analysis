@@ -17,9 +17,18 @@
 //    PART 3 에서 "좌수로 봐야 가격 착시가 없다" 고 한 것과 같은 이유다. 원본 금액은 남겨서
 //    selfcheck 가 둘이 어긋나지 않는지 감시한다 — 어긋나면 소스가 스케일을 바꾼 것이다(§26).
 //
-// 2) 외국인 지분율 — 네이버 금융 `item/frgn.naver`. 한 페이지 20행이고 EUC-KR 이다.
-//    행: 날짜 | 종가 | 전일비 | 등락률 | 거래량 | 기관순매매 | 외국인순매매 | 외국인보유주식수 | 외국인지분율.
+// 2) 종가·외국인 지분율 — 네이버 시세 API `siseJson.naver`. 기간 조회가 되어 한 번에 온다.
+//    헤더: 날짜 | 시가 | 고가 | 저가 | 종가 | 거래량 | 외국인소진율.
 //    KRX 정보데이터시스템은 로그인이 필요해 익명으로는 못 쓴다(§23.1).
+//
+//    2026-09-10 네이버 개편으로 옛 경로 `item/frgn.naver` 가 죽었다. EUC-KR 표를 긁던
+//    방식이었는데 UTF-8 SPA 로 바뀌어 `<tr>` 이 **0개**가 됐다. 파서는 예외 없이 0행을
+//    돌려줬고 스크립트는 성공으로 끝나 **종가가 전부 null 인 파일**을 썼다. 그래서 9/10
+//    오후부터 selfcheck 가 "교차검증할 행이 0개" 로 막아 매 실행이 실패했다.
+//    같은 일이 또 나지 않게, 받아온 게 없으면 **덮어쓰지 않고 실패한다**(아래 참조).
+//
+//    옛 소스와 같은 계열임은 대조로 확인했다 — 20260909 종가 269500 · 지분율 46.81 로 일치.
+//    다만 새 소스에는 **외국인 보유주식수가 없다**. 지분율에서 되살린다(`foreignSharesOf`).
 //
 // 사용법: node scripts/fetch-stock-flows.mjs [시작일 YYYYMMDD]
 import fs from 'node:fs';
@@ -81,54 +90,60 @@ async function fetchLending(code) {
     .sort((a, b) => a.d.localeCompare(b.d));
 }
 
-/* ---------- 2. 외국인 지분율 (네이버) ---------- */
-const FRGN = 'https://finance.naver.com/item/frgn.naver';
+/* ---------- 2. 종가·외국인 지분율 (네이버 시세 API) ---------- */
+const SISE = 'https://api.finance.naver.com/siseJson.naver';
 const num = s => {
   const n = Number(String(s).replace(/[,%\s]/g, ''));
   return Number.isFinite(n) ? n : null;
 };
 
 async function fetchForeign(code, fromDate) {
-  const rows = [];
-  for (let page = 1; page <= 60; page++) {
-    const res = await fetch(`${FRGN}?code=${code}&page=${page}`, {
-      headers: { 'User-Agent': UA, Referer: `${FRGN}?code=${code}` },
-      signal: AbortSignal.timeout(30000),
-    });
-    const html = new TextDecoder('euc-kr').decode(await res.arrayBuffer());
-    const before = rows.length;
-    let oldest = null;
-
-    for (const m of html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)) {
-      const cells = [...m[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)]
-        .map(c => c[1].replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim());
-      if (cells.length < 9 || !/^\d{4}\.\d{2}\.\d{2}$/.test(cells[0])) continue;
-      const d = cells[0].replace(/\./g, '');
-      oldest = d;
-      if (d < fromDate) continue;
-      rows.push({
-        d,
-        close: num(cells[1]),
-        foreignShares: num(cells[7]),     // 외국인 보유주식수
-        foreignPct: num(cells[8]),        // 외국인 지분율(%)
-      });
-    }
-    // 이 페이지의 가장 오래된 행이 시작일보다 앞서면 더 볼 필요가 없다.
-    if (rows.length === before && page > 1) break;
-    if (oldest && oldest < fromDate) break;
-    await sleep(120);
-  }
+  const res = await fetch(
+    `${SISE}?symbol=${code}&requestType=1&startTime=${fromDate}&endTime=${END}&timeframe=day`,
+    { headers: { 'User-Agent': UA, Referer: 'https://finance.naver.com/' },
+      signal: AbortSignal.timeout(30000) });
+  // 작은따옴표를 쓰는 준-JSON 이다. 첫 행은 헤더라 버린다.
+  const rows = JSON.parse((await res.text()).replace(/'/g, '"'));
   const seen = new Set();
   return rows
+    .filter(r => Array.isArray(r) && /^\d{8}$/.test(String(r[0])))
+    .map(r => ({ d: String(r[0]), close: num(r[4]), foreignPct: num(r[6]) }))
     .filter(r => r.foreignPct != null && !seen.has(r.d) && seen.add(r.d))
     .sort((a, b) => a.d.localeCompare(b.d));
+}
+
+/**
+ * 외국인 보유주식수. 개편 전 네이버는 이 값을 직접 줬지만 새 소스는 지분율만 준다.
+ * **지분율 × 상장주식수로 되살린다.** 상장주식수는 analyze 가 이미 믿고 쓰는
+ * `etf-daily.json` 의 날짜별 `units` 를 그대로 쓴다(§23).
+ *
+ * 지분율이 소수점 둘째 자리에서 끊겨 하루치 차분에는 양자화 오차가 섞인다. 그래도
+ * 쓸 수 있는 이유는 analyze 가 이 값을 **차분의 누적**으로만 쓰기 때문이다 — 누적은
+ * (현재지분율 − 시작지분율) × 상장주식수로 접히므로 오차가 쌓이지 않고 끝에서도
+ * 상장주식수의 0.01% 안에 머문다.
+ */
+function listedSharesByDate() {
+  const f = path.join(import.meta.dirname, '..', 'data', 'etf-daily.json');
+  if (!fs.existsSync(f)) return {};
+  const series = JSON.parse(fs.readFileSync(f, 'utf8')).series ?? {};
+  return Object.fromEntries(Object.entries(series).map(
+    ([code, rows]) => [code, new Map(rows.map(r => [r.d, r.units]))]));
+}
+const LISTED = listedSharesByDate();
+
+function foreignSharesOf(code, d, foreignPct) {
+  if (foreignPct == null) return null;
+  const byDate = LISTED[code];
+  // 그날 값이 없으면(가장 최근 거래일 등) 마지막으로 아는 상장주식수를 쓴다.
+  const units = byDate?.get(d) ?? [...(byDate?.values() ?? [])].at(-1);
+  return units ? Math.round((foreignPct / 100) * units) : null;
 }
 
 /* ---------- 실행 ---------- */
 const out = {
   meta: {
     lending: 'FREESIS 대차거래추이 (STATSCU0100000140, tmpV72=종목코드). 잔고금액(백만원)은 교차검증용으로만 두고, 표시 금액은 주수 × 종가로 계산한다(§26).',
-    foreign: '네이버 금융 item/frgn (외국인 보유주식수·지분율). KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.',
+    foreign: '네이버 시세 API siseJson (종가·외국인소진율). 외국인 보유주식수는 소스에 없어 지분율 × 상장주식수로 되살린다. KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.',
     fetchedAt: new Date().toISOString().slice(0, 10),
     start: START,
   },
@@ -138,13 +153,25 @@ const out = {
 for (const [code, name] of STOCKS) {
   const lending = await fetchLending(code);
   const foreign = await fetchForeign(code, START);
+
+  /*
+   * 한 건도 못 받았으면 소스가 바뀐 것이다. 여기서 멈춰야 한다 —
+   * 그대로 진행하면 종가가 전부 null 인 파일로 **멀쩡한 기존 데이터를 덮어쓴다.**
+   * 던지면 워크플로가 이 소스를 FETCH_ERRORS 에 적고(status.json 에 남는다)
+   * 지난 데이터로 리포트를 계속 낸다. 조용히 비는 것보다 이쪽이 낫다.
+   */
+  if (!foreign.length) {
+    throw new Error(`${name}(${code}): 종가·외국인 지분율을 한 건도 못 받았다 — `
+      + '소스가 바뀐 것으로 보인다. 기존 데이터를 덮지 않고 멈춘다.');
+  }
+
   const fr = new Map(foreign.map(r => [r.d, r]));
   const series = lending.map(r => {
     const f = fr.get(r.d);
     return {
       ...r,
       close: f?.close ?? null,
-      foreignShares: f?.foreignShares ?? null,
+      foreignShares: foreignSharesOf(code, r.d, f?.foreignPct ?? null),
       foreignPct: f?.foreignPct ?? null,
     };
   });
