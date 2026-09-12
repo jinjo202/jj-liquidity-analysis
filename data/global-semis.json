@@ -115,7 +115,7 @@
     "lev": -3
    }
   ],
-  "fetchedAt": "2026-09-10"
+  "fetchedAt": "2026-09-12"
  },
  "shortVolume": [
   {
@@ -6509,6 +6509,212 @@
     "totalVol": 2115077.45103,
     "shortPct": 51.81781725606673
    }
+  },
+  {
+   "d": "20260910",
+   "AMD": {
+    "shortVol": 4702550.017955,
+    "totalVol": 6962462.336991,
+    "shortPct": 67.5414787232777
+   },
+   "ARM": {
+    "shortVol": 798134.910021,
+    "totalVol": 1419948.682211,
+    "shortPct": 56.208715147242174
+   },
+   "ASML": {
+    "shortVol": 165395.054992,
+    "totalVol": 313735.924646,
+    "shortPct": 52.717920390730335
+   },
+   "AVGO": {
+    "shortVol": 1806927.215273,
+    "totalVol": 6135307.707767,
+    "shortPct": 29.45128918286394
+   },
+   "DRAM": {
+    "shortVol": 3611858.327973,
+    "totalVol": 10223475.625775,
+    "shortPct": 35.32906479345374
+   },
+   "INTC": {
+    "shortVol": 18885408.017664,
+    "totalVol": 41561507.463137,
+    "shortPct": 45.439660807333375
+   },
+   "MU": {
+    "shortVol": 5880147.385652,
+    "totalVol": 11485392.923943,
+    "shortPct": 51.196745506146016
+   },
+   "NVDA": {
+    "shortVol": 17783020.549336,
+    "totalVol": 41026082.024062,
+    "shortPct": 43.34564665206434
+   },
+   "QCOM": {
+    "shortVol": 2825035.990407,
+    "totalVol": 6420432.393724,
+    "shortPct": 44.000712368975094
+   },
+   "RAM": {
+    "shortVol": 1717595.919405,
+    "totalVol": 4417385.164974,
+    "shortPct": 38.88263882950559
+   },
+   "RAML": {
+    "shortVol": 1190,
+    "totalVol": 2306.8416,
+    "shortPct": 51.58568321292627
+   },
+   "SMH": {
+    "shortVol": 1266282.666814,
+    "totalVol": 2288557.422367,
+    "shortPct": 55.33104192353252
+   },
+   "SNDK": {
+    "shortVol": 2235149.065666,
+    "totalVol": 4364219.959069,
+    "shortPct": 51.215316519995355
+   },
+   "SOXL": {
+    "shortVol": 11169812.177959,
+    "totalVol": 19182926.465804,
+    "shortPct": 58.22788403985496
+   },
+   "SOXS": {
+    "shortVol": 8087120.880345,
+    "totalVol": 19165639.37686,
+    "shortPct": 42.19593576465358
+   },
+   "SOXX": {
+    "shortVol": 839342.291521,
+    "totalVol": 2563621.222157,
+    "shortPct": 32.740495525106766
+   },
+   "STX": {
+    "shortVol": 1000967.493144,
+    "totalVol": 1650988.308328,
+    "shortPct": 60.62838168476835
+   },
+   "TSM": {
+    "shortVol": 1450797.996421,
+    "totalVol": 2842468.805509,
+    "shortPct": 51.0400674796924
+   },
+   "TXN": {
+    "shortVol": 715062.418261,
+    "totalVol": 2302739.095656,
+    "shortPct": 31.052689365023106
+   },
+   "WDC": {
+    "shortVol": 940593.590814,
+    "totalVol": 1983144.794467,
+    "shortPct": 47.429395646665256
+   }
+  },
+  {
+   "d": "20260911",
+   "AMD": {
+    "shortVol": 5527037.26262,
+    "totalVol": 8664609.58006,
+    "shortPct": 63.78864750397359
+   },
+   "ARM": {
+    "shortVol": 824060.023078,
+    "totalVol": 1648601.822986,
+    "shortPct": 49.9853883204761
+   },
+   "ASML": {
+    "shortVol": 132611.082089,
+    "totalVol": 311887.385017,
+    "shortPct": 42.51889895507373
+   },
+   "AVGO": {
+    "shortVol": 2399700.48871,
+    "totalVol": 6461756.981744,
+    "shortPct": 37.136965928767125
+   },
+   "DRAM": {
+    "shortVol": 2558167.340158,
+    "totalVol": 6963689.241368,
+    "shortPct": 36.73580556928261
+   },
+   "INTC": {
+    "shortVol": 14477683.674383,
+    "totalVol": 37900211.236066,
+    "shortPct": 38.19948016702866
+   },
+   "MU": {
+    "shortVol": 3742629.4369,
+    "totalVol": 9538658.33648,
+    "shortPct": 39.23643456843976
+   },
+   "NVDA": {
+    "shortVol": 13390506.97156,
+    "totalVol": 35300143.518841,
+    "shortPct": 37.93329328650743
+   },
+   "QCOM": {
+    "shortVol": 1895798.842884,
+    "totalVol": 4470346.626524,
+    "shortPct": 42.40831866673643
+   },
+   "RAM": {
+    "shortVol": 1313108.232886,
+    "totalVol": 3924026.068828,
+    "shortPct": 33.46329024970493
+   },
+   "RAML": {
+    "shortVol": 18,
+    "totalVol": 349.763791,
+    "shortPct": 5.146330312962555
+   },
+   "SMH": {
+    "shortVol": 957781.932476,
+    "totalVol": 1620172.181915,
+    "shortPct": 59.116058352756525
+   },
+   "SNDK": {
+    "shortVol": 2648285.309841,
+    "totalVol": 4341802.815739,
+    "shortPct": 60.99506178035048
+   },
+   "SOXL": {
+    "shortVol": 11534977.568735,
+    "totalVol": 19031154.220111,
+    "shortPct": 60.611024614290166
+   },
+   "SOXS": {
+    "shortVol": 13015570.102484,
+    "totalVol": 24434267.588679,
+    "shortPct": 53.267690775861176
+   },
+   "SOXX": {
+    "shortVol": 1210316.079346,
+    "totalVol": 2098801.727029,
+    "shortPct": 57.667004165242744
+   },
+   "STX": {
+    "shortVol": 980863.353325,
+    "totalVol": 1751708.615028,
+    "shortPct": 55.994664004625086
+   },
+   "TSM": {
+    "shortVol": 1692856.009703,
+    "totalVol": 3950235.281358,
+    "shortPct": 42.85456154199087
+   },
+   "TXN": {
+    "shortVol": 736076.101965,
+    "totalVol": 1818013.978621,
+    "shortPct": 40.48792311945415
+   },
+   "WDC": {
+    "shortVol": 1045049.646345,
+    "totalVol": 2207128.981954,
+    "shortPct": 47.348825324191246
+   }
   }
  ],
  "shortInterest": [
@@ -7866,6 +8072,171 @@
      "avgDailyVol": 7746818,
      "daysToCover": 3.18,
      "changePct": 5.77
+    }
+   ]
+  },
+  {
+   "settlementDate": "2026-08-31",
+   "items": [
+    {
+     "s": "AMD",
+     "shortQty": 41712630,
+     "prevQty": 40065798,
+     "avgDailyVol": 16772687,
+     "daysToCover": 2.49,
+     "changePct": 4.11
+    },
+    {
+     "s": "ARM",
+     "shortQty": 16740615,
+     "prevQty": 18264105,
+     "avgDailyVol": 3817181,
+     "daysToCover": 4.39,
+     "changePct": -8.34
+    },
+    {
+     "s": "ASML",
+     "shortQty": 1524269,
+     "prevQty": 1352364,
+     "avgDailyVol": 1117823,
+     "daysToCover": 1.36,
+     "changePct": 12.71
+    },
+    {
+     "s": "AVGO",
+     "shortQty": 50451889,
+     "prevQty": 56209128,
+     "avgDailyVol": 20841544,
+     "daysToCover": 2.42,
+     "changePct": -10.24
+    },
+    {
+     "s": "DRAM",
+     "shortQty": 9439159,
+     "prevQty": 9715176,
+     "avgDailyVol": 36452078,
+     "daysToCover": 1,
+     "changePct": -2.84
+    },
+    {
+     "s": "INTC",
+     "shortQty": 152248752,
+     "prevQty": 135685200,
+     "avgDailyVol": 90250656,
+     "daysToCover": 1.69,
+     "changePct": 12.21
+    },
+    {
+     "s": "MU",
+     "shortQty": 29705339,
+     "prevQty": 30016025,
+     "avgDailyVol": 25645506,
+     "daysToCover": 1.16,
+     "changePct": -1.04
+    },
+    {
+     "s": "NVDA",
+     "shortQty": 298301619,
+     "prevQty": 285956804,
+     "avgDailyVol": 139118326,
+     "daysToCover": 2.14,
+     "changePct": 4.32
+    },
+    {
+     "s": "QCOM",
+     "shortQty": 33718025,
+     "prevQty": 33274306,
+     "avgDailyVol": 10182988,
+     "daysToCover": 3.31,
+     "changePct": 1.33
+    },
+    {
+     "s": "RAM",
+     "shortQty": 3777137,
+     "prevQty": 7187512,
+     "avgDailyVol": 14422424,
+     "daysToCover": 1,
+     "changePct": -47.45
+    },
+    {
+     "s": "RAML",
+     "shortQty": 14482,
+     "prevQty": 26030,
+     "avgDailyVol": 10245,
+     "daysToCover": 1.41,
+     "changePct": -44.36
+    },
+    {
+     "s": "SMH",
+     "shortQty": 13278959,
+     "prevQty": 12956019,
+     "avgDailyVol": 6994867,
+     "daysToCover": 1.9,
+     "changePct": 2.49
+    },
+    {
+     "s": "SNDK",
+     "shortQty": 5996105,
+     "prevQty": 7676558,
+     "avgDailyVol": 12961159,
+     "daysToCover": 1,
+     "changePct": -21.89
+    },
+    {
+     "s": "SOXL",
+     "shortQty": 28110612,
+     "prevQty": 17514729,
+     "avgDailyVol": 55741456,
+     "daysToCover": 1,
+     "changePct": 60.5
+    },
+    {
+     "s": "SOXS",
+     "shortQty": 7732772,
+     "prevQty": 6593964,
+     "avgDailyVol": 48208113,
+     "daysToCover": 1,
+     "changePct": 17.27
+    },
+    {
+     "s": "SOXX",
+     "shortQty": 13006049,
+     "prevQty": 12189806,
+     "avgDailyVol": 7019422,
+     "daysToCover": 1.85,
+     "changePct": 6.7
+    },
+    {
+     "s": "STX",
+     "shortQty": 8482797,
+     "prevQty": 8161824,
+     "avgDailyVol": 3590490,
+     "daysToCover": 2.36,
+     "changePct": 3.93
+    },
+    {
+     "s": "TSM",
+     "shortQty": 29835409,
+     "prevQty": 30161233,
+     "avgDailyVol": 9533524,
+     "daysToCover": 3.13,
+     "changePct": -1.08
+    },
+    {
+     "s": "TXN",
+     "shortQty": 21414170,
+     "prevQty": 19681524,
+     "avgDailyVol": 5685035,
+     "daysToCover": 3.77,
+     "changePct": 8.8
+    },
+    {
+     "s": "WDC",
+     "shortQty": 19887791,
+     "prevQty": 20281115,
+     "avgDailyVol": 6339096,
+     "daysToCover": 3.14,
+     "changePct": -1.94
     }
    ]
   }
