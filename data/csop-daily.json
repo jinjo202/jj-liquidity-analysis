@@ -2016,6 +2016,16 @@
      "closeHkd": 37.02,
      "notionalUsd": 7700241971.17,
      "deemedNavUsd": 3848297136.13
+    },
+    {
+     "d": "20260921",
+     "units": 831500000,
+     "totalNavUsd": 4713517335,
+     "navPerUnitUsd": 5.6687,
+     "navPerUnitHkd": 44.4729,
+     "closeHkd": 44.3,
+     "notionalUsd": 9581823565.03,
+     "deemedNavUsd": 4784041236
     }
    ]
   },
@@ -4035,6 +4045,16 @@
      "closeHkd": 66.08,
      "notionalUsd": 1707256657.34,
      "deemedNavUsd": 851131480.32
+    },
+    {
+     "d": "20260921",
+     "units": 102000000,
+     "totalNavUsd": 1040266878,
+     "navPerUnitUsd": 10.1987,
+     "navPerUnitHkd": 80.0124,
+     "closeHkd": 79,
+     "notionalUsd": 2081251321.42,
+     "deemedNavUsd": 1038718058
     }
    ]
   },
@@ -6054,11 +6074,21 @@
      "closeHkd": 0.774,
      "notionalUsd": -55091996.35,
      "deemedNavUsd": 27602846.54
+    },
+    {
+     "d": "20260921",
+     "units": 242500000,
+     "totalNavUsd": 19393271,
+     "navPerUnitUsd": 0.08,
+     "navPerUnitHkd": 0.6276,
+     "closeHkd": 0.638,
+     "notionalUsd": -42006885.52,
+     "deemedNavUsd": 21000307
     }
    ]
   }
  ],
- "updatedAt": "2026-09-15",
+ "updatedAt": "2026-09-22",
  "source": "website-api.csopasset.com/cmsApi/NAV/product (POST {productName}) + performanceView/LI/Performance/ChartData (과거 좌당 NAV, §23.7)",
  "note": "기준일(HstDateFormat)별 1행. 2026-08-02 이전 구간은 SDW 좌수 × ChartData 좌당 NAV 로 복원한 근사치다(navSrc:\"chart-api\"). CSOP 신고좌수 기준이 아니라 5~20% 어긋날 수 있다(§23.6~23.7).",
  "fx": [
@@ -6908,7 +6938,7 @@
   },
   {
    "d": "20260824",
-   "krw": 1384
+   "krw": 1383
   },
   {
    "d": "20260825",
@@ -6924,7 +6954,7 @@
   },
   {
    "d": "20260828",
-   "krw": 1381
+   "krw": 1380.5
   },
   {
    "d": "20260831",
@@ -6940,7 +6970,7 @@
   },
   {
    "d": "20260903",
-   "krw": 1358.5
+   "krw": 1358
   },
   {
    "d": "20260904",
@@ -6948,7 +6978,7 @@
   },
   {
    "d": "20260907",
-   "krw": 1347
+   "krw": 1346
   },
   {
    "d": "20260908",
@@ -6956,7 +6986,7 @@
   },
   {
    "d": "20260909",
-   "krw": 1341
+   "krw": 1340.5
   },
   {
    "d": "20260910",
@@ -6964,7 +6994,7 @@
   },
   {
    "d": "20260911",
-   "krw": 1343.8
+   "krw": 1345
   },
   {
    "d": "20260914",
@@ -6972,7 +7002,27 @@
   },
   {
    "d": "20260915",
-   "krw": 1349.1
+   "krw": 1363.7
+  },
+  {
+   "d": "20260916",
+   "krw": 1377.5
+  },
+  {
+   "d": "20260917",
+   "krw": 1381
+  },
+  {
+   "d": "20260918",
+   "krw": 1388
+  },
+  {
+   "d": "20260921",
+   "krw": 1375
+  },
+  {
+   "d": "20260922",
+   "krw": 1360.8
   }
  ]
 }
