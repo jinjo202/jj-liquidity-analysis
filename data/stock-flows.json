@@ -2,7 +2,7 @@
  "meta": {
   "lending": "FREESIS 대차거래추이 (STATSCU0100000140, tmpV72=종목코드). 잔고금액(백만원)은 교차검증용으로만 두고, 표시 금액은 주수 × 종가로 계산한다(§26).",
   "foreign": "네이버 시세 API siseJson (종가·외국인소진율). 외국인 보유주식수는 소스에 없어 지분율 × 상장주식수로 되살린다. KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.",
-  "fetchedAt": "2026-09-15",
+  "fetchedAt": "2026-10-14",
   "start": "20250101"
  },
  "stocks": [
@@ -4159,6 +4159,186 @@
      "close": 248500,
      "foreignShares": 2722611948,
      "foreignPct": 46.57
+    },
+    {
+     "d": "20260915",
+     "dealShares": 3111891,
+     "repayShares": 481953,
+     "balanceShares": 92459055,
+     "balanceMil": 22976075,
+     "close": 250500,
+     "foreignShares": 2722027320,
+     "foreignPct": 46.56
+    },
+    {
+     "d": "20260916",
+     "dealShares": 411906,
+     "repayShares": 606770,
+     "balanceShares": 92264191,
+     "balanceMil": 23388972,
+     "close": 253500,
+     "foreignShares": 2719688808,
+     "foreignPct": 46.52
+    },
+    {
+     "d": "20260917",
+     "dealShares": 1694347,
+     "repayShares": 1662204,
+     "balanceShares": 92296334,
+     "balanceMil": 23304824,
+     "close": 256000,
+     "foreignShares": 2717350297,
+     "foreignPct": 46.48
+    },
+    {
+     "d": "20260918",
+     "dealShares": 411173,
+     "repayShares": 877277,
+     "balanceShares": 91830230,
+     "balanceMil": 23967690,
+     "close": 260000,
+     "foreignShares": 2716181041,
+     "foreignPct": 46.46
+    },
+    {
+     "d": "20260921",
+     "dealShares": 2299043,
+     "repayShares": 6244187,
+     "balanceShares": 87885086,
+     "balanceMil": 24080514,
+     "close": 275000,
+     "foreignShares": 2722027320,
+     "foreignPct": 46.56
+    },
+    {
+     "d": "20260922",
+     "dealShares": 780310,
+     "repayShares": 981385,
+     "balanceShares": 87684011,
+     "balanceMil": 24244629,
+     "close": 277500,
+     "foreignShares": 2721442692,
+     "foreignPct": 46.55
+    },
+    {
+     "d": "20260923",
+     "dealShares": 491569,
+     "repayShares": 2168179,
+     "balanceShares": 86007401,
+     "balanceMil": 24555113,
+     "close": 286500,
+     "foreignShares": 2726704343,
+     "foreignPct": 46.64
+    },
+    {
+     "d": "20260928",
+     "dealShares": 2526018,
+     "repayShares": 7091596,
+     "balanceShares": 81441823,
+     "balanceMil": 21989292,
+     "close": 270000,
+     "foreignShares": 2719688808,
+     "foreignPct": 46.52
+    },
+    {
+     "d": "20260929",
+     "dealShares": 1771811,
+     "repayShares": 8461482,
+     "balanceShares": 74752152,
+     "balanceMil": 20369961,
+     "close": 275000,
+     "foreignShares": 2716765669,
+     "foreignPct": 46.47
+    },
+    {
+     "d": "20260930",
+     "dealShares": 1328885,
+     "repayShares": 1698300,
+     "balanceShares": 74382737,
+     "balanceMil": 19971765,
+     "close": 269500,
+     "foreignShares": 2712673274,
+     "foreignPct": 46.4
+    },
+    {
+     "d": "20261001",
+     "dealShares": 2673042,
+     "repayShares": 1069018,
+     "balanceShares": 75986761,
+     "balanceMil": 20972346,
+     "close": 274500,
+     "foreignShares": 2713257902,
+     "foreignPct": 46.41
+    },
+    {
+     "d": "20261002",
+     "dealShares": 7784216,
+     "repayShares": 1595848,
+     "balanceShares": 82175129,
+     "balanceMil": 22680336,
+     "close": 276000,
+     "foreignShares": 2713257902,
+     "foreignPct": 46.41
+    },
+    {
+     "d": "20261006",
+     "dealShares": 2932002,
+     "repayShares": 4402716,
+     "balanceShares": 80704415,
+     "balanceMil": 21951601,
+     "close": 273000,
+     "foreignShares": 2710919391,
+     "foreignPct": 46.37
+    },
+    {
+     "d": "20261007",
+     "dealShares": 1548159,
+     "repayShares": 819917,
+     "balanceShares": 81432657,
+     "balanceMil": 21864668,
+     "close": 269000,
+     "foreignShares": 2711504018,
+     "foreignPct": 46.38
+    },
+    {
+     "d": "20261008",
+     "dealShares": 1000402,
+     "repayShares": 145168,
+     "balanceShares": 82287891,
+     "balanceMil": 21559427,
+     "close": 263000,
+     "foreignShares": 2709750135,
+     "foreignPct": 46.35
+    },
+    {
+     "d": "20261012",
+     "dealShares": 2587470,
+     "repayShares": 3971933,
+     "balanceShares": 80903428,
+     "balanceMil": 20266309,
+     "close": 251000,
+     "foreignShares": 2706826996,
+     "foreignPct": 46.3
+    },
+    {
+     "d": "20261013",
+     "dealShares": 1216655,
+     "repayShares": 2390412,
+     "balanceShares": 79729671,
+     "balanceMil": 18497284,
+     "close": 234000,
+     "foreignShares": 2699811461,
+     "foreignPct": 46.18
+    },
+    {
+     "d": "20261014",
+     "dealShares": 3296129,
+     "repayShares": 917015,
+     "balanceShares": 82108785,
+     "balanceMil": 19049238,
+     "close": 234500,
+     "foreignShares": 2699811461,
+     "foreignPct": 46.18
     }
    ]
   },
@@ -8315,6 +8495,186 @@
      "close": 1683000,
      "foreignShares": 367218512,
      "foreignPct": 50.27
+    },
+    {
+     "d": "20260915",
+     "dealShares": 131184,
+     "repayShares": 185344,
+     "balanceShares": 12150042,
+     "balanceMil": 20533571,
+     "close": 1712000,
+     "foreignShares": 366707167,
+     "foreignPct": 50.2
+    },
+    {
+     "d": "20260916",
+     "dealShares": 170068,
+     "repayShares": 279773,
+     "balanceShares": 12040337,
+     "balanceMil": 21178953,
+     "close": 1757000,
+     "foreignShares": 366707167,
+     "foreignPct": 50.2
+    },
+    {
+     "d": "20260917",
+     "dealShares": 691552,
+     "repayShares": 1433660,
+     "balanceShares": 11298229,
+     "balanceMil": 19715410,
+     "close": 1766000,
+     "foreignShares": 365976675,
+     "foreignPct": 50.1
+    },
+    {
+     "d": "20260918",
+     "dealShares": 786513,
+     "repayShares": 228216,
+     "balanceShares": 11856526,
+     "balanceMil": 22017569,
+     "close": 1849000,
+     "foreignShares": 366926315,
+     "foreignPct": 50.23
+    },
+    {
+     "d": "20260921",
+     "dealShares": 397623,
+     "repayShares": 1065720,
+     "balanceShares": 11188429,
+     "balanceMil": 20899985,
+     "close": 1879000,
+     "foreignShares": 366488020,
+     "foreignPct": 50.17
+    },
+    {
+     "d": "20260922",
+     "dealShares": 19181,
+     "repayShares": 196089,
+     "balanceShares": 11011521,
+     "balanceMil": 20261199,
+     "close": 1841000,
+     "foreignShares": 366341921,
+     "foreignPct": 50.15
+    },
+    {
+     "d": "20260923",
+     "dealShares": 130983,
+     "repayShares": 160934,
+     "balanceShares": 10981570,
+     "balanceMil": 20447683,
+     "close": 1863000,
+     "foreignShares": 365684478,
+     "foreignPct": 50.06
+    },
+    {
+     "d": "20260928",
+     "dealShares": 578995,
+     "repayShares": 250457,
+     "balanceShares": 11310108,
+     "balanceMil": 19996271,
+     "close": 1761000,
+     "foreignShares": 364807887,
+     "foreignPct": 49.94
+    },
+    {
+     "d": "20260929",
+     "dealShares": 1423763,
+     "repayShares": 153075,
+     "balanceShares": 12580796,
+     "balanceMil": 22205105,
+     "close": 1790000,
+     "foreignShares": 363931296,
+     "foreignPct": 49.82
+    },
+    {
+     "d": "20260930",
+     "dealShares": 237068,
+     "repayShares": 108565,
+     "balanceShares": 12709299,
+     "balanceMil": 22571715,
+     "close": 1783000,
+     "foreignShares": 363639099,
+     "foreignPct": 49.78
+    },
+    {
+     "d": "20261001",
+     "dealShares": 51395,
+     "repayShares": 48600,
+     "balanceShares": 12712094,
+     "balanceMil": 23301268,
+     "close": 1828000,
+     "foreignShares": 363566050,
+     "foreignPct": 49.77
+    },
+    {
+     "d": "20261002",
+     "dealShares": 394119,
+     "repayShares": 1675496,
+     "balanceShares": 11430717,
+     "balanceMil": 21043950,
+     "close": 1842000,
+     "foreignShares": 363493001,
+     "foreignPct": 49.76
+    },
+    {
+     "d": "20261006",
+     "dealShares": 1775157,
+     "repayShares": 1406866,
+     "balanceShares": 11799008,
+     "balanceMil": 20919641,
+     "close": 1784000,
+     "foreignShares": 363127755,
+     "foreignPct": 49.71
+    },
+    {
+     "d": "20261007",
+     "dealShares": 100681,
+     "repayShares": 154283,
+     "balanceShares": 11745406,
+     "balanceMil": 20237335,
+     "close": 1715000,
+     "foreignShares": 362251164,
+     "foreignPct": 49.59
+    },
+    {
+     "d": "20261008",
+     "dealShares": 43301,
+     "repayShares": 134643,
+     "balanceShares": 11654064,
+     "balanceMil": 19590482,
+     "close": 1686000,
+     "foreignShares": 361739819,
+     "foreignPct": 49.52
+    },
+    {
+     "d": "20261012",
+     "dealShares": 189369,
+     "repayShares": 219054,
+     "balanceShares": 11624379,
+     "balanceMil": 18657128,
+     "close": 1605000,
+     "foreignShares": 360936278,
+     "foreignPct": 49.41
+    },
+    {
+     "d": "20261013",
+     "dealShares": 187463,
+     "repayShares": 342848,
+     "balanceShares": 11468994,
+     "balanceMil": 16549758,
+     "close": 1456000,
+     "foreignShares": 358817850,
+     "foreignPct": 49.12
+    },
+    {
+     "d": "20261014",
+     "dealShares": 553038,
+     "repayShares": 484531,
+     "balanceShares": 11537501,
+     "balanceMil": 16371714,
+     "close": 1425000,
+     "foreignShares": 358817850,
+     "foreignPct": 49.12
     }
    ]
   }

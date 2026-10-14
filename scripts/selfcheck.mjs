@@ -318,18 +318,45 @@ if (A.lending?.cover?.shares) {
   assert.ok(S.series.length > 20, `주수 차트 포인트가 ${S.series.length}개뿐이다`);
 }
 
-// 종목별 대차잔고·외국인 지분율. 원본 잔고금액(백만원)과 주수 × 종가가 어긋나면
-// 소스가 스케일이나 컬럼 의미를 바꾼 것이다 — 그때 조용히 10배 틀린 숫자를 싣지 않게 막는다.
+// 종목별 대차잔고·외국인 지분율. 원본 잔고금액(백만원)과 주수 × 종가를 대조한다.
+//
+// 이 대조가 지키려는 것은 **소스가 단위나 컬럼 의미를 바꾸는 것**이다(10배·1000배).
+// 리포트가 싣는 금액은 `주수 × 종가`로 계산하지 이 잔고금액 컬럼을 쓰지 않는다
+// (fetch-stock-flows.mjs 머리말, analyze.mjs 의 valueJo) — 이 컬럼이 조금 흔들려도
+// 실린 숫자는 틀리지 않는다.
+//
+// 2026-09 중순부터 FREESIS 가 잔고금액을 당일 종가가 아닌 값으로 매기기 시작했다(§49).
+// 그 전 20개월은 오차가 **정확히 0.00%** 였다가 최대 1.4% 로 벌어졌다. 종가 쪽은
+// 네이버 두 엔드포인트(siseJson·모바일 trend)가 같은 값을 주고 FREESIS 원본 응답에도
+// 컬럼 밀림이 없다 — 우리 숫자가 아니라 저쪽 평가 기준이 바뀐 것이다.
+//
+// 한 행이라도 1% 를 넘으면 파이프라인 전체를 세우던 기존 판정은 과했다 — 쓰지도 않는
+// 컬럼의 1.4% 때문에 리포트가 5주 멈췄다. 블래스트 반경에 맞춰 판정을 둘로 나눈다:
+//   · 행마다 — 단위가 바뀌었는가. 10배면 900% 라 한 행만 봐도 즉시 걸린다. 한계 20%.
+//   · 최근 창의 중앙값 — 계열이 통째로 밀렸는가(의미 재정의). 한계 2%.
+// 중앙값을 전 구간으로 재면 20개월치 0.00% 에 희석돼 새 변화가 몇 주씩 안 잡힌다 —
+// 그래서 최근 60행만 본다. 하루치 이상값 하나로는 안 멈추고, 소스가 바뀌면 바로 걸린다.
+const DRIFT_WINDOW = 60;
 if (A.stockFlow) {
   const raw = JSON.parse(fs.readFileSync(
     path.join(import.meta.dirname, '..', 'data', 'stock-flows.json'), 'utf8'));
   for (const st of raw.stocks) {
     const cmp = st.series.filter(r => r.close && r.balanceMil && r.balanceShares);
     assert.ok(cmp.length > 100, `${st.name}: 교차검증할 행이 ${cmp.length}개뿐이다`);
+    const relOf = r => Math.abs((r.balanceShares * r.close) / 1e6 - r.balanceMil) / r.balanceMil;
     for (const r of cmp) {
-      const rel = Math.abs((r.balanceShares * r.close) / 1e6 - r.balanceMil) / r.balanceMil;
-      assert.ok(rel < 0.01,
-        `${st.name} ${r.d}: 잔고금액이 주수×종가와 ${(rel * 100).toFixed(1)}% 어긋난다 — 소스 단위가 바뀌었는지 확인할 것`);
+      assert.ok(relOf(r) < 0.20,
+        `${st.name} ${r.d}: 잔고금액이 주수×종가와 ${(relOf(r) * 100).toFixed(1)}% 어긋난다 — 소스 단위가 바뀌었는지 확인할 것`);
+    }
+    const recent = cmp.slice(-DRIFT_WINDOW).map(relOf).sort((a, b) => a - b);
+    const med = recent[Math.floor(recent.length / 2)];
+    assert.ok(med < 0.02,
+      `${st.name}: 최근 ${recent.length}행의 잔고금액 대조 중앙 오차 ${(med * 100).toFixed(2)}% — 계열이 통째로 밀렸다(소스 의미 변경 확인)`);
+    // 조용히 넘어가지 않게 매 실행 로그에 남긴다 — 0.00% 가 아니면 저쪽이 바뀐 신호다.
+    const worst = recent.at(-1);
+    if (worst > 0.001) {
+      console.log(`  주의 ${st.name}: 최근 ${recent.length}행 잔고금액 대조 중앙 ${(med * 100).toFixed(2)}% / 최대 ${(worst * 100).toFixed(2)}%`
+        + ' — 리포트 금액은 주수×종가라 영향 없음(§49)');
     }
   }
   for (const it of A.stockFlow.items) {

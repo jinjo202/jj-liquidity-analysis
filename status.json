@@ -1,62 +1,62 @@
 {
   "ranOn": "2026-10-14",
-  "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/38587954260",
-  "failedStage": "selfcheck",
-  "selfcheck": "not reached",
-  "fetchErrors": "directionflows",
+  "ranBy": "local",
+  "runUrl": null,
+  "failedStage": null,
+  "selfcheck": "passed",
+  "fetchErrors": null,
   "lendingError": null,
   "dataThrough": {
-    "지수·거래대금": "20260914",
-    "신용융자·예탁금": "20260911",
+    "지수·거래대금": "20261014",
+    "신용융자·예탁금": "20261013",
     "신용융자 분리(유가증권/코스닥)": "20260729",
-    "대차잔고": "20260914",
-    "지수 장중(네이버)": "20260922"
+    "대차잔고": "20261014",
+    "지수 장중(네이버)": "20261014"
   },
-  "lastSeriesDate": "20260914",
+  "lastSeriesDate": "20261014",
   "reproMAE": 0.0512,
   "cycles": [
     "c2021",
     "c2026"
   ],
   "singleStockEtfUnits": {
-    "date": "20260922",
-    "unitsMillion": 601,
-    "verdict": "flat",
+    "date": "20261015",
+    "unitsMillion": 588,
+    "verdict": "building",
     "changePct": {
-      "d1": -0.7,
-      "d5": 0.2,
-      "d10": -6.9
+      "d1": 1.1,
+      "d5": 1.8,
+      "d10": 1.2
     },
     "peak": {
       "date": "20260804",
       "unitsMillion": 843,
-      "fromPeakPct": -28.7,
-      "tradingDaysSince": 34
+      "fromPeakPct": -30.3,
+      "tradingDaysSince": 47
     },
-    "consecutiveDownDays": 2
+    "consecutiveDownDays": 0
   },
   "verdict": {
-    "asOf": "20260922",
-    "stance": "clearing",
-    "stanceLabel": "정리 우위",
-    "score": 8,
+    "asOf": "20261015",
+    "stance": "easing",
+    "stanceLabel": "완만한 정리",
+    "score": 5,
     "signals": 14,
-    "headline": "아래쪽에 아직 1개가 걸려 있다 — 시장별 되돌림 진행도. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -19.0조 / 선물 +7.7천계약) — 방향 신호는 아직 없다.",
+    "headline": "아래쪽에 아직 2개가 걸려 있다 — 시장별 되돌림 진행도·신용융자 상승 추세. 정리는 아직 균일하지 않다 — 단일종목 레버리지 좌수가 아직 안 꺾였다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -19.0조 / 선물 +7.7천계약) — 방향 신호는 아직 없다.",
     "axes": {
       "down": {
-        "ok": 5,
-        "alert": 1,
+        "ok": 3,
+        "alert": 2,
         "n": 6
       },
       "up": {
         "ok": 2,
-        "alert": 1,
+        "alert": 0,
         "n": 3
       },
       "crowd": {
         "ok": 3,
-        "alert": 0,
+        "alert": 1,
         "n": 4
       },
       "direction": {
@@ -67,7 +67,8 @@
     },
     "alerts": [
       "시장별 되돌림 진행도 코스피 17% / 코스닥 95%",
-      "해외 메모리 공매도 z +0.64"
+      "신용융자 상승 추세 연속 0일 상승",
+      "단일종목 레버리지 좌수 588백만좌"
     ]
   },
   "note": "자동 갱신 상태 확인용. ranOn 이 며칠째 그대로면 워크플로가 멈춘 것이다. singleStockEtfUnits.verdict 가 rolling 으로 바뀌면 레버리지 ETF 환매가 실제로 시작된 것이다."
