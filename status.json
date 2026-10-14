@@ -1,10 +1,10 @@
 {
   "ranOn": "2026-10-14",
-  "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/38654015177",
+  "ranBy": "local",
+  "runUrl": null,
   "failedStage": null,
   "selfcheck": "passed",
-  "fetchErrors": "directionflows",
+  "fetchErrors": null,
   "lendingError": null,
   "dataThrough": {
     "지수·거래대금": "20261014",
@@ -42,7 +42,7 @@
     "stanceLabel": "완만한 정리",
     "score": 5,
     "signals": 14,
-    "headline": "아래쪽에 아직 2개가 걸려 있다 — 시장별 되돌림 진행도·신용융자 상승 추세. 정리는 아직 균일하지 않다 — 단일종목 레버리지 좌수가 아직 안 꺾였다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -19.0조 / 선물 +7.7천계약) — 방향 신호는 아직 없다.",
+    "headline": "아래쪽에 아직 2개가 걸려 있다 — 시장별 되돌림 진행도·신용융자 상승 추세. 정리는 아직 균일하지 않다 — 단일종목 레버리지 좌수가 아직 안 꺾였다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -33.4조 / 선물 +0.7조) — 방향 신호는 아직 없다.",
     "axes": {
       "down": {
         "ok": 3,
