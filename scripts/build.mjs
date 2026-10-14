@@ -3178,9 +3178,10 @@ const directionSection = !A.directionFlow ? '' : (() => {
   const sg1 = (n, d = 1) => `${n >= 0 ? '+' : ''}${f(n, d)}`;
   const cumRows = D.kospi.series.map(r => ({ d: r.d, cum: r.cum, idx: r.idx }));
   const fut = D.futures.series;
+  // 선물도 금액(조원)이다 — 2026-09 네이버 개편으로 계약 수 소스가 죽어 단위가 바뀌었다(§50).
   const futRows = fut.map((r, i) => {
     const back = k => fut.slice(Math.max(0, i - k + 1), i + 1).reduce((t, x) => t + x.v, 0);
-    return { d: r.d, f5: back(5) / 1e3, f20: back(20) / 1e3 };
+    return { d: r.d, f5: back(5), f20: back(20) };
   });
 
   const cumChart = interactive({
@@ -3211,10 +3212,12 @@ const directionSection = !A.directionFlow ? '' : (() => {
     <div class="nt">5일 ${sg1(D.kospi.f5)}조 · 연속 ${D.kospi.streak.days}일 ${D.kospi.streak.sign > 0 ? '순매수' : '순매도'}</div></div>
   <div class="card"><div class="lb">코스닥 현물 20일</div><div class="vl ${D.kosdaq.f20 >= 0 ? 'up' : 'neg'}">${sg1(D.kosdaq.f20)}<span class="u">조</span></div>
     <div class="nt">5일 ${sg1(D.kosdaq.f5)}조</div></div>
-  <div class="card"><div class="lb">K200 선물 20일</div><div class="vl ${D.futures.f20 >= 0 ? 'up' : 'neg'}">${sg1(D.futures.f20 / 1e3)}<span class="u">천계약</span></div>
-    <div class="nt">5일 ${sg1(D.futures.f5 / 1e3)}천계약 · 연속 ${D.futures.streak.days}일 ${D.futures.streak.sign > 0 ? '순매수' : '순매도'}</div></div>
-  <div class="card"><div class="lb">동조 판정</div><div class="vl">${{ 'aligned-buy': '동시 매수', 'aligned-sell': '동시 매도', mixed: '엇갈림' }[D.align]}</div>
-    <div class="nt">20일 누적 부호 기준</div></div>
+  <div class="card"><div class="lb">K200 선물 20일</div><div class="vl ${D.futures.f20 >= 0 ? 'up' : 'neg'}">${sg1(D.futures.f20)}<span class="u">조</span></div>
+    <div class="nt">5일 ${sg1(D.futures.f5)}조 · 연속 ${D.futures.streak.days}일 ${D.futures.streak.sign > 0 ? '순매수' : '순매도'}
+      ${D.futuresThin ? `<br><b>${D.futuresDays}일치</b> — 20일 미만(§50)` : ''}</div></div>
+  <div class="card"><div class="lb">동조 판정</div><div class="vl">${D.futuresThin ? '보류'
+    : { 'aligned-buy': '동시 매수', 'aligned-sell': '동시 매도', mixed: '엇갈림' }[D.align]}</div>
+    <div class="nt">${D.futuresThin ? '선물 20일 창이 차면 판정' : '20일 누적 부호 기준'}</div></div>
 </div>
 
 <div class="box${alignBox[1]}">${alignBox[0]}</div>
@@ -3232,11 +3235,13 @@ const directionSection = !A.directionFlow ? '' : (() => {
   ${levelChart(futRows, [
     { key: 'f5', cls: 'ln-cr', name: '5일합' },
     { key: 'f20', cls: 'ln-idx', name: '20일합' },
-  ], '외국인 선물 순매수 합 (천계약)', { dg: 1, zeroBase: false })}
+  ], '외국인 선물 순매수 합 (조원)', { dg: 2, zeroBase: false })}
   <div class="lg"><span><i class="sw cr"></i>5일합</span><span><i class="sw acc"></i>20일합</span></div>
   <figcaption>0 위면 선물 매수 우위, 아래면 매도 우위다. 5일합이 20일합을 위로 가로지르면
-    태도 전환이 빠르게 진행 중이라는 뜻이다. 계약수라 금액과 직접 비교할 수 없다 —
-    방향과 전환 시점만 읽는다.</figcaption>
+    태도 전환이 빠르게 진행 중이라는 뜻이다.
+    <b>${dtFull(D.futuresFrom)}부터의 계열이다</b> — 2026-09 네이버 개편으로 계약 수를 주던 소스가
+    죽어, 금액(조원)을 주는 새 소스로 갈아타며 계열을 새로 시작했다. 옛 계약 기록은 단위가 달라
+    이어 붙이지 않았다(§50).</figcaption>
 </figure>
 
 <div class="box">

@@ -520,7 +520,11 @@ if (A.directionFlow) {
   const D = A.directionFlow;
   for (const key of ['kospi', 'kosdaq', 'futures']) {
     const s = D[key].series;
-    assert.ok(s.length >= 20, `${key}: 20일 합을 낼 수 없다 (${s.length}행)`);
+    // 소스가 바뀌어 계열을 새로 시작하면(선물이 그랬다, §50) 20일이 찰 때까지는 짧다.
+    // 그걸로 파이프라인을 세우지 않는다 — 리포트는 '판정 보류'로 정직하게 나간다.
+    // 대신 아예 비면 소스가 죽은 것이므로 막는다.
+    const floor = key === 'futures' ? 5 : 20;
+    assert.ok(s.length >= floor, `${key}: 행이 ${s.length}개뿐이다 (최소 ${floor})`);
     for (let i = 1; i < s.length; i++) {
       assert.ok(s[i - 1].d < s[i].d, `${key}: 날짜 정렬이 깨졌다 (${s[i].d})`);
     }

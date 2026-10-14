@@ -390,14 +390,22 @@ function directionFlows() {
 
   const kospi = mk(raw2.kospi, 1e4);      // 억원 → 조
   const kosdaq = mk(raw2.kosdaq, 1e4);
-  const futures = mk(raw2.futures, 1);    // 계약
+  // 선물도 2026-09-16 부터 금액(억원)이다 — 옛 소스(계약 수)가 죽어 단위가 바뀌었다(§50).
+  // 계열을 새로 시작했으므로 현물과 같은 스케일로 읽는다.
+  const futures = mk(raw2.futures, 1e4);  // 억원 → 조
 
   const sameSign = Math.sign(kospi.f20) === Math.sign(futures.f20) && kospi.f20 !== 0;
   const align = !sameSign ? 'mixed' : kospi.f20 > 0 ? 'aligned-buy' : 'aligned-sell';
 
+  // 동조 판정은 두 계열의 '같은 창'을 봐야 한다. 선물 계열이 새로 시작해 20일이 안 차면
+  // 현물 20일과 비교하는 셈이 되므로, 창이 찰 때까지는 판정을 보류한다.
+  const futuresDays = raw2.futures.length;
+
   return {
     asOf: raw2.kospi.at(-1).d, from: raw2.kospi[0].d, days: raw2.kospi.length,
     kospi, kosdaq, futures, align,
+    futuresFrom: raw2.futures[0]?.d ?? null, futuresDays,
+    futuresThin: futuresDays < 20,
     meta: raw2.meta,
   };
 }
@@ -1712,18 +1720,27 @@ function dailyVerdict() {
   /* --- 축 4: 방향 — 외국인이 어느 쪽에 베팅하나 (§44) --- */
   const DF = directionFlow;
   if (DF) {
-    const fmtFut = n => `${n >= 0 ? '+' : ''}${(n / 1e3).toFixed(1)}천계약`;
+    const sgJo = n => `${n >= 0 ? '+' : ''}${n2(n)}조`;
+    // 선물 계열이 20일을 못 채웠으면(단위 교체로 새로 시작, §50) 같은 창끼리 비교가 아니다 —
+    // 판정을 '중립'으로 두고 왜 보류인지 밝힌다. 틀린 동조 판정을 내는 것보다 낫다.
     add('direction', 'foreignAlign', '외국인 현·선물 동조',
-      DF.align === 'aligned-sell' ? 'alert' : DF.align === 'mixed' ? 'watch' : 'ok',
-      `현물 ${DF.kospi.f20 >= 0 ? '+' : ''}${n2(DF.kospi.f20)}조 / 선물 ${fmtFut(DF.futures.f20)}`,
-      `20일 누적 기준. 코스피 현물 ${DF.kospi.f20 >= 0 ? '+' : ''}${n2(DF.kospi.f20)}조`
-      + `(연속 ${DF.kospi.streak.days}일 ${DF.kospi.streak.sign > 0 ? '순매수' : '순매도'}), `
-      + `K200 선물 ${fmtFut(DF.futures.f20)}. `
-      + (DF.align === 'aligned-buy'
-        ? '**현물과 선물이 같이 매수다** — 헤지가 아니라 방향 베팅이고, 위쪽을 보고 있다.'
-        : DF.align === 'aligned-sell'
-          ? '**현물과 선물이 같이 매도다** — 자금이 방향성으로 빠지는 국면이다.'
-          : '**현물과 선물이 엇갈린다** — 한쪽이 헤지일 가능성이 커서 방향 신호로 읽으면 안 된다. 동조로 돌아서는 쪽이 다음 방향이다.'));
+      DF.futuresThin ? 'watch' : DF.align === 'aligned-sell' ? 'alert' : DF.align === 'mixed' ? 'watch' : 'ok',
+      DF.futuresThin
+        ? `현물 ${sgJo(DF.kospi.f20)} / 선물 집계 중`
+        : `현물 ${sgJo(DF.kospi.f20)} / 선물 ${sgJo(DF.futures.f20)}`,
+      DF.futuresThin
+        ? `코스피 현물은 20일 누적 ${sgJo(DF.kospi.f20)}`
+          + `(연속 ${DF.kospi.streak.days}일 ${DF.kospi.streak.sign > 0 ? '순매수' : '순매도'})다. `
+          + `**선물은 아직 ${DF.futuresDays}일치뿐이라 동조 판정을 보류한다** — 네이버 개편으로 옛 소스가 죽어 `
+          + `선물 계열을 금액 기준으로 새로 시작했다(§50). 20일이 차면 판정이 다시 선다.`
+        : `20일 누적 기준. 코스피 현물 ${sgJo(DF.kospi.f20)}`
+          + `(연속 ${DF.kospi.streak.days}일 ${DF.kospi.streak.sign > 0 ? '순매수' : '순매도'}), `
+          + `K200 선물 ${sgJo(DF.futures.f20)}. `
+          + (DF.align === 'aligned-buy'
+            ? '**현물과 선물이 같이 매수다** — 헤지가 아니라 방향 베팅이고, 위쪽을 보고 있다.'
+            : DF.align === 'aligned-sell'
+              ? '**현물과 선물이 같이 매도다** — 자금이 방향성으로 빠지는 국면이다.'
+              : '**현물과 선물이 엇갈린다** — 한쪽이 헤지일 가능성이 커서 방향 신호로 읽으면 안 된다. 동조로 돌아서는 쪽이 다음 방향이다.'));
   }
 
   if (!S.length) return null;
