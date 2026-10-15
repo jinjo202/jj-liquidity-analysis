@@ -1,7 +1,7 @@
 {
  "_note": "fetch-csop.mjs 가 자동 생성한다(§23.6). 손으로 고쳐도 다음 실행에서 덮어써진다. 일별 히스토리는 data/csop-daily.json 에 쌓인다.",
  "asOf": "20261014",
- "scrapedAt": "2026-10-14",
+ "scrapedAt": "2026-10-15",
  "source": "https://website-api.csopasset.com/cmsApi/NAV/product",
  "products": [
   {
@@ -16,7 +16,7 @@
    "navPerUnitUsd": 3.1207,
    "navPerUnitHkd": 24.4914,
    "closeHkd": 24.68,
-   "notionalUsd": 0
+   "notionalUsd": 6382755789.23
   },
   {
    "ticker": "7747",
@@ -29,7 +29,7 @@
    "navPerUnitUsd": 7.2588,
    "navPerUnitHkd": 56.9674,
    "closeHkd": 57.3,
-   "notionalUsd": 0
+   "notionalUsd": 1478133223.56
   },
   {
    "ticker": "7347",
@@ -42,7 +42,7 @@
    "navPerUnitUsd": 0.516,
    "navPerUnitHkd": 4.0496,
    "closeHkd": 4.006,
-   "notionalUsd": 0
+   "notionalUsd": -46811572.29
   }
  ]
 }

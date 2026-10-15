@@ -2034,7 +2034,7 @@
      "navPerUnitUsd": 3.1207,
      "navPerUnitHkd": 24.4914,
      "closeHkd": 24.68,
-     "notionalUsd": 0,
+     "notionalUsd": 6382755789.23,
      "deemedNavUsd": 3176459243.09
     }
    ]
@@ -4073,7 +4073,7 @@
      "navPerUnitUsd": 7.2588,
      "navPerUnitHkd": 56.9674,
      "closeHkd": 57.3,
-     "notionalUsd": 0,
+     "notionalUsd": 1478133223.56,
      "deemedNavUsd": 736004059.54
     }
    ]
@@ -6112,13 +6112,13 @@
      "navPerUnitUsd": 0.516,
      "navPerUnitHkd": 4.0496,
      "closeHkd": 4.006,
-     "notionalUsd": 0,
+     "notionalUsd": -46811572.29,
      "deemedNavUsd": 23371346.85
     }
    ]
   }
  ],
- "updatedAt": "2026-10-14",
+ "updatedAt": "2026-10-15",
  "source": "website-api.csopasset.com/cmsApi/NAV/product (POST {productName}) + performanceView/LI/Performance/ChartData (과거 좌당 NAV, §23.7)",
  "note": "기준일(HstDateFormat)별 1행. 2026-08-02 이전 구간은 SDW 좌수 × ChartData 좌당 NAV 로 복원한 근사치다(navSrc:\"chart-api\"). CSOP 신고좌수 기준이 아니라 5~20% 어긋날 수 있다(§23.6~23.7).",
  "fx": [
@@ -7104,7 +7104,7 @@
   },
   {
    "d": "20261015",
-   "krw": 1341
+   "krw": 1351.9
   }
  ]
 }
