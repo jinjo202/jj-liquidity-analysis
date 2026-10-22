@@ -2066,6 +2066,16 @@
      "closeHkd": 17.23,
      "notionalUsd": 5364959768.35,
      "deemedNavUsd": 2679791067.52
+    },
+    {
+     "d": "20261021",
+     "units": 1189500000,
+     "totalNavUsd": 2991213290.01,
+     "navPerUnitUsd": 2.5147,
+     "navPerUnitHkd": 19.7345,
+     "closeHkd": 19.62,
+     "notionalUsd": 6168039423.01,
+     "deemedNavUsd": 3073264452.24
     }
    ]
   },
@@ -4135,6 +4145,16 @@
      "closeHkd": 45.76,
      "notionalUsd": 1237626199.26,
      "deemedNavUsd": 618305919.07
+    },
+    {
+     "d": "20261021",
+     "units": 105000000,
+     "totalNavUsd": 688534919.68,
+     "navPerUnitUsd": 6.5575,
+     "navPerUnitHkd": 51.461,
+     "closeHkd": 51.6,
+     "notionalUsd": 1382047733.32,
+     "deemedNavUsd": 691390063.55
     }
    ]
   },
@@ -6204,11 +6224,21 @@
      "closeHkd": 4.76,
      "notionalUsd": -41272682.43,
      "deemedNavUsd": 20621920.07
+    },
+    {
+     "d": "20261021",
+     "units": 34300000,
+     "totalNavUsd": 18294354.81,
+     "navPerUnitUsd": 0.5334,
+     "navPerUnitHkd": 4.1859,
+     "closeHkd": 4.166,
+     "notionalUsd": -36536159.38,
+     "deemedNavUsd": 18305172.69
     }
    ]
   }
  ],
- "updatedAt": "2026-10-21",
+ "updatedAt": "2026-10-22",
  "source": "website-api.csopasset.com/cmsApi/NAV/product (POST {productName}) + performanceView/LI/Performance/ChartData (과거 좌당 NAV, §23.7)",
  "note": "기준일(HstDateFormat)별 1행. 2026-08-02 이전 구간은 SDW 좌수 × ChartData 좌당 NAV 로 복원한 근사치다(navSrc:\"chart-api\"). CSOP 신고좌수 기준이 아니라 5~20% 어긋날 수 있다(§23.6~23.7).",
  "fx": [
@@ -7210,7 +7240,11 @@
   },
   {
    "d": "20261021",
-   "krw": 1327.8
+   "krw": 1327.5
+  },
+  {
+   "d": "20261022",
+   "krw": 1327.3
   }
  ]
 }
