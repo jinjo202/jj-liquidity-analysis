@@ -1,19 +1,19 @@
 {
   "ranOn": "2026-10-23",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/39885702544",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/39976631422",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
   "lendingError": null,
   "dataThrough": {
-    "지수·거래대금": "20261022",
-    "신용융자·예탁금": "20261021",
+    "지수·거래대금": "20261023",
+    "신용융자·예탁금": "20261022",
     "신용융자 분리(유가증권/코스닥)": "20260729",
-    "대차잔고": "20261022",
+    "대차잔고": "20261023",
     "지수 장중(네이버)": "20261023"
   },
-  "lastSeriesDate": "20261022",
+  "lastSeriesDate": "20261023",
   "reproMAE": 0.0512,
   "cycles": [
     "c2021",
@@ -66,7 +66,7 @@
       }
     },
     "alerts": [
-      "마진콜 첫 문턱까지 0.2%",
+      "마진콜 첫 문턱까지 1.6%",
       "시장별 되돌림 진행도 코스피 17% / 코스닥 95%",
       "대차잔고 주수 +4.3%",
       "단일종목 레버리지 좌수 622백만좌"
