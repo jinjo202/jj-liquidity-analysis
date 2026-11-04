@@ -2,7 +2,7 @@
  "meta": {
   "lending": "FREESIS 대차거래추이 (STATSCU0100000140, tmpV72=종목코드). 잔고금액(백만원)은 교차검증용으로만 두고, 표시 금액은 주수 × 종가로 계산한다(§26).",
   "foreign": "네이버 시세 API siseJson (종가·외국인소진율). 외국인 보유주식수는 소스에 없어 지분율 × 상장주식수로 되살린다. KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.",
-  "fetchedAt": "2026-11-03",
+  "fetchedAt": "2026-11-04",
   "start": "20250101"
  },
  "stocks": [
@@ -4477,8 +4477,18 @@
      "balanceShares": 80243489,
      "balanceMil": 17613446,
      "close": 222000,
-     "foreignShares": 2698642205,
-     "foreignPct": 46.16
+     "foreignShares": 2697472950,
+     "foreignPct": 46.14
+    },
+    {
+     "d": "20261104",
+     "dealShares": 1447822,
+     "repayShares": 487100,
+     "balanceShares": 81204211,
+     "balanceMil": 17702518,
+     "close": 221500,
+     "foreignShares": 2697472950,
+     "foreignPct": 46.14
     }
    ]
   },
@@ -8953,8 +8963,18 @@
      "balanceShares": 11653722,
      "balanceMil": 16291903,
      "close": 1414000,
-     "foreignShares": 355457585,
-     "foreignPct": 48.66
+     "foreignShares": 354873191,
+     "foreignPct": 48.58
+    },
+    {
+     "d": "20261104",
+     "dealShares": 280278,
+     "repayShares": 192883,
+     "balanceShares": 11741117,
+     "balanceMil": 16390599,
+     "close": 1420000,
+     "foreignShares": 354873191,
+     "foreignPct": 48.58
     }
    ]
   }
