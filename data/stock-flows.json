@@ -2,7 +2,7 @@
  "meta": {
   "lending": "FREESIS 대차거래추이 (STATSCU0100000140, tmpV72=종목코드). 잔고금액(백만원)은 교차검증용으로만 두고, 표시 금액은 주수 × 종가로 계산한다(§26).",
   "foreign": "네이버 시세 API siseJson (종가·외국인소진율). 외국인 보유주식수는 소스에 없어 지분율 × 상장주식수로 되살린다. KRX 정보데이터시스템은 로그인이 필요해 익명 수집은 안 된다.",
-  "fetchedAt": "2026-11-05",
+  "fetchedAt": "2026-11-06",
   "start": "20250101"
  },
  "stocks": [
@@ -4497,8 +4497,8 @@
      "balanceShares": 81718770,
      "balanceMil": 16466332,
      "close": 201500,
-     "foreignShares": 2692795927,
-     "foreignPct": 46.06
+     "foreignShares": 2686365020,
+     "foreignPct": 45.95
     }
    ]
   },
@@ -8993,8 +8993,8 @@
      "balanceShares": 11879163,
      "balanceMil": 15015262,
      "close": 1262000,
-     "foreignShares": 353996600,
-     "foreignPct": 48.46
+     "foreignShares": 352608665,
+     "foreignPct": 48.27
     }
    ]
   }
