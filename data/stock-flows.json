@@ -4509,6 +4509,16 @@
      "close": 193500,
      "foreignShares": 2685780393,
      "foreignPct": 45.94
+    },
+    {
+     "d": "20261109",
+     "dealShares": 2394191,
+     "repayShares": 1536897,
+     "balanceShares": 80696247,
+     "balanceMil": 15324217,
+     "close": 187000,
+     "foreignShares": 2685780393,
+     "foreignPct": 45.94
     }
    ]
   },
@@ -9013,6 +9023,16 @@
      "balanceShares": 12446369,
      "balanceMil": 14089290,
      "close": 1176000,
+     "foreignShares": 350782434,
+     "foreignPct": 48.02
+    },
+    {
+     "d": "20261109",
+     "dealShares": 592185,
+     "repayShares": 206683,
+     "balanceShares": 12831871,
+     "balanceMil": 14577005,
+     "close": 1115000,
      "foreignShares": 350782434,
      "foreignPct": 48.02
     }
