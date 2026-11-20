@@ -8,7 +8,7 @@
    "futures": "억원"
   },
   "note": "선물은 2026-09-16 부터 금액(억원)이다 — 옛 소스(계약 수)가 죽어 단위가 바뀌었다. 옛 계약 기록은 futuresLegacyContracts 에 있고 금액 계열과 섞지 않는다(§50).",
-  "fetchedAt": "2026-11-19"
+  "fetchedAt": "2026-11-20"
  },
  "futuresLegacyContracts": [
   {
@@ -4687,6 +4687,12 @@
    "indiv": 176,
    "foreign": -3053,
    "inst": 357
+  },
+  {
+   "d": "20261120",
+   "indiv": 15381,
+   "foreign": -10956,
+   "inst": -9330
   }
  ],
  "kosdaq": [
@@ -7194,6 +7200,12 @@
    "indiv": 1662,
    "foreign": -1715,
    "inst": 52
+  },
+  {
+   "d": "20261120",
+   "indiv": 2803,
+   "foreign": -1615,
+   "inst": -1065
   }
  ],
  "futures": [
@@ -7496,6 +7508,12 @@
    "indiv": -345,
    "foreign": 2214,
    "inst": -2088
+  },
+  {
+   "d": "20261120",
+   "indiv": 813,
+   "foreign": -649,
+   "inst": -474
   }
  ]
 }
