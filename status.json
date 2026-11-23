@@ -1,7 +1,7 @@
 {
-  "ranOn": "2026-11-20",
+  "ranOn": "2026-11-23",
   "ranBy": "github-actions",
-  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/44795009707",
+  "runUrl": "https://github.com/jinjo202/jj-liquidity-analysis/actions/runs/45108580126",
   "failedStage": null,
   "selfcheck": "passed",
   "fetchErrors": null,
@@ -11,7 +11,7 @@
     "신용융자·예탁금": "20261119",
     "신용융자 분리(유가증권/코스닥)": "20260729",
     "대차잔고": "20261120",
-    "지수 장중(네이버)": "20261120"
+    "지수 장중(네이버)": "20261123"
   },
   "lastSeriesDate": "20261120",
   "reproMAE": 0.0512,
@@ -20,37 +20,37 @@
     "c2026"
   ],
   "singleStockEtfUnits": {
-    "date": "20261120",
-    "unitsMillion": 625,
+    "date": "20261123",
+    "unitsMillion": 630,
     "verdict": "flat",
     "changePct": {
-      "d1": 0.9,
-      "d5": -0.3,
-      "d10": 2.6
+      "d1": 0.7,
+      "d5": 0.8,
+      "d10": 2.9
     },
     "peak": {
       "date": "20260804",
       "unitsMillion": 843,
-      "fromPeakPct": -25.8,
-      "tradingDaysSince": 73
+      "fromPeakPct": -25.3,
+      "tradingDaysSince": 74
     },
     "consecutiveDownDays": 0
   },
   "verdict": {
-    "asOf": "20261120",
-    "stance": "clearing",
-    "stanceLabel": "정리 우위",
-    "score": 7,
+    "asOf": "20261123",
+    "stance": "easing",
+    "stanceLabel": "완만한 정리",
+    "score": 6,
     "signals": 14,
-    "headline": "아래쪽에 아직 1개가 걸려 있다 — 시장별 되돌림 진행도. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -11.0조 / 선물 +2.5조) — 방향 신호는 아직 없다.",
+    "headline": "아래쪽에 아직 2개가 걸려 있다 — 마진콜 첫 문턱까지·시장별 되돌림 진행도. 레버리지 물량은 실제로 빠지고 있다 — 좌수·AUM·거래대금·개인 순매수 4개가 모두 같은 방향이다. 위쪽은 되돌림이 대체로 끝났다 — 대차/시총이 직전 사이클 저점 부근이다. 외국인 현·선물은 엇갈려 있다(현물 -11.0조 / 선물 +2.6조) — 방향 신호는 아직 없다.",
     "axes": {
       "down": {
-        "ok": 4,
-        "alert": 1,
+        "ok": 3,
+        "alert": 2,
         "n": 6
       },
       "up": {
-        "ok": 1,
+        "ok": 2,
         "alert": 0,
         "n": 3
       },
@@ -66,6 +66,7 @@
       }
     },
     "alerts": [
+      "마진콜 첫 문턱까지 1.4%",
       "시장별 되돌림 진행도 코스피 17% / 코스닥 95%"
     ]
   },
