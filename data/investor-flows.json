@@ -2,7 +2,7 @@
  "meta": {
   "source": "네이버 모바일 m.stock.naver.com/api/stock/{code}/trend (individualPureBuyQuant). 최근 20거래일만 오므로 매일 받아 누적한다(§27).",
   "unit": "순매수 수량(주). 금액이 아니라서 종목 간 직접 비교는 할 수 없다.",
-  "fetchedAt": "2026-11-26"
+  "fetchedAt": "2026-11-27"
  },
  "items": [
   {
@@ -1392,700 +1392,6 @@
    ]
   },
   {
-   "code": "122630",
-   "name": "KODEX 레버리지",
-   "kind": "etf",
-   "group": "index_lev",
-   "series": [
-    {
-     "d": "20260706",
-     "individual": 157345,
-     "foreign": -176751,
-     "institution": 19253,
-     "close": 176630
-    },
-    {
-     "d": "20260707",
-     "individual": 1543670,
-     "foreign": 122535,
-     "institution": -1742008,
-     "close": 158895
-    },
-    {
-     "d": "20260708",
-     "individual": 738971,
-     "foreign": 64612,
-     "institution": -817478,
-     "close": 142500
-    },
-    {
-     "d": "20260709",
-     "individual": 13334,
-     "foreign": 238661,
-     "institution": -254054,
-     "close": 144420
-    },
-    {
-     "d": "20260710",
-     "individual": -1054576,
-     "foreign": -111290,
-     "institution": 1112156,
-     "close": 150695
-    },
-    {
-     "d": "20260713",
-     "individual": 3241371,
-     "foreign": -121056,
-     "institution": -3131696,
-     "close": 121900
-    },
-    {
-     "d": "20260714",
-     "individual": -131496,
-     "foreign": 414053,
-     "institution": -336035,
-     "close": 123580
-    },
-    {
-     "d": "20260715",
-     "individual": -2144467,
-     "foreign": 550463,
-     "institution": 1634556,
-     "close": 139470
-    },
-    {
-     "d": "20260716",
-     "individual": 1629912,
-     "foreign": 567436,
-     "institution": -2227023,
-     "close": 120500
-    },
-    {
-     "d": "20260720",
-     "individual": 989437,
-     "foreign": 185905,
-     "institution": -1260778,
-     "close": 109435
-    },
-    {
-     "d": "20260721",
-     "individual": -732227,
-     "foreign": -9333,
-     "institution": 771602,
-     "close": 118065
-    },
-    {
-     "d": "20260722",
-     "individual": -656243,
-     "foreign": -66561,
-     "institution": 739839,
-     "close": 118480
-    },
-    {
-     "d": "20260723",
-     "individual": -478990,
-     "foreign": -201649,
-     "institution": 701689,
-     "close": 128950
-    },
-    {
-     "d": "20260724",
-     "individual": 2008525,
-     "foreign": 21078,
-     "institution": -2098245,
-     "close": 113390
-    },
-    {
-     "d": "20260727",
-     "individual": 360349,
-     "foreign": 206223,
-     "institution": -573415,
-     "close": 116435
-    },
-    {
-     "d": "20260728",
-     "individual": 3043010,
-     "foreign": -59029,
-     "institution": -3068720,
-     "close": 90130
-    },
-    {
-     "d": "20260729",
-     "individual": 3593565,
-     "foreign": -403670,
-     "institution": -3228778,
-     "close": 79020
-    },
-    {
-     "d": "20260730",
-     "individual": 22258,
-     "foreign": 550167,
-     "institution": -615536,
-     "close": 75595
-    },
-    {
-     "d": "20260731",
-     "individual": -5011958,
-     "foreign": 6380,
-     "institution": 4949750,
-     "close": 110945
-    },
-    {
-     "d": "20260803",
-     "individual": 2767158,
-     "foreign": -383069,
-     "institution": -2387623,
-     "close": 93670
-    },
-    {
-     "d": "20260804",
-     "individual": -805954,
-     "foreign": 610999,
-     "institution": 199065,
-     "close": 95335
-    },
-    {
-     "d": "20260805",
-     "individual": -1104506,
-     "foreign": -52355,
-     "institution": 1145315,
-     "close": 102755
-    },
-    {
-     "d": "20260806",
-     "individual": 1909013,
-     "foreign": -128598,
-     "institution": -1730053,
-     "close": 92200
-    },
-    {
-     "d": "20260807",
-     "individual": 39510,
-     "foreign": 273037,
-     "institution": -316218,
-     "close": 90690
-    },
-    {
-     "d": "20260810",
-     "individual": 391395,
-     "foreign": -14024,
-     "institution": -372758,
-     "close": 90770
-    },
-    {
-     "d": "20260811",
-     "individual": -517344,
-     "foreign": 200454,
-     "institution": 279332,
-     "close": 92580
-    },
-    {
-     "d": "20260812",
-     "individual": -1544781,
-     "foreign": 275592,
-     "institution": 1297368,
-     "close": 100300
-    },
-    {
-     "d": "20260813",
-     "individual": -904807,
-     "foreign": -131506,
-     "institution": 1107437,
-     "close": 107975
-    },
-    {
-     "d": "20260814",
-     "individual": -936258,
-     "foreign": 171123,
-     "institution": 817575,
-     "close": 113525
-    },
-    {
-     "d": "20260818",
-     "individual": 117383,
-     "foreign": -146096,
-     "institution": -27626,
-     "close": 110465
-    },
-    {
-     "d": "20260819",
-     "individual": 2188556,
-     "foreign": -25533,
-     "institution": -2246399,
-     "close": 96740
-    },
-    {
-     "d": "20260820",
-     "individual": -2195407,
-     "foreign": 697683,
-     "institution": 1536210,
-     "close": 108710
-    },
-    {
-     "d": "20260821",
-     "individual": -806466,
-     "foreign": 39890,
-     "institution": 798464,
-     "close": 112240
-    },
-    {
-     "d": "20260824",
-     "individual": 982914,
-     "foreign": -19342,
-     "institution": -930310,
-     "close": 104015
-    },
-    {
-     "d": "20260825",
-     "individual": 477388,
-     "foreign": 303633,
-     "institution": -798567,
-     "close": 105550
-    },
-    {
-     "d": "20260826",
-     "individual": -802707,
-     "foreign": -11146,
-     "institution": 864861,
-     "close": 107495
-    },
-    {
-     "d": "20260827",
-     "individual": -147644,
-     "foreign": 235227,
-     "institution": -75483,
-     "close": 110390
-    },
-    {
-     "d": "20260828",
-     "individual": 383998,
-     "foreign": 19369,
-     "institution": -406392,
-     "close": 106370
-    },
-    {
-     "d": "20260831",
-     "individual": -28966,
-     "foreign": 135322,
-     "institution": -102495,
-     "close": 107080
-    },
-    {
-     "d": "20260901",
-     "individual": -557062,
-     "foreign": 101506,
-     "institution": 450210,
-     "close": 107725
-    },
-    {
-     "d": "20260902",
-     "individual": 1963639,
-     "foreign": -67301,
-     "institution": -1918695,
-     "close": 98900
-    },
-    {
-     "d": "20260903",
-     "individual": -889843,
-     "foreign": 398224,
-     "institution": 513036,
-     "close": 99100
-    },
-    {
-     "d": "20260904",
-     "individual": -984237,
-     "foreign": 96724,
-     "institution": 898684,
-     "close": 103055
-    },
-    {
-     "d": "20260907",
-     "individual": -1584399,
-     "foreign": 67276,
-     "institution": 1652464,
-     "close": 113045
-    },
-    {
-     "d": "20260908",
-     "individual": -616404,
-     "foreign": 38933,
-     "institution": 574538,
-     "close": 112150
-    },
-    {
-     "d": "20260909",
-     "individual": -94885,
-     "foreign": 144092,
-     "institution": -31665,
-     "close": 115580
-    },
-    {
-     "d": "20260910",
-     "individual": 158647,
-     "foreign": 18649,
-     "institution": -185920,
-     "close": 115000
-    },
-    {
-     "d": "20260911",
-     "individual": 660768,
-     "foreign": 34003,
-     "institution": -723500,
-     "close": 109995
-    },
-    {
-     "d": "20260914",
-     "individual": 1254020,
-     "foreign": 274931,
-     "institution": -1564310,
-     "close": 102095
-    },
-    {
-     "d": "20260915",
-     "individual": 1155959,
-     "foreign": 440494,
-     "institution": -1612441,
-     "close": 99690
-    },
-    {
-     "d": "20260916",
-     "individual": -992020,
-     "foreign": 146698,
-     "institution": 853078,
-     "close": 103580
-    },
-    {
-     "d": "20260917",
-     "individual": 437628,
-     "foreign": -100068,
-     "institution": -341234,
-     "close": 103490
-    },
-    {
-     "d": "20260918",
-     "individual": -1709852,
-     "foreign": 66746,
-     "institution": 1695661,
-     "close": 109265
-    },
-    {
-     "d": "20260921",
-     "individual": -791562,
-     "foreign": 47698,
-     "institution": 839556,
-     "close": 114060
-    },
-    {
-     "d": "20260922",
-     "individual": 154724,
-     "foreign": 284030,
-     "institution": -433508,
-     "close": 114400
-    },
-    {
-     "d": "20260923",
-     "individual": -145793,
-     "foreign": 11119,
-     "institution": 138367,
-     "close": 116975
-    },
-    {
-     "d": "20260928",
-     "individual": 1492028,
-     "foreign": 85610,
-     "institution": -1604210,
-     "close": 109370
-    },
-    {
-     "d": "20260929",
-     "individual": 490090,
-     "foreign": -11792,
-     "institution": -486749,
-     "close": 110285
-    },
-    {
-     "d": "20260930",
-     "individual": 24021,
-     "foreign": 193326,
-     "institution": -221667,
-     "close": 109470
-    },
-    {
-     "d": "20261001",
-     "individual": -371834,
-     "foreign": 178253,
-     "institution": 185174,
-     "close": 113255
-    },
-    {
-     "d": "20261002",
-     "individual": -804366,
-     "foreign": 53538,
-     "institution": 766894,
-     "close": 114395
-    },
-    {
-     "d": "20261006",
-     "individual": 817159,
-     "foreign": 83503,
-     "institution": -919053,
-     "close": 111805
-    },
-    {
-     "d": "20261007",
-     "individual": 650684,
-     "foreign": 206025,
-     "institution": -862691,
-     "close": 107230
-    },
-    {
-     "d": "20261008",
-     "individual": 1556321,
-     "foreign": -20533,
-     "institution": -1564788,
-     "close": 101400
-    },
-    {
-     "d": "20261012",
-     "individual": 1703036,
-     "foreign": 145718,
-     "institution": -1873058,
-     "close": 93620
-    },
-    {
-     "d": "20261013",
-     "individual": 4381212,
-     "foreign": 44902,
-     "institution": -4579737,
-     "close": 81965
-    },
-    {
-     "d": "20261014",
-     "individual": -172017,
-     "foreign": 187637,
-     "institution": -6725,
-     "close": 81100
-    },
-    {
-     "d": "20261015",
-     "individual": 4433520,
-     "foreign": 167606,
-     "institution": -4725397,
-     "close": 67785
-    },
-    {
-     "d": "20261016",
-     "individual": -557306,
-     "foreign": 99851,
-     "institution": 428610,
-     "close": 70415
-    },
-    {
-     "d": "20261019",
-     "individual": 848257,
-     "foreign": -463263,
-     "institution": -358696,
-     "close": 72255
-    },
-    {
-     "d": "20261020",
-     "individual": 433771,
-     "foreign": 534304,
-     "institution": -989970,
-     "close": 67170
-    },
-    {
-     "d": "20261021",
-     "individual": -1116981,
-     "foreign": 250660,
-     "institution": 828944,
-     "close": 71740
-    },
-    {
-     "d": "20261022",
-     "individual": 1121226,
-     "foreign": 97639,
-     "institution": -1226543,
-     "close": 66770
-    },
-    {
-     "d": "20261023",
-     "individual": 33121,
-     "foreign": 243769,
-     "institution": -255552,
-     "close": 67415
-    },
-    {
-     "d": "20261026",
-     "individual": 92781,
-     "foreign": 112262,
-     "institution": -221022,
-     "close": 65475
-    },
-    {
-     "d": "20261027",
-     "individual": -1181027,
-     "foreign": -213314,
-     "institution": 1404105,
-     "close": 69955
-    },
-    {
-     "d": "20261028",
-     "individual": -2386307,
-     "foreign": -53480,
-     "institution": 2484830,
-     "close": 80280
-    },
-    {
-     "d": "20261029",
-     "individual": -461156,
-     "foreign": 313689,
-     "institution": 176594,
-     "close": 78550
-    },
-    {
-     "d": "20261030",
-     "individual": 720657,
-     "foreign": 101969,
-     "institution": -849686,
-     "close": 72545
-    },
-    {
-     "d": "20261102",
-     "individual": -490573,
-     "foreign": -100090,
-     "institution": 610471,
-     "close": 75850
-    },
-    {
-     "d": "20261103",
-     "individual": 1471675,
-     "foreign": 230627,
-     "institution": -1735655,
-     "close": 70095
-    },
-    {
-     "d": "20261104",
-     "individual": 987579,
-     "foreign": 245720,
-     "institution": -1286036,
-     "close": 70500
-    },
-    {
-     "d": "20261105",
-     "individual": 2636372,
-     "foreign": -95254,
-     "institution": -2545706,
-     "close": 62500
-    },
-    {
-     "d": "20261106",
-     "individual": 1908364,
-     "foreign": 593863,
-     "institution": -2581191,
-     "close": 54460
-    },
-    {
-     "d": "20261109",
-     "individual": 33171,
-     "foreign": 144073,
-     "institution": -173845,
-     "close": 53665
-    },
-    {
-     "d": "20261110",
-     "individual": -1002987,
-     "foreign": -3061,
-     "institution": 1024945,
-     "close": 58435
-    },
-    {
-     "d": "20261111",
-     "individual": -231880,
-     "foreign": 337444,
-     "institution": -106586,
-     "close": 61995
-    },
-    {
-     "d": "20261112",
-     "individual": -565501,
-     "foreign": 451885,
-     "institution": 182669,
-     "close": 61550
-    },
-    {
-     "d": "20261113",
-     "individual": 166124,
-     "foreign": -403000,
-     "institution": 198049,
-     "close": 59925
-    },
-    {
-     "d": "20261116",
-     "individual": 578217,
-     "foreign": 539645,
-     "institution": -1161936,
-     "close": 55035
-    },
-    {
-     "d": "20261117",
-     "individual": 1376149,
-     "foreign": -91861,
-     "institution": -1275323,
-     "close": 52175
-    },
-    {
-     "d": "20261118",
-     "individual": -614240,
-     "foreign": -218789,
-     "institution": 827203,
-     "close": 54400
-    },
-    {
-     "d": "20261119",
-     "individual": 352628,
-     "foreign": 563371,
-     "institution": -924224,
-     "close": 56035
-    },
-    {
-     "d": "20261120",
-     "individual": 1976146,
-     "foreign": 15015,
-     "institution": -1596864,
-     "close": 49925
-    },
-    {
-     "d": "20261123",
-     "individual": 1927597,
-     "foreign": -191325,
-     "institution": -1787494,
-     "close": 46585
-    },
-    {
-     "d": "20261124",
-     "individual": -3873110,
-     "foreign": 772600,
-     "institution": 3178954,
-     "close": 52935
-    },
-    {
-     "d": "20261125",
-     "individual": 2547756,
-     "foreign": -278790,
-     "institution": -2316633,
-     "close": 45430
-    },
-    {
-     "d": "20261126",
-     "individual": -156364,
-     "foreign": 213405,
-     "institution": -38261,
-     "close": 45885
-    }
-   ]
-  },
-  {
    "code": "233740",
    "name": "KODEX 코스닥150레버리지",
    "kind": "etf",
@@ -2776,6 +2082,700 @@
      "foreign": 133941,
      "institution": -4304846,
      "close": 3800
+    }
+   ]
+  },
+  {
+   "code": "122630",
+   "name": "KODEX 레버리지",
+   "kind": "etf",
+   "group": "index_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 157345,
+     "foreign": -176751,
+     "institution": 19253,
+     "close": 176630
+    },
+    {
+     "d": "20260707",
+     "individual": 1543670,
+     "foreign": 122535,
+     "institution": -1742008,
+     "close": 158895
+    },
+    {
+     "d": "20260708",
+     "individual": 738971,
+     "foreign": 64612,
+     "institution": -817478,
+     "close": 142500
+    },
+    {
+     "d": "20260709",
+     "individual": 13334,
+     "foreign": 238661,
+     "institution": -254054,
+     "close": 144420
+    },
+    {
+     "d": "20260710",
+     "individual": -1054576,
+     "foreign": -111290,
+     "institution": 1112156,
+     "close": 150695
+    },
+    {
+     "d": "20260713",
+     "individual": 3241371,
+     "foreign": -121056,
+     "institution": -3131696,
+     "close": 121900
+    },
+    {
+     "d": "20260714",
+     "individual": -131496,
+     "foreign": 414053,
+     "institution": -336035,
+     "close": 123580
+    },
+    {
+     "d": "20260715",
+     "individual": -2144467,
+     "foreign": 550463,
+     "institution": 1634556,
+     "close": 139470
+    },
+    {
+     "d": "20260716",
+     "individual": 1629912,
+     "foreign": 567436,
+     "institution": -2227023,
+     "close": 120500
+    },
+    {
+     "d": "20260720",
+     "individual": 989437,
+     "foreign": 185905,
+     "institution": -1260778,
+     "close": 109435
+    },
+    {
+     "d": "20260721",
+     "individual": -732227,
+     "foreign": -9333,
+     "institution": 771602,
+     "close": 118065
+    },
+    {
+     "d": "20260722",
+     "individual": -656243,
+     "foreign": -66561,
+     "institution": 739839,
+     "close": 118480
+    },
+    {
+     "d": "20260723",
+     "individual": -478990,
+     "foreign": -201649,
+     "institution": 701689,
+     "close": 128950
+    },
+    {
+     "d": "20260724",
+     "individual": 2008525,
+     "foreign": 21078,
+     "institution": -2098245,
+     "close": 113390
+    },
+    {
+     "d": "20260727",
+     "individual": 360349,
+     "foreign": 206223,
+     "institution": -573415,
+     "close": 116435
+    },
+    {
+     "d": "20260728",
+     "individual": 3043010,
+     "foreign": -59029,
+     "institution": -3068720,
+     "close": 90130
+    },
+    {
+     "d": "20260729",
+     "individual": 3593565,
+     "foreign": -403670,
+     "institution": -3228778,
+     "close": 79020
+    },
+    {
+     "d": "20260730",
+     "individual": 22258,
+     "foreign": 550167,
+     "institution": -615536,
+     "close": 75595
+    },
+    {
+     "d": "20260731",
+     "individual": -5011958,
+     "foreign": 6380,
+     "institution": 4949750,
+     "close": 110945
+    },
+    {
+     "d": "20260803",
+     "individual": 2767158,
+     "foreign": -383069,
+     "institution": -2387623,
+     "close": 93670
+    },
+    {
+     "d": "20260804",
+     "individual": -805954,
+     "foreign": 610999,
+     "institution": 199065,
+     "close": 95335
+    },
+    {
+     "d": "20260805",
+     "individual": -1104506,
+     "foreign": -52355,
+     "institution": 1145315,
+     "close": 102755
+    },
+    {
+     "d": "20260806",
+     "individual": 1909013,
+     "foreign": -128598,
+     "institution": -1730053,
+     "close": 92200
+    },
+    {
+     "d": "20260807",
+     "individual": 39510,
+     "foreign": 273037,
+     "institution": -316218,
+     "close": 90690
+    },
+    {
+     "d": "20260810",
+     "individual": 391395,
+     "foreign": -14024,
+     "institution": -372758,
+     "close": 90770
+    },
+    {
+     "d": "20260811",
+     "individual": -517344,
+     "foreign": 200454,
+     "institution": 279332,
+     "close": 92580
+    },
+    {
+     "d": "20260812",
+     "individual": -1544781,
+     "foreign": 275592,
+     "institution": 1297368,
+     "close": 100300
+    },
+    {
+     "d": "20260813",
+     "individual": -904807,
+     "foreign": -131506,
+     "institution": 1107437,
+     "close": 107975
+    },
+    {
+     "d": "20260814",
+     "individual": -936258,
+     "foreign": 171123,
+     "institution": 817575,
+     "close": 113525
+    },
+    {
+     "d": "20260818",
+     "individual": 117383,
+     "foreign": -146096,
+     "institution": -27626,
+     "close": 110465
+    },
+    {
+     "d": "20260819",
+     "individual": 2188556,
+     "foreign": -25533,
+     "institution": -2246399,
+     "close": 96740
+    },
+    {
+     "d": "20260820",
+     "individual": -2195407,
+     "foreign": 697683,
+     "institution": 1536210,
+     "close": 108710
+    },
+    {
+     "d": "20260821",
+     "individual": -806466,
+     "foreign": 39890,
+     "institution": 798464,
+     "close": 112240
+    },
+    {
+     "d": "20260824",
+     "individual": 982914,
+     "foreign": -19342,
+     "institution": -930310,
+     "close": 104015
+    },
+    {
+     "d": "20260825",
+     "individual": 477388,
+     "foreign": 303633,
+     "institution": -798567,
+     "close": 105550
+    },
+    {
+     "d": "20260826",
+     "individual": -802707,
+     "foreign": -11146,
+     "institution": 864861,
+     "close": 107495
+    },
+    {
+     "d": "20260827",
+     "individual": -147644,
+     "foreign": 235227,
+     "institution": -75483,
+     "close": 110390
+    },
+    {
+     "d": "20260828",
+     "individual": 383998,
+     "foreign": 19369,
+     "institution": -406392,
+     "close": 106370
+    },
+    {
+     "d": "20260831",
+     "individual": -28966,
+     "foreign": 135322,
+     "institution": -102495,
+     "close": 107080
+    },
+    {
+     "d": "20260901",
+     "individual": -557062,
+     "foreign": 101506,
+     "institution": 450210,
+     "close": 107725
+    },
+    {
+     "d": "20260902",
+     "individual": 1963639,
+     "foreign": -67301,
+     "institution": -1918695,
+     "close": 98900
+    },
+    {
+     "d": "20260903",
+     "individual": -889843,
+     "foreign": 398224,
+     "institution": 513036,
+     "close": 99100
+    },
+    {
+     "d": "20260904",
+     "individual": -984237,
+     "foreign": 96724,
+     "institution": 898684,
+     "close": 103055
+    },
+    {
+     "d": "20260907",
+     "individual": -1584399,
+     "foreign": 67276,
+     "institution": 1652464,
+     "close": 113045
+    },
+    {
+     "d": "20260908",
+     "individual": -616404,
+     "foreign": 38933,
+     "institution": 574538,
+     "close": 112150
+    },
+    {
+     "d": "20260909",
+     "individual": -94885,
+     "foreign": 144092,
+     "institution": -31665,
+     "close": 115580
+    },
+    {
+     "d": "20260910",
+     "individual": 158647,
+     "foreign": 18649,
+     "institution": -185920,
+     "close": 115000
+    },
+    {
+     "d": "20260911",
+     "individual": 660768,
+     "foreign": 34003,
+     "institution": -723500,
+     "close": 109995
+    },
+    {
+     "d": "20260914",
+     "individual": 1254020,
+     "foreign": 274931,
+     "institution": -1564310,
+     "close": 102095
+    },
+    {
+     "d": "20260915",
+     "individual": 1155959,
+     "foreign": 440494,
+     "institution": -1612441,
+     "close": 99690
+    },
+    {
+     "d": "20260916",
+     "individual": -992020,
+     "foreign": 146698,
+     "institution": 853078,
+     "close": 103580
+    },
+    {
+     "d": "20260917",
+     "individual": 437628,
+     "foreign": -100068,
+     "institution": -341234,
+     "close": 103490
+    },
+    {
+     "d": "20260918",
+     "individual": -1709852,
+     "foreign": 66746,
+     "institution": 1695661,
+     "close": 109265
+    },
+    {
+     "d": "20260921",
+     "individual": -791562,
+     "foreign": 47698,
+     "institution": 839556,
+     "close": 114060
+    },
+    {
+     "d": "20260922",
+     "individual": 154724,
+     "foreign": 284030,
+     "institution": -433508,
+     "close": 114400
+    },
+    {
+     "d": "20260923",
+     "individual": -145793,
+     "foreign": 11119,
+     "institution": 138367,
+     "close": 116975
+    },
+    {
+     "d": "20260928",
+     "individual": 1492028,
+     "foreign": 85610,
+     "institution": -1604210,
+     "close": 109370
+    },
+    {
+     "d": "20260929",
+     "individual": 490090,
+     "foreign": -11792,
+     "institution": -486749,
+     "close": 110285
+    },
+    {
+     "d": "20260930",
+     "individual": 24021,
+     "foreign": 193326,
+     "institution": -221667,
+     "close": 109470
+    },
+    {
+     "d": "20261001",
+     "individual": -371834,
+     "foreign": 178253,
+     "institution": 185174,
+     "close": 113255
+    },
+    {
+     "d": "20261002",
+     "individual": -804366,
+     "foreign": 53538,
+     "institution": 766894,
+     "close": 114395
+    },
+    {
+     "d": "20261006",
+     "individual": 817159,
+     "foreign": 83503,
+     "institution": -919053,
+     "close": 111805
+    },
+    {
+     "d": "20261007",
+     "individual": 650684,
+     "foreign": 206025,
+     "institution": -862691,
+     "close": 107230
+    },
+    {
+     "d": "20261008",
+     "individual": 1556321,
+     "foreign": -20533,
+     "institution": -1564788,
+     "close": 101400
+    },
+    {
+     "d": "20261012",
+     "individual": 1703036,
+     "foreign": 145718,
+     "institution": -1873058,
+     "close": 93620
+    },
+    {
+     "d": "20261013",
+     "individual": 4381212,
+     "foreign": 44902,
+     "institution": -4579737,
+     "close": 81965
+    },
+    {
+     "d": "20261014",
+     "individual": -172017,
+     "foreign": 187637,
+     "institution": -6725,
+     "close": 81100
+    },
+    {
+     "d": "20261015",
+     "individual": 4433520,
+     "foreign": 167606,
+     "institution": -4725397,
+     "close": 67785
+    },
+    {
+     "d": "20261016",
+     "individual": -557306,
+     "foreign": 99851,
+     "institution": 428610,
+     "close": 70415
+    },
+    {
+     "d": "20261019",
+     "individual": 848257,
+     "foreign": -463263,
+     "institution": -358696,
+     "close": 72255
+    },
+    {
+     "d": "20261020",
+     "individual": 433771,
+     "foreign": 534304,
+     "institution": -989970,
+     "close": 67170
+    },
+    {
+     "d": "20261021",
+     "individual": -1116981,
+     "foreign": 250660,
+     "institution": 828944,
+     "close": 71740
+    },
+    {
+     "d": "20261022",
+     "individual": 1121226,
+     "foreign": 97639,
+     "institution": -1226543,
+     "close": 66770
+    },
+    {
+     "d": "20261023",
+     "individual": 33121,
+     "foreign": 243769,
+     "institution": -255552,
+     "close": 67415
+    },
+    {
+     "d": "20261026",
+     "individual": 92781,
+     "foreign": 112262,
+     "institution": -221022,
+     "close": 65475
+    },
+    {
+     "d": "20261027",
+     "individual": -1181027,
+     "foreign": -213314,
+     "institution": 1404105,
+     "close": 69955
+    },
+    {
+     "d": "20261028",
+     "individual": -2386307,
+     "foreign": -53480,
+     "institution": 2484830,
+     "close": 80280
+    },
+    {
+     "d": "20261029",
+     "individual": -461156,
+     "foreign": 313689,
+     "institution": 176594,
+     "close": 78550
+    },
+    {
+     "d": "20261030",
+     "individual": 720657,
+     "foreign": 101969,
+     "institution": -849686,
+     "close": 72545
+    },
+    {
+     "d": "20261102",
+     "individual": -490573,
+     "foreign": -100090,
+     "institution": 610471,
+     "close": 75850
+    },
+    {
+     "d": "20261103",
+     "individual": 1471675,
+     "foreign": 230627,
+     "institution": -1735655,
+     "close": 70095
+    },
+    {
+     "d": "20261104",
+     "individual": 987579,
+     "foreign": 245720,
+     "institution": -1286036,
+     "close": 70500
+    },
+    {
+     "d": "20261105",
+     "individual": 2636372,
+     "foreign": -95254,
+     "institution": -2545706,
+     "close": 62500
+    },
+    {
+     "d": "20261106",
+     "individual": 1908364,
+     "foreign": 593863,
+     "institution": -2581191,
+     "close": 54460
+    },
+    {
+     "d": "20261109",
+     "individual": 33171,
+     "foreign": 144073,
+     "institution": -173845,
+     "close": 53665
+    },
+    {
+     "d": "20261110",
+     "individual": -1002987,
+     "foreign": -3061,
+     "institution": 1024945,
+     "close": 58435
+    },
+    {
+     "d": "20261111",
+     "individual": -231880,
+     "foreign": 337444,
+     "institution": -106586,
+     "close": 61995
+    },
+    {
+     "d": "20261112",
+     "individual": -565501,
+     "foreign": 451885,
+     "institution": 182669,
+     "close": 61550
+    },
+    {
+     "d": "20261113",
+     "individual": 166124,
+     "foreign": -403000,
+     "institution": 198049,
+     "close": 59925
+    },
+    {
+     "d": "20261116",
+     "individual": 578217,
+     "foreign": 539645,
+     "institution": -1161936,
+     "close": 55035
+    },
+    {
+     "d": "20261117",
+     "individual": 1376149,
+     "foreign": -91861,
+     "institution": -1275323,
+     "close": 52175
+    },
+    {
+     "d": "20261118",
+     "individual": -614240,
+     "foreign": -218789,
+     "institution": 827203,
+     "close": 54400
+    },
+    {
+     "d": "20261119",
+     "individual": 352628,
+     "foreign": 563371,
+     "institution": -924224,
+     "close": 56035
+    },
+    {
+     "d": "20261120",
+     "individual": 1976146,
+     "foreign": 15015,
+     "institution": -1596864,
+     "close": 49925
+    },
+    {
+     "d": "20261123",
+     "individual": 1927597,
+     "foreign": -191325,
+     "institution": -1787494,
+     "close": 46585
+    },
+    {
+     "d": "20261124",
+     "individual": -3873110,
+     "foreign": 772600,
+     "institution": 3178954,
+     "close": 52935
+    },
+    {
+     "d": "20261125",
+     "individual": 2547756,
+     "foreign": -278790,
+     "institution": -2316633,
+     "close": 45430
+    },
+    {
+     "d": "20261126",
+     "individual": -156364,
+     "foreign": 213405,
+     "institution": -38261,
+     "close": 45885
     }
    ]
   },
@@ -5556,700 +5556,6 @@
    ]
   },
   {
-   "code": "123320",
-   "name": "TIGER 레버리지",
-   "kind": "etf",
-   "group": "index_lev",
-   "series": [
-    {
-     "d": "20260706",
-     "individual": 14094,
-     "foreign": -7939,
-     "institution": -6140,
-     "close": 177125
-    },
-    {
-     "d": "20260707",
-     "individual": 75425,
-     "foreign": 149,
-     "institution": -75557,
-     "close": 159080
-    },
-    {
-     "d": "20260708",
-     "individual": 2137,
-     "foreign": 590,
-     "institution": -529,
-     "close": 141650
-    },
-    {
-     "d": "20260709",
-     "individual": -8560,
-     "foreign": 26468,
-     "institution": -20480,
-     "close": 144005
-    },
-    {
-     "d": "20260710",
-     "individual": -23177,
-     "foreign": 44857,
-     "institution": -34769,
-     "close": 150005
-    },
-    {
-     "d": "20260713",
-     "individual": 39714,
-     "foreign": -49562,
-     "institution": 9631,
-     "close": 120000
-    },
-    {
-     "d": "20260714",
-     "individual": -24622,
-     "foreign": -26956,
-     "institution": 63755,
-     "close": 123755
-    },
-    {
-     "d": "20260715",
-     "individual": -37243,
-     "foreign": -10254,
-     "institution": 35169,
-     "close": 139205
-    },
-    {
-     "d": "20260716",
-     "individual": 30518,
-     "foreign": -1338,
-     "institution": -19345,
-     "close": 120015
-    },
-    {
-     "d": "20260720",
-     "individual": 18187,
-     "foreign": 23241,
-     "institution": -40271,
-     "close": 109495
-    },
-    {
-     "d": "20260721",
-     "individual": -13667,
-     "foreign": 1824,
-     "institution": 11842,
-     "close": 118280
-    },
-    {
-     "d": "20260722",
-     "individual": 2255,
-     "foreign": -5845,
-     "institution": 7263,
-     "close": 118965
-    },
-    {
-     "d": "20260723",
-     "individual": -20565,
-     "foreign": 34292,
-     "institution": -13622,
-     "close": 129215
-    },
-    {
-     "d": "20260724",
-     "individual": 46568,
-     "foreign": -79116,
-     "institution": 31965,
-     "close": 113815
-    },
-    {
-     "d": "20260727",
-     "individual": 7498,
-     "foreign": -2268,
-     "institution": -4006,
-     "close": 116540
-    },
-    {
-     "d": "20260728",
-     "individual": 90380,
-     "foreign": -1125,
-     "institution": -90240,
-     "close": 90815
-    },
-    {
-     "d": "20260729",
-     "individual": 40138,
-     "foreign": 619,
-     "institution": -51807,
-     "close": 79225
-    },
-    {
-     "d": "20260730",
-     "individual": 6574,
-     "foreign": -94857,
-     "institution": 95848,
-     "close": 76215
-    },
-    {
-     "d": "20260731",
-     "individual": -116734,
-     "foreign": 88556,
-     "institution": 32378,
-     "close": 107805
-    },
-    {
-     "d": "20260803",
-     "individual": 47923,
-     "foreign": 6568,
-     "institution": -58072,
-     "close": 93820
-    },
-    {
-     "d": "20260804",
-     "individual": 6393,
-     "foreign": 69677,
-     "institution": -76392,
-     "close": 96150
-    },
-    {
-     "d": "20260805",
-     "individual": -25086,
-     "foreign": 64293,
-     "institution": -38380,
-     "close": 103760
-    },
-    {
-     "d": "20260806",
-     "individual": 55780,
-     "foreign": -25732,
-     "institution": -30743,
-     "close": 93070
-    },
-    {
-     "d": "20260807",
-     "individual": 8973,
-     "foreign": 89423,
-     "institution": -96644,
-     "close": 91455
-    },
-    {
-     "d": "20260810",
-     "individual": 2882,
-     "foreign": 42052,
-     "institution": -45853,
-     "close": 91560
-    },
-    {
-     "d": "20260811",
-     "individual": -13249,
-     "foreign": -19355,
-     "institution": 32326,
-     "close": 93405
-    },
-    {
-     "d": "20260812",
-     "individual": -26790,
-     "foreign": 32627,
-     "institution": -2160,
-     "close": 101180
-    },
-    {
-     "d": "20260813",
-     "individual": -16952,
-     "foreign": 50081,
-     "institution": -33142,
-     "close": 108885
-    },
-    {
-     "d": "20260814",
-     "individual": -28696,
-     "foreign": 32519,
-     "institution": -6579,
-     "close": 114535
-    },
-    {
-     "d": "20260818",
-     "individual": 3578,
-     "foreign": -29597,
-     "institution": 19589,
-     "close": 111340
-    },
-    {
-     "d": "20260819",
-     "individual": 49351,
-     "foreign": -6717,
-     "institution": -43895,
-     "close": 97645
-    },
-    {
-     "d": "20260820",
-     "individual": -47420,
-     "foreign": 103416,
-     "institution": -45378,
-     "close": 109555
-    },
-    {
-     "d": "20260821",
-     "individual": -21535,
-     "foreign": 98977,
-     "institution": -75203,
-     "close": 113190
-    },
-    {
-     "d": "20260824",
-     "individual": 21941,
-     "foreign": -13330,
-     "institution": -8369,
-     "close": 104925
-    },
-    {
-     "d": "20260825",
-     "individual": 8301,
-     "foreign": -22018,
-     "institution": 13772,
-     "close": 106205
-    },
-    {
-     "d": "20260826",
-     "individual": -19632,
-     "foreign": 14046,
-     "institution": 5909,
-     "close": 108325
-    },
-    {
-     "d": "20260827",
-     "individual": -7633,
-     "foreign": 10007,
-     "institution": -2270,
-     "close": 111125
-    },
-    {
-     "d": "20260828",
-     "individual": 13004,
-     "foreign": 15965,
-     "institution": -28865,
-     "close": 107090
-    },
-    {
-     "d": "20260831",
-     "individual": -6718,
-     "foreign": 10194,
-     "institution": -3478,
-     "close": 107850
-    },
-    {
-     "d": "20260901",
-     "individual": -4754,
-     "foreign": 2581,
-     "institution": 1601,
-     "close": 108555
-    },
-    {
-     "d": "20260902",
-     "individual": 43341,
-     "foreign": -30739,
-     "institution": -12763,
-     "close": 99705
-    },
-    {
-     "d": "20260903",
-     "individual": -11988,
-     "foreign": 14673,
-     "institution": -3077,
-     "close": 99865
-    },
-    {
-     "d": "20260904",
-     "individual": -23902,
-     "foreign": 32598,
-     "institution": -7103,
-     "close": 103880
-    },
-    {
-     "d": "20260907",
-     "individual": -48055,
-     "foreign": 38443,
-     "institution": 9658,
-     "close": 114000
-    },
-    {
-     "d": "20260908",
-     "individual": -28678,
-     "foreign": 16408,
-     "institution": 12231,
-     "close": 113090
-    },
-    {
-     "d": "20260909",
-     "individual": -8840,
-     "foreign": -24815,
-     "institution": 34092,
-     "close": 116580
-    },
-    {
-     "d": "20260910",
-     "individual": 572,
-     "foreign": -24224,
-     "institution": 24335,
-     "close": 115915
-    },
-    {
-     "d": "20260911",
-     "individual": 15152,
-     "foreign": 17953,
-     "institution": -33489,
-     "close": 111010
-    },
-    {
-     "d": "20260914",
-     "individual": 28622,
-     "foreign": 12649,
-     "institution": -41613,
-     "close": 102940
-    },
-    {
-     "d": "20260915",
-     "individual": 19831,
-     "foreign": 43334,
-     "institution": -63179,
-     "close": 100650
-    },
-    {
-     "d": "20260916",
-     "individual": -10885,
-     "foreign": 18859,
-     "institution": -7970,
-     "close": 104555
-    },
-    {
-     "d": "20260917",
-     "individual": 1939,
-     "foreign": -15800,
-     "institution": 13836,
-     "close": 104330
-    },
-    {
-     "d": "20260918",
-     "individual": -20173,
-     "foreign": 12513,
-     "institution": 7732,
-     "close": 110305
-    },
-    {
-     "d": "20260921",
-     "individual": -19916,
-     "foreign": 8829,
-     "institution": 11690,
-     "close": 115010
-    },
-    {
-     "d": "20260922",
-     "individual": -1709,
-     "foreign": -6302,
-     "institution": 7999,
-     "close": 115475
-    },
-    {
-     "d": "20260923",
-     "individual": -7617,
-     "foreign": 14002,
-     "institution": -6433,
-     "close": 117925
-    },
-    {
-     "d": "20260928",
-     "individual": 29019,
-     "foreign": -32603,
-     "institution": 2276,
-     "close": 110580
-    },
-    {
-     "d": "20260929",
-     "individual": 8000,
-     "foreign": -12746,
-     "institution": 5251,
-     "close": 111315
-    },
-    {
-     "d": "20260930",
-     "individual": 4373,
-     "foreign": 409,
-     "institution": -4163,
-     "close": 110425
-    },
-    {
-     "d": "20261001",
-     "individual": -15414,
-     "foreign": 68221,
-     "institution": -52820,
-     "close": 114150
-    },
-    {
-     "d": "20261002",
-     "individual": -20294,
-     "foreign": 56100,
-     "institution": -35905,
-     "close": 115400
-    },
-    {
-     "d": "20261006",
-     "individual": 28379,
-     "foreign": 2364,
-     "institution": -30588,
-     "close": 112845
-    },
-    {
-     "d": "20261007",
-     "individual": 17150,
-     "foreign": -33885,
-     "institution": 16721,
-     "close": 108305
-    },
-    {
-     "d": "20261008",
-     "individual": 38950,
-     "foreign": 15043,
-     "institution": -54498,
-     "close": 102510
-    },
-    {
-     "d": "20261012",
-     "individual": 46039,
-     "foreign": 813,
-     "institution": -47601,
-     "close": 94585
-    },
-    {
-     "d": "20261013",
-     "individual": 74858,
-     "foreign": -12748,
-     "institution": -64288,
-     "close": 82630
-    },
-    {
-     "d": "20261014",
-     "individual": 16525,
-     "foreign": 11575,
-     "institution": -28101,
-     "close": 81780
-    },
-    {
-     "d": "20261015",
-     "individual": 112884,
-     "foreign": -27834,
-     "institution": -85344,
-     "close": 68365
-    },
-    {
-     "d": "20261016",
-     "individual": 12759,
-     "foreign": 54973,
-     "institution": -68731,
-     "close": 71050
-    },
-    {
-     "d": "20261019",
-     "individual": -6625,
-     "foreign": 177121,
-     "institution": -169901,
-     "close": 72705
-    },
-    {
-     "d": "20261020",
-     "individual": 18344,
-     "foreign": 6032,
-     "institution": -23981,
-     "close": 67770
-    },
-    {
-     "d": "20261021",
-     "individual": -29242,
-     "foreign": 36840,
-     "institution": -7597,
-     "close": 72395
-    },
-    {
-     "d": "20261022",
-     "individual": 38835,
-     "foreign": -1405,
-     "institution": -37449,
-     "close": 67335
-    },
-    {
-     "d": "20261023",
-     "individual": -17227,
-     "foreign": 15536,
-     "institution": 954,
-     "close": 68040
-    },
-    {
-     "d": "20261026",
-     "individual": 6592,
-     "foreign": 10962,
-     "institution": -17206,
-     "close": 66110
-    },
-    {
-     "d": "20261027",
-     "individual": -18249,
-     "foreign": 50980,
-     "institution": -32953,
-     "close": 70445
-    },
-    {
-     "d": "20261028",
-     "individual": -42205,
-     "foreign": -36469,
-     "institution": 78481,
-     "close": 81175
-    },
-    {
-     "d": "20261029",
-     "individual": -8172,
-     "foreign": 20766,
-     "institution": -11828,
-     "close": 79290
-    },
-    {
-     "d": "20261030",
-     "individual": 38415,
-     "foreign": -67844,
-     "institution": 29415,
-     "close": 73180
-    },
-    {
-     "d": "20261102",
-     "individual": -12875,
-     "foreign": 15026,
-     "institution": -2203,
-     "close": 76535
-    },
-    {
-     "d": "20261103",
-     "individual": 37227,
-     "foreign": -34059,
-     "institution": -3211,
-     "close": 70705
-    },
-    {
-     "d": "20261104",
-     "individual": 6462,
-     "foreign": 63951,
-     "institution": -70624,
-     "close": 71060
-    },
-    {
-     "d": "20261105",
-     "individual": 85265,
-     "foreign": -50550,
-     "institution": -34592,
-     "close": 63160
-    },
-    {
-     "d": "20261106",
-     "individual": 47427,
-     "foreign": -61850,
-     "institution": 13178,
-     "close": 54840
-    },
-    {
-     "d": "20261109",
-     "individual": -11691,
-     "foreign": -43516,
-     "institution": 57562,
-     "close": 54045
-    },
-    {
-     "d": "20261110",
-     "individual": -26840,
-     "foreign": 7940,
-     "institution": 19015,
-     "close": 58900
-    },
-    {
-     "d": "20261111",
-     "individual": -5450,
-     "foreign": -459,
-     "institution": 6216,
-     "close": 62470
-    },
-    {
-     "d": "20261112",
-     "individual": -7305,
-     "foreign": -19239,
-     "institution": 26194,
-     "close": 62085
-    },
-    {
-     "d": "20261113",
-     "individual": 14011,
-     "foreign": -5754,
-     "institution": -8976,
-     "close": 60340
-    },
-    {
-     "d": "20261116",
-     "individual": 17569,
-     "foreign": -8310,
-     "institution": -9613,
-     "close": 55490
-    },
-    {
-     "d": "20261117",
-     "individual": 22695,
-     "foreign": -10658,
-     "institution": -12187,
-     "close": 52740
-    },
-    {
-     "d": "20261118",
-     "individual": -8714,
-     "foreign": 17733,
-     "institution": -9019,
-     "close": 54955
-    },
-    {
-     "d": "20261119",
-     "individual": 907,
-     "foreign": -3035,
-     "institution": 1828,
-     "close": 56535
-    },
-    {
-     "d": "20261120",
-     "individual": 38697,
-     "foreign": -11728,
-     "institution": -27006,
-     "close": 50495
-    },
-    {
-     "d": "20261123",
-     "individual": 46836,
-     "foreign": -44684,
-     "institution": -2449,
-     "close": 47130
-    },
-    {
-     "d": "20261124",
-     "individual": -63591,
-     "foreign": 169692,
-     "institution": -105719,
-     "close": 53390
-    },
-    {
-     "d": "20261125",
-     "individual": 44492,
-     "foreign": 25579,
-     "institution": -71659,
-     "close": 45800
-    },
-    {
-     "d": "20261126",
-     "individual": -2192,
-     "foreign": 51102,
-     "institution": -50409,
-     "close": 46190
-    }
-   ]
-  },
-  {
    "code": "233160",
    "name": "TIGER 코스닥150 레버리지",
    "kind": "etf",
@@ -6940,6 +6246,700 @@
      "foreign": -272397,
      "institution": 287538,
      "close": 4200
+    }
+   ]
+  },
+  {
+   "code": "123320",
+   "name": "TIGER 레버리지",
+   "kind": "etf",
+   "group": "index_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 14094,
+     "foreign": -7939,
+     "institution": -6140,
+     "close": 177125
+    },
+    {
+     "d": "20260707",
+     "individual": 75425,
+     "foreign": 149,
+     "institution": -75557,
+     "close": 159080
+    },
+    {
+     "d": "20260708",
+     "individual": 2137,
+     "foreign": 590,
+     "institution": -529,
+     "close": 141650
+    },
+    {
+     "d": "20260709",
+     "individual": -8560,
+     "foreign": 26468,
+     "institution": -20480,
+     "close": 144005
+    },
+    {
+     "d": "20260710",
+     "individual": -23177,
+     "foreign": 44857,
+     "institution": -34769,
+     "close": 150005
+    },
+    {
+     "d": "20260713",
+     "individual": 39714,
+     "foreign": -49562,
+     "institution": 9631,
+     "close": 120000
+    },
+    {
+     "d": "20260714",
+     "individual": -24622,
+     "foreign": -26956,
+     "institution": 63755,
+     "close": 123755
+    },
+    {
+     "d": "20260715",
+     "individual": -37243,
+     "foreign": -10254,
+     "institution": 35169,
+     "close": 139205
+    },
+    {
+     "d": "20260716",
+     "individual": 30518,
+     "foreign": -1338,
+     "institution": -19345,
+     "close": 120015
+    },
+    {
+     "d": "20260720",
+     "individual": 18187,
+     "foreign": 23241,
+     "institution": -40271,
+     "close": 109495
+    },
+    {
+     "d": "20260721",
+     "individual": -13667,
+     "foreign": 1824,
+     "institution": 11842,
+     "close": 118280
+    },
+    {
+     "d": "20260722",
+     "individual": 2255,
+     "foreign": -5845,
+     "institution": 7263,
+     "close": 118965
+    },
+    {
+     "d": "20260723",
+     "individual": -20565,
+     "foreign": 34292,
+     "institution": -13622,
+     "close": 129215
+    },
+    {
+     "d": "20260724",
+     "individual": 46568,
+     "foreign": -79116,
+     "institution": 31965,
+     "close": 113815
+    },
+    {
+     "d": "20260727",
+     "individual": 7498,
+     "foreign": -2268,
+     "institution": -4006,
+     "close": 116540
+    },
+    {
+     "d": "20260728",
+     "individual": 90380,
+     "foreign": -1125,
+     "institution": -90240,
+     "close": 90815
+    },
+    {
+     "d": "20260729",
+     "individual": 40138,
+     "foreign": 619,
+     "institution": -51807,
+     "close": 79225
+    },
+    {
+     "d": "20260730",
+     "individual": 6574,
+     "foreign": -94857,
+     "institution": 95848,
+     "close": 76215
+    },
+    {
+     "d": "20260731",
+     "individual": -116734,
+     "foreign": 88556,
+     "institution": 32378,
+     "close": 107805
+    },
+    {
+     "d": "20260803",
+     "individual": 47923,
+     "foreign": 6568,
+     "institution": -58072,
+     "close": 93820
+    },
+    {
+     "d": "20260804",
+     "individual": 6393,
+     "foreign": 69677,
+     "institution": -76392,
+     "close": 96150
+    },
+    {
+     "d": "20260805",
+     "individual": -25086,
+     "foreign": 64293,
+     "institution": -38380,
+     "close": 103760
+    },
+    {
+     "d": "20260806",
+     "individual": 55780,
+     "foreign": -25732,
+     "institution": -30743,
+     "close": 93070
+    },
+    {
+     "d": "20260807",
+     "individual": 8973,
+     "foreign": 89423,
+     "institution": -96644,
+     "close": 91455
+    },
+    {
+     "d": "20260810",
+     "individual": 2882,
+     "foreign": 42052,
+     "institution": -45853,
+     "close": 91560
+    },
+    {
+     "d": "20260811",
+     "individual": -13249,
+     "foreign": -19355,
+     "institution": 32326,
+     "close": 93405
+    },
+    {
+     "d": "20260812",
+     "individual": -26790,
+     "foreign": 32627,
+     "institution": -2160,
+     "close": 101180
+    },
+    {
+     "d": "20260813",
+     "individual": -16952,
+     "foreign": 50081,
+     "institution": -33142,
+     "close": 108885
+    },
+    {
+     "d": "20260814",
+     "individual": -28696,
+     "foreign": 32519,
+     "institution": -6579,
+     "close": 114535
+    },
+    {
+     "d": "20260818",
+     "individual": 3578,
+     "foreign": -29597,
+     "institution": 19589,
+     "close": 111340
+    },
+    {
+     "d": "20260819",
+     "individual": 49351,
+     "foreign": -6717,
+     "institution": -43895,
+     "close": 97645
+    },
+    {
+     "d": "20260820",
+     "individual": -47420,
+     "foreign": 103416,
+     "institution": -45378,
+     "close": 109555
+    },
+    {
+     "d": "20260821",
+     "individual": -21535,
+     "foreign": 98977,
+     "institution": -75203,
+     "close": 113190
+    },
+    {
+     "d": "20260824",
+     "individual": 21941,
+     "foreign": -13330,
+     "institution": -8369,
+     "close": 104925
+    },
+    {
+     "d": "20260825",
+     "individual": 8301,
+     "foreign": -22018,
+     "institution": 13772,
+     "close": 106205
+    },
+    {
+     "d": "20260826",
+     "individual": -19632,
+     "foreign": 14046,
+     "institution": 5909,
+     "close": 108325
+    },
+    {
+     "d": "20260827",
+     "individual": -7633,
+     "foreign": 10007,
+     "institution": -2270,
+     "close": 111125
+    },
+    {
+     "d": "20260828",
+     "individual": 13004,
+     "foreign": 15965,
+     "institution": -28865,
+     "close": 107090
+    },
+    {
+     "d": "20260831",
+     "individual": -6718,
+     "foreign": 10194,
+     "institution": -3478,
+     "close": 107850
+    },
+    {
+     "d": "20260901",
+     "individual": -4754,
+     "foreign": 2581,
+     "institution": 1601,
+     "close": 108555
+    },
+    {
+     "d": "20260902",
+     "individual": 43341,
+     "foreign": -30739,
+     "institution": -12763,
+     "close": 99705
+    },
+    {
+     "d": "20260903",
+     "individual": -11988,
+     "foreign": 14673,
+     "institution": -3077,
+     "close": 99865
+    },
+    {
+     "d": "20260904",
+     "individual": -23902,
+     "foreign": 32598,
+     "institution": -7103,
+     "close": 103880
+    },
+    {
+     "d": "20260907",
+     "individual": -48055,
+     "foreign": 38443,
+     "institution": 9658,
+     "close": 114000
+    },
+    {
+     "d": "20260908",
+     "individual": -28678,
+     "foreign": 16408,
+     "institution": 12231,
+     "close": 113090
+    },
+    {
+     "d": "20260909",
+     "individual": -8840,
+     "foreign": -24815,
+     "institution": 34092,
+     "close": 116580
+    },
+    {
+     "d": "20260910",
+     "individual": 572,
+     "foreign": -24224,
+     "institution": 24335,
+     "close": 115915
+    },
+    {
+     "d": "20260911",
+     "individual": 15152,
+     "foreign": 17953,
+     "institution": -33489,
+     "close": 111010
+    },
+    {
+     "d": "20260914",
+     "individual": 28622,
+     "foreign": 12649,
+     "institution": -41613,
+     "close": 102940
+    },
+    {
+     "d": "20260915",
+     "individual": 19831,
+     "foreign": 43334,
+     "institution": -63179,
+     "close": 100650
+    },
+    {
+     "d": "20260916",
+     "individual": -10885,
+     "foreign": 18859,
+     "institution": -7970,
+     "close": 104555
+    },
+    {
+     "d": "20260917",
+     "individual": 1939,
+     "foreign": -15800,
+     "institution": 13836,
+     "close": 104330
+    },
+    {
+     "d": "20260918",
+     "individual": -20173,
+     "foreign": 12513,
+     "institution": 7732,
+     "close": 110305
+    },
+    {
+     "d": "20260921",
+     "individual": -19916,
+     "foreign": 8829,
+     "institution": 11690,
+     "close": 115010
+    },
+    {
+     "d": "20260922",
+     "individual": -1709,
+     "foreign": -6302,
+     "institution": 7999,
+     "close": 115475
+    },
+    {
+     "d": "20260923",
+     "individual": -7617,
+     "foreign": 14002,
+     "institution": -6433,
+     "close": 117925
+    },
+    {
+     "d": "20260928",
+     "individual": 29019,
+     "foreign": -32603,
+     "institution": 2276,
+     "close": 110580
+    },
+    {
+     "d": "20260929",
+     "individual": 8000,
+     "foreign": -12746,
+     "institution": 5251,
+     "close": 111315
+    },
+    {
+     "d": "20260930",
+     "individual": 4373,
+     "foreign": 409,
+     "institution": -4163,
+     "close": 110425
+    },
+    {
+     "d": "20261001",
+     "individual": -15414,
+     "foreign": 68221,
+     "institution": -52820,
+     "close": 114150
+    },
+    {
+     "d": "20261002",
+     "individual": -20294,
+     "foreign": 56100,
+     "institution": -35905,
+     "close": 115400
+    },
+    {
+     "d": "20261006",
+     "individual": 28379,
+     "foreign": 2364,
+     "institution": -30588,
+     "close": 112845
+    },
+    {
+     "d": "20261007",
+     "individual": 17150,
+     "foreign": -33885,
+     "institution": 16721,
+     "close": 108305
+    },
+    {
+     "d": "20261008",
+     "individual": 38950,
+     "foreign": 15043,
+     "institution": -54498,
+     "close": 102510
+    },
+    {
+     "d": "20261012",
+     "individual": 46039,
+     "foreign": 813,
+     "institution": -47601,
+     "close": 94585
+    },
+    {
+     "d": "20261013",
+     "individual": 74858,
+     "foreign": -12748,
+     "institution": -64288,
+     "close": 82630
+    },
+    {
+     "d": "20261014",
+     "individual": 16525,
+     "foreign": 11575,
+     "institution": -28101,
+     "close": 81780
+    },
+    {
+     "d": "20261015",
+     "individual": 112884,
+     "foreign": -27834,
+     "institution": -85344,
+     "close": 68365
+    },
+    {
+     "d": "20261016",
+     "individual": 12759,
+     "foreign": 54973,
+     "institution": -68731,
+     "close": 71050
+    },
+    {
+     "d": "20261019",
+     "individual": -6625,
+     "foreign": 177121,
+     "institution": -169901,
+     "close": 72705
+    },
+    {
+     "d": "20261020",
+     "individual": 18344,
+     "foreign": 6032,
+     "institution": -23981,
+     "close": 67770
+    },
+    {
+     "d": "20261021",
+     "individual": -29242,
+     "foreign": 36840,
+     "institution": -7597,
+     "close": 72395
+    },
+    {
+     "d": "20261022",
+     "individual": 38835,
+     "foreign": -1405,
+     "institution": -37449,
+     "close": 67335
+    },
+    {
+     "d": "20261023",
+     "individual": -17227,
+     "foreign": 15536,
+     "institution": 954,
+     "close": 68040
+    },
+    {
+     "d": "20261026",
+     "individual": 6592,
+     "foreign": 10962,
+     "institution": -17206,
+     "close": 66110
+    },
+    {
+     "d": "20261027",
+     "individual": -18249,
+     "foreign": 50980,
+     "institution": -32953,
+     "close": 70445
+    },
+    {
+     "d": "20261028",
+     "individual": -42205,
+     "foreign": -36469,
+     "institution": 78481,
+     "close": 81175
+    },
+    {
+     "d": "20261029",
+     "individual": -8172,
+     "foreign": 20766,
+     "institution": -11828,
+     "close": 79290
+    },
+    {
+     "d": "20261030",
+     "individual": 38415,
+     "foreign": -67844,
+     "institution": 29415,
+     "close": 73180
+    },
+    {
+     "d": "20261102",
+     "individual": -12875,
+     "foreign": 15026,
+     "institution": -2203,
+     "close": 76535
+    },
+    {
+     "d": "20261103",
+     "individual": 37227,
+     "foreign": -34059,
+     "institution": -3211,
+     "close": 70705
+    },
+    {
+     "d": "20261104",
+     "individual": 6462,
+     "foreign": 63951,
+     "institution": -70624,
+     "close": 71060
+    },
+    {
+     "d": "20261105",
+     "individual": 85265,
+     "foreign": -50550,
+     "institution": -34592,
+     "close": 63160
+    },
+    {
+     "d": "20261106",
+     "individual": 47427,
+     "foreign": -61850,
+     "institution": 13178,
+     "close": 54840
+    },
+    {
+     "d": "20261109",
+     "individual": -11691,
+     "foreign": -43516,
+     "institution": 57562,
+     "close": 54045
+    },
+    {
+     "d": "20261110",
+     "individual": -26840,
+     "foreign": 7940,
+     "institution": 19015,
+     "close": 58900
+    },
+    {
+     "d": "20261111",
+     "individual": -5450,
+     "foreign": -459,
+     "institution": 6216,
+     "close": 62470
+    },
+    {
+     "d": "20261112",
+     "individual": -7305,
+     "foreign": -19239,
+     "institution": 26194,
+     "close": 62085
+    },
+    {
+     "d": "20261113",
+     "individual": 14011,
+     "foreign": -5754,
+     "institution": -8976,
+     "close": 60340
+    },
+    {
+     "d": "20261116",
+     "individual": 17569,
+     "foreign": -8310,
+     "institution": -9613,
+     "close": 55490
+    },
+    {
+     "d": "20261117",
+     "individual": 22695,
+     "foreign": -10658,
+     "institution": -12187,
+     "close": 52740
+    },
+    {
+     "d": "20261118",
+     "individual": -8714,
+     "foreign": 17733,
+     "institution": -9019,
+     "close": 54955
+    },
+    {
+     "d": "20261119",
+     "individual": 907,
+     "foreign": -3035,
+     "institution": 1828,
+     "close": 56535
+    },
+    {
+     "d": "20261120",
+     "individual": 38697,
+     "foreign": -11728,
+     "institution": -27006,
+     "close": 50495
+    },
+    {
+     "d": "20261123",
+     "individual": 46836,
+     "foreign": -44684,
+     "institution": -2449,
+     "close": 47130
+    },
+    {
+     "d": "20261124",
+     "individual": -63591,
+     "foreign": 169692,
+     "institution": -105719,
+     "close": 53390
+    },
+    {
+     "d": "20261125",
+     "individual": 44492,
+     "foreign": 25579,
+     "institution": -71659,
+     "close": 45800
+    },
+    {
+     "d": "20261126",
+     "individual": -2192,
+     "foreign": 51102,
+     "institution": -50409,
+     "close": 46190
     }
    ]
   },
@@ -8332,700 +8332,6 @@
    ]
   },
   {
-   "code": "0194M0",
-   "name": "ACE 삼성전자단일종목레버리지",
-   "kind": "etf",
-   "group": "single_lev",
-   "series": [
-    {
-     "d": "20260706",
-     "individual": 38306,
-     "foreign": 51539,
-     "institution": -111792,
-     "close": 19620
-    },
-    {
-     "d": "20260707",
-     "individual": 275940,
-     "foreign": 57531,
-     "institution": -367741,
-     "close": 16900
-    },
-    {
-     "d": "20260708",
-     "individual": 78373,
-     "foreign": -4876,
-     "institution": -78660,
-     "close": 14805
-    },
-    {
-     "d": "20260709",
-     "individual": -79434,
-     "foreign": -10458,
-     "institution": 86715,
-     "close": 15025
-    },
-    {
-     "d": "20260710",
-     "individual": -184021,
-     "foreign": -17138,
-     "institution": 203148,
-     "close": 15780
-    },
-    {
-     "d": "20260713",
-     "individual": 99189,
-     "foreign": 14639,
-     "institution": -113228,
-     "close": 12055
-    },
-    {
-     "d": "20260714",
-     "individual": -120034,
-     "foreign": 34755,
-     "institution": 88886,
-     "close": 13115
-    },
-    {
-     "d": "20260715",
-     "individual": -76213,
-     "foreign": 79570,
-     "institution": 48293,
-     "close": 14660
-    },
-    {
-     "d": "20260716",
-     "individual": 91196,
-     "foreign": -30175,
-     "institution": -89050,
-     "close": 12210
-    },
-    {
-     "d": "20260720",
-     "individual": 51816,
-     "foreign": -127088,
-     "institution": 59512,
-     "close": 11145
-    },
-    {
-     "d": "20260721",
-     "individual": -62701,
-     "foreign": -109443,
-     "institution": 176255,
-     "close": 12485
-    },
-    {
-     "d": "20260722",
-     "individual": -21676,
-     "foreign": 25703,
-     "institution": -46837,
-     "close": 12575
-    },
-    {
-     "d": "20260723",
-     "individual": -5168,
-     "foreign": -44344,
-     "institution": 36859,
-     "close": 13565
-    },
-    {
-     "d": "20260724",
-     "individual": 162305,
-     "foreign": -73317,
-     "institution": -111200,
-     "close": 11450
-    },
-    {
-     "d": "20260727",
-     "individual": -94858,
-     "foreign": 5016,
-     "institution": 90178,
-     "close": 11760
-    },
-    {
-     "d": "20260728",
-     "individual": 222456,
-     "foreign": -43659,
-     "institution": -207123,
-     "close": 8610
-    },
-    {
-     "d": "20260729",
-     "individual": 137721,
-     "foreign": 8953,
-     "institution": -177246,
-     "close": 7890
-    },
-    {
-     "d": "20260730",
-     "individual": -47591,
-     "foreign": -62531,
-     "institution": 76226,
-     "close": 7705
-    },
-    {
-     "d": "20260731",
-     "individual": -271614,
-     "foreign": 7260,
-     "institution": 313376,
-     "close": 11800
-    },
-    {
-     "d": "20260803",
-     "individual": 8872,
-     "foreign": -21022,
-     "institution": -7850,
-     "close": 9640
-    },
-    {
-     "d": "20260804",
-     "individual": -21181,
-     "foreign": 4325,
-     "institution": 6360,
-     "close": 9690
-    },
-    {
-     "d": "20260805",
-     "individual": -18778,
-     "foreign": 2939,
-     "institution": 17082,
-     "close": 10155
-    },
-    {
-     "d": "20260806",
-     "individual": 3912,
-     "foreign": -4456,
-     "institution": -13684,
-     "close": 8930
-    },
-    {
-     "d": "20260807",
-     "individual": -19924,
-     "foreign": 22213,
-     "institution": 1210,
-     "close": 8960
-    },
-    {
-     "d": "20260810",
-     "individual": 15750,
-     "foreign": -220,
-     "institution": -13319,
-     "close": 8840
-    },
-    {
-     "d": "20260811",
-     "individual": -32139,
-     "foreign": 15381,
-     "institution": 28181,
-     "close": 9525
-    },
-    {
-     "d": "20260812",
-     "individual": -43173,
-     "foreign": 24501,
-     "institution": 18901,
-     "close": 10810
-    },
-    {
-     "d": "20260813",
-     "individual": -26322,
-     "foreign": 7512,
-     "institution": 23773,
-     "close": 11725
-    },
-    {
-     "d": "20260814",
-     "individual": -23773,
-     "foreign": 5238,
-     "institution": 17207,
-     "close": 12380
-    },
-    {
-     "d": "20260818",
-     "individual": -15861,
-     "foreign": -8265,
-     "institution": 23164,
-     "close": 11895
-    },
-    {
-     "d": "20260819",
-     "individual": 17800,
-     "foreign": 6156,
-     "institution": -26660,
-     "close": 10120
-    },
-    {
-     "d": "20260820",
-     "individual": -38389,
-     "foreign": -301,
-     "institution": 38623,
-     "close": 11765
-    },
-    {
-     "d": "20260821",
-     "individual": -30792,
-     "foreign": 875,
-     "institution": 29147,
-     "close": 12810
-    },
-    {
-     "d": "20260824",
-     "individual": 47673,
-     "foreign": -38129,
-     "institution": -20714,
-     "close": 10685
-    },
-    {
-     "d": "20260825",
-     "individual": 22660,
-     "foreign": -27119,
-     "institution": 3700,
-     "close": 10670
-    },
-    {
-     "d": "20260826",
-     "individual": -35558,
-     "foreign": -6882,
-     "institution": 41960,
-     "close": 10990
-    },
-    {
-     "d": "20260827",
-     "individual": -17553,
-     "foreign": -21159,
-     "institution": 39012,
-     "close": 11230
-    },
-    {
-     "d": "20260828",
-     "individual": 539,
-     "foreign": 155,
-     "institution": -3097,
-     "close": 10640
-    },
-    {
-     "d": "20260831",
-     "individual": 10800,
-     "foreign": -20853,
-     "institution": 10053,
-     "close": 10845
-    },
-    {
-     "d": "20260901",
-     "individual": -1533,
-     "foreign": -225,
-     "institution": 1758,
-     "close": 10795
-    },
-    {
-     "d": "20260902",
-     "individual": 1353,
-     "foreign": -6192,
-     "institution": 4838,
-     "close": 9960
-    },
-    {
-     "d": "20260903",
-     "individual": -24582,
-     "foreign": 15076,
-     "institution": 9238,
-     "close": 10015
-    },
-    {
-     "d": "20260904",
-     "individual": -30281,
-     "foreign": -6616,
-     "institution": 36897,
-     "close": 10415
-    },
-    {
-     "d": "20260907",
-     "individual": -25790,
-     "foreign": -9885,
-     "institution": 35033,
-     "close": 11495
-    },
-    {
-     "d": "20260908",
-     "individual": -23370,
-     "foreign": 17470,
-     "institution": 5900,
-     "close": 11560
-    },
-    {
-     "d": "20260909",
-     "individual": -6046,
-     "foreign": 7909,
-     "institution": -5740,
-     "close": 11615
-    },
-    {
-     "d": "20260910",
-     "individual": 14734,
-     "foreign": -15448,
-     "institution": -7797,
-     "close": 11395
-    },
-    {
-     "d": "20260911",
-     "individual": -2280,
-     "foreign": -13990,
-     "institution": 10270,
-     "close": 10745
-    },
-    {
-     "d": "20260914",
-     "individual": 16932,
-     "foreign": -4277,
-     "institution": -3634,
-     "close": 9840
-    },
-    {
-     "d": "20260915",
-     "individual": 3141,
-     "foreign": 8483,
-     "institution": -11624,
-     "close": 9795
-    },
-    {
-     "d": "20260916",
-     "individual": 6091,
-     "foreign": -1087,
-     "institution": -5004,
-     "close": 10150
-    },
-    {
-     "d": "20260917",
-     "individual": -3798,
-     "foreign": -5276,
-     "institution": 9074,
-     "close": 10055
-    },
-    {
-     "d": "20260918",
-     "individual": -26379,
-     "foreign": 8029,
-     "institution": 18350,
-     "close": 10715
-    },
-    {
-     "d": "20260921",
-     "individual": -28462,
-     "foreign": 506,
-     "institution": 28707,
-     "close": 11805
-    },
-    {
-     "d": "20260922",
-     "individual": -19277,
-     "foreign": -7175,
-     "institution": 26452,
-     "close": 12160
-    },
-    {
-     "d": "20260923",
-     "individual": -35701,
-     "foreign": 2867,
-     "institution": 42439,
-     "close": 12815
-    },
-    {
-     "d": "20260928",
-     "individual": 2408,
-     "foreign": 3110,
-     "institution": -6144,
-     "close": 11495
-    },
-    {
-     "d": "20260929",
-     "individual": -18024,
-     "foreign": 1573,
-     "institution": 17164,
-     "close": 11980
-    },
-    {
-     "d": "20260930",
-     "individual": 676,
-     "foreign": -4097,
-     "institution": 3401,
-     "close": 11760
-    },
-    {
-     "d": "20261001",
-     "individual": -18022,
-     "foreign": -167,
-     "institution": 18688,
-     "close": 12285
-    },
-    {
-     "d": "20261002",
-     "individual": -2641,
-     "foreign": -5670,
-     "institution": 2937,
-     "close": 12390
-    },
-    {
-     "d": "20261006",
-     "individual": 171,
-     "foreign": 1404,
-     "institution": -4865,
-     "close": 12030
-    },
-    {
-     "d": "20261007",
-     "individual": 5315,
-     "foreign": -1884,
-     "institution": 6938,
-     "close": 11705
-    },
-    {
-     "d": "20261008",
-     "individual": 13032,
-     "foreign": 1787,
-     "institution": -17113,
-     "close": 11165
-    },
-    {
-     "d": "20261012",
-     "individual": 22277,
-     "foreign": 1094,
-     "institution": -33530,
-     "close": 10170
-    },
-    {
-     "d": "20261013",
-     "individual": 28307,
-     "foreign": 2140,
-     "institution": -34642,
-     "close": 8590
-    },
-    {
-     "d": "20261014",
-     "individual": -5046,
-     "foreign": 0,
-     "institution": 6545,
-     "close": 8680
-    },
-    {
-     "d": "20261015",
-     "individual": 56451,
-     "foreign": -513,
-     "institution": -55940,
-     "close": 6900
-    },
-    {
-     "d": "20261016",
-     "individual": 14713,
-     "foreign": -4591,
-     "institution": -10132,
-     "close": 7255
-    },
-    {
-     "d": "20261019",
-     "individual": -4884,
-     "foreign": 4617,
-     "institution": 243,
-     "close": 7490
-    },
-    {
-     "d": "20261020",
-     "individual": 14184,
-     "foreign": -4223,
-     "institution": -11121,
-     "close": 6985
-    },
-    {
-     "d": "20261021",
-     "individual": -16305,
-     "foreign": 4192,
-     "institution": 12113,
-     "close": 7850
-    },
-    {
-     "d": "20261022",
-     "individual": 3764,
-     "foreign": -4616,
-     "institution": -8376,
-     "close": 7225
-    },
-    {
-     "d": "20261023",
-     "individual": -3228,
-     "foreign": 1229,
-     "institution": -68027,
-     "close": 7290
-    },
-    {
-     "d": "20261026",
-     "individual": 9635,
-     "foreign": -1229,
-     "institution": -8260,
-     "close": 7140
-    },
-    {
-     "d": "20261027",
-     "individual": -10127,
-     "foreign": 1610,
-     "institution": 8513,
-     "close": 7700
-    },
-    {
-     "d": "20261028",
-     "individual": -50106,
-     "foreign": 2812,
-     "institution": 47511,
-     "close": 9050
-    },
-    {
-     "d": "20261029",
-     "individual": 13054,
-     "foreign": -4592,
-     "institution": -83755,
-     "close": 8375
-    },
-    {
-     "d": "20261030",
-     "individual": 2312,
-     "foreign": -4832,
-     "institution": 218,
-     "close": 7900
-    },
-    {
-     "d": "20261102",
-     "individual": -8347,
-     "foreign": 4752,
-     "institution": -9154,
-     "close": 8105
-    },
-    {
-     "d": "20261103",
-     "individual": -4479,
-     "foreign": -1398,
-     "institution": 5867,
-     "close": 7385
-    },
-    {
-     "d": "20261104",
-     "individual": 8824,
-     "foreign": -4911,
-     "institution": -3915,
-     "close": 7355
-    },
-    {
-     "d": "20261105",
-     "individual": 19464,
-     "foreign": -3879,
-     "institution": -15585,
-     "close": 6215
-    },
-    {
-     "d": "20261106",
-     "individual": 26499,
-     "foreign": 3146,
-     "institution": -39057,
-     "close": 5400
-    },
-    {
-     "d": "20261109",
-     "individual": 7794,
-     "foreign": -113,
-     "institution": -7683,
-     "close": 5485
-    },
-    {
-     "d": "20261110",
-     "individual": -10596,
-     "foreign": -2182,
-     "institution": 12535,
-     "close": 5955
-    },
-    {
-     "d": "20261111",
-     "individual": -5119,
-     "foreign": -193,
-     "institution": 5310,
-     "close": 6380
-    },
-    {
-     "d": "20261112",
-     "individual": 937,
-     "foreign": 2243,
-     "institution": -3178,
-     "close": 6610
-    },
-    {
-     "d": "20261113",
-     "individual": 417,
-     "foreign": 160,
-     "institution": -579,
-     "close": 6455
-    },
-    {
-     "d": "20261116",
-     "individual": 11867,
-     "foreign": 22914,
-     "institution": 8998,
-     "close": 5785
-    },
-    {
-     "d": "20261117",
-     "individual": 13080,
-     "foreign": -8417,
-     "institution": -4618,
-     "close": 5495
-    },
-    {
-     "d": "20261118",
-     "individual": -10374,
-     "foreign": -17930,
-     "institution": 22117,
-     "close": 5660
-    },
-    {
-     "d": "20261119",
-     "individual": 865,
-     "foreign": 321,
-     "institution": -1186,
-     "close": 5745
-    },
-    {
-     "d": "20261120",
-     "individual": 35433,
-     "foreign": -101,
-     "institution": -38307,
-     "close": 5035
-    },
-    {
-     "d": "20261123",
-     "individual": 40247,
-     "foreign": 0,
-     "institution": -62477,
-     "close": 4730
-    },
-    {
-     "d": "20261124",
-     "individual": -51510,
-     "foreign": 2066,
-     "institution": 49447,
-     "close": 5335
-    },
-    {
-     "d": "20261125",
-     "individual": 23218,
-     "foreign": -1906,
-     "institution": -101602,
-     "close": 4310
-    },
-    {
-     "d": "20261126",
-     "individual": -620,
-     "foreign": -80,
-     "institution": -8560,
-     "close": 4325
-    }
-   ]
-  },
-  {
    "code": "0197W0",
    "name": "SOL SK하이닉스단일종목레버리지",
    "kind": "etf",
@@ -10410,6 +9716,700 @@
      "foreign": 516,
      "institution": 12358,
      "close": 2805
+    }
+   ]
+  },
+  {
+   "code": "0194M0",
+   "name": "ACE 삼성전자단일종목레버리지",
+   "kind": "etf",
+   "group": "single_lev",
+   "series": [
+    {
+     "d": "20260706",
+     "individual": 38306,
+     "foreign": 51539,
+     "institution": -111792,
+     "close": 19620
+    },
+    {
+     "d": "20260707",
+     "individual": 275940,
+     "foreign": 57531,
+     "institution": -367741,
+     "close": 16900
+    },
+    {
+     "d": "20260708",
+     "individual": 78373,
+     "foreign": -4876,
+     "institution": -78660,
+     "close": 14805
+    },
+    {
+     "d": "20260709",
+     "individual": -79434,
+     "foreign": -10458,
+     "institution": 86715,
+     "close": 15025
+    },
+    {
+     "d": "20260710",
+     "individual": -184021,
+     "foreign": -17138,
+     "institution": 203148,
+     "close": 15780
+    },
+    {
+     "d": "20260713",
+     "individual": 99189,
+     "foreign": 14639,
+     "institution": -113228,
+     "close": 12055
+    },
+    {
+     "d": "20260714",
+     "individual": -120034,
+     "foreign": 34755,
+     "institution": 88886,
+     "close": 13115
+    },
+    {
+     "d": "20260715",
+     "individual": -76213,
+     "foreign": 79570,
+     "institution": 48293,
+     "close": 14660
+    },
+    {
+     "d": "20260716",
+     "individual": 91196,
+     "foreign": -30175,
+     "institution": -89050,
+     "close": 12210
+    },
+    {
+     "d": "20260720",
+     "individual": 51816,
+     "foreign": -127088,
+     "institution": 59512,
+     "close": 11145
+    },
+    {
+     "d": "20260721",
+     "individual": -62701,
+     "foreign": -109443,
+     "institution": 176255,
+     "close": 12485
+    },
+    {
+     "d": "20260722",
+     "individual": -21676,
+     "foreign": 25703,
+     "institution": -46837,
+     "close": 12575
+    },
+    {
+     "d": "20260723",
+     "individual": -5168,
+     "foreign": -44344,
+     "institution": 36859,
+     "close": 13565
+    },
+    {
+     "d": "20260724",
+     "individual": 162305,
+     "foreign": -73317,
+     "institution": -111200,
+     "close": 11450
+    },
+    {
+     "d": "20260727",
+     "individual": -94858,
+     "foreign": 5016,
+     "institution": 90178,
+     "close": 11760
+    },
+    {
+     "d": "20260728",
+     "individual": 222456,
+     "foreign": -43659,
+     "institution": -207123,
+     "close": 8610
+    },
+    {
+     "d": "20260729",
+     "individual": 137721,
+     "foreign": 8953,
+     "institution": -177246,
+     "close": 7890
+    },
+    {
+     "d": "20260730",
+     "individual": -47591,
+     "foreign": -62531,
+     "institution": 76226,
+     "close": 7705
+    },
+    {
+     "d": "20260731",
+     "individual": -271614,
+     "foreign": 7260,
+     "institution": 313376,
+     "close": 11800
+    },
+    {
+     "d": "20260803",
+     "individual": 8872,
+     "foreign": -21022,
+     "institution": -7850,
+     "close": 9640
+    },
+    {
+     "d": "20260804",
+     "individual": -21181,
+     "foreign": 4325,
+     "institution": 6360,
+     "close": 9690
+    },
+    {
+     "d": "20260805",
+     "individual": -18778,
+     "foreign": 2939,
+     "institution": 17082,
+     "close": 10155
+    },
+    {
+     "d": "20260806",
+     "individual": 3912,
+     "foreign": -4456,
+     "institution": -13684,
+     "close": 8930
+    },
+    {
+     "d": "20260807",
+     "individual": -19924,
+     "foreign": 22213,
+     "institution": 1210,
+     "close": 8960
+    },
+    {
+     "d": "20260810",
+     "individual": 15750,
+     "foreign": -220,
+     "institution": -13319,
+     "close": 8840
+    },
+    {
+     "d": "20260811",
+     "individual": -32139,
+     "foreign": 15381,
+     "institution": 28181,
+     "close": 9525
+    },
+    {
+     "d": "20260812",
+     "individual": -43173,
+     "foreign": 24501,
+     "institution": 18901,
+     "close": 10810
+    },
+    {
+     "d": "20260813",
+     "individual": -26322,
+     "foreign": 7512,
+     "institution": 23773,
+     "close": 11725
+    },
+    {
+     "d": "20260814",
+     "individual": -23773,
+     "foreign": 5238,
+     "institution": 17207,
+     "close": 12380
+    },
+    {
+     "d": "20260818",
+     "individual": -15861,
+     "foreign": -8265,
+     "institution": 23164,
+     "close": 11895
+    },
+    {
+     "d": "20260819",
+     "individual": 17800,
+     "foreign": 6156,
+     "institution": -26660,
+     "close": 10120
+    },
+    {
+     "d": "20260820",
+     "individual": -38389,
+     "foreign": -301,
+     "institution": 38623,
+     "close": 11765
+    },
+    {
+     "d": "20260821",
+     "individual": -30792,
+     "foreign": 875,
+     "institution": 29147,
+     "close": 12810
+    },
+    {
+     "d": "20260824",
+     "individual": 47673,
+     "foreign": -38129,
+     "institution": -20714,
+     "close": 10685
+    },
+    {
+     "d": "20260825",
+     "individual": 22660,
+     "foreign": -27119,
+     "institution": 3700,
+     "close": 10670
+    },
+    {
+     "d": "20260826",
+     "individual": -35558,
+     "foreign": -6882,
+     "institution": 41960,
+     "close": 10990
+    },
+    {
+     "d": "20260827",
+     "individual": -17553,
+     "foreign": -21159,
+     "institution": 39012,
+     "close": 11230
+    },
+    {
+     "d": "20260828",
+     "individual": 539,
+     "foreign": 155,
+     "institution": -3097,
+     "close": 10640
+    },
+    {
+     "d": "20260831",
+     "individual": 10800,
+     "foreign": -20853,
+     "institution": 10053,
+     "close": 10845
+    },
+    {
+     "d": "20260901",
+     "individual": -1533,
+     "foreign": -225,
+     "institution": 1758,
+     "close": 10795
+    },
+    {
+     "d": "20260902",
+     "individual": 1353,
+     "foreign": -6192,
+     "institution": 4838,
+     "close": 9960
+    },
+    {
+     "d": "20260903",
+     "individual": -24582,
+     "foreign": 15076,
+     "institution": 9238,
+     "close": 10015
+    },
+    {
+     "d": "20260904",
+     "individual": -30281,
+     "foreign": -6616,
+     "institution": 36897,
+     "close": 10415
+    },
+    {
+     "d": "20260907",
+     "individual": -25790,
+     "foreign": -9885,
+     "institution": 35033,
+     "close": 11495
+    },
+    {
+     "d": "20260908",
+     "individual": -23370,
+     "foreign": 17470,
+     "institution": 5900,
+     "close": 11560
+    },
+    {
+     "d": "20260909",
+     "individual": -6046,
+     "foreign": 7909,
+     "institution": -5740,
+     "close": 11615
+    },
+    {
+     "d": "20260910",
+     "individual": 14734,
+     "foreign": -15448,
+     "institution": -7797,
+     "close": 11395
+    },
+    {
+     "d": "20260911",
+     "individual": -2280,
+     "foreign": -13990,
+     "institution": 10270,
+     "close": 10745
+    },
+    {
+     "d": "20260914",
+     "individual": 16932,
+     "foreign": -4277,
+     "institution": -3634,
+     "close": 9840
+    },
+    {
+     "d": "20260915",
+     "individual": 3141,
+     "foreign": 8483,
+     "institution": -11624,
+     "close": 9795
+    },
+    {
+     "d": "20260916",
+     "individual": 6091,
+     "foreign": -1087,
+     "institution": -5004,
+     "close": 10150
+    },
+    {
+     "d": "20260917",
+     "individual": -3798,
+     "foreign": -5276,
+     "institution": 9074,
+     "close": 10055
+    },
+    {
+     "d": "20260918",
+     "individual": -26379,
+     "foreign": 8029,
+     "institution": 18350,
+     "close": 10715
+    },
+    {
+     "d": "20260921",
+     "individual": -28462,
+     "foreign": 506,
+     "institution": 28707,
+     "close": 11805
+    },
+    {
+     "d": "20260922",
+     "individual": -19277,
+     "foreign": -7175,
+     "institution": 26452,
+     "close": 12160
+    },
+    {
+     "d": "20260923",
+     "individual": -35701,
+     "foreign": 2867,
+     "institution": 42439,
+     "close": 12815
+    },
+    {
+     "d": "20260928",
+     "individual": 2408,
+     "foreign": 3110,
+     "institution": -6144,
+     "close": 11495
+    },
+    {
+     "d": "20260929",
+     "individual": -18024,
+     "foreign": 1573,
+     "institution": 17164,
+     "close": 11980
+    },
+    {
+     "d": "20260930",
+     "individual": 676,
+     "foreign": -4097,
+     "institution": 3401,
+     "close": 11760
+    },
+    {
+     "d": "20261001",
+     "individual": -18022,
+     "foreign": -167,
+     "institution": 18688,
+     "close": 12285
+    },
+    {
+     "d": "20261002",
+     "individual": -2641,
+     "foreign": -5670,
+     "institution": 2937,
+     "close": 12390
+    },
+    {
+     "d": "20261006",
+     "individual": 171,
+     "foreign": 1404,
+     "institution": -4865,
+     "close": 12030
+    },
+    {
+     "d": "20261007",
+     "individual": 5315,
+     "foreign": -1884,
+     "institution": 6938,
+     "close": 11705
+    },
+    {
+     "d": "20261008",
+     "individual": 13032,
+     "foreign": 1787,
+     "institution": -17113,
+     "close": 11165
+    },
+    {
+     "d": "20261012",
+     "individual": 22277,
+     "foreign": 1094,
+     "institution": -33530,
+     "close": 10170
+    },
+    {
+     "d": "20261013",
+     "individual": 28307,
+     "foreign": 2140,
+     "institution": -34642,
+     "close": 8590
+    },
+    {
+     "d": "20261014",
+     "individual": -5046,
+     "foreign": 0,
+     "institution": 6545,
+     "close": 8680
+    },
+    {
+     "d": "20261015",
+     "individual": 56451,
+     "foreign": -513,
+     "institution": -55940,
+     "close": 6900
+    },
+    {
+     "d": "20261016",
+     "individual": 14713,
+     "foreign": -4591,
+     "institution": -10132,
+     "close": 7255
+    },
+    {
+     "d": "20261019",
+     "individual": -4884,
+     "foreign": 4617,
+     "institution": 243,
+     "close": 7490
+    },
+    {
+     "d": "20261020",
+     "individual": 14184,
+     "foreign": -4223,
+     "institution": -11121,
+     "close": 6985
+    },
+    {
+     "d": "20261021",
+     "individual": -16305,
+     "foreign": 4192,
+     "institution": 12113,
+     "close": 7850
+    },
+    {
+     "d": "20261022",
+     "individual": 3764,
+     "foreign": -4616,
+     "institution": -8376,
+     "close": 7225
+    },
+    {
+     "d": "20261023",
+     "individual": -3228,
+     "foreign": 1229,
+     "institution": -68027,
+     "close": 7290
+    },
+    {
+     "d": "20261026",
+     "individual": 9635,
+     "foreign": -1229,
+     "institution": -8260,
+     "close": 7140
+    },
+    {
+     "d": "20261027",
+     "individual": -10127,
+     "foreign": 1610,
+     "institution": 8513,
+     "close": 7700
+    },
+    {
+     "d": "20261028",
+     "individual": -50106,
+     "foreign": 2812,
+     "institution": 47511,
+     "close": 9050
+    },
+    {
+     "d": "20261029",
+     "individual": 13054,
+     "foreign": -4592,
+     "institution": -83755,
+     "close": 8375
+    },
+    {
+     "d": "20261030",
+     "individual": 2312,
+     "foreign": -4832,
+     "institution": 218,
+     "close": 7900
+    },
+    {
+     "d": "20261102",
+     "individual": -8347,
+     "foreign": 4752,
+     "institution": -9154,
+     "close": 8105
+    },
+    {
+     "d": "20261103",
+     "individual": -4479,
+     "foreign": -1398,
+     "institution": 5867,
+     "close": 7385
+    },
+    {
+     "d": "20261104",
+     "individual": 8824,
+     "foreign": -4911,
+     "institution": -3915,
+     "close": 7355
+    },
+    {
+     "d": "20261105",
+     "individual": 19464,
+     "foreign": -3879,
+     "institution": -15585,
+     "close": 6215
+    },
+    {
+     "d": "20261106",
+     "individual": 26499,
+     "foreign": 3146,
+     "institution": -39057,
+     "close": 5400
+    },
+    {
+     "d": "20261109",
+     "individual": 7794,
+     "foreign": -113,
+     "institution": -7683,
+     "close": 5485
+    },
+    {
+     "d": "20261110",
+     "individual": -10596,
+     "foreign": -2182,
+     "institution": 12535,
+     "close": 5955
+    },
+    {
+     "d": "20261111",
+     "individual": -5119,
+     "foreign": -193,
+     "institution": 5310,
+     "close": 6380
+    },
+    {
+     "d": "20261112",
+     "individual": 937,
+     "foreign": 2243,
+     "institution": -3178,
+     "close": 6610
+    },
+    {
+     "d": "20261113",
+     "individual": 417,
+     "foreign": 160,
+     "institution": -579,
+     "close": 6455
+    },
+    {
+     "d": "20261116",
+     "individual": 11867,
+     "foreign": 22914,
+     "institution": 8998,
+     "close": 5785
+    },
+    {
+     "d": "20261117",
+     "individual": 13080,
+     "foreign": -8417,
+     "institution": -4618,
+     "close": 5495
+    },
+    {
+     "d": "20261118",
+     "individual": -10374,
+     "foreign": -17930,
+     "institution": 22117,
+     "close": 5660
+    },
+    {
+     "d": "20261119",
+     "individual": 865,
+     "foreign": 321,
+     "institution": -1186,
+     "close": 5745
+    },
+    {
+     "d": "20261120",
+     "individual": 35433,
+     "foreign": -101,
+     "institution": -38307,
+     "close": 5035
+    },
+    {
+     "d": "20261123",
+     "individual": 40247,
+     "foreign": 0,
+     "institution": -62477,
+     "close": 4730
+    },
+    {
+     "d": "20261124",
+     "individual": -51510,
+     "foreign": 2066,
+     "institution": 49447,
+     "close": 5335
+    },
+    {
+     "d": "20261125",
+     "individual": 23218,
+     "foreign": -1906,
+     "institution": -101602,
+     "close": 4310
+    },
+    {
+     "d": "20261126",
+     "individual": -620,
+     "foreign": -80,
+     "institution": -8560,
+     "close": 4325
     }
    ]
   },
